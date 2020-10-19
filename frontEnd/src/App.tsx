@@ -1,19 +1,13 @@
 import * as React from "react";
 
 // prettier-ignore
-import { AppBar, Badge, Divider, Drawer as DrawerMui, Hidden, IconButton, List, ListItem, ListItemIcon, ListItemText, Toolbar, Typography, useMediaQuery } from "@material-ui/core";
+import { AppBar, Drawer as DrawerMui, Hidden, IconButton, Toolbar, Typography, useMediaQuery } from "@material-ui/core";
 import { AppPage, DocsPage, HomePage, MarketsPage } from "./pages";
-import { Route, Router } from "react-router-dom";
+import { Route, HashRouter as Router } from "react-router-dom";
 
-import FormatListNumberedIcon from "@material-ui/icons/FormatListNumbered";
-import HomeIcon from "@material-ui/icons/Home";
 import MenuIcon from "@material-ui/icons/Menu";
-import { RootState } from "./reducers/index";
 import { Theme } from "@material-ui/core/styles";
-import { Todo } from "./model";
-import { history } from "./configureStore";
 import { makeStyles } from "@material-ui/styles";
-import { useSelector } from "react-redux";
 import { withRoot } from "./withRoot";
 
 function Routes() {
@@ -30,38 +24,9 @@ function Routes() {
 	);
 }
 
-function Drawer(props: { todoList: Todo[] }) {
-	const classes = useStyles();
-
-	return (
-		<div>
-			<div className={classes.drawerHeader} />
-			<Divider />
-			<List>
-				<ListItem button onClick={() => history.push("/")}>
-					<ListItemIcon>
-						<HomeIcon />
-					</ListItemIcon>
-					<ListItemText primary="Home" />
-				</ListItem>
-			</List>
-			<Divider />
-			<List>
-				<ListItem button onClick={() => history.push("/todo")}>
-					<ListItemIcon>
-						<TodoIcon todoList={props.todoList} />
-					</ListItemIcon>
-					<ListItemText primary="Todo" />
-				</ListItem>
-			</List>
-		</div>
-	);
-}
-
 function App() {
 	const classes = useStyles();
 	const [mobileOpen, setMobileOpen] = React.useState(true);
-	const todoList = useSelector((state: RootState) => state.todoList);
 	const isMobile = useMediaQuery((theme: Theme) =>
 		theme.breakpoints.down("sm")
 	);
@@ -71,7 +36,7 @@ function App() {
 	};
 
 	return (
-		<Router history={history}>
+		<Router>
 			<div className={classes.root}>
 				<div className={classes.appFrame}>
 					<AppBar className={classes.appBar}>
@@ -107,7 +72,6 @@ function App() {
 								keepMounted: true, // Better open performance on mobile.
 							}}
 						>
-							<Drawer todoList={todoList} />
 						</DrawerMui>
 					</Hidden>
 					<Hidden smDown>
@@ -118,7 +82,6 @@ function App() {
 								paper: classes.drawerPaper,
 							}}
 						>
-							<Drawer todoList={todoList} />
 						</DrawerMui>
 					</Hidden>
 					<Routes />
@@ -126,20 +89,6 @@ function App() {
 			</div>
 		</Router>
 	);
-}
-
-function TodoIcon(props: { todoList: Todo[] }) {
-	let uncompletedTodos = props.todoList.filter(t => t.completed === false);
-
-	if (uncompletedTodos.length > 0) {
-		return (
-			<Badge color="secondary" badgeContent={uncompletedTodos.length}>
-				<FormatListNumberedIcon />
-			</Badge>
-		);
-	} else {
-		return <FormatListNumberedIcon />;
-	}
 }
 
 const drawerWidth = 240;

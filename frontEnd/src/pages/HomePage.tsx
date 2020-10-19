@@ -1,57 +1,54 @@
-import { Button, Typography } from "@material-ui/core";
-import { makeStyles } from "@material-ui/styles";
 import * as React from "react";
-import { useSelector } from "react-redux";
-import { HomeBox } from "../components";
-import { RootState } from "../reducers";
+
+import { Borrower, Connect, Dashboard, Lender } from "./App";
+import {
+	Link,
+	Route,
+	Switch,
+	useRouteMatch
+} from "react-router-dom";
 
 export function HomePage() {
-	const classes = useStyles();
-	const [boxColor, setBoxColor] = React.useState("red");
-	const todoList = useSelector((state: RootState) => state.todoList);
-
-	const onButtonClick = () =>
-		setBoxColor(boxColor === "red" ? "blue" : "red");
+	let { path, url } = useRouteMatch();
 
 	return (
-		<div className={classes.root}>
-			<Typography variant="h4" gutterBottom>
-				You have {todoList.length} TODOs in your list!
-			</Typography>
-			<div className={classes.centerContainer}>
-				<HomeBox size={300} color={boxColor} />
-				<Button
-					className={classes.button}
-					onClick={onButtonClick}
-					variant="outlined"
-					color="primary"
-				>
-					Change Color
-				</Button>
-			</div>
+		<div>
+			<h2>App</h2>
+			<ul>
+				<li>
+					<Link to={`${url}`}>Dashboard</Link>
+				</li>
+				<li>
+					<Link to={`${url}borrower`}>Borrower</Link>
+				</li>
+				<li>
+					<Link to={`${url}connect`}>Connect</Link>
+				</li>
+				<li>
+					<Link to={`${url}dashboard`}>Dashboard</Link>
+				</li>
+				<li>
+					<Link to={`${url}lender`}>Lender</Link>
+				</li>
+			</ul>
+
+			<Switch>
+				<Route exact path={path}>
+					<Dashboard />
+				</Route>
+				<Route path={`${path}borrower`}>
+					<Borrower />
+				</Route>
+				<Route path={`${path}connect`}>
+					<Connect />
+				</Route>
+				<Route path={`${path}dashboard`}>
+					<Dashboard />
+				</Route>
+				<Route path={`${path}lender`}>
+					<Lender />
+				</Route>
+			</Switch>
 		</div>
 	);
 }
-
-const useStyles = makeStyles({
-	root: {
-		height: "100%",
-		textAlign: "center",
-		paddingTop: 20,
-		paddingLeft: 15,
-		paddingRight: 15,
-	},
-
-	centerContainer: {
-		flex: 1,
-		height: "90%",
-		display: "flex",
-		alignItems: "center",
-		justifyContent: "center",
-		flexDirection: "column",
-	},
-
-	button: {
-		marginTop: 20,
-	},
-});
