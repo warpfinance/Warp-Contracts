@@ -1,13 +1,13 @@
 import * as React from "react";
 
 // prettier-ignore
-import { AppBar, Drawer as DrawerMui, Hidden, IconButton, Toolbar, Typography, useMediaQuery } from "@material-ui/core";
+import { AppBar, CssBaseline, Drawer as DrawerMui, Hidden, IconButton, Toolbar, Typography, useMediaQuery } from "@material-ui/core";
 import { AppPage, DocsPage, HomePage, MarketsPage } from "./pages";
 import { Route, HashRouter as Router } from "react-router-dom";
+import { Theme, createMuiTheme } from "@material-ui/core/styles";
+import { ThemeProvider, makeStyles } from "@material-ui/styles";
 
 import MenuIcon from "@material-ui/icons/Menu";
-import { Theme } from "@material-ui/core/styles";
-import { makeStyles } from "@material-ui/styles";
 import { withRoot } from "./withRoot";
 
 function Routes() {
@@ -24,6 +24,32 @@ function Routes() {
 	);
 }
 
+
+const outerTheme = createMuiTheme({
+	palette: {
+		primary: {
+			main: "#1a202c"
+		},
+		secondary: {
+			main: "#00c6aa"
+		},
+		type: 'dark',
+		background: {
+			default: "#1a202c",
+			paper: "#1e2430",
+		},
+	},
+	typography: {
+		fontFamily: '"MuseoModerno"',
+	},
+	props: {
+		MuiPaper: {
+			elevation: 2,
+			variant: 'outlined'
+		},
+	}
+});
+
 function App() {
 	const classes = useStyles();
 	const [mobileOpen, setMobileOpen] = React.useState(true);
@@ -37,8 +63,8 @@ function App() {
 
 	return (
 		<Router>
-			<div className={classes.root}>
-				<div className={classes.appFrame}>
+			<CssBaseline>
+				<ThemeProvider theme={outerTheme}>
 					<AppBar className={classes.appBar}>
 						<Toolbar>
 							<IconButton
@@ -85,8 +111,8 @@ function App() {
 						</DrawerMui>
 					</Hidden>
 					<Routes />
-				</div>
-			</div>
+				</ThemeProvider>
+			</CssBaseline>
 		</Router>
 	);
 }
