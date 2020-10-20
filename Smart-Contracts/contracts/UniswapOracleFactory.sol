@@ -1,7 +1,9 @@
 pragma solidity ^0.6.2;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import '@uniswap/v2-periphery/contracts/UniswapV2Router02.sol';
+import '@uniswap/v2-periphery/contracts/libraries/UniswapV2Library.sol';
 import "./UniswapOracleInstance.sol";
 
 
@@ -21,7 +23,8 @@ contract UniswapOracleFactory is Ownable {
   address public factory;
   IUniswapV2Router02 public uniswapRouter;
 
-  mapping(address => address) public instanceTracker; //maps erc20 address to the assets MoneyMarketInstance
+mapping(address => address[]) LPAssetTracker;
+mapping(address => address) instanceTracker;
 
 /**
 @notice constructor function is fired once during contract creation. This constructor initializes uniswapRouter
@@ -36,46 +39,75 @@ constructor(address usdcAdd, address _uniFactoryAdd) public {
 }
 
   /**
-  @notice createNewOracle allows the owner of this contract to deploy a new oracle contract when
-          a new asset is whitelisted
-  @param token is the address of the token that this oracle will provide a price feed for
+  @notice createNewOracle allows the owner of this contract to deploy deploy two new asset oracle contracts
+          when a new LP token is whitelisted. this contract will link the address of an LP token contract to
+          two seperate oracles that are designed to look up the price of their respective assets in USDC. This
+          will allow us to calculate the price of one at LP token token from the prices of their underlying assets
+
+  @param _tokenA is the address of the first token in an Liquidity pair
+  @param _tokenB is the address of the second token in a liquidity pair
+  @param _lpToken is the address of the token that this oracle will provide a price feed for
+
+
   **/
-  function createNewOracle(
-    address token
+  function createNewOracles(
+    address _tokenA,
+    address _tokenB,
+    address _lpToken
   )
   public
   onlyOwner
-  returns(address)
   {
 
-    address _oracle = address(new UniswapOracleInstance (
+    address _oracle1 = address(new UniswapOracleInstance (
        factory,
-       token,
+       _tokenA,
        usdc_add
     ));
-    instanceTracker[token] = _oracle;
-    return _oracle;
+
+    address _oracle2 = address(new UniswapOracleInstance (
+       factory,
+       _tokenB,
+       usdc_add
+    ));
+
+    address[] oracleAdds = [_oracle1, _oracle2]
+    LPAssetTracker[_lpToken] = oracleAdds;
+    instanceTracker[_oracle1] = _tokenA;
+    instanceTracker[_oracle2] = _tokenB;
+
   }
 
 
-/**
-@notice linkMMI is used to link a MoneyMarketInstance to its oracle in the oracle factory contract
-@param _MMI is the address of the MoneyMarketInstance
-@param _asset is the address of the MoneyMarketInstancesunderlying asset
-**/
-  function linkMMI(address _MMI, address _asset) public {
-      address oracle = instanceTracker[_asset];
-        instanceTracker[_MMI] = oracle;
-  }
 
 /**
 @notice getUnderlyingPrice allows for the price retrieval of a MoneyMarketInstances underlying asset
-@param _MMI is the address of the MoneyMarketInstance whos asset price is being retrieved
-@return returns the price of the asset
+@param _lpToken is the address of the LP token  whos asset price is being retrieved
+@return returns the price of one LP token
 **/
-  function getUnderlyingPrice(address _MMI) public view returns(uint) {
-    UniswapOracleInstance oracle = UniswapOracleInstance(instanceTracker[_MMI]);
-    return oracle.consult();
+  function getUnderlyingPrice(address _lpToken) public view returns(uint) {
+    address[] oracleAdds = LPAssetTracker[_lpToken];
+    //retreives the oracle contract addresses for each asset that makes up a LP
+    UniswapOracleInstance oracle1 = UniswapOracleInstance(oracleAdds[0]);
+    UniswapOracleInstance oracle2 = UniswapOracleInstance(oracleAdds[1]);
+    // instantiates both ase usable oracle instances
+    uint priceAsset1 = oracle1.consult();
+    uint priceAsset2 = oracle2.consult();
+    //retreives the USDC price of one of each asset
+    IERC20 lpToken = IERC20(_lpToken);
+    //instantiates the LP token as an ERC20 token
+    uint totalSupplyOfLP = lpToken.totalSupply();
+    //retreives the total supply of the LP token
+    (uint reserveA, uint reserveB) = getReserves( factory,  instanceTracker[oracleAdds[0]],  instanceTracker[oracleAdds[1]]);
+    //retreives the reserves of each  asset in the liquidity pool
+    uint reserveAUSDCprice = reserveA.mul(priceAsset1);
+    uint reserveBUSDCprice = reserveB.mul(pricerAsset2);
+    //get USDC value for each reserve
+    uint totalUSDCpriceOfPool = reserveAUSDCprice.add(reserveBUSDCprice);
+    //add values together to get total USDC of the pool
+    return totalUSDCpriceOfPool.div(totalSupplyOfLP);
+    //return USDC price of the pool divided by totalSupply of its LPs to get price
+    //of one LP
   }
 
 /**
