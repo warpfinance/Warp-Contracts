@@ -16,7 +16,7 @@ import {
 import {
 	Link,
 	Route,
-	HashRouter as Router,
+	BrowserRouter as Router,
 	Switch,
 } from "react-router-dom";
 import { Theme, createMuiTheme } from "@material-ui/core/styles";
@@ -70,6 +70,14 @@ function App() {
 				</CssBaseline>
 			</ThemeProvider>
 		</Router>
+	);
+}
+
+function Home() {
+	return (
+		<div>
+			<h2>Home</h2>
+		</div>
 	);
 }
 
