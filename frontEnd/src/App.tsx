@@ -33,7 +33,8 @@ const outerTheme = createMuiTheme({
 			main: "#soft-green"
 		},
 		text: {
-			primary: "#FFFFFF"
+			primary: "#FFFFFF",
+			secondary: "#a9a9a9"
 		},
 		type: 'dark',
 	},
@@ -73,14 +74,6 @@ function App() {
 	);
 }
 
-function Home() {
-	return (
-		<div>
-			<h2>Home</h2>
-		</div>
-	);
-}
-
 const drawerWidth = 240;
 const useStyles = makeStyles((theme: Theme) => ({
 	root: {
@@ -90,6 +83,10 @@ const useStyles = makeStyles((theme: Theme) => ({
 		lineHeight: 'normal',
 		letterSpacing: '0.5px',
 		textAlign: 'left',
+		marginTop: '40px',
+		marginBottom: '30px',
+		marginRight: '100px',
+		marginLeft: '100px',
 	},
 
 }));
