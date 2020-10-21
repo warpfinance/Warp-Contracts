@@ -4,6 +4,7 @@ import {
 	Borrower,
 	Connect,
 	Dashboard,
+	Home,
 	Lender,
 	Markets
 } from "./pages";
@@ -65,7 +66,7 @@ const DecoratedApplass = withStyles(styles)(
 						<CssBaseline>
 							<div className={this.props.classes.root}>
 								<Switch>
-									<Route exact={true} path="/" component={Connect} />
+									<Route exact={true} path="/" component={Home} />
 									<Route exact={true} path="/borrower" component={Borrower} />
 									<Route exact={true} path="/connect" component={Connect} />
 									<Route exact={true} path="/dashboard" component={Dashboard} />

@@ -7,7 +7,12 @@ import { Grid } from "@material-ui/core";
 import { connect } from "react-redux";
 
 const styles = (theme: any) => createStyles({
-
+    centerButton: {
+        position: 'absolute',
+        left: '50%',
+        top: '50%',
+        transform: 'translate(-50%, -50%)'
+    }
 });
 
 interface Props extends WithStyles<typeof styles> { }
@@ -23,14 +28,7 @@ const DecoratedConnectClass = withStyles(styles)(
                     spacing={10}
                 >
                     <Header />
-                    <div
-                        style={{
-                            position: 'absolute',
-                            left: '50%',
-                            top: '50%',
-                            transform: 'translate(-50%, -50%)'
-                        }}
-                    >
+                    <div className={this.props.classes.centerButton}>
                         <CustomButton text={"Connect wallet"} type={"long"} />
                     </div>
                 </Grid >
