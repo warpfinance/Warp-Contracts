@@ -36,7 +36,7 @@ const DecoratedHomeClass = withStyles(styles)(
                     alignItems="center"
                     spacing={10}
                 >
-                    <Header />
+                    <Header home={true} />
                     <div className={this.props.classes.centerButton}>
                         <Grid
                             container
