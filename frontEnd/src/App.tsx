@@ -7,21 +7,18 @@ import {
 	Lender,
 	Markets
 } from "./pages";
-// prettier-ignore
 import {
-	CssBaseline,
-	Typography,
-	useMediaQuery
-} from "@material-ui/core";
-import {
-	Link,
 	Route,
 	BrowserRouter as Router,
 	Switch,
 } from "react-router-dom";
-import { Theme, createMuiTheme } from "@material-ui/core/styles";
-import { ThemeProvider, makeStyles } from "@material-ui/styles";
+import { ThemeProvider, WithStyles, createStyles, withStyles } from "@material-ui/styles";
 
+// prettier-ignore
+import {
+	CssBaseline,
+} from "@material-ui/core";
+import { createMuiTheme } from "@material-ui/core/styles";
 import { withRoot } from "./withRoot";
 
 const outerTheme = createMuiTheme({
@@ -41,39 +38,7 @@ const outerTheme = createMuiTheme({
 	},
 });
 
-function App() {
-	const classes = useStyles();
-	const [mobileOpen, setMobileOpen] = React.useState(true);
-	const isMobile = useMediaQuery((theme: Theme) =>
-		theme.breakpoints.down("sm")
-	);
-
-	const handleDrawerToggle = () => {
-		setMobileOpen(!mobileOpen);
-	};
-
-	return (
-		<Router>
-			<ThemeProvider theme={outerTheme}>
-				<CssBaseline>
-					<div className={classes.root}>
-						<Switch>
-							<Route exact={true} path="/" component={Connect} />
-							<Route exact={true} path="/borrower" component={Borrower} />
-							<Route exact={true} path="/connect" component={Connect} />
-							<Route exact={true} path="/dashboard" component={Dashboard} />
-							<Route exact={true} path="/lender" component={Lender} />
-							<Route exact={true} path="/markets" component={Markets} />
-						</Switch>
-					</div>
-				</CssBaseline>
-			</ThemeProvider>
-		</Router>
-	);
-}
-
-const drawerWidth = 240;
-const useStyles = makeStyles((theme: Theme) => ({
+const styles = (theme: any) => createStyles({
 	root: {
 		fontWeight: 500,
 		fontStretch: 'normal',
@@ -87,6 +52,33 @@ const useStyles = makeStyles((theme: Theme) => ({
 		marginLeft: '100px',
 	},
 
-}));
+});
 
-export default withRoot(App);
+interface Props extends WithStyles<typeof styles> {}
+
+const DecoratedApplass = withStyles(styles)(
+    class AppClass extends React.Component<Props, {}> {
+		render() {
+			return (
+				<Router>
+					<ThemeProvider theme={outerTheme}>
+						<CssBaseline>
+							<div className={this.props.classes.root}>
+								<Switch>
+									<Route exact={true} path="/" component={Connect} />
+									<Route exact={true} path="/borrower" component={Borrower} />
+									<Route exact={true} path="/connect" component={Connect} />
+									<Route exact={true} path="/dashboard" component={Dashboard} />
+									<Route exact={true} path="/lender" component={Lender} />
+									<Route exact={true} path="/markets" component={Markets} />
+								</Switch>
+							</div>
+						</CssBaseline>
+					</ThemeProvider>
+				</Router>
+			);
+		}
+	}
+)
+
+export default withRoot(DecoratedApplass);

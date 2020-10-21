@@ -36,7 +36,7 @@ const DecoratedHeaderClass = withStyles(styles)(
                         item
                         md={7}
                     >
-                        <img className={this.props.classes.logo} src={"warp logo.svg"}></img>
+                        <img className={this.props.classes.logo} src={"warp logo.svg"} alt={"Warp"}></img>
                     </Grid>
                     <Grid
                         item
