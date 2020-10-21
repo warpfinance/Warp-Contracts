@@ -19,21 +19,21 @@ const DecoratedConnectClass = withStyles(styles)(
                 <Grid
                     container
                     direction="column"
-                    justify="space-between"
                     alignItems="center"
                     spacing={10}
                 >
                     <Header />
-                    <Grid
-                        container
-                        direction="column"
-                        justify="space-between"
-                        alignItems="center"
-                        item
+                    <div
+                        style={{
+                            position: 'absolute',
+                            left: '50%',
+                            top: '50%',
+                            transform: 'translate(-50%, -50%)'
+                        }}
                     >
                         <CustomButton text={"Connect wallet"} type={"long"} />
-                    </Grid>
-                </Grid>
+                    </div>
+                </Grid >
             )
         }
     }
