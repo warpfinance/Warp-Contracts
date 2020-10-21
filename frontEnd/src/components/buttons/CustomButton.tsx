@@ -33,6 +33,7 @@ const DecoratedButtonClass = withStyles(styles)(
             let icon = null;
             let minHeight = "";
             let minWidth = "";
+            let pointerEvents = "auto";
             let variant: "contained" | "outlined" = "contained"
             if (this.props.type === "long") {
                 minHeight = "50px";
@@ -46,6 +47,7 @@ const DecoratedButtonClass = withStyles(styles)(
             if (this.props.wallet === true) {
                 color = "secondary";
                 icon = "Warp";
+                pointerEvents = "none";
             }
             else if (this.props.disabled !== true) {
                 border = "solid 2px #62d066";
@@ -61,6 +63,8 @@ const DecoratedButtonClass = withStyles(styles)(
                     border: border,
                     minHeight: minHeight,
                     minWidth: minWidth,
+                    // @ts-ignore
+                    pointerEvents: pointerEvents,
                 }}
                 variant={variant}
             >
