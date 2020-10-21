@@ -26,8 +26,9 @@ interface Props extends WithStyles<typeof styles> {
 const DecoratedButtonClass = withStyles(styles)(
     class ButtonClass extends React.Component<Props, {}> {
         render() {
-            let color: "default" | "secondary" = "default";
             let border = "";
+            let color: "default" | "secondary" = "default";
+            let icon = null;
             let minHeight = "";
             let minWidth = "";
             let variant: "contained" | "outlined" = "contained"
@@ -42,6 +43,7 @@ const DecoratedButtonClass = withStyles(styles)(
 
             if (this.props.wallet === true) {
                 color = "secondary";
+                icon = "Warp";
             }
             else if (this.props.disabled !== true) {
                 border = "solid 2px #62d066";
@@ -53,6 +55,7 @@ const DecoratedButtonClass = withStyles(styles)(
                     color={color}
                     className={this.props.classes.button}
                     disabled={this.props.disabled}
+                    startIcon={icon}
                     style={{
                         border: border,
                         minHeight: minHeight,
