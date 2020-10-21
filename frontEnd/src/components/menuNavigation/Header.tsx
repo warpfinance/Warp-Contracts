@@ -53,7 +53,7 @@ const DecoratedHeaderClass = withStyles(styles)(
                         md
                     >
                         <Typography>
-                        <Link className={this.props.classes.link} color="textSecondary" href="#" underline="none">
+                            <Link className={this.props.classes.link} color="textSecondary" href="#" underline="none">
                                 Lender
                             </Link>
                         </Typography>
@@ -63,7 +63,7 @@ const DecoratedHeaderClass = withStyles(styles)(
                         md
                     >
                         <Typography>
-                        <Link className={this.props.classes.link} color="textSecondary" href="#" underline="none">
+                            <Link className={this.props.classes.link} color="textSecondary" href="#" underline="none">
                                 Borrower
                             </Link>
                         </Typography>
@@ -73,7 +73,7 @@ const DecoratedHeaderClass = withStyles(styles)(
                         md
                     >
                         <Typography>
-                        <Link className={this.props.classes.link} color="textSecondary" href="#" underline="none">
+                            <Link className={this.props.classes.link} color="textSecondary" href="#" underline="none">
                                 Vote
                             </Link>
                         </Typography>
@@ -82,7 +82,7 @@ const DecoratedHeaderClass = withStyles(styles)(
                         item
                         md
                     >
-                        <CustomButton disabled={true} text={"0.0"} type={"short"} />
+                        <CustomButton disabled={false} text={"0.0"} type={"short"} wallet={true} />
                     </Grid>
                     <Grid
                         item

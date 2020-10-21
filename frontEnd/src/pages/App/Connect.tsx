@@ -31,7 +31,7 @@ const DecoratedConnectClass = withStyles(styles)(
                         alignItems="center"
                         item
                     >
-                        <CustomButton disabled={false} text={"Connect wallet"} type={"long"} />
+                        <CustomButton text={"Connect wallet"} type={"long"} />
                     </Grid>
                 </Grid>
             )

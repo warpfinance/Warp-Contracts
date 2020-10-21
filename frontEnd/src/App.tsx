@@ -26,11 +26,9 @@ import { withRoot } from "./withRoot";
 
 const outerTheme = createMuiTheme({
 	palette: {
-		primary: {
-			main: "#black"
-		},
 		secondary: {
-			main: "#soft-green"
+			main: '#62d066',
+			contrastText: "#fff"
 		},
 		text: {
 			primary: "#FFFFFF",
