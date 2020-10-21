@@ -16,6 +16,9 @@ const styles = (theme: any) => createStyles({
             color: "#FFFFFF",
         }
     },
+    routerLink: {
+        textDecoration: 'none',
+    }
 });
 
 
@@ -34,9 +37,11 @@ const DecoratedHeaderClass = withStyles(styles)(
                             md
                         >
                             <Typography>
-                                <Link className={this.props.classes.link} color="textSecondary" href="#" underline="none">
-                                    Dashboard
-                                </Link>
+                                <RouterLink className={this.props.classes.routerLink} to={"/connect"}>
+                                    <Link className={this.props.classes.link} color="textSecondary" href="" underline="none">
+                                        Dashboard
+                                    </Link>
+                                </RouterLink>
                             </Typography>
                         </Grid>
                         <Grid
@@ -44,9 +49,11 @@ const DecoratedHeaderClass = withStyles(styles)(
                             md
                         >
                             <Typography>
-                                <Link className={this.props.classes.link} color="textSecondary" href="#" underline="none">
-                                    Lender
-                                </Link>
+                                <RouterLink className={this.props.classes.routerLink} to={"/connect"}>
+                                    <Link className={this.props.classes.link} color="textSecondary" href="" underline="none">
+                                        Lender
+                                    </Link>
+                                </RouterLink>
                             </Typography>
                         </Grid>
                         <Grid
@@ -54,9 +61,11 @@ const DecoratedHeaderClass = withStyles(styles)(
                             md
                         >
                             <Typography>
-                                <Link className={this.props.classes.link} color="textSecondary" href="#" underline="none">
-                                    Borrower
-                                </Link>
+                                <RouterLink className={this.props.classes.routerLink} to={"/connect"}>
+                                    <Link className={this.props.classes.link} color="textSecondary" href="" underline="none">
+                                        Borrower
+                                    </Link>
+                                </RouterLink>
                             </Typography>
                         </Grid>
                         <Grid
@@ -64,9 +73,11 @@ const DecoratedHeaderClass = withStyles(styles)(
                             md
                         >
                             <Typography>
-                                <Link className={this.props.classes.link} color="textSecondary" href="#" underline="none">
-                                    Vote
-                                </Link>
+                                <RouterLink className={this.props.classes.routerLink} to={"/connect"}>
+                                    <Link className={this.props.classes.link} color="textSecondary" href="" underline="none">
+                                        Vote
+                                    </Link>
+                                </RouterLink>
                             </Typography>
                         </Grid>
                         <Grid
@@ -91,18 +102,22 @@ const DecoratedHeaderClass = withStyles(styles)(
                             item
                         >
                             <Typography>
-                                <Link className={this.props.classes.link} color="textSecondary" href="#" underline="none">
-                                    Markets
-                                </Link>
+                                <RouterLink className={this.props.classes.routerLink} to={"/markets"}>
+                                    <Link className={this.props.classes.link} color="textSecondary" href="#" underline="none">
+                                        Markets
+                                    </Link>
+                                </RouterLink>
                             </Typography>
                         </Grid>
                         <Grid
                             item
                         >
                             <Typography>
-                                <Link className={this.props.classes.link} color="textSecondary" href="#" underline="none">
-                                    Docs
-                                </Link>
+                                <RouterLink className={this.props.classes.routerLink} to={"/"}>
+                                    <Link className={this.props.classes.link} color="textSecondary" href="" underline="none">
+                                        Docs
+                                    </Link>
+                                </RouterLink>
                             </Typography>
                         </Grid>
                         <Grid
