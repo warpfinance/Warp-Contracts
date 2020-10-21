@@ -41,6 +41,12 @@ const outerTheme = createMuiTheme({
 		fontFamily: '"MuseoModerno"',
 	},
 	overrides: {
+		MuiCard: {
+			root: {
+				borderRadius: "25px",
+				boxShadow : "0 40px 80px -20px rgba(0, 0, 0, 0.25);"
+			}
+		},
 		MuiTypography: {
 			root: {
 				margin: "5px",

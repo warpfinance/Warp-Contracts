@@ -136,13 +136,13 @@ const DecoratedHeaderClass = withStyles(styles)(
                     item
                     container
                     direction="row"
-                    justify="space-around"
+                    justify="space-evenly"
                     alignItems="center"
                     spacing={(!this.props.home) ? 3 : 1}
                 >
                     <Grid
                         item
-                        md={(!this.props.home) ? 6 : 1}
+                        md={(!this.props.home) ? 5 : 1}
                     >
                         <RouterLink to={"/"}>
                             <img className={this.props.classes.logo} src={"warp logo.svg"} alt={"Warp"}></img>
