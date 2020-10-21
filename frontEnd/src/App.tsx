@@ -26,7 +26,10 @@ const outerTheme = createMuiTheme({
 	palette: {
 		secondary: {
 			main: '#62d066',
-			contrastText: "#fff"
+			contrastText: "#fff",
+		},
+		error: {
+			main: '#ff6666',
 		},
 		text: {
 			primary: "#FFFFFF",
@@ -36,6 +39,22 @@ const outerTheme = createMuiTheme({
 	},
 	typography: {
 		fontFamily: '"MuseoModerno"',
+	},
+	overrides: {
+		MuiTypography: {
+			root: {
+				margin: "5px",
+				topPadding: "15px",
+				leftPadding: "5px",
+				rightPadding: "5px",
+				bottomPadding: "1px",
+			}
+		}
+	},
+	props: {
+		MuiPaper: {
+			elevation: 24,
+		},
 	},
 });
 
@@ -55,10 +74,10 @@ const styles = (theme: any) => createStyles({
 
 });
 
-interface Props extends WithStyles<typeof styles> {}
+interface Props extends WithStyles<typeof styles> { }
 
 const DecoratedApplass = withStyles(styles)(
-    class AppClass extends React.Component<Props, {}> {
+	class AppClass extends React.Component<Props, {}> {
 		render() {
 			return (
 				<Router>

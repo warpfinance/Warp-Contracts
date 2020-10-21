@@ -142,7 +142,7 @@ const DecoratedHeaderClass = withStyles(styles)(
                 >
                     <Grid
                         item
-                        md={(!this.props.home) ? 7 : 1}
+                        md={(!this.props.home) ? 6 : 1}
                     >
                         <RouterLink to={"/"}>
                             <img className={this.props.classes.logo} src={"warp logo.svg"} alt={"Warp"}></img>
