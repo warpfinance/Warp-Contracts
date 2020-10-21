@@ -4,6 +4,7 @@ import { Grid, Link, Typography } from "@material-ui/core";
 import { WithStyles, createStyles, withStyles } from "@material-ui/core/styles";
 
 import { CustomButton } from "../../components"
+import { Link as RouterLink } from 'react-router-dom';
 import { connect } from "react-redux";
 
 const styles = (theme: any) => createStyles({
@@ -35,7 +36,7 @@ const DecoratedHeaderClass = withStyles(styles)(
                             <Typography>
                                 <Link className={this.props.classes.link} color="textSecondary" href="#" underline="none">
                                     Dashboard
-                        </Link>
+                                </Link>
                             </Typography>
                         </Grid>
                         <Grid
@@ -45,7 +46,7 @@ const DecoratedHeaderClass = withStyles(styles)(
                             <Typography>
                                 <Link className={this.props.classes.link} color="textSecondary" href="#" underline="none">
                                     Lender
-                        </Link>
+                                </Link>
                             </Typography>
                         </Grid>
                         <Grid
@@ -55,7 +56,7 @@ const DecoratedHeaderClass = withStyles(styles)(
                             <Typography>
                                 <Link className={this.props.classes.link} color="textSecondary" href="#" underline="none">
                                     Borrower
-                        </Link>
+                                </Link>
                             </Typography>
                         </Grid>
                         <Grid
@@ -65,7 +66,7 @@ const DecoratedHeaderClass = withStyles(styles)(
                             <Typography>
                                 <Link className={this.props.classes.link} color="textSecondary" href="#" underline="none">
                                     Vote
-                        </Link>
+                                </Link>
                             </Typography>
                         </Grid>
                         <Grid
@@ -107,7 +108,7 @@ const DecoratedHeaderClass = withStyles(styles)(
                         <Grid
                             item
                         >
-                            <CustomButton text={"App"} type={"short"} />
+                            <CustomButton href={"/connect"} text={"App"} type={"short"} />
                         </Grid>
                     </React.Fragment>
                 );
@@ -122,13 +123,15 @@ const DecoratedHeaderClass = withStyles(styles)(
                     direction="row"
                     justify="space-around"
                     alignItems="center"
-                    spacing={(!this.props.home)? 3: 1}
+                    spacing={(!this.props.home) ? 3 : 1}
                 >
                     <Grid
                         item
-                        md={(!this.props.home)? 7: 1}
+                        md={(!this.props.home) ? 7 : 1}
                     >
-                        <img className={this.props.classes.logo} src={"warp logo.svg"} alt={"Warp"}></img>
+                        <RouterLink to={"/"}>
+                            <img className={this.props.classes.logo} src={"warp logo.svg"} alt={"Warp"}></img>
+                        </RouterLink>
                     </Grid>
                     {this.getHeaderContent()}
                 </Grid>

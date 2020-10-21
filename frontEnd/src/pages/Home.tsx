@@ -49,7 +49,7 @@ const DecoratedHomeClass = withStyles(styles)(
                                 <img className={this.props.classes.logo} src={"warp logo.svg"} alt={"Warp"}></img>
                             </Grid>
                             <Grid item>
-                                <CustomButton text={"App"} type={"long"} />
+                                <CustomButton href={"/connect"} text={"App"} type={"long"} />
                             </Grid>
                         </Grid>
                     </div>

@@ -3,6 +3,7 @@ import * as React from "react";
 import { WithStyles, createStyles, withStyles } from "@material-ui/core/styles";
 
 import { Button } from "@material-ui/core";
+import { Link } from 'react-router-dom';
 import { connect } from "react-redux";
 
 const styles = (theme: any) => createStyles({
@@ -20,6 +21,7 @@ interface Props extends WithStyles<typeof styles> {
     text: string,
     type: "long" | "short",
     disabled?: boolean,
+    href?: string,
     wallet?: boolean,
 }
 
@@ -50,22 +52,27 @@ const DecoratedButtonClass = withStyles(styles)(
                 variant = "outlined";
             }
 
-            return (
-                <Button
-                    color={color}
-                    className={this.props.classes.button}
-                    disabled={this.props.disabled}
-                    startIcon={icon}
-                    style={{
-                        border: border,
-                        minHeight: minHeight,
-                        minWidth: minWidth,
-                    }}
-                    variant={variant}
-                >
-                    {this.props.text}
-                </Button>
-            )
+            const button = <Button
+                color={color}
+                className={this.props.classes.button}
+                disabled={this.props.disabled}
+                startIcon={icon}
+                style={{
+                    border: border,
+                    minHeight: minHeight,
+                    minWidth: minWidth,
+                }}
+                variant={variant}
+            >
+                {this.props.text}
+            </Button>;
+
+            const content = !this.props.href ? button :
+                <Link to={this.props.href}>
+                    {button}
+                </Link>;
+
+            return content;
         }
     }
 )
