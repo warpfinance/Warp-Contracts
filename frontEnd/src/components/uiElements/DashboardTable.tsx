@@ -3,7 +3,7 @@ import * as React from "react";
 import { Avatar, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@material-ui/core";
 import { WithStyles, createStyles, withStyles } from "@material-ui/core/styles";
 
-import AvatarGroup from '@material-ui/lab/AvatarGroup';
+import AvatarGroup from "@material-ui/lab/AvatarGroup";
 import { CustomButton } from "../../components";
 import { connect } from "react-redux";
 
@@ -13,25 +13,27 @@ function createData(icon, name, supplyShare, wallet, walletCurrency) {
 }
 
 const lenderData = [
-    createData(<Avatar alt={'dai.png'} src={'dai.png'} />, 'Dai', 3.40, 125, 'DAI'),
-    createData(<Avatar alt={'usdt.png'} src={'usdt.png'} />, 'Tether', 3.40, 125, 'DAI'),
-    createData(<Avatar alt={'usd.png'} src={'usd.png'} />, 'USD Coin', 3.40, 125, 'DAI'),
+    createData(<Avatar alt={"dai.png"} src={"dai.png"} />, "Dai", 3.40, 125, "DAI"),
+    createData(<Avatar alt={"usdt.png"} src={"usdt.png"} />, "Tether", 3.40, 125, "DAI"),
+    createData(<Avatar alt={"usd.png"} src={"usd.png"} />, "USD Coin", 3.40, 125, "DAI"),
 ];
 
 const borrowData = [
-    createData(<AvatarGroup max={2}><Avatar alt={'eth.png'} src={'eth.png'} />
-        <Avatar alt={'dai.png'} src={'dai.png'} /></AvatarGroup>,
-        'ETH - DAI', 1.97, 100, 'USD'),
-    createData(<AvatarGroup><Avatar alt={'eth.png'} src={'eth.png'} />
-        <Avatar alt={'usdt.png'} src={'usdt.png'} /></AvatarGroup>,
-        'ETH - USDT', 3.25, 100, 'USD'),
-    createData(<AvatarGroup><Avatar alt={'wbtc.png'} src={'wbtc.png'} />
-        <Avatar alt={'weth.png'} src={'weth.png'} /></AvatarGroup>,
-        'wBTC - wETH', 1.32, 100, 'USD'),
-    createData(<AvatarGroup><Avatar alt={'usdt.png'} src={'usdt.png'} />
-        <Avatar alt={'weth.png'} src={'weth.png'} /></AvatarGroup>,
-        'USDT - wETH', 2.18, 100, 'USD'),
+    createData(<AvatarGroup max={2}><Avatar alt={"eth.png"} src={"eth.png"} />
+        <Avatar alt={"dai.png"} src={"dai.png"} /></AvatarGroup>,
+        "ETH - DAI", 1.97, 100, "USD"),
+    createData(<AvatarGroup><Avatar alt={"eth.png"} src={"eth.png"} />
+        <Avatar alt={"usdt.png"} src={"usdt.png"} /></AvatarGroup>,
+        "ETH - USDT", 3.25, 100, "USD"),
+    createData(<AvatarGroup><Avatar alt={"wbtc.png"} src={"wbtc.png"} />
+        <Avatar alt={"weth.png"} src={"weth.png"} /></AvatarGroup>,
+        "wBTC - wETH", 1.32, 100, "USD"),
+    createData(<AvatarGroup><Avatar alt={"usdt.png"} src={"usdt.png"} />
+        <Avatar alt={"weth.png"} src={"weth.png"} /></AvatarGroup>,
+        "USDT - wETH", 2.18, 100, "USD"),
 ];
+
+const uniVersion = "Uni - LP - v2";
 
 const styles = (theme: any) => createStyles({
 });
@@ -115,7 +117,7 @@ const DecoratedDashboardTableClass = withStyles(styles)(
                                             {this.props.type === "borrowing" ?
                                                 <Grid item>
                                                     <Typography color="textSecondary">
-                                                        Uni - LP - v2
+                                                        {uniVersion}
                                                     </Typography>
                                                 </Grid> :
                                                 null
