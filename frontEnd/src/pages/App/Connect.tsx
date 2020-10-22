@@ -29,7 +29,7 @@ const DecoratedConnectClass = withStyles(styles)(
                 >
                     <Header />
                     <div className={this.props.classes.centerButton}>
-                        <CustomButton text={"Connect wallet"} type={"long"} />
+                        <CustomButton href={"/dashboard"} text={"Connect wallet"} type={"long"} />
                     </div>
                 </Grid >
             )

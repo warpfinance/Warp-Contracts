@@ -50,7 +50,7 @@ const DecoratedMarketCardClass = withStyles(styles)(
                                     Total {this.props.type} market
                                 </Typography>
                                 <Typography variant="h4">
-                                    {"$" + data.totalMarket.toLocaleString()}
+                                    {"$" + data.totalMarket.toLocaleString(undefined, {minimumFractionDigits: 2})}
                                 </Typography>
                                 <Typography variant="h4" color={data.totalMarketApy > 0? "secondary" : "error"} >
                                     {data.totalMarketApy > 0? `+${data.totalMarketApy}%`: `${data.totalMarketApy}%`}
@@ -66,7 +66,7 @@ const DecoratedMarketCardClass = withStyles(styles)(
                                     24H {this.props.type} volume
                                 </Typography>
                                 <Typography variant="subtitle1">
-                                    {"$" + data.dailyVolume.toLocaleString()}
+                                    {"$" + data.dailyVolume.toLocaleString(undefined, {minimumFractionDigits: 2})}
                                 </Typography>
                                 <Typography variant="subtitle1" color="textSecondary">
                                     # of {this.props.type}s

@@ -21,7 +21,7 @@ const DecoratedMarketsClass = withStyles(styles)(
                     direction="column"
                     justify="center"
                     alignItems="center"
-                    spacing={10}
+                    spacing={5}
                 >
                     <Header home={true} />
                     <Grid

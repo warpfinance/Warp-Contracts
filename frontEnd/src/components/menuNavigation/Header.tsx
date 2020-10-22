@@ -23,12 +23,18 @@ const styles = (theme: any) => createStyles({
 
 
 interface Props extends WithStyles<typeof styles> {
+    connected?: boolean
     home?: boolean
 }
 
+const abbreviatedWalletAddress = '0x4...07e'
+
 const DecoratedHeaderClass = withStyles(styles)(
     class HeaderClass extends React.Component<Props, {}> {
-        getHeaderContent = () => {
+        getHeaderContent = (connected: boolean) => {
+            const connectButton =
+                <CustomButton disabled={true} text={!connected ? "No wallet" : abbreviatedWalletAddress} type={"short"} />
+
             if (!this.props.home) {
                 return (
                     <React.Fragment>
@@ -37,7 +43,7 @@ const DecoratedHeaderClass = withStyles(styles)(
                             md
                         >
                             <Typography>
-                                <RouterLink className={this.props.classes.routerLink} to={"/connect"}>
+                                <RouterLink className={this.props.classes.routerLink} to={"/dashboard"}>
                                     <Link className={this.props.classes.link} color="textSecondary" href="" underline="none">
                                         Dashboard
                                     </Link>
@@ -90,7 +96,7 @@ const DecoratedHeaderClass = withStyles(styles)(
                             item
                             md
                         >
-                            <CustomButton disabled={true} text={"No wallet"} type={"short"} />
+                            {connectButton}
                         </Grid>
                     </React.Fragment>
                 );
@@ -148,7 +154,7 @@ const DecoratedHeaderClass = withStyles(styles)(
                             <img className={this.props.classes.logo} src={"warp logo.svg"} alt={"Warp"}></img>
                         </RouterLink>
                     </Grid>
-                    {this.getHeaderContent()}
+                    {this.getHeaderContent(this.props.connected || false)}
                 </Grid>
             );
         }

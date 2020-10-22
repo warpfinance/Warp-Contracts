@@ -91,7 +91,7 @@ const DecoratedMarketTableClass = withStyles(styles)(
                                                 </Grid>
                                                 <Grid item>
                                                     <Typography variant="subtitle1" color="textSecondary">
-                                                        {row.supplyShare + "%"}
+                                                        {row.supplyShare.toLocaleString(undefined, { minimumFractionDigits: 2 }) + "%"}
                                                     </Typography>
                                                 </Grid>
                                             </Grid>
@@ -111,7 +111,9 @@ const DecoratedMarketTableClass = withStyles(styles)(
                                             </Grid>
                                             <Grid item>
                                                 <Typography variant="subtitle1" color={row.totalSupplyChange > 0 ? "secondary" : "error"} >
-                                                    {row.totalSupplyChange > 0 ? `+${row.totalSupplyChange}%` : `${row.totalSupplyChange}%`}
+                                                    {row.totalSupplyChange > 0 ?
+                                                        `+${row.totalSupplyChange.toLocaleString(undefined, { minimumFractionDigits: 2 })}%` :
+                                                        `${row.totalSupplyChange.toLocaleString(undefined, { minimumFractionDigits: 2 })}%`}
                                                 </Typography>
                                             </Grid>
                                         </Grid>
@@ -130,7 +132,9 @@ const DecoratedMarketTableClass = withStyles(styles)(
                                             </Grid>
                                             <Grid item>
                                                 <Typography variant="subtitle1" color={row.supplyApychange > 0 ? "secondary" : "error"} >
-                                                    {row.supplyApychange > 0 ? `+${row.supplyApychange}%` : `${row.supplyApychange}%`}
+                                                    {row.supplyApychange > 0 ? 
+                                                    `+${row.supplyApychange.toLocaleString(undefined, {minimumFractionDigits: 2})}%` : 
+                                                    `${row.supplyApychange.toLocaleString(undefined, {minimumFractionDigits: 2})}%`}
                                                 </Typography>
                                             </Grid>
                                         </Grid>
