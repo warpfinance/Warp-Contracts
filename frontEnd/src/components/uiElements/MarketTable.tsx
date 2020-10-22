@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { Avatar, Card, CardContent, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@material-ui/core";
+import { Avatar, Grid, Typography } from "@material-ui/core";
 import { WithStyles, createStyles, withStyles } from "@material-ui/core/styles";
 
 import { connect } from "react-redux";
