@@ -15,10 +15,10 @@ const styles = (theme: any) => createStyles({
 interface Props extends WithStyles<typeof styles> { }
 
 const imgSrcs = [
-    { hover: "twitterHover.svg", unHover: "twitter.svg", href: "https://twitter.com", alt: "Twitter" },
-    { hover: "mediumHover.svg", unHover: "medium.svg", href: "https://medium.com", alt: "Medium" },
-    { hover: "telegramHover.svg", unHover: "telegram.svg", href: "https://telegram.org", alt: "Telegram" },
-    { hover: "discordHover.svg", unHover: "discord.svg", href: "https://discord.com", alt: "Discord" },
+    { hover: "twitterHover.svg", unHover: "twitter.svg", href: "https://twitter.com/warpfinance", alt: "Twitter" },
+    { hover: "mediumHover.svg", unHover: "medium.svg", href: "https://medium.com/@warpfinance", alt: "Medium" },
+    { hover: "telegramHover.svg", unHover: "telegram.svg", href: "https://t.me/warpfinance", alt: "Telegram" },
+    { hover: "discordHover.svg", unHover: "discord.svg", href: "https://discord.com/invite/TYuz9yV", alt: "Discord" },
 ]
 
 const DecoratedSocialIconsClass = withStyles(styles)(
