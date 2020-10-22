@@ -44,16 +44,13 @@ const outerTheme = createMuiTheme({
 		MuiCard: {
 			root: {
 				borderRadius: "25px",
-				boxShadow : "0 40px 80px -20px rgba(0, 0, 0, 0.25);"
+				boxShadow : "0 40px 80px -20px rgba(0, 0, 0, 0.25);",
+				margin: "15px",
 			}
 		},
 		MuiTypography: {
 			root: {
 				margin: "5px",
-				topPadding: "15px",
-				leftPadding: "5px",
-				rightPadding: "5px",
-				bottomPadding: "1px",
 			}
 		}
 	},
@@ -72,8 +69,7 @@ const styles = (theme: any) => createStyles({
 		lineHeight: 'normal',
 		letterSpacing: '0.5px',
 		textAlign: 'left',
-		marginTop: '40px',
-		marginBottom: '30px',
+		marginTop: '50px',
 		marginRight: '100px',
 		marginLeft: '100px',
 	},

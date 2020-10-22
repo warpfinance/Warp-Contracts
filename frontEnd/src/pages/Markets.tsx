@@ -1,10 +1,10 @@
 import * as React from "react";
 
+import { MarketCard, MarketTable } from "../components";
 import { WithStyles, createStyles, withStyles } from "@material-ui/core/styles";
 
 import { Grid } from "@material-ui/core";
 import { Header } from "../components";
-import { MarketCard } from "../components";
 import { connect } from "react-redux";
 
 const styles = (theme: any) => createStyles({
@@ -36,6 +36,20 @@ const DecoratedMarketsClass = withStyles(styles)(
                         </Grid>
                         <Grid item>
                             <MarketCard type="borrower"/>
+                        </Grid>
+                    </Grid>
+                    <Grid
+                        item
+                        container
+                        direction="row"
+                        justify="space-evenly"
+                        alignItems="stretch"
+                    >
+                        <Grid item>
+                            <MarketTable type="lender" />
+                        </Grid>
+                        <Grid item>
+                            <MarketTable type="borrower"/>
                         </Grid>
                     </Grid>
                 </Grid >
