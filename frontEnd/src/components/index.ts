@@ -7,3 +7,4 @@ export * from "./uiElements/SocialIcons";
 export * from "./uiElements/MarketCard";
 export * from "./uiElements/MarketTable";
 export * from "./uiElements/DashboardCard";
+export * from "./uiElements/DashboardTable";

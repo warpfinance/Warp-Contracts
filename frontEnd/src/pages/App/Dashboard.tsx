@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { DashboardCard, Header } from "../../components";
+import { DashboardCard, DashboardTable, Header } from "../../components";
 import { Grid, LinearProgress, Typography } from "@material-ui/core";
 import { WithStyles, createStyles, withStyles } from "@material-ui/core/styles";
 
@@ -74,6 +74,20 @@ const DecoratedDashboardClass = withStyles(styles)(
                     <Typography variant="subtitle1" color="textSecondary">
                         Borrow limit
                     </Typography>
+                    <Grid
+                        item
+                        container
+                        direction="row"
+                        justify="space-evenly"
+                        alignItems="stretch"
+                    >
+                        <Grid item>
+                            <DashboardTable type="lending" />
+                        </Grid>
+                        <Grid item>
+                            <DashboardTable type="borrowing"/>
+                        </Grid>
+                    </Grid>
                 </Grid >
             );
         }
