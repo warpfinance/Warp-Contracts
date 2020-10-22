@@ -3,6 +3,7 @@ import * as React from "react";
 import { Avatar, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@material-ui/core";
 import { WithStyles, createStyles, withStyles } from "@material-ui/core/styles";
 
+import AvatarGroup from '@material-ui/lab/AvatarGroup';
 import { connect } from "react-redux";
 
 //@ts-ignore
@@ -10,16 +11,25 @@ function createData(icon, name, supplyShare, totalSupply, totalSupplyCurrency, t
     return { icon, name, supplyShare, totalSupply, totalSupplyCurrency, totalSupplyChange, supplyApy, supplyApychange };
 }
 
-const borrowData = [
-    createData('dai.png', 'Dai', 3.40, 125, 'DAI', 2.56, 3.67, -2.13),
-    createData('usdt.png', 'Tether', 3.40, 125, 'DAI', 2.56, 3.67, -2.13),
-    createData('usd.png', 'USD Coin', 3.40, 125, 'DAI', 2.56, 3.67, -2.13),
+const lenderData = [
+    createData(<Avatar alt={'dai.png'} src={'dai.png'} />, 'Dai', 3.40, 125, 'DAI', 2.56, 3.67, -2.13),
+    createData(<Avatar alt={'usdt.png'} src={'usdt.png'} />, 'Tether', 3.40, 125, 'DAI', 2.56, 3.67, -2.13),
+    createData(<Avatar alt={'usd.png'} src={'usd.png'} />, 'USD Coin', 3.40, 125, 'DAI', 2.56, 3.67, -2.13),
 ];
 
-const lenderData = [
-    createData('dai.png', 'Dai', 3.40, 125, 'DAI', 2.56, 3.67, -2.13),
-    createData('usdt.png', 'Tether', 3.40, 125, 'DAI', 2.56, 3.67, -2.13),
-    createData('usd.png', 'USD Coin', 3.40, 125, 'DAI', 2.56, 3.67, -2.13),
+const borrowData = [
+    createData(<AvatarGroup max={2}><Avatar alt={'eth.png'} src={'eth.png'} />
+        <Avatar alt={'dai.png'} src={'dai.png'} /></AvatarGroup>,
+        'ETH - DAI', 1.97, 100, 'USD', 2.56, 45.23, -1.25),
+    createData(<AvatarGroup><Avatar alt={'eth.png'} src={'eth.png'} />
+        <Avatar alt={'usdt.png'} src={'usdt.png'} /></AvatarGroup>,
+        'ETH - USDT', 3.25, 100, 'USD', 2.25, 45.23, -3.44),
+    createData(<AvatarGroup><Avatar alt={'wbtc.png'} src={'wbtc.png'} />
+        <Avatar alt={'weth.png'} src={'weth.png'} /></AvatarGroup>,
+        'wBTC - wETH', 1.32, 100, 'USD', 1.89, 45.23, -2.95),
+    createData(<AvatarGroup><Avatar alt={'usdt.png'} src={'usdt.png'} />
+        <Avatar alt={'weth.png'} src={'weth.png'} /></AvatarGroup>,
+        'USDT - wETH', 2.18, 100, 'USD', 1.12, 45.23, -2.13),
 ];
 
 const styles = (theme: any) => createStyles({
@@ -68,9 +78,8 @@ const DecoratedMarketTableClass = withStyles(styles)(
                                             alignItems="center"
                                             spacing={2}
                                         >
-                                            <Grid item>
-                                                <Avatar alt={row.name} src={row.icon} />
-                                            </Grid>
+
+                                            {row.icon}
                                             <Grid
                                                 item
                                                 direction="column"
