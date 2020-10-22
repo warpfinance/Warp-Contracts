@@ -6,7 +6,7 @@ import { WithStyles, createStyles, withStyles } from "@material-ui/core/styles";
 import { connect } from "react-redux";
 
 const styles = (theme: any) => createStyles({
-    dashboardCard: {
+    InformationCard: {
         minWidth: "300px"
     }
 });
@@ -16,11 +16,11 @@ interface Props extends WithStyles<typeof styles> {
     text: string
 }
 
-const DecoratedDashboardCardClass = withStyles(styles)(
-    class DashboardCardClass extends React.Component<Props, {}> {
+const DecoratedInformationCardClass = withStyles(styles)(
+    class InformationCardClass extends React.Component<Props, {}> {
         render() {
             return (
-                <Card className={this.props.classes.dashboardCard}>
+                <Card className={this.props.classes.InformationCard}>
                     <CardContent>
                         <Grid
                             container
@@ -42,6 +42,6 @@ const DecoratedDashboardCardClass = withStyles(styles)(
     }
 )
 
-const DashboardCard = connect(null, null)(DecoratedDashboardCardClass)
+const InformationCard = connect(null, null)(DecoratedInformationCardClass)
 
-export { DashboardCard };
+export { InformationCard };

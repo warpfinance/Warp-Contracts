@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { DashboardCard, DashboardTable, Header } from "../../components";
+import { DashboardTable, Header, InformationCard } from "../../components";
 import { Grid, LinearProgress, Typography } from "@material-ui/core";
 import { WithStyles, createStyles, withStyles } from "@material-ui/core/styles";
 
@@ -41,13 +41,13 @@ const DecoratedDashboardClass = withStyles(styles)(
                         alignItems="stretch"
                     >
                         <Grid item>
-                            <DashboardCard header="Lending balance" text={`$${data.lendingBalance.toFixed(2)}`} />
+                            <InformationCard header="Lending balance" text={`$${data.lendingBalance.toFixed(2)}`} />
                         </Grid>
                         <Grid item>
-                            <DashboardCard header="Net APY" text={`${data.netApy.toLocaleString()}%`}/>
+                            <InformationCard header="Net APY" text={`${data.netApy.toLocaleString()}%`}/>
                         </Grid>
                         <Grid item>
-                            <DashboardCard header="Borrow balance" text={`$${data.borrowBalance.toFixed(2)}`} />
+                            <InformationCard header="Borrow balance" text={`$${data.borrowBalance.toFixed(2)}`} />
                         </Grid>
                     </Grid>
                     <Grid

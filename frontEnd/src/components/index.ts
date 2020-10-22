@@ -6,5 +6,5 @@ export * from "./menuNavigation/Header";
 export * from "./uiElements/SocialIcons";
 export * from "./uiElements/MarketCard";
 export * from "./uiElements/MarketTable";
-export * from "./uiElements/DashboardCard";
+export * from "./uiElements/InformationCard";
 export * from "./uiElements/DashboardTable";
