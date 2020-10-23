@@ -100,9 +100,9 @@ const DecoratedLenderTableClass = withStyles(styles)(
                                                 container
                                                 direction="column"
                                                 justify="center"
-                                                alignItems="center"
+                                                alignItems="flex-start"
                                             >
-                                                <Amount adornment={row.currency} text={"Enter amount"} type={"short"} />
+                                                <Amount adornment={row.currency} />
                                             </Grid>
                                         </TableCell>
                                     </TableRow>

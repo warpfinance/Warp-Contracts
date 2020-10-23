@@ -90,11 +90,9 @@ const DecoratedHeaderClass = withStyles(styles)(
                             md
                         >
                             <Typography>
-                                <RouterLink className={this.props.classes.routerLink} to={"/connect"}>
-                                    <Link className={this.props.classes.link} color="textSecondary" href="" underline="none">
-                                        Vote
-                                    </Link>
-                                </RouterLink>
+                                <Typography className={this.props.classes.link} color="textSecondary">
+                                    Vote
+                                </Typography>
                             </Typography>
                         </Grid>
                         <Grid

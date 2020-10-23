@@ -7,9 +7,7 @@ import { connect } from "react-redux";
 
 const styles = (theme: any) => createStyles({
     textField: {
-        textTransform: "none",
-        borderRadius: "15px",
-        margin: 0,
+        maxWidth: "150px",
         "& -webkit-inner-spin-button": {
             WebkitAppearance: "none",
         },
@@ -25,49 +23,26 @@ const styles = (theme: any) => createStyles({
 
 interface Props extends WithStyles<typeof styles> {
     adornment: string,
-    text: string,
-    type: "long" | "short",
+    text?: string,
     disabled?: boolean,
 }
 
 const DecoratedAmountClass = withStyles(styles)(
     class AmountClass extends React.Component<Props, {}> {
         render() {
-            let border = "";
-            let icon = null;
-            let minHeight = "";
-            let minWidth = "";
-            let pointerEvents = "auto";
-            if (this.props.type === "long") {
-                minHeight = "50px";
-                minWidth = "400px";
-            }
-            else {
-                minHeight = "40px";
-                minWidth = "140px";
-            }
-
-            if (this.props.disabled !== true) {
-                //border = "solid 2px #62d066";
-            }
-
             return (<TextField
+                color="secondary"
                 className={this.props.classes.textField}
                 disabled={this.props.disabled}
                 id="input"
                 InputProps={{
                     endAdornment: <InputAdornment position="end">{this.props.adornment}</InputAdornment>,
                 }}
-                placeholder={this.props.text}
-                startIcon={icon}
-                style={{
-                    border: border,
-                    minHeight: minHeight,
-                    minWidth: minWidth,
-                    // @ts-ignore
-                    pointerEvents: pointerEvents,
-                }}
+                margin="dense"
+                placeholder={this.props.text? this.props.text: "amount"}
+                size="small"
                 type="number"
+                variant="outlined"
             />);
         }
     }
