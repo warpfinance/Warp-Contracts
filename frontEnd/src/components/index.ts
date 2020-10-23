@@ -8,3 +8,4 @@ export * from "./uiElements/DashboardTable";
 export * from "./uiElements/LenderTable";
 export * from "./uiElements/BorrowerTable";
 export * from "./inputFields/Amount";
+export * from "./modals/ConnectModal";

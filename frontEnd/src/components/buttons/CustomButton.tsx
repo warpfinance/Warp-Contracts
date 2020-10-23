@@ -7,6 +7,10 @@ import { Link } from 'react-router-dom';
 import { connect } from "react-redux";
 
 const styles = (theme: any) => createStyles({
+    avatar: {
+        width: theme.spacing(3),
+        height: theme.spacing(3),
+    },
     button: {
         textTransform: "none",
         borderRadius: "15px",
@@ -14,10 +18,9 @@ const styles = (theme: any) => createStyles({
             backgroundColor: "#62d066"
         }
     },
-    avatar: {
-        width: theme.spacing(3),
-        height: theme.spacing(3),
-    },
+    routerLink: {
+        textDecoration: 'none',
+    }
 });
 
 
@@ -27,6 +30,7 @@ interface Props extends WithStyles<typeof styles> {
     disabled?: boolean,
     href?: string,
     iconSrc?: string,
+    onClick?: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void,
     wallet?: boolean,
 }
 
@@ -63,6 +67,7 @@ const DecoratedButtonClass = withStyles(styles)(
                 color={color}
                 className={this.props.classes.button}
                 disabled={this.props.disabled}
+                onClick={this.props.onClick}
                 startIcon={icon}
                 style={{
                     border: border,
@@ -77,7 +82,7 @@ const DecoratedButtonClass = withStyles(styles)(
             </Button>;
 
             const content = !this.props.href ? button :
-                <Link to={this.props.href}>
+                <Link className={this.props.classes.routerLink} to={this.props.href}>
                     {button}
                 </Link>;
 
