@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { Avatar, Grid, Link, Typography } from "@material-ui/core";
+import { Grid, Link, Typography } from "@material-ui/core";
 import { WithStyles, createStyles, withStyles } from "@material-ui/core/styles";
 
 import { CustomButton } from "../../components"
