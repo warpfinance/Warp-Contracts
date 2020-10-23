@@ -150,7 +150,7 @@ const DecoratedLenderTableClass = withStyles(styles)(
                             </TableBody>
                         </Table>
                     </TableContainer>
-                    <CustomButton text={lendOrWithdraw} type="long" />
+                    <CustomButton disabled={this.state.amountValue === 0} text={lendOrWithdraw} type="long" />
                 </Grid>
             );
         }

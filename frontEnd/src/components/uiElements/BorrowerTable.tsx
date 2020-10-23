@@ -174,7 +174,7 @@ const DecoratedBorrowerTableClass = withStyles(styles)(
                             </TableBody>
                         </Table>
                     </TableContainer>
-                    <CustomButton text={this.props.type.charAt(0).toUpperCase() + this.props.type.slice(1)} type="long" />
+                    <CustomButton disabled={this.state.amountValue === 0} text={this.props.type.charAt(0).toUpperCase() + this.props.type.slice(1)} type="long" />
                 </Grid>
             );
         }
