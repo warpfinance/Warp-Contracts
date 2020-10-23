@@ -1,10 +1,10 @@
 import * as React from "react";
 
+import { Amount, CustomButton } from "../../components"
 import { Avatar, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@material-ui/core";
 import { WithStyles, createStyles, withStyles } from "@material-ui/core/styles";
 
 import { AvatarGroup } from "@material-ui/lab";
-import { CustomButton } from ".."
 import { connect } from "react-redux";
 
 //@ts-ignore
@@ -126,7 +126,7 @@ const DecoratedBorrowerTableClass = withStyles(styles)(
                                                 justify="center"
                                                 alignItems="center"
                                             >
-                                                <CustomButton text={"Enter amount"} type={"short"} />
+                                                <Amount adornment={row.currency} text={"Enter amount"} type={"short"} />
                                             </Grid>
                                         </TableCell>
                                     </TableRow>

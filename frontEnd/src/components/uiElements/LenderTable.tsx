@@ -1,14 +1,14 @@
 import * as React from "react";
 
+import { Amount, CustomButton } from "../../components"
 import { Avatar, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@material-ui/core";
 import { WithStyles, createStyles, withStyles } from "@material-ui/core/styles";
 
-import { CustomButton } from "../../components"
 import { connect } from "react-redux";
 
 //@ts-ignore
-function createData(icon, wallet, walletCurrency) {
-    return { icon, wallet, walletCurrency, };
+function createData(icon, wallet, currency) {
+    return { icon, wallet, currency, };
 }
 
 const lendData = [
@@ -77,7 +77,7 @@ const DecoratedLenderTableClass = withStyles(styles)(
 
                                                 {row.icon}
                                                 <Typography variant="subtitle1">
-                                                    {row.walletCurrency}
+                                                    {row.currency}
                                                 </Typography>
                                             </Grid>
                                         </TableCell>
@@ -90,7 +90,7 @@ const DecoratedLenderTableClass = withStyles(styles)(
                                             >
                                                 <Grid item>
                                                     <Typography variant="subtitle1">
-                                                        {row.wallet.toLocaleString() + " " + row.walletCurrency}
+                                                        {row.wallet.toLocaleString() + " " + row.currency}
                                                     </Typography>
                                                 </Grid>
                                             </Grid>
@@ -102,7 +102,7 @@ const DecoratedLenderTableClass = withStyles(styles)(
                                                 justify="center"
                                                 alignItems="center"
                                             >
-                                                <CustomButton text={"Enter amount"} type={"short"} />
+                                                <Amount adornment={row.currency} text={"Enter amount"} type={"short"} />
                                             </Grid>
                                         </TableCell>
                                     </TableRow>
