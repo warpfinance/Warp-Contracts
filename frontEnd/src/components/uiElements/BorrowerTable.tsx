@@ -46,6 +46,7 @@ interface Props extends WithStyles<typeof styles> {
 }
 
 interface State {
+    amountCurrency: string,
     amountValue: number,
     focusedAmountId: string | undefined,
 }
@@ -55,6 +56,7 @@ const DecoratedBorrowerTableClass = withStyles(styles)(
         constructor(props: Props) {
             super(props);
             this.state = {
+                amountCurrency: "",
                 amountValue: 0,
                 focusedAmountId: undefined
             };
@@ -71,7 +73,11 @@ const DecoratedBorrowerTableClass = withStyles(styles)(
 
         onChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
             // TO-DO: Input validation
-            this.setState({ amountValue: Number(event.target.value), focusedAmountId: event.target.id});
+            this.setState({
+                amountCurrency: event.target.id,
+                amountValue: Number(event.target.value),
+                focusedAmountId: event.target.id
+            });
         };
 
         onFocus = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
