@@ -14,8 +14,8 @@ function createData(icon, name, supplyShare, wallet, walletCurrency) {
 
 const lenderData = [
     createData(<Avatar alt={"dai.png"} src={"dai.png"} />, "Dai", 3.40, 125, "DAI"),
-    createData(<Avatar alt={"usdt.png"} src={"usdt.png"} />, "Tether", 3.40, 125, "DAI"),
-    createData(<Avatar alt={"usd.png"} src={"usd.png"} />, "USD Coin", 3.40, 125, "DAI"),
+    createData(<Avatar alt={"usdt.png"} src={"usdt.png"} />, "Tether", 3.40, 125, "USDT"),
+    createData(<Avatar alt={"usd.png"} src={"usd.png"} />, "USD Coin", 3.40, 125, "USDC"),
 ];
 
 const borrowData = [
@@ -107,7 +107,7 @@ const DecoratedDashboardTableClass = withStyles(styles)(
                                             container
                                             direction="column"
                                             justify="center"
-                                            alignItems="center"
+                                            alignItems="flex-start"
                                         >
                                             <Grid item>
                                                 <Typography variant="subtitle1">

@@ -66,7 +66,7 @@ const DecoratedHeaderClass = withStyles(styles)(
                             md
                         >
                             <Typography>
-                                <RouterLink className={this.props.classes.routerLink} to={"/connect"}>
+                                <RouterLink className={this.props.classes.routerLink} to={"/lender"}>
                                     <Link className={this.props.classes.link} color="textSecondary" href="" underline="none">
                                         Lender
                                     </Link>
@@ -78,7 +78,7 @@ const DecoratedHeaderClass = withStyles(styles)(
                             md
                         >
                             <Typography>
-                                <RouterLink className={this.props.classes.routerLink} to={"/connect"}>
+                                <RouterLink className={this.props.classes.routerLink} to={"/borrower"}>
                                     <Link className={this.props.classes.link} color="textSecondary" href="" underline="none">
                                         Borrower
                                     </Link>
