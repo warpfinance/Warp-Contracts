@@ -30,8 +30,41 @@ interface Props extends WithStyles<typeof styles> {
     type: "lend" | "withdraw"
 }
 
+interface State {
+    amountValue: number,
+    focusedAmountId: string | undefined,
+}
+
 const DecoratedLenderTableClass = withStyles(styles)(
-    class LenderTableClass extends React.Component<Props, {}> {
+    class LenderTableClass extends React.Component<Props, State> {
+        constructor(props: Props) {
+            super(props);
+            this.state = {
+                amountValue: 0,
+                focusedAmountId: undefined
+            };
+            this.onBlur.bind(this)
+            this.onChange.bind(this)
+            this.onFocus.bind(this)
+        }
+
+        onBlur = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+            if (this.state.amountValue === 0) {
+                this.setState({ focusedAmountId: undefined });
+            }
+        };
+
+        onChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+            // TO-DO: Input validation
+            this.setState({ amountValue: Number(event.target.value), focusedAmountId: event.target.id});
+        };
+
+        onFocus = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+            if (event !== null && event !== undefined && this.state.focusedAmountId !== event.target.id) {
+                this.setState({ focusedAmountId: event.target.id });
+            }
+        };
+
         render() {
             const data = this.props.type === "withdraw" ? withdrawData : lendData;
             const lendOrWithdraw = this.props.type === "withdraw" ? "withdraw" : "lend";
@@ -102,7 +135,13 @@ const DecoratedLenderTableClass = withStyles(styles)(
                                                 justify="center"
                                                 alignItems="flex-start"
                                             >
-                                                <Amount adornment={row.currency} />
+                                                <Amount
+                                                    adornment={row.currency}
+                                                    id={row.currency}
+                                                    focusedAmountId={this.state.focusedAmountId}
+                                                    onBlur={this.onBlur}
+                                                    onChange={this.onChange}
+                                                    onFocus={this.onFocus} />
                                             </Grid>
                                         </TableCell>
                                     </TableRow>

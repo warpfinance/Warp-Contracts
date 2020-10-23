@@ -6,25 +6,28 @@ import { WithStyles, createStyles, withStyles } from "@material-ui/core/styles";
 import { connect } from "react-redux";
 
 const styles = (theme: any) => createStyles({
-    textField: {
-        maxWidth: "150px",
-        "& -webkit-inner-spin-button": {
-            WebkitAppearance: "none",
-        },
-        "& -webkit-outer-spin-button": {
-            WebkitAppearance: "none",
+    hideNumberPicker: {
+        "& input::-webkit-clear-button, & input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button": {
+            display: "none"
         },
         "& input[type=number]": {
             MozAppearance: "textfield",
         }
+    },
+    textField: {
+        maxWidth: "150px",
     },
 });
 
 
 interface Props extends WithStyles<typeof styles> {
     adornment: string,
+    id?: string,
+    focusedAmountId?: string,
+    onBlur?: (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void,
+    onFocus?: (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void,
+    onChange?: (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void,
     text?: string,
-    disabled?: boolean,
 }
 
 const DecoratedAmountClass = withStyles(styles)(
@@ -32,14 +35,17 @@ const DecoratedAmountClass = withStyles(styles)(
         render() {
             return (<TextField
                 color="secondary"
-                className={this.props.classes.textField}
-                disabled={this.props.disabled}
-                id="input"
+                className={`${this.props.classes.textField} ${this.props.classes.hideNumberPicker}`}
+                disabled={this.props.focusedAmountId !== undefined && this.props.id !== this.props.focusedAmountId}
+                id={this.props.id}
                 InputProps={{
                     endAdornment: <InputAdornment position="end">{this.props.adornment}</InputAdornment>,
                 }}
                 margin="dense"
-                placeholder={this.props.text? this.props.text: "amount"}
+                onBlur={this.props.onBlur}
+                onChange={this.props.onChange}
+                onFocus={this.props.onFocus}
+                placeholder={this.props.text ? this.props.text : "amount"}
                 size="small"
                 type="number"
                 variant="outlined"
