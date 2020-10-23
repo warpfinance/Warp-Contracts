@@ -1,11 +1,16 @@
 import * as React from "react";
 
-import { Grid, Link, Typography } from "@material-ui/core";
+import { Avatar, Grid, Link, Typography } from "@material-ui/core";
 import { WithStyles, createStyles, withStyles } from "@material-ui/core/styles";
 
 import { CustomButton } from "../../components"
 import { Link as RouterLink } from 'react-router-dom';
 import { connect } from "react-redux";
+
+const data = {
+    walletAddress: '0xeB31973E0FeBF3e3D7058234a5eBbAe1aB4B8c23',
+    walletBalance: 0.0,
+}
 
 const styles = (theme: any) => createStyles({
     logo: {
@@ -27,13 +32,19 @@ interface Props extends WithStyles<typeof styles> {
     home?: boolean
 }
 
-const abbreviatedWalletAddress = '0x4...07e'
-
 const DecoratedHeaderClass = withStyles(styles)(
     class HeaderClass extends React.Component<Props, {}> {
+        truncate = (input: string) => {
+            if (input.length > 5) {
+                return input.substring(0, 5) + '...';
+            }
+            return input;
+        };
+
+
         getHeaderContent = (connected: boolean) => {
             const connectButton =
-                <CustomButton disabled={true} text={!connected ? "No wallet" : abbreviatedWalletAddress} type={"short"} />
+                <CustomButton disabled={true} text={!connected ? "No wallet" : this.truncate(data.walletAddress)} type={"short"} />
 
             if (!this.props.home) {
                 return (
@@ -90,7 +101,12 @@ const DecoratedHeaderClass = withStyles(styles)(
                             item
                             md
                         >
-                            <CustomButton disabled={false} text={"0.0"} type={"short"} wallet={true} />
+                            <CustomButton
+                                disabled={false}
+                                iconSrc="warpToken.svg"
+                                text={data.walletBalance.toLocaleString(undefined, { minimumFractionDigits: 1 })}
+                                type={"short"}
+                                wallet={true} />
                         </Grid>
                         <Grid
                             item

@@ -1,8 +1,8 @@
 import * as React from "react";
 
+import { Avatar, Button } from "@material-ui/core";
 import { WithStyles, createStyles, withStyles } from "@material-ui/core/styles";
 
-import { Button } from "@material-ui/core";
 import { Link } from 'react-router-dom';
 import { connect } from "react-redux";
 
@@ -14,6 +14,10 @@ const styles = (theme: any) => createStyles({
             backgroundColor: "#62d066"
         }
     },
+    avatar: {
+        width: theme.spacing(3),
+        height: theme.spacing(3),
+    },
 });
 
 
@@ -22,6 +26,7 @@ interface Props extends WithStyles<typeof styles> {
     type: "long" | "short",
     disabled?: boolean,
     href?: string,
+    iconSrc?: string,
     wallet?: boolean,
 }
 
@@ -46,7 +51,7 @@ const DecoratedButtonClass = withStyles(styles)(
 
             if (this.props.wallet === true) {
                 color = "secondary";
-                icon = "Warp";
+                icon = <Avatar className={this.props.classes.avatar} src={this.props.iconSrc} alt={this.props.iconSrc} />;
                 pointerEvents = "none";
             }
             else if (this.props.disabled !== true) {
