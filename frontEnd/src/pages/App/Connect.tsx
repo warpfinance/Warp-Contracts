@@ -1,65 +1,52 @@
 import * as React from "react";
 
 import { ConnectModal, CustomButton, Header } from "../../components";
-import { WithStyles, createStyles, withStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 
 import { Grid } from "@material-ui/core";
-import { connect } from "react-redux";
+import { useState } from "react";
 
-const styles = (theme: any) => createStyles({
+const useStyles = makeStyles(theme => ({
     centerButton: {
         position: 'absolute',
         left: '50%',
         top: '50%',
         transform: 'translate(-50%, -50%)'
     }
-});
+}))
 
-interface Props extends WithStyles<typeof styles> { }
+interface Props {
 
-interface State {
-    modalOpen: boolean,
 }
 
-const DecoratedConnectClass = withStyles(styles)(
-    class ConnectClass extends React.Component<Props, State> {
-        constructor(props: Props) {
-            super(props);
-            this.state = {
-                modalOpen: false,
-            };
-            this.handleClose.bind(this)
-        }
+export const Connect: React.FC<Props> = (props: Props) => {
+    const classes = useStyles();
 
-        handleClose = (event: {}, reason: "backdropClick" | "escapeKeyDown") => {
-            this.setState({ modalOpen: false });
-        }
+    const [modalOpen, setModalOpen] = useState(false);
 
-        onClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-            this.setState({ modalOpen: true });
-        }
-
-        render() {
-            return (
-                <React.Fragment>
-                    <Grid
-                        container
-                        direction="column"
-                        alignItems="center"
-                        spacing={10}
-                    >
-                        <Header />
-                        <div className={this.props.classes.centerButton}>
-                            <CustomButton onClick={this.onClick} text={"Connect wallet"} type={"long"} />
-                        </div>
-                    </Grid >
-                    <ConnectModal handleClose={this.handleClose} open={this.state.modalOpen} />
-                </React.Fragment>
-            )
-        }
+    const handleClose = (event: {}, reason: "backdropClick" | "escapeKeyDown") => {
+        setModalOpen(false);
     }
-)
 
-const Connect = connect(null, null)(DecoratedConnectClass)
+    const onClick= () => {
+        setModalOpen(true);
+    }
 
-export { Connect };
+    return (
+        <React.Fragment>
+            <Grid
+                container
+                direction="column"
+                alignItems="center"
+                spacing={10}
+            >
+                <Header />
+                <div className={classes.centerButton}>
+                    <CustomButton onClick={onClick} text={"Connect wallet"} type={"long"} />
+                </div>
+            </Grid >
+            <ConnectModal handleClose={handleClose} open={modalOpen} />
+        </React.Fragment>
+    )
+
+}

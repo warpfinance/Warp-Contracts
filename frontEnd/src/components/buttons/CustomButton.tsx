@@ -1,12 +1,11 @@
 import * as React from "react";
 
 import { Avatar, Button } from "@material-ui/core";
-import { WithStyles, createStyles, withStyles } from "@material-ui/core/styles";
 
 import { Link } from 'react-router-dom';
-import { connect } from "react-redux";
+import { makeStyles } from "@material-ui/core";
 
-const styles = (theme: any) => createStyles({
+const useStyles = makeStyles(theme => ({
     avatar: {
         width: theme.spacing(3),
         height: theme.spacing(3),
@@ -21,10 +20,10 @@ const styles = (theme: any) => createStyles({
     routerLink: {
         textDecoration: 'none',
     }
-});
+}));
 
-
-interface Props extends WithStyles<typeof styles> {
+//  extends WithStyles<typeof useStyles>
+interface Props {
     text: string,
     type: "long" | "short",
     disabled?: boolean,
@@ -34,63 +33,58 @@ interface Props extends WithStyles<typeof styles> {
     wallet?: boolean,
 }
 
-const DecoratedButtonClass = withStyles(styles)(
-    class ButtonClass extends React.Component<Props, {}> {
-        render() {
-            let border = "";
-            let color: "default" | "secondary" = "default";
-            let icon = null;
-            let minHeight = "";
-            let minWidth = "";
-            let pointerEvents = "auto";
-            let variant: "contained" | "outlined" = "contained"
-            if (this.props.type === "long") {
-                minHeight = "50px";
-                minWidth = "400px";
-            }
-            else {
-                minHeight = "40px";
-                minWidth = "140px";
-            }
+export const CustomButton: React.FC<Props> = (props: Props) => {
 
-            if (this.props.wallet === true) {
-                color = "secondary";
-                icon = <Avatar className={this.props.classes.avatar} src={this.props.iconSrc} alt={this.props.iconSrc} />;
-                pointerEvents = "none";
-            }
-            else if (this.props.disabled !== true) {
-                border = "solid 2px #62d066";
-                variant = "outlined";
-            }
+    const classes = useStyles();
 
-            const button = <Button
-                color={color}
-                className={this.props.classes.button}
-                disabled={this.props.disabled}
-                onClick={this.props.onClick}
-                startIcon={icon}
-                style={{
-                    border: border,
-                    minHeight: minHeight,
-                    minWidth: minWidth,
-                    // @ts-ignore
-                    pointerEvents: pointerEvents,
-                }}
-                variant={variant}
-            >
-                {this.props.text}
-            </Button>;
-
-            const content = !this.props.href ? button :
-                <Link className={this.props.classes.routerLink} to={this.props.href}>
-                    {button}
-                </Link>;
-
-            return content;
-        }
+    let border = "";
+    let color: "default" | "secondary" = "default";
+    let icon = null;
+    let minHeight = "";
+    let minWidth = "";
+    let pointerEvents = "auto";
+    let variant: "contained" | "outlined" = "contained";
+    if (props.type === "long") {
+        minHeight = "50px";
+        minWidth = "400px";
     }
-)
+    else {
+        minHeight = "40px";
+        minWidth = "140px";
+    }
 
-const CustomButton = connect(null, null)(DecoratedButtonClass)
+    if (props.wallet === true) {
+        color = "secondary";
+        icon = <Avatar className={classes.avatar} src={props.iconSrc} alt={props.iconSrc} />;
+        pointerEvents = "none";
+    }
+    else if (props.disabled !== true) {
+        border = "solid 2px #62d066";
+        variant = "outlined";
+    }
 
-export { CustomButton };
+    const button = <Button
+        color={color}
+        className={classes.button}
+        disabled={props.disabled}
+        onClick={props.onClick}
+        startIcon={icon}
+        style={{
+            border: border,
+            minHeight: minHeight,
+            minWidth: minWidth,
+            // @ts-ignore
+            pointerEvents: pointerEvents,
+        }}
+        variant={variant}
+    >
+        {props.text}
+    </Button>;
+
+    const content = !props.href ? button :
+        <Link className={classes.routerLink} to={props.href}>
+            {button}
+        </Link>;
+
+    return content;
+}
