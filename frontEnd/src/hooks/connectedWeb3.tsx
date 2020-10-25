@@ -2,9 +2,6 @@ import { useWeb3React } from '@web3-react/core'
 import { providers } from 'ethers'
 import React, { useEffect, useState } from 'react'
 
-import connectors from '../util/connectors'
-
-
 export interface ConnectedWeb3Context {
   account: Maybe<string>
   library: providers.Web3Provider

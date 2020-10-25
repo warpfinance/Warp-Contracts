@@ -1,5 +1,5 @@
 export enum WalletType {
     MetaMask = 'MetaMask',
-    WalletConnect = 'WalletConnect',
+    WalletLink = 'WalletLink',
     Portis = 'Portis',
 }

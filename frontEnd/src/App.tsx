@@ -79,9 +79,6 @@ const useStyles = makeStyles(theme => ({
 interface Props { }
 
 function getLibrary(provider?: any, connector?: any): any {
-	console.log("get library called");
-	console.log(provider);
-	console.log(connector);
 	return provider;
 }
 
@@ -111,16 +108,3 @@ const App: React.FC = () => {
 }
 
 export default App;
-
-// const DecoratedApplass = withStyles(styles)(
-// 	class AppClass extends React.Component<Props, {}> {
-
-// 		render() {
-// 			return (
-				
-// 			);
-// 		}
-// 	}
-// )
-
-// export default withRoot(DecoratedApplass);

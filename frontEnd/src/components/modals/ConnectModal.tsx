@@ -34,7 +34,7 @@ export const ConnectModal: React.FC<Props> = (props: Props) => {
         if (type === WalletType.MetaMask) {
             await context.activate(connectors.MetaMask);
         }
-        if (type === WalletType.WalletConnect) {
+        if (type === WalletType.WalletLink) {
             await context.activate(connectors.Coinbase);
         }
         if (type === WalletType.Portis) {
@@ -68,7 +68,7 @@ export const ConnectModal: React.FC<Props> = (props: Props) => {
                                 <Typography variant="subtitle1" color="textSecondary">
                                     Coinbase Wallet
                                 </Typography>
-                                <CustomButton type={"long"} text={"Connect"} onClick={() => connectToWallet(WalletType.WalletConnect)} />
+                                <CustomButton type={"long"} text={"Connect"} onClick={() => connectToWallet(WalletType.WalletLink)} />
                             </CardContent>
                         </Card>
                         <Card>
