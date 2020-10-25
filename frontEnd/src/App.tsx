@@ -13,14 +13,15 @@ import {
 	BrowserRouter as Router,
 	Switch,
 } from "react-router-dom";
-import { ThemeProvider, WithStyles, createStyles, withStyles } from "@material-ui/styles";
+import { ThemeProvider } from "@material-ui/styles";
+
+import { Web3ReactProvider } from '@web3-react/core'
 
 // prettier-ignore
 import {
 	CssBaseline,
 } from "@material-ui/core";
-import { createMuiTheme } from "@material-ui/core/styles";
-import { withRoot } from "./withRoot";
+import { createMuiTheme, makeStyles } from "@material-ui/core/styles";
 
 const outerTheme = createMuiTheme({
 	palette: {
@@ -61,7 +62,7 @@ const outerTheme = createMuiTheme({
 	},
 });
 
-const styles = (theme: any) => createStyles({
+const useStyles = makeStyles(theme => ({
 	root: {
 		fontWeight: 500,
 		fontStretch: 'normal',
@@ -73,19 +74,26 @@ const styles = (theme: any) => createStyles({
 		marginRight: '100px',
 		marginLeft: '100px',
 	},
+}));
 
-});
+interface Props { }
 
-interface Props extends WithStyles<typeof styles> { }
+function getLibrary(provider?: any, connector?: any): any {
+	console.log("get library called");
+	console.log(provider);
+	console.log(connector);
+	return provider;
+}
 
-const DecoratedApplass = withStyles(styles)(
-	class AppClass extends React.Component<Props, {}> {
-		render() {
-			return (
+const App: React.FC = () => {
+	const classes = useStyles();
+
+	return (
+		<Web3ReactProvider getLibrary={getLibrary}>
 				<Router>
 					<ThemeProvider theme={outerTheme}>
 						<CssBaseline>
-							<div className={this.props.classes.root}>
+							<div className={classes.root}>
 								<Switch>
 									<Route exact={true} path="/" component={Home} />
 									<Route exact={true} path="/borrower" component={Borrower} />
@@ -98,9 +106,21 @@ const DecoratedApplass = withStyles(styles)(
 						</CssBaseline>
 					</ThemeProvider>
 				</Router>
-			);
-		}
-	}
-)
+		</Web3ReactProvider>
+	)
+}
 
-export default withRoot(DecoratedApplass);
+export default App;
+
+// const DecoratedApplass = withStyles(styles)(
+// 	class AppClass extends React.Component<Props, {}> {
+
+// 		render() {
+// 			return (
+				
+// 			);
+// 		}
+// 	}
+// )
+
+// export default withRoot(DecoratedApplass);
