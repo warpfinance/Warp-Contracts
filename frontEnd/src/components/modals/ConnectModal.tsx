@@ -1,8 +1,7 @@
 import * as React from "react";
 
-import { Card, CardContent, Dialog, DialogContent, DialogContentText, DialogTitle, Grid, Typography } from "@material-ui/core";
+import { Avatar, Card, CardContent, Dialog, DialogContent, DialogContentText, DialogTitle, Grid, Typography } from "@material-ui/core";
 
-import { CustomButton } from "..";
 import { WalletType } from "../../util/types";
 import connectors from "../../util/connectors";
 import { makeStyles } from "@material-ui/core/styles";
@@ -68,23 +67,47 @@ export const ConnectModal: React.FC<Props> = (props: Props) => {
                     >
                         <Card className={classes.clickableCard} onClick={() => connectToWallet(WalletType.WalletLink)}>
                             <CardContent>
-                                <Typography variant="subtitle1" color="textSecondary">
-                                    Coinbase Wallet
-                                </Typography>
+                                <Grid
+                                    container
+                                    direction="row"
+                                    justify="flex-start"
+                                    alignItems="center"
+                                >
+                                    <Avatar alt="coinbase-wallet.svg" src="coinbase-wallet.svg" />
+                                    <Typography variant="subtitle1" color="textSecondary">
+                                        Coinbase Wallet
+                                    </Typography>
+                                </Grid>
                             </CardContent>
                         </Card>
                         <Card className={classes.clickableCard} onClick={() => connectToWallet(WalletType.Portis)}>
                             <CardContent>
-                                <Typography variant="subtitle1" color="textSecondary">
-                                    Portis
-                            </Typography>
+                                <Grid
+                                    container
+                                    direction="row"
+                                    justify="flex-start"
+                                    alignItems="center"
+                                >
+                                    <Avatar alt="portis-wallet.svg" src="portis-wallet.svg" />
+                                    <Typography variant="subtitle1" color="textSecondary">
+                                        Portis
+                                    </Typography>
+                                </Grid>
                             </CardContent>
                         </Card>
                         <Card className={classes.clickableCard} onClick={() => connectToWallet(WalletType.MetaMask)}>
                             <CardContent>
-                                <Typography variant="subtitle1" color="textSecondary">
-                                    Metamask
+                                <Grid
+                                    container
+                                    direction="row"
+                                    justify="flex-start"
+                                    alignItems="center"
+                                >
+                                    <Avatar alt="metamask-wallet.svg" src="metamask-wallet.svg" />
+                                    <Typography variant="subtitle1" color="textSecondary">
+                                        Metamask
                                 </Typography>
+                                </Grid>
                             </CardContent>
                         </Card>
                     </Grid>
