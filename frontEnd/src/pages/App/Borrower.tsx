@@ -17,7 +17,6 @@ interface Props extends WithStyles<typeof styles> { }
 const data = {
     collateral: 123.00,
     interestRate: 1.97,
-    yieldFarmingRewards: 200,
 }
 
 const DecoratedBorrowerClass = withStyles(styles)(
@@ -40,9 +39,6 @@ const DecoratedBorrowerClass = withStyles(styles)(
                     >
                         <Grid item>
                             <InformationCard header="Collateral" text={`$${data.collateral.toFixed(2)}`} />
-                        </Grid>
-                        <Grid item>
-                            <InformationCard header="Yield farming rewards" text={`${data.yieldFarmingRewards} UNI`} />
                         </Grid>
                         <Grid item>
                             <InformationCard header="Interest rate" text={`${data.interestRate.toFixed(2)}%`} />
