@@ -72,11 +72,16 @@ export const ConnectModal: React.FC<Props> = (props: Props) => {
                                     direction="row"
                                     justify="flex-start"
                                     alignItems="center"
+                                    spacing={1}
                                 >
-                                    <Avatar alt="coinbase-wallet.svg" src="coinbase-wallet.svg" />
-                                    <Typography variant="subtitle1" color="textSecondary">
-                                        Coinbase Wallet
-                                    </Typography>
+                                    <Grid item>
+                                        <Avatar alt="coinbase-wallet.svg" src="coinbase-wallet.svg" />
+                                    </Grid>
+                                    <Grid item>
+                                        <Typography variant="subtitle1">
+                                            Coinbase Wallet
+                                        </Typography>
+                                    </Grid>
                                 </Grid>
                             </CardContent>
                         </Card>
@@ -87,11 +92,16 @@ export const ConnectModal: React.FC<Props> = (props: Props) => {
                                     direction="row"
                                     justify="flex-start"
                                     alignItems="center"
+                                    spacing={1}
                                 >
-                                    <Avatar alt="portis-wallet.svg" src="portis-wallet.svg" />
-                                    <Typography variant="subtitle1" color="textSecondary">
-                                        Portis
-                                    </Typography>
+                                    <Grid item>
+                                        <Avatar alt="portis-wallet.svg" src="portis-wallet.svg" />
+                                    </Grid>
+                                    <Grid item>
+                                        <Typography variant="subtitle1">
+                                            Portis
+                                        </Typography>
+                                    </Grid>
                                 </Grid>
                             </CardContent>
                         </Card>
@@ -102,11 +112,16 @@ export const ConnectModal: React.FC<Props> = (props: Props) => {
                                     direction="row"
                                     justify="flex-start"
                                     alignItems="center"
+                                    spacing={1}
                                 >
-                                    <Avatar alt="metamask-wallet.svg" src="metamask-wallet.svg" />
-                                    <Typography variant="subtitle1" color="textSecondary">
-                                        Metamask
-                                </Typography>
+                                    <Grid item>
+                                        <Avatar alt="metamask-wallet.svg" src="metamask-wallet.svg" />
+                                    </Grid>
+                                    <Grid item>
+                                        <Typography variant="subtitle1">
+                                            Metamask
+                                        </Typography>
+                                    </Grid>
                                 </Grid>
                             </CardContent>
                         </Card>
