@@ -1,18 +1,21 @@
 import * as React from "react";
 
 import { Card, CardContent, Dialog, DialogContent, DialogContentText, DialogTitle, Grid, Typography } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
 
-import { useWeb3React } from "@web3-react/core";
-
-import connectors from "../../util/connectors";
 import { CustomButton } from "..";
 import { WalletType } from "../../util/types";
+import connectors from "../../util/connectors";
+import { makeStyles } from "@material-ui/core/styles";
+import { useWeb3React } from "@web3-react/core";
 
 const useStyles = makeStyles(theme => ({
     dialog: {
         borderRadius: "25px",
         boxShadow: "0 40px 80px -20px rgba(0, 0, 0, 0.25)",
+    },
+    clickableCard:
+    {
+        cursor: "pointer"
     }
 }));
 
@@ -26,9 +29,9 @@ interface State {
 
 export const ConnectModal: React.FC<Props> = (props: Props) => {
     const classes = useStyles();
-    
+
     const context = useWeb3React();
-    
+
 
     const connectToWallet = async (type: WalletType) => {
         if (type === WalletType.MetaMask) {
@@ -40,7 +43,7 @@ export const ConnectModal: React.FC<Props> = (props: Props) => {
         if (type === WalletType.Portis) {
             await context.activate(connectors.Portis);
         }
-        
+
     }
 
     return (
@@ -63,28 +66,25 @@ export const ConnectModal: React.FC<Props> = (props: Props) => {
                         justify="center"
                         alignItems="stretch"
                     >
-                        <Card>
+                        <Card className={classes.clickableCard} onClick={() => connectToWallet(WalletType.WalletLink)}>
                             <CardContent>
                                 <Typography variant="subtitle1" color="textSecondary">
                                     Coinbase Wallet
                                 </Typography>
-                                <CustomButton type={"long"} text={"Connect"} onClick={() => connectToWallet(WalletType.WalletLink)} />
                             </CardContent>
                         </Card>
-                        <Card>
+                        <Card className={classes.clickableCard} onClick={() => connectToWallet(WalletType.Portis)}>
                             <CardContent>
                                 <Typography variant="subtitle1" color="textSecondary">
                                     Portis
                             </Typography>
-                            <CustomButton type={"long"} text={"Connect"} onClick={() => connectToWallet(WalletType.Portis)} />
                             </CardContent>
                         </Card>
-                        <Card>
+                        <Card className={classes.clickableCard} onClick={() => connectToWallet(WalletType.MetaMask)}>
                             <CardContent>
                                 <Typography variant="subtitle1" color="textSecondary">
                                     Metamask
                                 </Typography>
-                                <CustomButton type={"long"} text={"Connect"} onClick={() => connectToWallet(WalletType.MetaMask)} />
                             </CardContent>
                         </Card>
                     </Grid>
