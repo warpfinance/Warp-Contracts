@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { Avatar, Card, CardContent, Dialog, DialogContent, DialogTitle, Grid, Typography } from "@material-ui/core";
+import { Avatar, Card, CardContent, Checkbox, Dialog, DialogContent, DialogTitle, Grid, Typography } from "@material-ui/core";
 
 import { CustomButton } from "../buttons/CustomButton";
 import { makeStyles } from "@material-ui/core";
@@ -13,6 +13,10 @@ const useStyles = makeStyles(theme => ({
     clickableCard:
     {
         cursor: "pointer"
+    },
+    smallIcon: {
+        width: theme.spacing(3),
+        height: theme.spacing(3),
     },
 }));
 
@@ -27,11 +31,17 @@ interface Props {
 
 export const SimpleModal: React.FC<Props> = (props: Props) => {
     const classes = useStyles();
+    const [checked, setChecked] = React.useState(false);
+
+    const handleCheck = (event: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
+        setChecked(event.target.checked);
+    };
 
     return (
         <Dialog
             className={classes.dialog}
-            maxWidth={"md"}
+            maxWidth={"xs"}
+            fullWidth={true}
             onClose={props.handleClose}
             open={props.open} >
             <DialogContent>
@@ -54,27 +64,28 @@ export const SimpleModal: React.FC<Props> = (props: Props) => {
                                 <Grid
                                     container
                                     direction="row"
-                                    justify="center"
+                                    justify="flex-start"
                                     alignItems="center"
-                                    spacing={1}
                                 >
+                                    <Grid item xs={4}>
+                                        <Checkbox
+                                            checked={checked}
+                                            onChange={handleCheck}
+                                        />
+                                    </Grid>
                                     <Grid item>
-                                        <Avatar alt={props.iconSrc} src={props.iconSrc} />
+                                        <Avatar alt={props.iconSrc} className={classes.smallIcon} src={props.iconSrc} />
                                     </Grid>
                                     <Grid item>
                                         <Typography variant="subtitle1">
-                                            {props.amount}
+                                            {props.amount + " " + props.currency}
                                         </Typography>
                                     </Grid>
-                                    <Grid item>
-                                        <Typography variant="subtitle1">
-                                            {props.currency}
-                                        </Typography>
-                                    </Grid>
+                                    <Grid item xs={4}></Grid>
                                 </Grid>
                             </CardContent>
                         </Card>
-                        <CustomButton onClick={props.onButtonClick} text={"Lend"} type="short" />
+                        <CustomButton disabled={checked !== true} onClick={props.onButtonClick} text={"Lend"} type="short" />
                     </Grid>
                 </Grid>
             </DialogContent>

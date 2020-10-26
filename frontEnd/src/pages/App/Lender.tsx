@@ -71,6 +71,7 @@ export const Lender: React.FC<Props> = (props: Props) => {
                 </Grid>
             </Grid >
             <SimpleModal amount={100} currency="DAI" iconSrc="dai.png" onButtonClick={onButtonClick} handleClose={handleClose} open={modalOpen} />
+            <SimpleModal amount={100} currency="DAI" iconSrc="dai.png" onButtonClick={onButtonClick} handleClose={handleClose} open={modalOpen} />
         </React.Fragment>
     );
 }
