@@ -10,10 +10,6 @@ const useStyles = makeStyles(theme => ({
         borderRadius: "25px",
         boxShadow: "0 40px 80px -20px rgba(0, 0, 0, 0.25)",
     },
-    clickableCard:
-    {
-        cursor: "pointer"
-    },
     smallIcon: {
         width: theme.spacing(3),
         height: theme.spacing(3),
@@ -60,7 +56,7 @@ export const SimpleModal: React.FC<Props> = (props: Props) => {
                         justify="center"
                         alignItems="stretch"
                     >
-                        <Card className={classes.clickableCard}>
+                        <Card>
                             <CardContent>
                                 <Grid
                                     container
