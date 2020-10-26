@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { Avatar, Card, CardContent, Checkbox, Dialog, DialogContent, DialogTitle, Grid, Typography } from "@material-ui/core";
+import { Avatar, Card, CardContent, Checkbox, Dialog, DialogContent, DialogTitle, FormControl, Grid, MenuItem, Select, Typography } from "@material-ui/core";
 
 import { CustomButton } from "../buttons/CustomButton";
 import { makeStyles } from "@material-ui/core";
@@ -14,6 +14,17 @@ const useStyles = makeStyles(theme => ({
     {
         height: "60px",
         minWidth: "176px",
+    },
+    icon: {
+        fill: theme.palette.secondary.main,
+    },
+    select: {
+        '&:before': {
+            borderColor: theme.palette.secondary.main,
+        },
+        '&:after': {
+            borderColor: theme.palette.secondary.main,
+        }
     },
     smallIcon: {
         width: theme.spacing(3),
@@ -41,9 +52,17 @@ const data = {
 export const BigModal: React.FC<Props> = (props: Props) => {
     const classes = useStyles();
     const [checked, setChecked] = React.useState(false);
+    const [currency, setCurrency] = React.useState(props.currency);
 
     const handleCheck = (event: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
         setChecked(event.target.checked);
+    };
+
+    const handleSelect = (event: React.ChangeEvent<{
+        name?: string | undefined;
+        value: string;
+    }>, child: React.ReactNode) => {
+        setCurrency(event.target.value);
     };
 
     return (
@@ -97,20 +116,76 @@ export const BigModal: React.FC<Props> = (props: Props) => {
                                 <Typography variant="subtitle2" color="textSecondary" >
                                     Stable coin
                                 </Typography>
-                                <Card className={classes.cardTile}>
-                                    <CardContent>
-                                        <Grid
-                                            container
-                                            direction="column"
-                                            justify="flex-start"
-                                            alignItems="center"
+                                <Grid
+                                    container
+                                    direction="column"
+                                    justify="flex-start"
+                                    alignItems="center"
+                                >
+                                    <FormControl className={classes.cardTile} variant="outlined">
+                                        <Select
+                                            value={currency}
+                                            // @ts-ignore
+                                            onChange={handleSelect}
+                                            label="Stable coin"
+                                            className={classes.select}
+                                            inputProps={{
+                                                classes: {
+                                                    icon: classes.icon,
+                                                },
+                                            }}
                                         >
-                                            <Typography variant="h6">
-                                                DAI
-                                        </Typography>
-                                        </Grid>
-                                    </CardContent>
-                                </Card>
+                                            <MenuItem value={"DAI"}>
+                                                <Grid
+                                                    container
+                                                    direction="row"
+                                                    justify="center"
+                                                    alignItems="center"
+                                                    spacing={2}
+                                                >
+                                                    <Grid item>
+                                                        <Avatar alt={"dai.png"} className={classes.smallIcon} src={"dai.png"} />
+                                                    </Grid>
+                                                    <Grid item>
+                                                        DAI
+                                                    </Grid>
+                                                </Grid>
+                                            </MenuItem>
+                                            <MenuItem value={"USDT"}>
+                                                <Grid
+                                                    container
+                                                    direction="row"
+                                                    justify="center"
+                                                    alignItems="center"
+                                                    spacing={2}
+                                                >
+                                                    <Grid item>
+                                                        <Avatar alt={"usdt.png"} className={classes.smallIcon} src={"usdt.png"} />
+                                                    </Grid>
+                                                    <Grid item>
+                                                        USDT
+                                                    </Grid>
+                                                </Grid>
+                                            </MenuItem>
+                                            <MenuItem value={"USDC"}>
+                                                <Grid
+                                                    container
+                                                    direction="row"
+                                                    justify="center"
+                                                    alignItems="center"
+                                                    spacing={2}
+                                                >
+                                                    <Grid item>
+                                                        <Avatar alt={"usd.png"} className={classes.smallIcon} src={"usd.png"} />
+                                                    </Grid>
+                                                    <Grid item>
+                                                        USDC
+                                                    </Grid>
+                                                </Grid>
+                                            </MenuItem>
+                                        </Select>
+                                    </FormControl>
+                                </Grid>
                             </Grid>
                             <Grid item>
                                 <Typography variant="subtitle2" color="textSecondary" >

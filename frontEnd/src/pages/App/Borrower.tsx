@@ -3,14 +3,7 @@ import * as React from "react";
 import { BigModal, BorrowerTable, Header, InformationCard } from "../../components";
 
 import { Grid } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
 import { useState } from "react";
-
-const useStyles = makeStyles(theme => ({
-    progress: {
-        width: '30%',
-    },
-}))
 
 interface Props {
 
@@ -23,7 +16,6 @@ const data = {
 
 export const Borrower: React.FC<Props> = (props: Props) => {
     const [modalOpen, setModalOpen] = useState(false);
-    const classes = useStyles();
 
     const handleClose = (event: {}, reason: "backdropClick" | "escapeKeyDown") => {
         setModalOpen(false);
@@ -34,9 +26,6 @@ export const Borrower: React.FC<Props> = (props: Props) => {
     }
 
     const onBorrow = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-    }
-
-    const onRepay = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
     }
 
     return (
