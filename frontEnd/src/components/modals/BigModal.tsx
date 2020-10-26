@@ -79,10 +79,13 @@ export const BigModal: React.FC<Props> = (props: Props) => {
                                     <CardContent>
                                         <Grid
                                             container
-                                            direction="column"
+                                            direction="row"
                                             justify="flex-start"
-                                            alignItems="center"
                                         >
+                                            <Checkbox
+                                                checked={checked}
+                                                onChange={handleCheck}
+                                            />
                                             <Typography variant="h6">
                                                 {data.amount}
                                             </Typography>
