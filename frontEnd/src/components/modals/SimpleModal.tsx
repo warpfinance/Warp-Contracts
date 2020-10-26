@@ -21,6 +21,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 interface Props {
+    action: string,
     amount: number,
     currency: string,
     iconSrc: string,
@@ -51,8 +52,8 @@ export const SimpleModal: React.FC<Props> = (props: Props) => {
                     justify="center"
                     alignItems="center"
                 >
-                    <DialogTitle >Lend</DialogTitle>
-                    <Typography variant="subtitle1" color="textSecondary" >Please confirm lend</Typography>
+                    <DialogTitle >{props.action}</DialogTitle>
+                    <Typography variant="subtitle1" color="textSecondary" >Please confirm {props.action.charAt(0).toLowerCase() + props.action.slice(1)}</Typography>
                     <Grid
                         container
                         direction="column"
@@ -85,7 +86,11 @@ export const SimpleModal: React.FC<Props> = (props: Props) => {
                                 </Grid>
                             </CardContent>
                         </Card>
-                        <CustomButton disabled={checked !== true} onClick={props.onButtonClick} text={"Lend"} type="short" />
+                        <CustomButton 
+                        disabled={checked !== true} 
+                        onClick={props.onButtonClick} 
+                        text={props.action.charAt(0).toUpperCase() + props.action.slice(1)} 
+                        type="short" />
                     </Grid>
                 </Grid>
             </DialogContent>

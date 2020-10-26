@@ -157,7 +157,11 @@ const DecoratedLenderTableClass = withStyles(styles)(
                             </TableBody>
                         </Table>
                     </TableContainer>
-                    <CustomButton disabled={this.state.amountValue === 0} onClick={this.props.onButtonClick} text={lendOrWithdraw} type="long" />
+                    <CustomButton
+                        disabled={this.state.amountValue === 0}
+                        onClick={this.props.onButtonClick}
+                        text={lendOrWithdraw.charAt(0).toUpperCase() + lendOrWithdraw.slice(1)}
+                        type="long" />
                 </Grid>
             );
         }

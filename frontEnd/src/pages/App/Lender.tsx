@@ -21,12 +21,14 @@ export const Lender: React.FC<Props> = (props: Props) => {
         setModalOpen(false);
     }
 
-    const onButtonClick = () => {
-
+    const onClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+        setModalOpen(true);
     }
 
-    const onClick = () => {
-        setModalOpen(true);
+    const onLend = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+    }
+
+    const onWithdraw = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
     }
 
     return (
@@ -70,8 +72,8 @@ export const Lender: React.FC<Props> = (props: Props) => {
                     </Grid>
                 </Grid>
             </Grid >
-            <SimpleModal amount={100} currency="DAI" iconSrc="dai.png" onButtonClick={onButtonClick} handleClose={handleClose} open={modalOpen} />
-            <SimpleModal amount={100} currency="DAI" iconSrc="dai.png" onButtonClick={onButtonClick} handleClose={handleClose} open={modalOpen} />
+            <SimpleModal action="Lend" amount={100} currency="DAI" iconSrc="dai.png" onButtonClick={onLend} handleClose={handleClose} open={modalOpen} />
+            <SimpleModal action="Withdraw" amount={100} currency="DAI" iconSrc="dai.png" onButtonClick={onWithdraw} handleClose={handleClose} open={modalOpen} />
         </React.Fragment>
     );
 }
