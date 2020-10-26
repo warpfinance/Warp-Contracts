@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { Avatar, Card, CardContent, Dialog, DialogContent, DialogContentText, DialogTitle, Grid, Typography } from "@material-ui/core";
+import { Avatar, Card, CardContent, Dialog, DialogContent, DialogContentText, DialogTitle, Grid, Link, Typography } from "@material-ui/core";
 
 import { WalletType } from "../../util/types";
 import connectors from "../../util/connectors";
@@ -15,6 +15,9 @@ const useStyles = makeStyles(theme => ({
     clickableCard:
     {
         cursor: "pointer"
+    },
+    link: {
+        textDecoration: "none",
     }
 }));
 
@@ -128,10 +131,12 @@ export const ConnectModal: React.FC<Props> = (props: Props) => {
                     </Grid>
                     <DialogContentText>
                         Familiar with Ethereum wallets?
-                </DialogContentText>
-                    <DialogContentText>
-                        Learn more
-                </DialogContentText>
+                    </DialogContentText>
+                    <Link className={classes.link} href={"https://ethereum.org/en/wallets/"}>
+                        <DialogContentText color="secondary">
+                            Learn more
+                        </DialogContentText>
+                    </Link>
                 </Grid>
             </DialogContent>
         </Dialog >
