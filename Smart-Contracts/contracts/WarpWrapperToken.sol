@@ -16,19 +16,18 @@ contract WarpWrapperToken is  Ownable, ERC20 {
 
   address public stablecoin;
   ///@notice constructor sets up token names and symbols for the WarpWrapperToken
-     constructor( address _SC, string _tokenName, string _tokenSymbol) public ERC20(
+     constructor( address _SC, string memory _tokenName, string memory _tokenSymbol) public ERC20(
          _tokenSymbol,
          _tokenName
        ){
-         transferOwnership(msg.sender);
          stablecoin = _SC;
      }
 
-     function _Mint(address _to, uint _amount) public onlyOwner {
+     function mint(address _to, uint _amount) public onlyOwner {
        _mint(_to, _amount);
      }
 
-     function _Burn(address _from, uint _amount) public onlyOwner {
+     function burn(address _from, uint _amount) public onlyOwner {
          _burn(_from, _amount);
      }
 

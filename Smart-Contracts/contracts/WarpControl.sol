@@ -5,7 +5,6 @@ import "@openzeppelin/contracts/math/SafeMath.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "./WarpVault.sol";
 import "./interfaces/UniswapOracleFactoryI.sol";
-import "./compound/JumpRateModelV2.sol";
 import "./compound/Exponential.sol";
 ////////////////////////////////////////////////////////////////////////////////////////////
 /// @title WarpControl
@@ -23,11 +22,13 @@ contract WarpControl is Ownable, Exponential {
 
   uint public instanceCount;//tracks the number of instances
   uint public liquidationIncentiveMantissa = 1.5e18; // 1.5
+  address public DAI;
+  address public USDC;
+  address public USDT;
 
   UniswapOracleFactoryI public Oracle;//oracle factory contract interface
 
-  mapping(address => address) public instanceTracker; //maps erc20 address to the assets WarpVault
-  mapping(address => address) public oracleTracker; //maps a  oracle to its WarpVault address
+  mapping(address => address) public instanceTracker; //maps LP token address to the assets WarpVault
   mapping(address => mapping(address => uint)) nonCompliant;// tracks user to a market to a time
   mapping(address => mapping(address => uint)) collateralTracker; //tracks user to a market to an amount collaterlized in that market
 
@@ -37,11 +38,47 @@ contract WarpControl is Ownable, Exponential {
         is used to set up Oracle variables for the MoneyMarketFactory contract.
 @param _oracle is the address for the UniswapOracleFactorycontract
 **/
-constructor ( address _oracle) public {
+constructor (
+  address _oracle,
+  address _DAI,
+  address _USDC,
+  address _USDT
+) public {
   Oracle = UniswapOracleFactoryI(_oracle);
+  DAI = _DAI;
+  USDC = _USDC;
+  USDT = _USDT;
 }
 
+/**
+@notice createNewVault allows the contract owner to create a new WarpVault contract along with its associated Warp Wrapper Tokens
+**/
+  function createNewVault(
+    address _lp,
+    address _lpAsset1,
+    address _lpAsset2,
+    string memory _lpName
+  ) public
+   onlyOwner
+   {
 
+   Oracle.createNewOracles (
+       _lpAsset1,
+       _lpAsset2,
+       _lp
+     );
+
+    address _WarpVault = address(new WarpVault(
+        _lp,
+        DAI,
+        USDC,
+        USDT,
+        address(Oracle),
+        _lpName
+    ));
+
+      instanceTracker[_lp] = _WarpVault;
+   }
 
 /**
 @notice trackCollateral is an external function used  to track collateral amounts globally
@@ -105,7 +142,7 @@ constructor ( address _oracle) public {
 */
   function liquidateAccount(address borrower, uint repayAmount, WarpVault _WarpVaultowed, WarpVault _WarpVaultcollateralized) public {
 //checks if its been nonCompliant for more than a half hour
-    require(now >= nonCompliant[borrower][address(_WarpVault)].add(1800));
+    require(now >= nonCompliant[borrower][address(_WarpVaultowed)].add(1800));
     //create local vars storage
         liquidateLocalVar memory vars;
 //get asset addresses of both WarpVault
@@ -116,7 +153,9 @@ constructor ( address _oracle) public {
     uint priceCollateralMantissa = Oracle.getUnderlyingPrice(vars.assetColat);
     require(priceBorrowedMantissa != 0 && priceCollateralMantissa != 0);
 //retrieve asset amounts for each
-    vars.borrowedAmount = _WarpVaultowed.borrowBalanceCurrent(borrower);
+    vars.borrowedAmount = _WarpVaultowed.borrowBalanceCurrent(borrower, 1);
+    vars.borrowedAmount = vars.borrowedAmount.add(_WarpVaultowed.borrowBalanceCurrent(borrower, 2));
+    vars.borrowedAmount = vars.borrowedAmount.add(_WarpVaultowed.borrowBalanceCurrent(borrower, 3));
     vars.collatAmount = collateralTracker[borrower][address(_WarpVaultcollateralized)];
 //calculate USDC value amounts of each
     vars.borrowedValue = vars.borrowedAmount.mul(priceBorrowedMantissa);
@@ -149,7 +188,6 @@ constructor ( address _oracle) public {
 this function calls the WarpVault where the borrower has collateral staked and has it swap
 its underlying asset on uniswap for the underlying asset borrowed
 **/
-    _WarpVaultcollateralized._liquidateFor(vars.assetOwed, address(_WarpVaultowed), vars.seizeTokens, repayAmount);
     }
   //reset accounts compliant timer
   nonCompliant[borrower][address(_WarpVaultowed)] = 0;//resets borrowers compliance timer
