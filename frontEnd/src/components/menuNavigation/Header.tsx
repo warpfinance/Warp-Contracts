@@ -122,7 +122,7 @@ export const Header: React.FC<Props> = (props: Props) => {
                     >
                         <Typography>
                             <RouterLink className={classes.routerLink} to={"/markets"}>
-                                <Link className={classes.link} color="textSecondary" href="#" underline="none">
+                                <Link className={classes.link} color="textSecondary" href="" underline="none">
                                     Markets
                                     </Link>
                             </RouterLink>
