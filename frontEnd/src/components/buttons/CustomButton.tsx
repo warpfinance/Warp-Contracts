@@ -22,7 +22,6 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-//  extends WithStyles<typeof useStyles>
 interface Props {
     text: string,
     type: "long" | "short",

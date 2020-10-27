@@ -1,9 +1,9 @@
 import * as React from "react";
 
 import { ConnectModal, CustomButton, Header } from "../../components";
-import { makeStyles } from "@material-ui/core/styles";
 
 import { Grid } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 import { useState } from "react";
 
 const useStyles = makeStyles(theme => ({
@@ -16,7 +16,6 @@ const useStyles = makeStyles(theme => ({
 }))
 
 interface Props {
-
 }
 
 export const Connect: React.FC<Props> = (props: Props) => {

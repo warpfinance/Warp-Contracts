@@ -42,6 +42,7 @@ const styles = (theme: any) => createStyles({
 });
 
 interface Props extends WithStyles<typeof styles> {
+    onButtonClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void,
     type: "borrow" | "repay"
 }
 
@@ -180,7 +181,10 @@ const DecoratedBorrowerTableClass = withStyles(styles)(
                             </TableBody>
                         </Table>
                     </TableContainer>
-                    <CustomButton disabled={this.state.amountValue === 0} text={this.props.type.charAt(0).toUpperCase() + this.props.type.slice(1)} type="long" />
+                    <CustomButton disabled={this.state.amountValue === 0}
+                    onClick={this.props.onButtonClick}
+                    text={this.props.type.charAt(0).toUpperCase() + this.props.type.slice(1)} 
+                    type="long" />
                 </Grid>
             );
         }

@@ -1,73 +1,72 @@
 import * as React from "react";
 
-import { BorrowerTable, Header, InformationCard } from "../../components";
-import { WithStyles, createStyles, withStyles } from "@material-ui/core/styles";
+import { BigModal, BorrowerTable, Header, InformationCard } from "../../components";
 
 import { Grid } from "@material-ui/core";
-import { connect } from "react-redux";
+import { useState } from "react";
 
-const styles = (theme: any) => createStyles({
-    progress: {
-        width: '30%',
-    },
-});
+interface Props {
 
-interface Props extends WithStyles<typeof styles> { }
+}
 
 const data = {
     collateral: 123.00,
     interestRate: 1.97,
-    yieldFarmingRewards: 200,
 }
 
-const DecoratedBorrowerClass = withStyles(styles)(
-    class BorrowerClass extends React.Component<Props, {}> {
-        render() {
-            return (
-                <Grid
-                    container
-                    direction="column"
-                    alignItems="center"
-                    spacing={5}
-                >
-                    <Header connected={true} />
-                    <Grid
-                        item
-                        container
-                        direction="row"
-                        justify="space-evenly"
-                        alignItems="stretch"
-                    >
-                        <Grid item>
-                            <InformationCard header="Collateral" text={`$${data.collateral.toFixed(2)}`} />
-                        </Grid>
-                        <Grid item>
-                            <InformationCard header="Yield farming rewards" text={`${data.yieldFarmingRewards} UNI`} />
-                        </Grid>
-                        <Grid item>
-                            <InformationCard header="Interest rate" text={`${data.interestRate.toFixed(2)}%`} />
-                        </Grid>
-                    </Grid>
-                    <Grid
-                        item
-                        container
-                        direction="row"
-                        justify="space-evenly"
-                        alignItems="stretch"
-                    >
-                        <Grid item>
-                            <BorrowerTable type="borrow" />
-                        </Grid>
-                        <Grid item>
-                            <BorrowerTable type="repay" />
-                        </Grid>
-                    </Grid>
-                </Grid >
-            );
-        }
+export const Borrower: React.FC<Props> = (props: Props) => {
+    const [modalOpen, setModalOpen] = useState(false);
+
+    const handleClose = (event: {}, reason: "backdropClick" | "escapeKeyDown") => {
+        setModalOpen(false);
     }
-)
 
-const Borrower = connect(null, null)(DecoratedBorrowerClass)
+    const onClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+        setModalOpen(true);
+    }
 
-export { Borrower };
+    const onBorrow = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+    }
+
+    return (
+        <React.Fragment>
+            <Grid
+                container
+                direction="column"
+                alignItems="center"
+                spacing={5}
+            >
+                <Header connected={true} />
+                <Grid
+                    item
+                    container
+                    direction="row"
+                    justify="space-evenly"
+                    alignItems="stretch"
+                >
+                    <Grid item>
+                        <InformationCard header="Collateral" text={`$${data.collateral.toFixed(2)}`} />
+                    </Grid>
+                    <Grid item>
+                        <InformationCard header="Interest rate" text={`${data.interestRate.toFixed(2)}%`} />
+                    </Grid>
+                </Grid>
+                <Grid
+                    item
+                    container
+                    direction="row"
+                    justify="space-evenly"
+                    alignItems="stretch"
+                >
+                    <Grid item>
+                        <BorrowerTable onButtonClick={onClick} type="borrow" />
+                    </Grid>
+                    <Grid item>
+                        <BorrowerTable onButtonClick={onClick} type="repay" />
+                    </Grid>
+                </Grid>
+            </Grid >
+            <BigModal action="Borrow" amount={100} currency="DAI" onButtonClick={onBorrow} handleClose={handleClose} open={modalOpen} />
+        </React.Fragment>
+    );
+}
