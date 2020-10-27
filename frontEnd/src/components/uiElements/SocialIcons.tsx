@@ -1,18 +1,16 @@
 import * as React from "react";
 
-import { WithStyles, createStyles, withStyles } from "@material-ui/core/styles";
-
 import { Grid } from "@material-ui/core";
-import { connect } from "react-redux";
+import { makeStyles } from "@material-ui/core/styles";
 
-const styles = (theme: any) => createStyles({
+const useStyles = makeStyles(theme => ({
     hrefText: {
-        color: "#FFFFFF", 
+        color: "#FFFFFF",
         textDecoration: 'none'
     }
-});
+}));
 
-interface Props extends WithStyles<typeof styles> { }
+interface Props { }
 
 const imgSrcs = [
     { hover: "twitterHover.svg", unHover: "twitter.svg", href: "https://twitter.com/warpfinance", alt: "Twitter" },
@@ -21,53 +19,47 @@ const imgSrcs = [
     { hover: "discordHover.svg", unHover: "discord.svg", href: "https://discord.com/invite/TYuz9yV", alt: "Discord" },
 ]
 
-const DecoratedSocialIconsClass = withStyles(styles)(
-    class SocialIconsClass extends React.Component<Props, {}> {
-        getIcons = () => {
-            let icons: any = [];
-            imgSrcs.forEach((imgSrcs, index: number) => {
-                icons.push(
-                    <Grid item>
-                        <a className={this.props.classes.hrefText} href={imgSrcs.href}>
-                            <img
-                                src={imgSrcs.unHover}
-                                alt={imgSrcs.alt}
-                                onMouseOver={(event) => this.hover(event, index)}
-                                onMouseOut={(event) => this.unHover(event, index)}
-                            />
-                        </a>
-                    </Grid>
-                );
-            })
-            return icons;
-        }
+export const SocialIcons: React.FC<Props> = (props: Props) => {
+    const classes = useStyles();
 
-        hover = (element: React.MouseEvent<HTMLImageElement, MouseEvent>, index: number) => {
-            element.currentTarget.setAttribute('src', imgSrcs[index].hover);
-        }
-
-        unHover = (element: React.MouseEvent<HTMLImageElement, MouseEvent>, index: number) => {
-            element.currentTarget.setAttribute('src', imgSrcs[index].unHover);
-        }
-
-        render() {
-            const icons = this.getIcons();
-
-            return (
-                <Grid
-                    container
-                    direction="row"
-                    alignItems="center"
-                    justify="center"
-                    spacing={10}
-                >
-                    {icons}
+    const getIcons = () => {
+        let icons: any = [];
+        imgSrcs.forEach((imgSrcs, index: number) => {
+            icons.push(
+                <Grid item>
+                    <a className={classes.hrefText} href={imgSrcs.href}>
+                        <img
+                            src={imgSrcs.unHover}
+                            alt={imgSrcs.alt}
+                            onMouseOver={(event) => hover(event, index)}
+                            onMouseOut={(event) => unHover(event, index)}
+                        />
+                    </a>
                 </Grid>
-            )
-        }
+            );
+        })
+        return icons;
     }
-)
 
-const SocialIcons = connect(null, null)(DecoratedSocialIconsClass)
+    const hover = (element: React.MouseEvent<HTMLImageElement, MouseEvent>, index: number) => {
+        element.currentTarget.setAttribute('src', imgSrcs[index].hover);
+    }
 
-export { SocialIcons };
+    const unHover = (element: React.MouseEvent<HTMLImageElement, MouseEvent>, index: number) => {
+        element.currentTarget.setAttribute('src', imgSrcs[index].unHover);
+    }
+
+    const icons = getIcons();
+
+    return (
+        <Grid
+            container
+            direction="row"
+            alignItems="center"
+            justify="center"
+            spacing={10}
+        >
+            {icons}
+        </Grid>
+    )
+}

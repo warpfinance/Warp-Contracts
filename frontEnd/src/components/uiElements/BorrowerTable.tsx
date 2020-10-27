@@ -2,10 +2,8 @@ import * as React from "react";
 
 import { Amount, CustomButton } from "../../components"
 import { Avatar, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@material-ui/core";
-import { WithStyles, createStyles, withStyles } from "@material-ui/core/styles";
 
 import { AvatarGroup } from "@material-ui/lab";
-import { connect } from "react-redux";
 
 //@ts-ignore
 function createBorrowData(icon, name, supplyShare, amount, currency, lp, lpCurrency) {
@@ -38,159 +36,134 @@ const repayData = [
     createRepayData(<Avatar alt={"usd.png"} src={"usd.png"} />, 68, "USDC"),
 ];
 
-const styles = (theme: any) => createStyles({
-});
-
-interface Props extends WithStyles<typeof styles> {
+interface Props {
     onButtonClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void,
     type: "borrow" | "repay"
 }
 
-interface State {
-    amountCurrency: string,
-    amountValue: number,
-    focusedAmountId: string | undefined,
-}
+export const BorrowerTable: React.FC<Props> = (props: Props) => {
+    /* eslint-disable @typescript-eslint/no-unused-vars */
+    const [amountCurrency, setAmountCurrency] = React.useState("");
+    /* eslint-enable @typescript-eslint/no-unused-vars */
+    const [amountValue, setAmountValue] = React.useState(0);
+    const [focusedAmountId, setFocusedAmountId] = React.useState("");
 
-const DecoratedBorrowerTableClass = withStyles(styles)(
-    class BorrowerTableClass extends React.Component<Props, State> {
-        constructor(props: Props) {
-            super(props);
-            this.state = {
-                amountCurrency: "",
-                amountValue: 0,
-                focusedAmountId: undefined
-            };
-            this.onBlur.bind(this)
-            this.onChange.bind(this)
-            this.onFocus.bind(this)
+    const onBlur = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+        if (amountValue === 0) {
+            setFocusedAmountId("");
         }
+    };
 
-        onBlur = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-            if (this.state.amountValue === 0) {
-                this.setState({ focusedAmountId: undefined });
-            }
-        };
+    const onChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+        // TO-DO: Input validation
+        setAmountCurrency(event.target.id);
+        setAmountValue(Number(event.target.value));
+        setFocusedAmountId(event.target.id);
+    };
 
-        onChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-            // TO-DO: Input validation
-            this.setState({
-                amountCurrency: event.target.id,
-                amountValue: Number(event.target.value),
-                focusedAmountId: event.target.id
-            });
-        };
+    const onFocus = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+        if (event !== null && event !== undefined && focusedAmountId !== event.target.id) {
+            setFocusedAmountId(event.target.id);
+        }
+    };
 
-        onFocus = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-            if (event !== null && event !== undefined && this.state.focusedAmountId !== event.target.id) {
-                this.setState({ focusedAmountId: event.target.id });
-            }
-        };
+    const data = props.type === "repay" ? repayData : borrowData;
+    const repayOrBorrow = props.type === "repay" ? "repay" : "borrow";
+    const availableOrAmountDue = props.type === "repay" ? "Amount due" : "Available";
 
-        render() {
-            const data = this.props.type === "repay" ? repayData : borrowData;
-            const repayOrBorrow = this.props.type === "repay" ? "repay" : "borrow";
-            const availableOrAmountDue = this.props.type === "repay" ? "Amount due" : "Available";
+    return (
+        <Grid
+            container
+            direction="column"
+            alignItems="stretch"
+        >
+            <TableContainer>
+                <Table>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell>
+                                <Typography variant="subtitle1" color="textSecondary">
+                                    {props.type.charAt(0).toUpperCase() + props.type.slice(1)}
+                                </Typography>
+                            </TableCell>
+                            <TableCell>
+                                <Typography variant="subtitle1" color="textSecondary">
+                                    {availableOrAmountDue}
+                                </Typography>
+                            </TableCell>
+                            <TableCell>
+                                <Typography variant="subtitle1" color="textSecondary">
+                                    To {repayOrBorrow}
+                                </Typography>
+                            </TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {data.map((row: any) => (
+                            <TableRow>
+                                <TableCell>
+                                    <Grid
+                                        container
+                                        direction="row"
+                                        justify="flex-start"
+                                        alignItems="center"
+                                        spacing={2}
+                                    >
 
-            return (
-                <Grid
-                    container
-                    direction="column"
-                    alignItems="stretch"
-                >
-                    <TableContainer>
-                        <Table>
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell>
-                                        <Typography variant="subtitle1" color="textSecondary">
-                                            {this.props.type.charAt(0).toUpperCase() + this.props.type.slice(1)}
+                                        {row.icon}
+                                        <Typography variant="subtitle1">
+                                            {props.type === "repay" ? row.currency : row.name}
                                         </Typography>
-                                    </TableCell>
-                                    <TableCell>
-                                        <Typography variant="subtitle1" color="textSecondary">
-                                            {availableOrAmountDue}
-                                        </Typography>
-                                    </TableCell>
-                                    <TableCell>
-                                        <Typography variant="subtitle1" color="textSecondary">
-                                            To {repayOrBorrow}
-                                        </Typography>
-                                    </TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {data.map((row: any) => (
-                                    <TableRow>
-                                        <TableCell>
-                                            <Grid
-                                                container
-                                                direction="row"
-                                                justify="flex-start"
-                                                alignItems="center"
-                                                spacing={2}
-                                            >
-
-                                                {row.icon}
-                                                <Typography variant="subtitle1">
-                                                    {this.props.type === "repay" ? row.currency : row.name}
+                                    </Grid>
+                                </TableCell>
+                                <TableCell>
+                                    <Grid
+                                        container
+                                        direction="column"
+                                        justify="center"
+                                        alignItems="flex-start"
+                                    >
+                                        <Grid item>
+                                            <Typography variant="subtitle1">
+                                                {row.amount.toLocaleString() + " " + row.currency}
+                                            </Typography>
+                                        </Grid>
+                                        {props.type === "borrow" ?
+                                            <Grid item>
+                                                <Typography color="textSecondary">
+                                                    {row.lp + " " + row.lpCurrency}
                                                 </Typography>
-                                            </Grid>
-                                        </TableCell>
-                                        <TableCell>
-                                            <Grid
-                                                container
-                                                direction="column"
-                                                justify="center"
-                                                alignItems="flex-start"
-                                            >
-                                                <Grid item>
-                                                    <Typography variant="subtitle1">
-                                                        {row.amount.toLocaleString() + " " + row.currency}
-                                                    </Typography>
-                                                </Grid>
-                                                {this.props.type === "borrow" ?
-                                                    <Grid item>
-                                                        <Typography color="textSecondary">
-                                                            {row.lp + " " + row.lpCurrency}
-                                                        </Typography>
-                                                    </Grid> :
-                                                    null
-                                                }
-                                            </Grid>
-                                        </TableCell>
-                                        <TableCell>
-                                            <Grid
-                                                container
-                                                direction="column"
-                                                justify="center"
-                                                alignItems="flex-start"
-                                            >
-                                                <Amount
-                                                    adornment={row.currency}
-                                                    id={this.props.type === "repay" ? row.currency : row.name}
-                                                    focusedAmountId={this.state.focusedAmountId}
-                                                    onBlur={this.onBlur}
-                                                    onChange={this.onChange}
-                                                    onFocus={this.onFocus} />
-                                            </Grid>
-                                        </TableCell>
-                                    </TableRow>
-                                ))}
+                                            </Grid> :
+                                            null
+                                        }
+                                    </Grid>
+                                </TableCell>
+                                <TableCell>
+                                    <Grid
+                                        container
+                                        direction="column"
+                                        justify="center"
+                                        alignItems="flex-start"
+                                    >
+                                        <Amount
+                                            adornment={row.currency}
+                                            id={props.type === "repay" ? row.currency : row.name}
+                                            focusedAmountId={focusedAmountId}
+                                            onBlur={onBlur}
+                                            onChange={onChange}
+                                            onFocus={onFocus} />
+                                    </Grid>
+                                </TableCell>
+                            </TableRow>
+                        ))}
 
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-                    <CustomButton disabled={this.state.amountValue === 0}
-                    onClick={this.props.onButtonClick}
-                    text={this.props.type.charAt(0).toUpperCase() + this.props.type.slice(1)} 
-                    type="long" />
-                </Grid>
-            );
-        }
-    }
-)
-
-const BorrowerTable = connect(null, null)(DecoratedBorrowerTableClass)
-
-export { BorrowerTable };
+                    </TableBody>
+                </Table>
+            </TableContainer>
+            <CustomButton disabled={amountValue === 0}
+                onClick={props.onButtonClick}
+                text={props.type.charAt(0).toUpperCase() + props.type.slice(1)}
+                type="long" />
+        </Grid>
+    );
+}

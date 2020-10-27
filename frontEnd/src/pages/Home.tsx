@@ -1,12 +1,11 @@
 import * as React from "react";
 
 import { CustomButton, Header, SocialIcons } from "../components";
-import { WithStyles, createStyles, withStyles } from "@material-ui/core/styles";
 
 import { Grid } from "@material-ui/core";
-import { connect } from "react-redux";
+import { makeStyles, } from "@material-ui/core/styles";
 
-const styles = (theme: any) => createStyles({
+const useStyles = makeStyles(theme => ({
     backgroundVideo: {
         position: 'fixed',
         right: 0,
@@ -30,51 +29,45 @@ const styles = (theme: any) => createStyles({
     logo: {
         maxHeight: '65.8px'
     },
-});
+}));
 
-interface Props extends WithStyles<typeof styles> { }
+interface Props { }
 
-const DecoratedHomeClass = withStyles(styles)(
-    class HomeClass extends React.Component<Props, {}> {
-        render() {
-            return (
-                <React.Fragment>
-                    <video autoPlay className={this.props.classes.backgroundVideo} muted loop>
-                        <source src="b2.webm" type="video/webm" />
-                    </video>
+export const Home: React.FC<Props> = (props: Props) => {
+    const classes = useStyles();
+
+    return (
+        <React.Fragment>
+            <video autoPlay className={classes.backgroundVideo} muted loop>
+                <source src="b2.webm" type="video/webm" />
+            </video>
+            <Grid
+                container
+                direction="column"
+                alignItems="center"
+                spacing={10}
+            >
+                <Header home={true} />
+                <div className={classes.centerButton}>
                     <Grid
                         container
                         direction="column"
                         alignItems="center"
-                        spacing={10}
+                        justify="space-around"
+                        spacing={5}
                     >
-                        <Header home={true} />
-                        <div className={this.props.classes.centerButton}>
-                            <Grid
-                                container
-                                direction="column"
-                                alignItems="center"
-                                justify="space-around"
-                                spacing={5}
-                            >
-                                <Grid item>
-                                    <img className={this.props.classes.logo} src={"warp logo.svg"} alt={"Warp"}></img>
-                                </Grid>
-                                <Grid item>
-                                    <CustomButton href={"/connect"} text={"App"} type={"long"} />
-                                </Grid>
-                            </Grid>
-                        </div>
-                        <div className={this.props.classes.bottomSocial}>
-                            <SocialIcons />
-                        </div>
-                    </Grid >
-                </React.Fragment>
-            )
-        }
-    }
-)
-
-const Home = connect(null, null)(DecoratedHomeClass)
-
-export { Home };
+                        <Grid item>
+                            <img className={classes.logo} src={"warp logo.svg"} alt={"Warp"}></img>
+                        </Grid>
+                        <Grid item>
+                            <CustomButton href={"/connect"} text={"App"} type={"long"} />
+                        </Grid>
+                    </Grid>
+                </div>
+                <div className={classes.bottomSocial}>
+                    <SocialIcons />
+                </div>
+            </Grid >
+        </React.Fragment>
+    )
+}

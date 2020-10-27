@@ -1,11 +1,10 @@
 import * as React from "react";
 
 import { InputAdornment, TextField } from "@material-ui/core";
-import { WithStyles, createStyles, withStyles } from "@material-ui/core/styles";
 
-import { connect } from "react-redux";
+import { makeStyles } from "@material-ui/core/styles";
 
-const styles = (theme: any) => createStyles({
+const useStyles = makeStyles(theme => ({
     hideNumberPicker: {
         "& input::-webkit-clear-button, & input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button": {
             display: "none"
@@ -17,10 +16,10 @@ const styles = (theme: any) => createStyles({
     textField: {
         maxWidth: "150px",
     },
-});
+}));
 
 
-interface Props extends WithStyles<typeof styles> {
+interface Props {
     adornment: string,
     id?: string,
     focusedAmountId?: string,
@@ -30,30 +29,25 @@ interface Props extends WithStyles<typeof styles> {
     text?: string,
 }
 
-const DecoratedAmountClass = withStyles(styles)(
-    class AmountClass extends React.Component<Props, {}> {
-        render() {
-            return (<TextField
-                color="secondary"
-                className={`${this.props.classes.textField} ${this.props.classes.hideNumberPicker}`}
-                disabled={this.props.focusedAmountId !== undefined && this.props.id !== this.props.focusedAmountId}
-                id={this.props.id}
-                InputProps={{
-                    endAdornment: <InputAdornment position="end">{this.props.adornment}</InputAdornment>,
-                }}
-                margin="dense"
-                onBlur={this.props.onBlur}
-                onChange={this.props.onChange}
-                onFocus={this.props.onFocus}
-                placeholder={this.props.text ? this.props.text : "amount"}
-                size="small"
-                type="number"
-                variant="outlined"
-            />);
-        }
-    }
-)
+export const Amount: React.FC<Props> = (props: Props) => {
+    const classes = useStyles();
 
-const Amount = connect(null, null)(DecoratedAmountClass)
-
-export { Amount };
+    return (
+        <TextField
+            color="secondary"
+            className={`${classes.textField} ${classes.hideNumberPicker}`}
+            disabled={props.focusedAmountId !== "" && props.id !== props.focusedAmountId}
+            id={props.id}
+            InputProps={{
+                endAdornment: <InputAdornment position="end">{props.adornment}</InputAdornment>,
+            }}
+            margin="dense"
+            onBlur={props.onBlur}
+            onChange={props.onChange}
+            onFocus={props.onFocus}
+            placeholder={props.text ? props.text : "amount"}
+            size="small"
+            type="number"
+            variant="outlined"
+        />);
+}
