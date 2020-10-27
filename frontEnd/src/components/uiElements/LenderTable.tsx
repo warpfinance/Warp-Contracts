@@ -7,8 +7,8 @@ import { WithStyles, createStyles, withStyles } from "@material-ui/core/styles";
 import { connect } from "react-redux";
 
 //@ts-ignore
-function createData(icon, wallet, currency) {
-    return { icon, wallet, currency, };
+function createData(icon, available, currency) {
+    return { icon, available, currency, };
 }
 
 const lendData = [
@@ -93,7 +93,7 @@ const DecoratedLenderTableClass = withStyles(styles)(
                                     </TableCell>
                                     <TableCell>
                                         <Typography variant="subtitle1" color="textSecondary">
-                                            Wallet
+                                            Available
                                     </Typography>
                                     </TableCell>
                                     <TableCell>
@@ -130,7 +130,7 @@ const DecoratedLenderTableClass = withStyles(styles)(
                                             >
                                                 <Grid item>
                                                     <Typography variant="subtitle1">
-                                                        {row.wallet.toLocaleString() + " " + row.currency}
+                                                        {row.available.toLocaleString() + " " + row.currency}
                                                     </Typography>
                                                 </Grid>
                                             </Grid>
