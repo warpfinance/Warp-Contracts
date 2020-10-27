@@ -1,7 +1,7 @@
 pragma solidity ^0.6.2;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+
 import '@uniswap/v2-periphery/contracts/UniswapV2Router02.sol';
 import '@uniswap/v2-periphery/contracts/libraries/UniswapV2Library.sol';
 import "./UniswapOracleInstance.sol";
@@ -18,6 +18,7 @@ This contract uses the OpenZeppelin contract Library to inherit functions from
 **/
 
 contract UniswapOracleFactory is Ownable {
+  using SafeMath for uint;
   address public uniswap_router_add = 0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D;
   address public usdc_add;
   address public factory;
@@ -71,11 +72,9 @@ constructor(address usdcAdd, address _uniFactoryAdd) public {
        usdc_add
     ));
 
-    address[] oracleAdds = [_oracle1, _oracle2]
-    LPAssetTracker[_lpToken] = oracleAdds;
+    LPAssetTracker[_lpToken] = [_oracle1, _oracle2];
     instanceTracker[_oracle1] = _tokenA;
     instanceTracker[_oracle2] = _tokenB;
-
   }
 
 
@@ -85,8 +84,8 @@ constructor(address usdcAdd, address _uniFactoryAdd) public {
 @param _lpToken is the address of the LP token  whos asset price is being retrieved
 @return returns the price of one LP token
 **/
-  function getUnderlyingPrice(address _lpToken) public view returns(uint) {
-    address[] oracleAdds = LPAssetTracker[_lpToken];
+  function getUnderlyingPrice(address _lpToken) public  returns(uint) {
+    address[] memory oracleAdds = LPAssetTracker[_lpToken];
     //retreives the oracle contract addresses for each asset that makes up a LP
     UniswapOracleInstance oracle1 = UniswapOracleInstance(oracleAdds[0]);
     UniswapOracleInstance oracle2 = UniswapOracleInstance(oracleAdds[1]);
@@ -98,10 +97,10 @@ constructor(address usdcAdd, address _uniFactoryAdd) public {
     //instantiates the LP token as an ERC20 token
     uint totalSupplyOfLP = lpToken.totalSupply();
     //retreives the total supply of the LP token
-    (uint reserveA, uint reserveB) = getReserves( factory,  instanceTracker[oracleAdds[0]],  instanceTracker[oracleAdds[1]]);
+    (uint reserveA, uint reserveB) = UniswapV2Library.getReserves( factory,  instanceTracker[oracleAdds[0]],  instanceTracker[oracleAdds[1]]);
     //retreives the reserves of each  asset in the liquidity pool
     uint reserveAUSDCprice = reserveA.mul(priceAsset1);
-    uint reserveBUSDCprice = reserveB.mul(pricerAsset2);
+    uint reserveBUSDCprice = reserveB.mul(priceAsset2);
     //get USDC value for each reserve
     uint totalUSDCpriceOfPool = reserveAUSDCprice.add(reserveBUSDCprice);
     //add values together to get total USDC of the pool

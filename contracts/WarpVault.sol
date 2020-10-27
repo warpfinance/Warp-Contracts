@@ -5,9 +5,11 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/math/SafeMath.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "./compound/Exponential.sol";
+import "./compound/JumpRateModelV2.sol";
 import "./compound/InterestRateModel.sol";
 import "./interfaces/UniswapOracleFactoryI.sol";
 import "./WarpWrapperToken.sol";
+import "./WarpControl.sol";
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 /// @title WarpVault
@@ -21,7 +23,9 @@ This contract inherits Ownership and ERC20 functionality from the Open Zeppelin 
 from the coumpound protocol.
 **/
 
-contract WarpVault is Ownable {
+contract WarpVault is Ownable, Exponential {
+  using SafeMath for uint;
+
   uint public lockTime;
   uint internal initialExchangeRateMantissa;
   uint public reserveFactorMantissa;
@@ -32,6 +36,7 @@ contract WarpVault is Ownable {
   uint internal constant borrowRateMaxMantissa = 0.0005e16;
   uint internal constant reserveFactorMaxMantissa = 1e18;
   string public lpName;
+  bool public initialized;
 
   IERC20 public LPtoken;
   IERC20 public DAI;
@@ -40,7 +45,10 @@ contract WarpVault is Ownable {
   WarpWrapperToken public WDAI;
   WarpWrapperToken public WUSDC;
   WarpWrapperToken public WUSDT;
+  WarpWrapperToken public WLP;
+  WarpControl public WC;
   UniswapOracleFactoryI public UOF;
+  InterestRateModel public InterestRate;
 
   mapping(address => BorrowSnapshot) internal accountBorrowsDAI;
   mapping(address => BorrowSnapshot) internal accountBorrowsUSDC;
@@ -69,7 +77,8 @@ contract WarpVault is Ownable {
        address _DAI,
        address _USDC,
        address _USDT,
-       string _lpName
+       address _oracle,
+       string memory _lpName
      ) public {
          transferOwnership(msg.sender);
          lpName = lpName;
@@ -77,6 +86,9 @@ contract WarpVault is Ownable {
          DAI = IERC20(_DAI);
          USDC = IERC20(_USDC);
          USDT = IERC20(_USDT);
+         UOF = UniswapOracleFactoryI(_oracle);
+         WC = WarpControl(msg.sender);
+
 
         WDAI = new WarpWrapperToken(
           _DAI,
@@ -95,7 +107,47 @@ contract WarpVault is Ownable {
           "WUS Dollar Tether",
           "WUSDT"
         );
+
+        WLP = new WarpWrapperToken(
+          _lp,
+          _lpName,
+          "WLPW"
+        );
      }
+
+/**
+@notice setUp is called immediatelyafter the creation of a WarpVault to set up its Interest Rate Model and its initial exchange rate
+@param _baseRatePerYear The approximate target base APR, as a mantissa (scaled by 1e18)
+@param _multiplierPerYear  The rate of increase in interest rate wrt utilization (scaled by 1e18)
+@param _jumpMultiplierPerYear The multiplierPerBlock after hitting a specified utilization point
+@param _optimal The utilization point at which the jump multiplier is applied(Refered to as the Kink in the InterestRateModel)
+**/
+  function setUp(
+    uint _baseRatePerYear,
+    uint _multiplierPerYear,
+    uint _jumpMultiplierPerYear,
+    uint _optimal,
+    uint _initialExchangeRate
+  )
+  public
+  {
+    require(!initialized);
+
+    address IR =  address(new JumpRateModelV2(
+      _baseRatePerYear,
+      _multiplierPerYear,
+      _jumpMultiplierPerYear,
+      _optimal,
+      address(this)
+    ));
+
+    InterestRate = InterestRateModel(IR);
+
+    initialExchangeRateMantissa = _initialExchangeRate;//sets the initialExchangeRateMantissa
+    accrualBlockNumber = getBlockNumber();
+    borrowIndex = mantissaOne;
+    initialized = true;
+  }
 
 /**
 @notice Get the underlying balance of an account
@@ -105,7 +157,7 @@ contract WarpVault is Ownable {
 */
     function balanceOfUnderlying(address _account) external returns (uint) {
       Exp memory exchangeRate = Exp({mantissa: exchangeRateCurrent()});
-      (MathError mErr, uint balance) = mulScalarTruncate(exchangeRate, LP.balanceOf(_account));
+      (MathError mErr, uint balance) = mulScalarTruncate(exchangeRate, LPtoken.balanceOf(_account));
       require(mErr == MathError.NO_ERROR);
        return balance;
      }
@@ -131,21 +183,16 @@ contract WarpVault is Ownable {
     uint accrualBlockNumberPrior = accrualBlockNumber;
 //Short-circuit accumulating 0 interest
     require(accrualBlockNumberPrior != currentBlockNumber);
-
 //Read the previous values out of storage
     uint cashPrior = getCashPrior();
     uint borrowsPrior = totalBorrows;
     uint reservesPrior = totalReserves;
     uint borrowIndexPrior = borrowIndex;
-
 //Calculate the current borrow interest rate
-    uint borrowRateMantissa = interestRateModel.getBorrowRate(cashPrior, borrowsPrior, reservesPrior);
+    uint borrowRateMantissa = InterestRate.getBorrowRate(cashPrior, borrowsPrior, reservesPrior);
     require(borrowRateMantissa <= borrowRateMaxMantissa);
-
 //Calculate the number of blocks elapsed since the last accrual
     (MathError mathErr, uint blockDelta) = subUInt(currentBlockNumber, accrualBlockNumberPrior);
-    require(mathErr == MathError.NO_ERROR);
-
 //Calculate the interest accumulated into borrows and reserves and the new index:
     Exp memory simpleInterestFactor;
     uint interestAccumulated;
@@ -154,19 +201,14 @@ contract WarpVault is Ownable {
     uint borrowIndexNew;
 //simpleInterestFactor = borrowRate * blockDelta
     (mathErr, simpleInterestFactor) = mulScalar(Exp({mantissa: borrowRateMantissa}), blockDelta);
-    require(mathErr == MathError.NO_ERROR);
 //interestAccumulated = simpleInterestFactor * totalBorrows
     (mathErr, interestAccumulated) = mulScalarTruncate(simpleInterestFactor, borrowsPrior);
-    require(mathErr == MathError.NO_ERROR);
 //totalBorrowsNew = interestAccumulated + totalBorrows
     (mathErr, totalBorrowsNew) = addUInt(interestAccumulated, borrowsPrior);
-    require(mathErr == MathError.NO_ERROR);
 //totalReservesNew = interestAccumulated * reserveFactor + totalReserves
     (mathErr, totalReservesNew) = mulScalarTruncateAddUInt(Exp({mantissa: reserveFactorMantissa}), interestAccumulated, reservesPrior);
-    require(mathErr != MathError.NO_ERROR);
 //borrowIndexNew = simpleInterestFactor * borrowIndex + borrowIndex
     (mathErr, borrowIndexNew) = mulScalarTruncateAddUInt(simpleInterestFactor, borrowIndexPrior, borrowIndexPrior);
-    require(mathErr != MathError.NO_ERROR);
 
 //Write the previously calculated values into storage
     accrualBlockNumber = currentBlockNumber;
@@ -260,18 +302,7 @@ contract WarpVault is Ownable {
 
          }
 
-     /**
-     @notice Get a snapshot of the account's balances, and the cached exchange rate
-     @dev This is used to perform liquidity checks.
-     @param account Address of the account to snapshot
-     @return (token balance, borrow balance, exchange rate mantissa)
-     **/
-           function getAccountSnapshot(address account) external returns ( uint, uint, uint) {
-               uint tokenBalance = balanceOf(account);
-               uint borrowBalance = borrowBalanceCurrent(account);
-               uint exchangeRateMantissa = exchangeRateCurrent();
-             return ( tokenBalance, borrowBalance, exchangeRateMantissa);
-           }
+
 
      /**
      @notice getBlockNumber allows for easy retrieval of block number
@@ -285,7 +316,7 @@ contract WarpVault is Ownable {
      @return The borrow interest rate per block, scaled by 1e18
      **/
            function borrowRatePerBlock() external view returns (uint) {
-               return interestRateModel.getBorrowRate(getCashPrior(), totalBorrows, totalReserves);
+               return InterestRate.getBorrowRate(getCashPrior(), totalBorrows, totalReserves);
            }
 
      /**
@@ -293,7 +324,7 @@ contract WarpVault is Ownable {
      @return The supply interest rate per block, scaled by 1e18
      **/
            function supplyRatePerBlock() external view returns (uint) {
-               return interestRateModel.getSupplyRate(getCashPrior(), totalBorrows, totalReserves, reserveFactorMantissa);
+               return InterestRate.getSupplyRate(getCashPrior(), totalBorrows, totalReserves, reserveFactorMantissa);
            }
 
      /**
@@ -311,7 +342,7 @@ contract WarpVault is Ownable {
      **/
            function exchangeRateCurrent() public  returns (uint) {
                accrueInterest();
-               if (totalSupply() == 0) {
+               if (WLP.totalSupply() == 0) {
      //If there are no tokens minted: exchangeRate = initialExchangeRate
                  return initialExchangeRateMantissa;
                } else {
@@ -322,10 +353,8 @@ contract WarpVault is Ownable {
                  MathError mathErr;
      //calculate total value held by contract plus owed to contract
                  (mathErr, cashPlusBorrowsMinusReserves) = addThenSubUInt(totalCash, totalBorrows, totalReserves);
-                 require(mathErr == MathError.NO_ERROR);
      //calculate exchange rate
-                 (mathErr, exchangeRate) = getExp(cashPlusBorrowsMinusReserves, totalSupply());
-                 require(mathErr != MathError.NO_ERROR);
+                 (mathErr, exchangeRate) = getExp(cashPlusBorrowsMinusReserves, WLP.totalSupply());
                  return (exchangeRate.mantissa);
                }
            }
@@ -367,21 +396,21 @@ contract WarpVault is Ownable {
       //transfer appropriate amount of DAI from msg.sender to the Vault
       DAI.transferFrom(msg.sender, address(this), _amount);
       //mint appropriate Warp DAI
-      WDAI.mint(_account, vars.mintTokens);
+      WDAI.mint(msg.sender, vars.mintTokens);
     }
 
     if(_assetType == 2){
       //transfer appropriate amount of USDC from msg.sender to the Vault
-      USDC.transferFrom(msg.sender, address(AHR), _amount);
+      USDC.transferFrom(msg.sender, address(this), _amount);
       //mint appropriate Warp USDC
-      WUSDC.mint(_account, vars.mintTokens);
+      WUSDC.mint(msg.sender, vars.mintTokens);
     }
 
     if(_assetType == 3){
       //transfer appropriate amount of USDT from msg.sender to the Vault
-      USDT.transferFrom(msg.sender, address(AHR), _amount);
+      USDT.transferFrom(msg.sender, address(this), _amount);
       //mint appropriate Warp USDT
-      WUSDT.mint(_account, vars.mintTokens);
+      WUSDT.mint(msg.sender, vars.mintTokens);
     }
 
 
@@ -418,21 +447,21 @@ redeemAmount = _amount x exchangeRateCurrent
     if(_assetType == 1){
       //Fail if protocol has insufficient cash
         require (DAI.balanceOf(address(this)) >= vars.redeemAmount);
-        WDAI.burn(msg.sender, _amount);
+        WDAI.burn(msg.sender, _amount);//will fail id the msg.sender doesnt have the appropriateamount of wrapper token
         DAI.transfer(msg.sender, vars.redeemAmount);
       }
 
     if(_assetType == 2){
       //Fail if protocol has insufficient cash
         require (USDC.balanceOf(address(this)) >= vars.redeemAmount);
-        WUSDC.burn(msg.sender, _amount);
+        WUSDC.burn(msg.sender, _amount);//will fail id the msg.sender doesnt have the appropriateamount of wrapper token
         USDC.transfer(msg.sender, vars.redeemAmount);
       }
 
     if(_assetType == 3){
      //Fail if protocol has insufficient cash
       require (USDT.balanceOf(address(this)) >= vars.redeemAmount);
-      WUSDT.burn(msg.sender, _amount);
+      WUSDT.burn(msg.sender, _amount);//will fail id the msg.sender doesnt have the appropriateamount of wrapper token
       USDT.transfer(msg.sender, vars.redeemAmount);
     }
 
@@ -599,15 +628,21 @@ redeemAmount = _amount x exchangeRateCurrent
 
   }
 
-  /**
+/**
 @notice collateralizeLP allows a user to collateralize this contracts associated LP token
 @param _amount is the amount of LP being collateralized
 **/
    function collateralizeLP(uint _amount) public {
-LP.transferFrom(msg.sender, address(this), amount);
-WarpControl.trackCollateral(msg.sender, address(Lp), _amount);
+     LPtoken.transferFrom(msg.sender, address(this), _amount);
+     WC.trackCollateral(msg.sender, address(LPtoken), _amount);
+     WLP.mint(msg.sender, _amount);
    }
 
-
+/**
+@notice getAssetAdd allows for easy retrieval of a WarpVaults LP token Adress
+**/
+       function getAssetAdd() public view returns (address) {
+         return address(LPtoken);
+       }
 
 }

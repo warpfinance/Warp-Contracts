@@ -135,5 +135,5 @@ contract BaseJumpRateModelV2 {
         emit NewInterestParams(baseRatePerBlock, multiplierPerBlock, jumpMultiplierPerBlock, kink);
     }
 
-    
+
 }

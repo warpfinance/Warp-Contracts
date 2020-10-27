@@ -16,16 +16,16 @@ The UniswapOracleFactoryI contract an abstract contract the MoneyMarketFactory u
 /**
 @notice createNewOracle allows the owner of this contract to deploy a new oracle contract when
         a new asset is whitelisted
-@param token is the address of the first token in the token pair for this oracle
 @dev this function is marked as virtual as it is an abstracted function
 **/
 
-    function createNewOracle(
-      address token
-    )
+function createNewOracles(
+  address _tokenA,
+  address _tokenB,
+  address _lpToken
+)
     public
-    virtual
-    returns(address);
+    virtual;
 
 /**
 @notice getUnderlyingPrice allows for the price retrieval of a MoneyMarketInstances underlying asset
