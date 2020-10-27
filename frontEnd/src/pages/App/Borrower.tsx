@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { BigModal, BorrowerTable, Header, InformationCard } from "../../components";
+import { BigModal, BorrowerTable, Header, InformationCard, RowModal } from "../../components";
 
 import { Grid } from "@material-ui/core";
 import { useState } from "react";
@@ -15,17 +15,29 @@ const data = {
 }
 
 export const Borrower: React.FC<Props> = (props: Props) => {
-    const [modalOpen, setModalOpen] = useState(false);
+    const [borrowModalOpen, setBorrowModalOpen] = useState(false);
+    const [repayModalOpen, setRepayModalOpen] = useState(false);
 
-    const handleClose = (event: {}, reason: "backdropClick" | "escapeKeyDown") => {
-        setModalOpen(false);
+    const handleBorrowClose = (event: {}, reason: "backdropClick" | "escapeKeyDown") => {
+        setBorrowModalOpen(false);
     }
 
-    const onClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-        setModalOpen(true);
+    const onBorrowClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+        setBorrowModalOpen(true);
+    }
+
+    const handleRepayClose = (event: {}, reason: "backdropClick" | "escapeKeyDown") => {
+        setRepayModalOpen(false);
+    }
+
+    const onRepayClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+        setRepayModalOpen(true);
     }
 
     const onBorrow = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+    }
+
+    const onRepay = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
     }
 
     return (
@@ -59,14 +71,26 @@ export const Borrower: React.FC<Props> = (props: Props) => {
                     alignItems="stretch"
                 >
                     <Grid item>
-                        <BorrowerTable onButtonClick={onClick} type="borrow" />
+                        <BorrowerTable onButtonClick={onBorrowClick} type="borrow" />
                     </Grid>
                     <Grid item>
-                        <BorrowerTable onButtonClick={onClick} type="repay" />
+                        <BorrowerTable onButtonClick={onRepayClick} type="repay" />
                     </Grid>
                 </Grid>
             </Grid >
-            <BigModal action="Borrow" amount={100} currency="DAI" onButtonClick={onBorrow} handleClose={handleClose} open={modalOpen} />
+            <BigModal action="Borrow" amount={100} currency="DAI" onButtonClick={onBorrow} handleClose={handleBorrowClose} open={borrowModalOpen} />
+            <RowModal
+                action="Repay"
+                amount={100}
+                amountCurrency="DAI"
+                amountIconSrc="dai.png"
+                onButtonClick={onRepay}
+                handleClose={handleRepayClose}
+                reward={100}
+                rewardCurrency="LP"
+                rewardIconSrcPrimary="eth.png"
+                rewardIconSrcSecondary="dai.png"
+                open={repayModalOpen} />
         </React.Fragment>
     );
 }
