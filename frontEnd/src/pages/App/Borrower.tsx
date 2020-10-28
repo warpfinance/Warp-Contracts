@@ -47,7 +47,10 @@ const repayData = [
 ];
 
 export const Borrower: React.FC<Props> = (props: Props) => {
-    const [borrowAmountCurrency, setBorrowAmountCurrency] = React.useState("");
+    /* eslint-disable @typescript-eslint/no-unused-vars */
+    const [borrowAmountCurrency, setBorrowAmountCurrency] = React.useState("DAI");
+    /* eslint-enable @typescript-eslint/no-unused-vars */
+    const [borrowAmountPool, setBorrowAmountPool] = React.useState("");
     const [borrowAmountValue, setBorrowAmountValue] = React.useState(0);
     const [borrowFocusedAmountId, setBorrowFocusedAmountId] = React.useState("");
     const [repayAmountCurrency, setRepayAmountCurrency] = React.useState("");
@@ -59,13 +62,13 @@ export const Borrower: React.FC<Props> = (props: Props) => {
     const [repayError, setRepayError] = useState(false);
 
     React.useEffect(() => {
-        if (borrowAmountValue !== 0 && borrowAmountCurrency !== "") {
-            setBorrowError(isBorrowError(borrowAmountValue, borrowAmountCurrency));
+        if (borrowAmountValue !== 0 && borrowAmountPool !== "") {
+            setBorrowError(isBorrowError(borrowAmountValue, borrowAmountPool));
         }
         if (repayAmountValue !== 0 && repayAmountCurrency !== "") {
             setRepayError(isRepayError(repayAmountValue, repayAmountCurrency));
         }
-    }, [borrowAmountValue, borrowAmountCurrency, repayAmountValue, repayAmountCurrency]
+    }, [borrowAmountValue, borrowAmountPool, repayAmountValue, repayAmountCurrency]
     );
 
     const handleBorrowClose = (event: {}, reason: "backdropClick" | "escapeKeyDown") => {
@@ -105,7 +108,7 @@ export const Borrower: React.FC<Props> = (props: Props) => {
     }
 
     const onBorrowAmountChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-        setBorrowAmountCurrency(event.target.id);
+        setBorrowAmountPool(event.target.id);
         setBorrowFocusedAmountId(event.target.id);
         setBorrowAmountValue(Number(event.target.value));
     };
@@ -140,6 +143,13 @@ export const Borrower: React.FC<Props> = (props: Props) => {
         if (event !== null && event !== undefined && repayFocusedAmountId !== event.target.id) {
             setRepayFocusedAmountId(event.target.id);
         }
+    };
+
+    const handleBorrowSelect = (event: React.ChangeEvent<{
+        name?: string | undefined;
+        value: string;
+    }>, child: React.ReactNode) => {
+        setBorrowAmountCurrency(event.target.value);
     };
 
     const onBorrow = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
@@ -179,7 +189,7 @@ export const Borrower: React.FC<Props> = (props: Props) => {
                     alignItems="stretch"
                 >
                     <Grid item>
-                        <BorrowerTable amountCurrency={borrowAmountCurrency}
+                        <BorrowerTable amountCurrency={borrowAmountPool}
                             amountValue={borrowAmountValue}
                             data={borrowData}
                             error={borrowError}
@@ -208,20 +218,21 @@ export const Borrower: React.FC<Props> = (props: Props) => {
                 action="Borrow"
                 amount={borrowAmountValue}
                 currency="DAI"
-                onButtonClick={onBorrow}
                 handleClose={handleBorrowClose}
+                handleSelect={handleBorrowSelect}
+                onButtonClick={onBorrow}
                 open={borrowModalOpen} />
             <RowModal
                 action="Repay"
-                amount={100}
-                amountCurrency="DAI"
-                amountIconSrc="dai.png"
+                amount={repayAmountValue}
+                amountCurrency={repayAmountCurrency}
+                amountIconSrc={`${repayAmountCurrency.toLowerCase()}.png`}
                 onButtonClick={onRepay}
                 handleClose={handleRepayClose}
                 reward={100}
                 rewardCurrency="LP"
                 rewardIconSrcPrimary="eth.png"
-                rewardIconSrcSecondary="dai.png"
+                rewardIconSrcSecondary={`${repayAmountCurrency.toLowerCase()}.png`}
                 open={repayModalOpen} />
         </React.Fragment>
     );

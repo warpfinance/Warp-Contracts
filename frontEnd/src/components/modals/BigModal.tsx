@@ -37,6 +37,10 @@ interface Props {
     amount: number,
     currency: string,
     handleClose: (event: {}, reason: "backdropClick" | "escapeKeyDown") => void,
+    handleSelect: (event: React.ChangeEvent<{
+        name?: string | undefined;
+        value: string;
+    }>, child: React.ReactNode) => void,
     onButtonClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void,
     open: boolean,
 }
@@ -51,17 +55,9 @@ const data = {
 export const BigModal: React.FC<Props> = (props: Props) => {
     const classes = useStyles();
     const [checked, setChecked] = React.useState(false);
-    const [currency, setCurrency] = React.useState(props.currency);
 
     const handleCheck = (event: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
         setChecked(event.target.checked);
-    };
-
-    const handleSelect = (event: React.ChangeEvent<{
-        name?: string | undefined;
-        value: string;
-    }>, child: React.ReactNode) => {
-        setCurrency(event.target.value);
     };
 
     return (
@@ -123,9 +119,9 @@ export const BigModal: React.FC<Props> = (props: Props) => {
                                 >
                                     <FormControl className={classes.cardTile} variant="outlined">
                                         <Select
-                                            value={currency}
+                                            value={props.currency}
                                             // @ts-ignore
-                                            onChange={handleSelect}
+                                            onChange={props.handleSelect}
                                             label="Stable coin"
                                             className={classes.select}
                                             inputProps={{
