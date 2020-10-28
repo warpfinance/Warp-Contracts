@@ -1,28 +1,13 @@
 import * as React from "react";
 
 import { Amount, CustomButton } from "../../components"
-import { Avatar, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@material-ui/core";
-
-//@ts-ignore
-function createData(icon, available, currency) {
-    return { icon, available, currency, };
-}
-
-const lendData = [
-    createData(<Avatar alt={"dai.png"} src={"dai.png"} />, 100, "DAI"),
-    createData(<Avatar alt={"usdt.png"} src={"usdt.png"} />, 0, "USDT"),
-    createData(<Avatar alt={"usdc.png"} src={"usdc.png"} />, 0, "USDC"),
-];
-
-const withdrawData = [
-    createData(<Avatar alt={"dai.png"} src={"dai.png"} />, 100, "DAI"),
-    createData(<Avatar alt={"usdt.png"} src={"usdt.png"} />, 25, "USDT"),
-    createData(<Avatar alt={"usdc.png"} src={"usdc.png"} />, 68, "USDC"),
-];
+import { Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@material-ui/core";
 
 interface Props {
     amountCurrency: string,
     amountValue: number,
+    data: any,
+    error: boolean,
     focusedAmountId: string | undefined,
     onButtonClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void,
     onBlur: (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>)=> void,
@@ -32,7 +17,6 @@ interface Props {
 }
 
 export const LenderTable: React.FC<Props> = (props: Props) => {
-    const data = props.type === "withdraw" ? withdrawData : lendData;
     const lendOrWithdraw = props.type === "withdraw" ? "withdraw" : "lend";
 
     return (
@@ -63,7 +47,7 @@ export const LenderTable: React.FC<Props> = (props: Props) => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {data.map((row) => (
+                        {props.data.map((row: any) => (
                             <TableRow>
                                 <TableCell>
                                     <Grid
@@ -103,8 +87,9 @@ export const LenderTable: React.FC<Props> = (props: Props) => {
                                     >
                                         <Amount
                                             adornment={row.currency}
-                                            id={row.currency}
                                             focusedAmountId={props.focusedAmountId}
+                                            error={props.error}
+                                            id={row.currency}
                                             onBlur={props.onBlur}
                                             onChange={props.onChange}
                                             onFocus={props.onFocus} />
@@ -117,7 +102,7 @@ export const LenderTable: React.FC<Props> = (props: Props) => {
                 </Table>
             </TableContainer>
             <CustomButton
-                disabled={props.amountValue === 0}
+                disabled={props.amountValue <= 0 || props.error}
                 onClick={props.onButtonClick}
                 text={lendOrWithdraw.charAt(0).toUpperCase() + lendOrWithdraw.slice(1)}
                 type="long" />

@@ -1,8 +1,8 @@
 import * as React from "react";
 
+import { Avatar, Grid } from "@material-ui/core";
 import { Header, InformationCard, LenderTable, SimpleModal } from "../../components";
 
-import { Grid } from "@material-ui/core";
 import { useState } from "react";
 
 const data = {
@@ -10,6 +10,23 @@ const data = {
     stableCoinReward: 4545,
     walletBalance: 656
 }
+
+//@ts-ignore
+function createData(icon, available, currency) {
+    return { icon, available, currency, };
+}
+
+const lendData = [
+    createData(<Avatar alt={"dai.png"} src={"dai.png"} />, 100, "DAI"),
+    createData(<Avatar alt={"usdt.png"} src={"usdt.png"} />, 0, "USDT"),
+    createData(<Avatar alt={"usdc.png"} src={"usdc.png"} />, 0, "USDC"),
+];
+
+const withdrawData = [
+    createData(<Avatar alt={"dai.png"} src={"dai.png"} />, 100, "DAI"),
+    createData(<Avatar alt={"usdt.png"} src={"usdt.png"} />, 25, "USDT"),
+    createData(<Avatar alt={"usdc.png"} src={"usdc.png"} />, 68, "USDC"),
+];
 
 interface Props {
 }
@@ -23,6 +40,18 @@ export const Lender: React.FC<Props> = (props: Props) => {
     const [withdrawFocusedAmountId, setWithdrawFocusedAmountId] = React.useState("");
     const [lendModalOpen, setLendModalOpen] = useState(false);
     const [withdrawModalOpen, setWithdrawModalOpen] = useState(false);
+    const [lendError, setLendError] = useState(false);
+    const [withdrawError, setWithdrawError] = useState(false);
+
+    React.useEffect(() => {
+        if (lendAmountValue !== 0 && lendAmountCurrency !== "") {
+            setLendError(isError(lendAmountValue, lendAmountCurrency, lendData));
+        }
+        if (withdrawAmountValue !== 0 && withdrawAmountCurrency !== "") {
+            setWithdrawError(isError(withdrawAmountValue, withdrawAmountCurrency, withdrawData));
+        }
+    }, [lendAmountValue, lendAmountCurrency, withdrawAmountValue, withdrawAmountCurrency]
+    );
 
     const handleLendClose = (event: {}, reason: "backdropClick" | "escapeKeyDown") => {
         setLendModalOpen(false);
@@ -30,6 +59,16 @@ export const Lender: React.FC<Props> = (props: Props) => {
 
     const handleWithdrawClose = (event: {}, reason: "backdropClick" | "escapeKeyDown") => {
         setWithdrawModalOpen(false);
+    }
+
+    const isError = (value: any, currency: string, data: any) => {
+        const index = data.findIndex((value: any) => value.currency === currency);
+        if (index < 0) return true;
+        if (value <= 0 ||
+            value > data[index].available) {
+            return true;
+        }
+        return false;
     }
 
     const onLendClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
@@ -41,10 +80,9 @@ export const Lender: React.FC<Props> = (props: Props) => {
     }
 
     const onLendAmountChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-        // TO-DO: Input validation
         setLendAmountCurrency(event.target.id);
-        setLendAmountValue(Number(event.target.value));
         setLendFocusedAmountId(event.target.id);
+        setLendAmountValue(Number(event.target.value));
     };
 
     const onLendBlur = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
@@ -60,10 +98,9 @@ export const Lender: React.FC<Props> = (props: Props) => {
     };
 
     const onWithdrawAmountChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-        // TO-DO: Input validation
+        setWithdrawFocusedAmountId(event.target.id)
         setWithdrawAmountCurrency(event.target.id);
         setWithdrawAmountValue(Number(event.target.value));
-        setWithdrawFocusedAmountId(event.target.id);
     };
 
     const onWithdrawBlur = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
@@ -120,6 +157,8 @@ export const Lender: React.FC<Props> = (props: Props) => {
                     <Grid item>
                         <LenderTable amountCurrency={lendAmountCurrency}
                             amountValue={lendAmountValue}
+                            data={lendData}
+                            error={lendError}
                             focusedAmountId={lendFocusedAmountId}
                             onBlur={onLendBlur}
                             onButtonClick={onLendClick}
@@ -130,6 +169,8 @@ export const Lender: React.FC<Props> = (props: Props) => {
                     <Grid item>
                         <LenderTable amountCurrency={withdrawAmountCurrency}
                             amountValue={withdrawAmountValue}
+                            data={withdrawData}
+                            error={withdrawError}
                             focusedAmountId={withdrawFocusedAmountId}
                             onBlur={onWithdrawBlur}
                             onButtonClick={onWithdrawClick}

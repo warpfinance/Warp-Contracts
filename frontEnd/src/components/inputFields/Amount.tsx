@@ -21,8 +21,9 @@ const useStyles = makeStyles(theme => ({
 
 interface Props {
     adornment: string,
-    id?: string,
     focusedAmountId?: string,
+    error?: boolean,
+    id?: string,
     onBlur?: (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void,
     onFocus?: (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void,
     onChange?: (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void,
@@ -37,6 +38,7 @@ export const Amount: React.FC<Props> = (props: Props) => {
             color="secondary"
             className={`${classes.textField} ${classes.hideNumberPicker}`}
             disabled={props.focusedAmountId !== "" && props.id !== props.focusedAmountId}
+            error={props.error}
             id={props.id}
             InputProps={{
                 endAdornment: <InputAdornment position="end">{props.adornment}</InputAdornment>,
