@@ -16,8 +16,8 @@ const data = {
 }
 
 //@ts-ignore
-function createBorrowData(icon, name, supplyShare, amount, currency, lp, lpCurrency) {
-    return { icon, name, supplyShare, amount, currency, lp, lpCurrency };
+function createBorrowData(icon, currency, supplyShare, amount, amountCurrency, lp, lpCurrency) {
+    return { icon, currency, supplyShare, amount, amountCurrency, lp, lpCurrency };
 }
 
 //@ts-ignore
@@ -117,6 +117,7 @@ export const Borrower: React.FC<Props> = (props: Props) => {
     };
 
     const onBorrowFocus = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+        console.log(event.target.id)
         if (event !== null && event !== undefined && borrowFocusedAmountId !== event.target.id) {
             setBorrowFocusedAmountId(event.target.id);
         }
@@ -135,6 +136,7 @@ export const Borrower: React.FC<Props> = (props: Props) => {
     };
 
     const onRepayFocus = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+        console.log(event.target.id)
         if (event !== null && event !== undefined && repayFocusedAmountId !== event.target.id) {
             setRepayFocusedAmountId(event.target.id);
         }
@@ -204,7 +206,7 @@ export const Borrower: React.FC<Props> = (props: Props) => {
             </Grid >
             <BigModal
                 action="Borrow"
-                amount={100}
+                amount={borrowAmountValue}
                 currency="DAI"
                 onButtonClick={onBorrow}
                 handleClose={handleBorrowClose}

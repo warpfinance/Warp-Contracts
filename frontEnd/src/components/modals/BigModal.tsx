@@ -42,7 +42,6 @@ interface Props {
 }
 
 const data = {
-    amount: 100,
     borrowLimit: 200,
     borrowLimitUsed: 200,
     interestRate: 1.97,
@@ -106,7 +105,7 @@ export const BigModal: React.FC<Props> = (props: Props) => {
                                                 onChange={handleCheck}
                                             />
                                             <Typography variant="h6">
-                                                {data.amount}
+                                                {props.amount}
                                             </Typography>
                                         </Grid>
                                     </CardContent>

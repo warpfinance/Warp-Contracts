@@ -95,10 +95,10 @@ export const BorrowerTable: React.FC<Props> = (props: Props) => {
                                         alignItems="flex-start"
                                     >
                                         <Amount
-                                            adornment={row.currency}
+                                            adornment={props.type === "repay" ? row.currency : row.amountCurrency}
                                             focusedAmountId={props.focusedAmountId}
                                             error={props.error}
-                                            id={props.type === "repay" ? row.currency : row.name}
+                                            id={row.currency}
                                             onBlur={props.onBlur}
                                             onChange={props.onChange}
                                             onFocus={props.onFocus} />
