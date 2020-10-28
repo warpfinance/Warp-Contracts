@@ -176,7 +176,7 @@ export const BigModal: React.FC<Props> = (props: Props) => {
                                                     spacing={2}
                                                 >
                                                     <Grid item>
-                                                        <Avatar alt={"usd.png"} className={classes.smallIcon} src={"usd.png"} />
+                                                        <Avatar alt={"usdc.png"} className={classes.smallIcon} src={"usdc.png"} />
                                                     </Grid>
                                                     <Grid item>
                                                         USDC

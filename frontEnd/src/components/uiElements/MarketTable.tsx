@@ -12,7 +12,7 @@ function createData(icon, name, supplyShare, totalSupply, totalSupplyCurrency, t
 const lenderData = [
     createData(<Avatar alt={'dai.png'} src={'dai.png'} />, 'Dai', 3.40, 125, 'DAI', 2.56, 3.67, -2.13),
     createData(<Avatar alt={'usdt.png'} src={'usdt.png'} />, 'Tether', 3.40, 125, 'DAI', 2.56, 3.67, -2.13),
-    createData(<Avatar alt={'usd.png'} src={'usd.png'} />, 'USD Coin', 3.40, 125, 'DAI', 2.56, 3.67, -2.13),
+    createData(<Avatar alt={'usdc.png'} src={'usdc.png'} />, 'USD Coin', 3.40, 125, 'DAI', 2.56, 3.67, -2.13),
 ];
 
 const borrowData = [

@@ -33,7 +33,7 @@ const borrowData = [
 const repayData = [
     createRepayData(<Avatar alt={"dai.png"} src={"dai.png"} />, 100, "DAI"),
     createRepayData(<Avatar alt={"usdt.png"} src={"usdt.png"} />, 249, "USDT"),
-    createRepayData(<Avatar alt={"usd.png"} src={"usd.png"} />, 68, "USDC"),
+    createRepayData(<Avatar alt={"usdc.png"} src={"usdc.png"} />, 68, "USDC"),
 ];
 
 interface Props {

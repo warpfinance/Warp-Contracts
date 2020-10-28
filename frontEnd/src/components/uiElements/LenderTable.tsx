@@ -11,52 +11,27 @@ function createData(icon, available, currency) {
 const lendData = [
     createData(<Avatar alt={"dai.png"} src={"dai.png"} />, 100, "DAI"),
     createData(<Avatar alt={"usdt.png"} src={"usdt.png"} />, 0, "USDT"),
-    createData(<Avatar alt={"usd.png"} src={"usd.png"} />, 0, "USDC"),
+    createData(<Avatar alt={"usdc.png"} src={"usdc.png"} />, 0, "USDC"),
 ];
 
 const withdrawData = [
     createData(<Avatar alt={"dai.png"} src={"dai.png"} />, 100, "DAI"),
     createData(<Avatar alt={"usdt.png"} src={"usdt.png"} />, 25, "USDT"),
-    createData(<Avatar alt={"usd.png"} src={"usd.png"} />, 68, "USDC"),
+    createData(<Avatar alt={"usdc.png"} src={"usdc.png"} />, 68, "USDC"),
 ];
 
 interface Props {
-    onButtonClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void,
-    type: "lend" | "withdraw"
-}
-
-interface State {
     amountCurrency: string,
     amountValue: number,
     focusedAmountId: string | undefined,
+    onButtonClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void,
+    onBlur: (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>)=> void,
+    onChange: (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>)=> void,
+    onFocus: (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void,
+    type: "lend" | "withdraw"
 }
 
 export const LenderTable: React.FC<Props> = (props: Props) => {
-    /* eslint-disable @typescript-eslint/no-unused-vars */
-    const [amountCurrency, setAmountCurrency] = React.useState("");
-    /* eslint-enable @typescript-eslint/no-unused-vars */
-    const [amountValue, setAmountValue] = React.useState(0);
-    const [focusedAmountId, setFocusedAmountId] = React.useState("");
-
-    const onBlur = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-        if (amountValue === 0) {
-            setFocusedAmountId("");
-        }
-    };
-
-    const onChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-        // TO-DO: Input validation
-        setAmountCurrency(event.target.id);
-        setAmountValue(Number(event.target.value));
-        setFocusedAmountId(event.target.id);
-    };
-
-    const onFocus = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-        if (event !== null && event !== undefined && focusedAmountId !== event.target.id) {
-            setFocusedAmountId(event.target.id);
-        }
-    };
-
     const data = props.type === "withdraw" ? withdrawData : lendData;
     const lendOrWithdraw = props.type === "withdraw" ? "withdraw" : "lend";
 
@@ -129,10 +104,10 @@ export const LenderTable: React.FC<Props> = (props: Props) => {
                                         <Amount
                                             adornment={row.currency}
                                             id={row.currency}
-                                            focusedAmountId={focusedAmountId}
-                                            onBlur={onBlur}
-                                            onChange={onChange}
-                                            onFocus={onFocus} />
+                                            focusedAmountId={props.focusedAmountId}
+                                            onBlur={props.onBlur}
+                                            onChange={props.onChange}
+                                            onFocus={props.onFocus} />
                                     </Grid>
                                 </TableCell>
                             </TableRow>
@@ -142,7 +117,7 @@ export const LenderTable: React.FC<Props> = (props: Props) => {
                 </Table>
             </TableContainer>
             <CustomButton
-                disabled={amountValue === 0}
+                disabled={props.amountValue === 0}
                 onClick={props.onButtonClick}
                 text={lendOrWithdraw.charAt(0).toUpperCase() + lendOrWithdraw.slice(1)}
                 type="long" />
