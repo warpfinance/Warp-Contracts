@@ -12,6 +12,7 @@ interface Props {
 
 const data = {
     collateral: 123.00,
+    borrowPercentage: 10, 
     interestRate: 1.97,
 }
 
@@ -176,6 +177,9 @@ export const Borrower: React.FC<Props> = (props: Props) => {
                 >
                     <Grid item>
                         <InformationCard header="Collateral" text={`$${data.collateral.toFixed(2)}`} />
+                    </Grid>
+                    <Grid item>
+                        <InformationCard header="Borrow %" text={`${data.borrowPercentage.toFixed(0)}%`} />
                     </Grid>
                     <Grid item>
                         <InformationCard header="Interest rate" text={`${data.interestRate.toFixed(2)}%`} />
