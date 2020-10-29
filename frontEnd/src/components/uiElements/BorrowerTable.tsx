@@ -5,15 +5,9 @@ import { Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
 import { CustomButton } from "../../components"
 
 interface Props {
-    amountCurrency: string,
-    amountValue: number,
     data: any,
-    error: boolean,
-    focusedAmountId: string | undefined,
-    onButtonClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void,
-    onBlur: (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void,
-    onChange: (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void,
-    onFocus: (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void,
+    onLeftButtonClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void,
+    onRightButtonClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void,
     type: "collateral" | "borrow"
 }
 
@@ -139,11 +133,13 @@ export const BorrowerTable: React.FC<Props> = (props: Props) => {
                                     >
                                         <Grid item>
                                             <CustomButton
+                                                onClick={props.onLeftButtonClick}
                                                 text={props.type === "collateral" ? "Withdraw" : props.type.charAt(0).toUpperCase() + props.type.slice(1)}
                                                 type="short" />
                                         </Grid>
                                         <Grid item>
                                             <CustomButton
+                                                onClick={props.onRightButtonClick}
                                                 text={props.type === "collateral" ? "Provide" : "Repay"}
                                                 type="short" />
                                         </Grid>

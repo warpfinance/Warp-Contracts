@@ -57,8 +57,10 @@ export const Borrower: React.FC<Props> = (props: Props) => {
     const [borrowAmountCurrency, setBorrowAmountCurrency] = React.useState("");
     const [borrowAmountValue, setBorrowAmountValue] = React.useState(0);
     const [borrowFocusedAmountId, setBorrowFocusedAmountId] = React.useState("");
-    const [collateralModalOpen, setCollateralModalOpen] = useState(false);
+    const [withdrawModalOpen, setWithdrawModalOpen] = useState(false);
+    const [provideModalOpen, setProvideModalOpen] = useState(false);
     const [borrowModalOpen, setBorrowModalOpen] = useState(false);
+    const [repayModalOpen, setRepayModalOpen] = useState(false);
     const [collateralError, setCollateralError] = useState(false);
     const [borrowError, setBorrowError] = useState(false);
 
@@ -72,12 +74,20 @@ export const Borrower: React.FC<Props> = (props: Props) => {
     }, [collateralAmountValue, collateralAmountPool, borrowAmountValue, borrowAmountCurrency]
     );
 
-    const handleCollateralClose = (event: {}, reason: "backdropClick" | "escapeKeyDown") => {
-        setCollateralModalOpen(false);
-    }
-
     const handleBorrowClose = (event: {}, reason: "backdropClick" | "escapeKeyDown") => {
         setBorrowModalOpen(false);
+    }
+
+    const handleProvideClose = (event: {}, reason: "backdropClick" | "escapeKeyDown") => {
+        setProvideModalOpen(false);
+    }
+
+    const handleRepayClose = (event: {}, reason: "backdropClick" | "escapeKeyDown") => {
+        setRepayModalOpen(false);
+    }
+
+    const handleWithdrawClose = (event: {}, reason: "backdropClick" | "escapeKeyDown") => {
+        setWithdrawModalOpen(false);
     }
 
     const isCollateralError = (value: any, currency: string) => {
@@ -100,12 +110,20 @@ export const Borrower: React.FC<Props> = (props: Props) => {
         return false;
     }
 
-    const onCollateralClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-        setCollateralModalOpen(true);
-    }
-
     const onBorrowClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
         setBorrowModalOpen(true);
+    }
+
+    const onProvideClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+        setProvideModalOpen(true);
+    }
+
+    const onRepayClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+        setRepayModalOpen(true);
+    }
+
+    const onWithdrawClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+        setWithdrawModalOpen(true);
     }
 
     const onCollateralAmountChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
@@ -193,27 +211,17 @@ export const Borrower: React.FC<Props> = (props: Props) => {
                     alignItems="stretch"
                 >
                     <Grid item>
-                        <BorrowerTable amountCurrency={collateralAmountPool}
-                            amountValue={collateralAmountValue}
+                        <BorrowerTable
                             data={collateralData}
-                            error={collateralError}
-                            focusedAmountId={collateralFocusedAmountId}
-                            onBlur={onCollateralBlur}
-                            onButtonClick={onCollateralClick}
-                            onChange={onCollateralAmountChange}
-                            onFocus={onCollateralFocus}
+                            onLeftButtonClick={onWithdrawClick}
+                            onRightButtonClick={onProvideClick}
                             type="collateral" />
                     </Grid>
                     <Grid item>
-                        <BorrowerTable amountCurrency={borrowAmountCurrency}
-                            amountValue={borrowAmountValue}
+                        <BorrowerTable
                             data={borrowData}
-                            error={borrowError}
-                            focusedAmountId={borrowFocusedAmountId}
-                            onBlur={onBorrowBlur}
-                            onButtonClick={onBorrowClick}
-                            onChange={onBorrowAmountChange}
-                            onFocus={onBorrowFocus}
+                            onLeftButtonClick={onBorrowClick}
+                            onRightButtonClick={onRepayClick}
                             type="borrow" />
                     </Grid>
                 </Grid>
@@ -222,10 +230,10 @@ export const Borrower: React.FC<Props> = (props: Props) => {
                 action="Collateral"
                 amount={collateralAmountValue}
                 currency="DAI"
-                handleClose={handleCollateralClose}
+                handleClose={handleWithdrawClose}
                 handleSelect={handleCollateralSelect}
                 onButtonClick={onCollateral}
-                open={collateralModalOpen} />
+                open={withdrawModalOpen} />
             <RowModal
                 action="Borrow"
                 amount={borrowAmountValue}
