@@ -13,12 +13,12 @@ interface Props {
     onBlur: (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void,
     onChange: (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void,
     onFocus: (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void,
-    type: "borrow" | "repay"
+    type: "collateral" | "borrow"
 }
 
 export const BorrowerTable: React.FC<Props> = (props: Props) => {
-    const repayOrBorrow = props.type === "repay" ? "repay" : "borrow";
-    const availableOrAmountDue = props.type === "repay" ? "Amount due" : "Available";
+    const borrowOrBorrow = props.type === "borrow" ? "borrow" : "collateral";
+    const availableOrAmountDue = props.type === "borrow" ? "Amount due" : "Available";
 
     return (
         <Grid
@@ -40,9 +40,9 @@ export const BorrowerTable: React.FC<Props> = (props: Props) => {
                                     {availableOrAmountDue}
                                 </Typography>
                             </TableCell>
-                            <TableCell>
+                            <TableCell align="center">
                                 <Typography variant="subtitle1" color="textSecondary">
-                                    To {repayOrBorrow}
+                                    {props.type === "borrow" ? "Loan" : props.type.charAt(0).toUpperCase() + props.type.slice(1)}
                                 </Typography>
                             </TableCell>
                         </TableRow>
@@ -61,7 +61,7 @@ export const BorrowerTable: React.FC<Props> = (props: Props) => {
 
                                         {row.icon}
                                         <Typography variant="subtitle1">
-                                            {props.type === "repay" ? row.currency : row.name}
+                                            {props.type === "borrow" ? row.currency : row.name}
                                         </Typography>
                                     </Grid>
                                 </TableCell>
@@ -72,12 +72,15 @@ export const BorrowerTable: React.FC<Props> = (props: Props) => {
                                         justify="center"
                                         alignItems="flex-start"
                                     >
-                                        <Grid item>
-                                            <Typography variant="subtitle1">
-                                                {row.amount.toLocaleString() + " " + row.currency}
-                                            </Typography>
-                                        </Grid>
                                         {props.type === "borrow" ?
+                                            <Grid item>
+                                                <Typography variant="subtitle1">
+                                                    {row.amount.toLocaleString() + " " + row.currency}
+                                                </Typography>
+                                            </Grid>
+                                            : null
+                                        }
+                                        {props.type === "collateral" ?
                                             <Grid item>
                                                 <Typography color="textSecondary">
                                                     {row.lp + " " + row.lpCurrency}
@@ -90,18 +93,21 @@ export const BorrowerTable: React.FC<Props> = (props: Props) => {
                                 <TableCell>
                                     <Grid
                                         container
-                                        direction="column"
+                                        direction="row"
                                         justify="center"
                                         alignItems="flex-start"
+                                        spacing={1}
                                     >
-                                        <Amount
-                                            adornment={props.type === "repay" ? row.currency : row.amountCurrency}
-                                            focusedAmountId={props.focusedAmountId}
-                                            error={props.error}
-                                            id={row.currency}
-                                            onBlur={props.onBlur}
-                                            onChange={props.onChange}
-                                            onFocus={props.onFocus} />
+                                        <Grid item>
+                                            <CustomButton
+                                                text={props.type === "collateral" ? "Withdraw" : props.type.charAt(0).toUpperCase() + props.type.slice(1)}
+                                                type="short" />
+                                        </Grid>
+                                        <Grid item>
+                                            <CustomButton
+                                                text={props.type === "collateral" ? "Provide" : "Repay"}
+                                                type="short" />
+                                        </Grid>
                                     </Grid>
                                 </TableCell>
                             </TableRow>
@@ -110,10 +116,6 @@ export const BorrowerTable: React.FC<Props> = (props: Props) => {
                     </TableBody>
                 </Table>
             </TableContainer>
-            <CustomButton disabled={props.amountValue <= 0 || props.error}
-                onClick={props.onButtonClick}
-                text={props.type.charAt(0).toUpperCase() + props.type.slice(1)}
-                type="long" />
         </Grid>
     );
 }
