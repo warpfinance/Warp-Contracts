@@ -1,7 +1,8 @@
 import * as React from "react";
 
-import { Amount, CustomButton } from "../../components"
 import { Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@material-ui/core";
+
+import { CustomButton } from "../../components"
 
 interface Props {
     amountCurrency: string,
@@ -17,7 +18,6 @@ interface Props {
 }
 
 export const BorrowerTable: React.FC<Props> = (props: Props) => {
-    const borrowOrBorrow = props.type === "borrow" ? "borrow" : "collateral";
     const availableOrAmountDue = props.type === "borrow" ? "Amount due" : "Available";
 
     return (
@@ -40,6 +40,14 @@ export const BorrowerTable: React.FC<Props> = (props: Props) => {
                                     {availableOrAmountDue}
                                 </Typography>
                             </TableCell>
+                            {props.type === "collateral" ?
+                                <TableCell>
+                                    <Typography variant="subtitle1" color="textSecondary">
+                                        Provided
+                                    </Typography>
+                                </TableCell> :
+                                null
+                            }
                             <TableCell align="center">
                                 <Typography variant="subtitle1" color="textSecondary">
                                     {props.type === "borrow" ? "Loan" : props.type.charAt(0).toUpperCase() + props.type.slice(1)}
@@ -61,7 +69,11 @@ export const BorrowerTable: React.FC<Props> = (props: Props) => {
 
                                         {row.icon}
                                         <Typography variant="subtitle1">
-                                            {props.type === "borrow" ? row.currency : row.name}
+                                            {props.type === "borrow" ?
+                                                row.currency
+                                                :
+                                                row.pool
+                                            }
                                         </Typography>
                                     </Grid>
                                 </TableCell>
@@ -78,18 +90,45 @@ export const BorrowerTable: React.FC<Props> = (props: Props) => {
                                                     {row.amount.toLocaleString() + " " + row.currency}
                                                 </Typography>
                                             </Grid>
-                                            : null
+                                            :
+                                            <Grid item>
+                                                <Typography variant="subtitle1">
+                                                    {row.available.toLocaleString() + " " + row.currency}
+                                                </Typography>
+                                            </Grid>
                                         }
                                         {props.type === "collateral" ?
                                             <Grid item>
                                                 <Typography color="textSecondary">
-                                                    {row.lp + " " + row.lpCurrency}
+                                                    {row.availableLp + " " + row.lpCurrency}
                                                 </Typography>
                                             </Grid> :
                                             null
                                         }
                                     </Grid>
                                 </TableCell>
+                                {props.type === "collateral" ?
+                                    <TableCell>
+                                        <Grid
+                                            container
+                                            direction="column"
+                                            justify="center"
+                                            alignItems="flex-start"
+                                        >
+                                            <Grid item>
+                                                <Typography variant="subtitle1">
+                                                    {row.provided.toLocaleString() + " " + row.currency}
+                                                </Typography>
+                                            </Grid>
+                                            <Grid item>
+                                                <Typography color="textSecondary">
+                                                    {row.providedLp + " " + row.lpCurrency}
+                                                </Typography>
+                                            </Grid>
+                                        </Grid>
+                                    </TableCell> :
+                                    null
+                                }
                                 <TableCell>
                                     <Grid
                                         container
