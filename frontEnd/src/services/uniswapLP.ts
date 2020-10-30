@@ -14,7 +14,7 @@ const uniswapLPAbi = [
   'function token1() external view returns (address)'
 ]
 
-export class UniswapLPToken extends ERC20Service {
+export class UniswapLPTokenService extends ERC20Service {
   provider: any
   contract: Contract
 
