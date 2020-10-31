@@ -42,6 +42,7 @@ const networks: { [K in NetworkId]: Network } = {
   }
 }
 
+export const supportedNetworks = networks;
 export const supportedNetworkIds = Object.keys(networks).map(Number) as NetworkId[]
 
 interface KnownTokenData {

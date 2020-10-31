@@ -2,11 +2,12 @@ import { InjectedConnector } from "@web3-react/injected-connector";
 import { NetworkConnector } from "@web3-react/network-connector";
 import { PortisConnector } from "@web3-react/portis-connector";
 import { WalletLinkConnector } from "@web3-react/walletlink-connector";
-import { supportedNetworkIds } from "./networks";
+import { supportedNetworks, supportedNetworkIds } from "./networks";
 
-const supportedNetworks = supportedNetworkIds;
 
-const MetaMask = new InjectedConnector({supportedChainIds: supportedNetworks});
+const MetaMask = new InjectedConnector({
+    supportedChainIds: supportedNetworkIds
+});
 
 const Coinbase = new WalletLinkConnector({
     url: "warp.exchange",
@@ -18,7 +19,7 @@ const portisAppId = "TODO: Get Portis ID";
 
 const Portis = new PortisConnector({
     dAppId: portisAppId,
-    networks: supportedNetworks
+    networks: supportedNetworkIds
 });
 
 const infuraNetworks = Object.entries(supportedNetworks).reduce(function (map: any, [key, value]: any) {
@@ -27,7 +28,8 @@ const infuraNetworks = Object.entries(supportedNetworks).reduce(function (map: a
 }, {});
 
 const Infura = new NetworkConnector({
-    urls: infuraNetworks
+    urls: infuraNetworks,
+    defaultChainId: 1
 });
 
 export default {
