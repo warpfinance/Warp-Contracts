@@ -1,8 +1,8 @@
 import * as React from "react";
 
+import { Amount, CustomButton } from "../../components";
 import { Avatar, Card, CardContent, Checkbox, Dialog, DialogContent, DialogTitle, FormControl, Grid, MenuItem, Select, Typography } from "@material-ui/core";
 
-import { CustomButton } from "../buttons/CustomButton";
 import { makeStyles } from "@material-ui/core";
 
 const useStyles = makeStyles(theme => ({
@@ -36,20 +36,16 @@ interface Props {
     action: string,
     amount: number,
     currency: string,
+    data: any,
+    error: boolean,
     handleClose: (event: {}, reason: "backdropClick" | "escapeKeyDown") => void,
     handleSelect: (event: React.ChangeEvent<{
         name?: string | undefined;
         value: string;
     }>, child: React.ReactNode) => void,
     onButtonClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void,
+    onChange: (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void,
     open: boolean,
-}
-
-const data = {
-    borrowLimit: 200,
-    borrowLimitUsed: 200,
-    interestRate: 1.97,
-    yieldFarmingApy: 12,
 }
 
 export const BigModal: React.FC<Props> = (props: Props) => {
@@ -74,7 +70,7 @@ export const BigModal: React.FC<Props> = (props: Props) => {
                     alignItems="center"
                 >
                     <DialogTitle >{props.action}</DialogTitle>
-                    <Typography variant="subtitle1" color="textSecondary" >Please confirm amount and select stable coin</Typography>
+                    <Typography variant="subtitle1" color="textSecondary" >Enter amount and select stable coin</Typography>
                     <Grid
                         container
                         direction="column"
@@ -84,28 +80,12 @@ export const BigModal: React.FC<Props> = (props: Props) => {
                         <Grid
                             container
                             direction="row"
+                            justify="center"
+                            alignItems="center"
+                            spacing={1}
                         >
                             <Grid item>
-                                <Typography variant="subtitle2" color="textSecondary" >
-                                    Amount
-                                </Typography>
-                                <Card className={classes.cardTile}>
-                                    <CardContent>
-                                        <Grid
-                                            container
-                                            direction="row"
-                                            justify="flex-start"
-                                        >
-                                            <Checkbox
-                                                checked={checked}
-                                                onChange={handleCheck}
-                                            />
-                                            <Typography variant="h6">
-                                                {props.amount}
-                                            </Typography>
-                                        </Grid>
-                                    </CardContent>
-                                </Card>
+                                <Amount adornment="" onChange={props.onChange} error={props.error} />
                             </Grid>
                             <Grid item>
                                 <Typography variant="subtitle2" color="textSecondary" >
@@ -182,25 +162,6 @@ export const BigModal: React.FC<Props> = (props: Props) => {
                                     </FormControl>
                                 </Grid>
                             </Grid>
-                            <Grid item>
-                                <Typography variant="subtitle2" color="textSecondary" >
-                                    Yield farming APY
-                                </Typography>
-                                <Card className={classes.cardTile}>
-                                    <CardContent>
-                                        <Grid
-                                            container
-                                            direction="column"
-                                            justify="flex-start"
-                                            alignItems="center"
-                                        >
-                                            <Typography variant="h6">
-                                                {data.interestRate.toLocaleString()}%
-                                        </Typography>
-                                        </Grid>
-                                    </CardContent>
-                                </Card>
-                            </Grid>
                         </Grid>
                         <Grid
                             container
@@ -221,7 +182,7 @@ export const BigModal: React.FC<Props> = (props: Props) => {
                                             alignItems="center"
                                         >
                                             <Typography variant="h6">
-                                                ${data.borrowLimit.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                                                ${props.data.borrowLimit.toLocaleString(undefined, { minimumFractionDigits: 2 })}
                                             </Typography>
                                         </Grid>
                                     </CardContent>
@@ -240,7 +201,7 @@ export const BigModal: React.FC<Props> = (props: Props) => {
                                             alignItems="center"
                                         >
                                             <Typography variant="h6">
-                                                {data.interestRate.toLocaleString(undefined, { minimumFractionDigits: 2 })}%
+                                                {props.data.interestRate.toLocaleString(undefined, { minimumFractionDigits: 2 })}%
                                         </Typography>
                                         </Grid>
                                     </CardContent>
@@ -259,7 +220,7 @@ export const BigModal: React.FC<Props> = (props: Props) => {
                                             alignItems="center"
                                         >
                                             <Typography variant="h6">
-                                                ${data.borrowLimitUsed.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                                                ${props.data.borrowLimitUsed.toLocaleString(undefined, { minimumFractionDigits: 2 })}
                                             </Typography>
                                         </Grid>
                                     </CardContent>
@@ -267,7 +228,7 @@ export const BigModal: React.FC<Props> = (props: Props) => {
                             </Grid>
                         </Grid>
                         <CustomButton
-                            disabled={checked !== true}
+                            disabled={props.error}
                             onClick={props.onButtonClick}
                             text={props.action.charAt(0).toUpperCase() + props.action.slice(1)}
                             type="short" />

@@ -12,8 +12,10 @@ interface Props {
 
 const data = {
     collateral: 123.00,
-    borrowPercentage: 10, 
+    borrowPercentage: 10,
     interestRate: 1.97,
+    borrowLimit: 200,
+    borrowLimitUsed: 50,
 }
 
 //@ts-ignore
@@ -53,10 +55,8 @@ export const Borrower: React.FC<Props> = (props: Props) => {
     /* eslint-enable @typescript-eslint/no-unused-vars */
     const [collateralAmountPool, setCollateralAmountPool] = React.useState("");
     const [collateralAmountValue, setCollateralAmountValue] = React.useState(0);
-    const [collateralFocusedAmountId, setCollateralFocusedAmountId] = React.useState("");
-    const [borrowAmountCurrency, setBorrowAmountCurrency] = React.useState("");
+    const [borrowAmountCurrency, setBorrowAmountCurrency] = React.useState("DAI");
     const [borrowAmountValue, setBorrowAmountValue] = React.useState(0);
-    const [borrowFocusedAmountId, setBorrowFocusedAmountId] = React.useState("");
     const [withdrawModalOpen, setWithdrawModalOpen] = useState(false);
     const [provideModalOpen, setProvideModalOpen] = useState(false);
     const [borrowModalOpen, setBorrowModalOpen] = useState(false);
@@ -76,6 +76,13 @@ export const Borrower: React.FC<Props> = (props: Props) => {
 
     const handleBorrowClose = (event: {}, reason: "backdropClick" | "escapeKeyDown") => {
         setBorrowModalOpen(false);
+    }
+
+    const handleBorrowCurrencySelect = (event: React.ChangeEvent<{
+        name?: string | undefined;
+        value: string;
+    }>, child: React.ReactNode) => {
+        setBorrowAmountCurrency(event.target.value);
     }
 
     const handleProvideClose = (event: {}, reason: "backdropClick" | "escapeKeyDown") => {
@@ -101,10 +108,8 @@ export const Borrower: React.FC<Props> = (props: Props) => {
     }
 
     const isBorrowError = (value: any, currency: string) => {
-        const index = borrowData.findIndex((value: any) => value.currency === currency);
-        if (index < 0) return true;
         if (value <= 0 ||
-            value > borrowData[index].amount) {
+            value > data.borrowLimit - data.borrowLimitUsed) {
             return true;
         }
         return false;
@@ -128,40 +133,11 @@ export const Borrower: React.FC<Props> = (props: Props) => {
 
     const onCollateralAmountChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
         setCollateralAmountPool(event.target.id);
-        setCollateralFocusedAmountId(event.target.id);
         setCollateralAmountValue(Number(event.target.value));
     };
 
-    const onCollateralBlur = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-        if (collateralAmountValue === 0) {
-            setCollateralFocusedAmountId("");
-        }
-    };
-
-    const onCollateralFocus = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-        console.log(event.target.id)
-        if (event !== null && event !== undefined && collateralFocusedAmountId !== event.target.id) {
-            setCollateralFocusedAmountId(event.target.id);
-        }
-    };
-
     const onBorrowAmountChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-        setBorrowFocusedAmountId(event.target.id)
-        setBorrowAmountCurrency(event.target.id);
         setBorrowAmountValue(Number(event.target.value));
-    };
-
-    const onBorrowBlur = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-        if (borrowAmountValue === 0) {
-            setBorrowFocusedAmountId("");
-        }
-    };
-
-    const onBorrowFocus = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-        console.log(event.target.id)
-        if (event !== null && event !== undefined && borrowFocusedAmountId !== event.target.id) {
-            setBorrowFocusedAmountId(event.target.id);
-        }
     };
 
     const handleCollateralSelect = (event: React.ChangeEvent<{
@@ -172,9 +148,11 @@ export const Borrower: React.FC<Props> = (props: Props) => {
     };
 
     const onCollateral = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+        // TO-DO: Web3 integration
     }
 
     const onBorrow = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+        // TO-DO: Web3 integration
     }
 
     return (
@@ -227,24 +205,15 @@ export const Borrower: React.FC<Props> = (props: Props) => {
                 </Grid>
             </Grid >
             <BigModal
-                action="Collateral"
-                amount={collateralAmountValue}
-                currency="DAI"
-                handleClose={handleWithdrawClose}
-                handleSelect={handleCollateralSelect}
-                onButtonClick={onCollateral}
-                open={withdrawModalOpen} />
-            <RowModal
                 action="Borrow"
                 amount={borrowAmountValue}
-                amountCurrency={borrowAmountCurrency}
-                amountIconSrc={`${borrowAmountCurrency.toLowerCase()}.png`}
-                onButtonClick={onBorrow}
+                currency={borrowAmountCurrency}
+                data={data}
+                error={borrowError || borrowAmountValue === 0}
                 handleClose={handleBorrowClose}
-                reward={100}
-                rewardCurrency="LP"
-                rewardIconSrcPrimary="eth.png"
-                rewardIconSrcSecondary={`${borrowAmountCurrency.toLowerCase()}.png`}
+                handleSelect={handleBorrowCurrencySelect}
+                onButtonClick={onBorrow}
+                onChange={onBorrowAmountChange}
                 open={borrowModalOpen} />
         </React.Fragment>
     );
