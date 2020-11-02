@@ -9,7 +9,6 @@ import { makeStyles } from "@material-ui/core/styles";
 // TO-DO: Web3 integration
 const data = {
     walletAddress: '0xeB31973E0FeBF3e3D7058234a5eBbAe1aB4B8c23',
-    walletBalance: 0.0,
 }
 
 const useStyles = makeStyles(theme => ({
@@ -112,17 +111,6 @@ export const Header: React.FC<Props> = (props: Props) => {
                         item
                         md
                     >
-                        <CustomButton
-                            disabled={false}
-                            iconSrc="warpToken.svg"
-                            text={data.walletBalance.toLocaleString(undefined, { minimumFractionDigits: 1 })}
-                            type={"short"}
-                            wallet={true} />
-                    </Grid>
-                    <Grid
-                        item
-                        md
-                    >
                         {connectButton}
                     </Grid>
                 </React.Fragment>
@@ -173,7 +161,7 @@ export const Header: React.FC<Props> = (props: Props) => {
         >
             <Grid
                 item
-                md={(!props.home) ? 5 : 1}
+                md={(!props.home) ? 7 : 1}
             >
                 <RouterLink to={"/"}>
                     <img className={classes.logo} src={"warp logo.svg"} alt={"Warp"}></img>
