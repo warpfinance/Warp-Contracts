@@ -60,8 +60,12 @@ export const Borrower: React.FC<Props> = (props: Props) => {
     const [borrowAmountCurrency, setBorrowAmountCurrency] = React.useState("DAI");
     const [borrowAmountValue, setBorrowAmountValue] = React.useState(0);
     const [borrowError, setBorrowError] = useState(false);
-    const [provideModalOpen, setProvideModalOpen] = useState(false);
     const [borrowModalOpen, setBorrowModalOpen] = useState(false);
+    const [provideAmountValue, setProvideAmountValue] = React.useState(0);
+    const [provideError, setProvideError] = useState(false);
+    const [provideLpValue, setProvideLpValue] = React.useState(0);
+    const [provideModalOpen, setProvideModalOpen] = useState(false);
+    const [providePool, setProvidePool] = React.useState("");
     const [repayModalOpen, setRepayModalOpen] = useState(false);
     const [withdrawAmountValue, setWithdrawAmountValue] = React.useState(0);
     const [withdrawError, setWithdrawError] = useState(false);
@@ -70,13 +74,18 @@ export const Borrower: React.FC<Props> = (props: Props) => {
     const [withdrawPool, setWithdrawPool] = React.useState("");
 
     React.useEffect(() => {
-        if (withdrawAmountValue !== 0 && withdrawPool !== "") {
-            setWithdrawError(isWithdrawError(withdrawAmountValue, withdrawPool));
-        }
         if (borrowAmountValue !== 0 && borrowAmountCurrency !== "") {
             setBorrowError(isBorrowError(borrowAmountValue, borrowAmountCurrency));
         }
-    }, [borrowAmountValue, borrowAmountCurrency, withdrawAmountValue, withdrawPool]
+        if (provideAmountValue !== 0 && providePool !== "") {
+            setProvideError(isProvideError(provideAmountValue, providePool));
+        }
+        if (withdrawAmountValue !== 0 && withdrawPool !== "") {
+            setWithdrawError(isWithdrawError(withdrawAmountValue, withdrawPool));
+        }
+    }, [borrowAmountValue, borrowAmountCurrency,
+        provideAmountValue, providePool,
+        withdrawAmountValue, withdrawPool]
     );
 
     const handleBorrowClose = (event: {}, reason: "backdropClick" | "escapeKeyDown") => {
@@ -102,6 +111,24 @@ export const Borrower: React.FC<Props> = (props: Props) => {
         setWithdrawModalOpen(false);
     }
 
+    const isBorrowError = (value: any, currency: string) => {
+        if (value <= 0 ||
+            value > data.borrowLimit - data.borrowLimitUsed) {
+            return true;
+        }
+        return false;
+    }
+
+    const isProvideError = (value: any, pool: string) => {
+        const index = collateralData.findIndex((value: any) => value.pool === pool);
+        if (index < 0) return true;
+        if (value <= 0 ||
+            value > collateralData[index].available) {
+            return true;
+        }
+        return false;
+    }
+
     const isWithdrawError = (value: any, pool: string) => {
         const index = collateralData.findIndex((value: any) => value.pool === pool);
         if (index < 0) return true;
@@ -112,19 +139,28 @@ export const Borrower: React.FC<Props> = (props: Props) => {
         return false;
     }
 
-    const isBorrowError = (value: any, currency: string) => {
-        if (value <= 0 ||
-            value > data.borrowLimit - data.borrowLimitUsed) {
-            return true;
-        }
-        return false;
-    }
+    const onBorrowAmountChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+        setBorrowAmountValue(Number(event.target.value));
+    };
+
+    const onProvideAmountChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+        // TO-DO: Web3 integration, calculate LP value
+        setProvideLpValue(Number(event.target.value));
+        setProvideAmountValue(Number(event.target.value));
+    };
+
+    const onWithdrawAmountChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+        // TO-DO: Web3 integration, calculate LP value
+        setWithdrawLpValue(Number(event.target.value));
+        setWithdrawAmountValue(Number(event.target.value));
+    };
 
     const onBorrowClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
         setBorrowModalOpen(true);
     }
 
     const onProvideClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+        setProvidePool(event.currentTarget.id);
         setProvideModalOpen(true);
     }
 
@@ -137,21 +173,18 @@ export const Borrower: React.FC<Props> = (props: Props) => {
         setWithdrawModalOpen(true);
     }
 
-    const onWithdrawAmountChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-        // TO-DO: Web3 integration, calculate LP value
-        setWithdrawLpValue(Number(event.target.value));
-        setWithdrawAmountValue(Number(event.target.value));
-    };
-
-    const onBorrowAmountChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-        setBorrowAmountValue(Number(event.target.value));
-    };
-
     const onBorrow = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+        setBorrowModalOpen(false);
+        // TO-DO: Web3 integration
+    }
+
+    const onProvide = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+        setProvideModalOpen(false);
         // TO-DO: Web3 integration
     }
 
     const onWithdraw = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+        setWithdrawModalOpen(false);
         // TO-DO: Web3 integration
     }
 
@@ -215,6 +248,18 @@ export const Borrower: React.FC<Props> = (props: Props) => {
                 pool={withdrawPool}
                 poolIconSrcPrimary={poolIcons[withdrawPool]?.primarySrc || ""}
                 poolIconSrcSecondary={poolIcons[withdrawPool]?.secondarySrc || ""}
+            />
+            <RowModal
+                action={"Provide Collateral"}
+                error={provideError}
+                handleClose={handleProvideClose}
+                lp={provideLpValue}
+                onButtonClick={onProvide}
+                onChange={onProvideAmountChange}
+                open={provideModalOpen}
+                pool={providePool}
+                poolIconSrcPrimary={poolIcons[providePool]?.primarySrc || ""}
+                poolIconSrcSecondary={poolIcons[providePool]?.secondarySrc || ""}
             />
             <BigModal
                 action="Borrow"

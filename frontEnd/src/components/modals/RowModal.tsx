@@ -73,6 +73,9 @@ export const RowModal: React.FC<Props> = (props: Props) => {
                             {props.action.split(" ")[0]}
                         </Typography>
                         <Amount adornment="USD" onChange={props.onChange} error={props.error} fullWidth={true} />
+                        <Typography variant="subtitle2" color="textSecondary" >
+                            Amount of LP
+                        </Typography>
                         <Card>
                             <CardContent>
                                 <Grid
@@ -82,7 +85,7 @@ export const RowModal: React.FC<Props> = (props: Props) => {
                                     alignItems="center"
                                 >
                                     <Typography variant="subtitle1">
-                                        {props.lp + " LP"}
+                                        {props.lp + " USD"}
                                     </Typography>
                                 </Grid>
                             </CardContent>
