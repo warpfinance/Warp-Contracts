@@ -5,6 +5,7 @@ import { Header, InformationCard, LenderTable, SimpleModal } from "../../compone
 
 import { useState } from "react";
 
+// TO-DO: Web3 integration
 const data = {
     stableCoinDeposit: 0.00,
     stableCoinReward: 4545,
@@ -116,9 +117,13 @@ export const Lender: React.FC<Props> = (props: Props) => {
     };
 
     const onLend = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+        setLendModalOpen(false);
+        // TO-DO: Web3 integration
     }
 
     const onWithdraw = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+        setWithdrawModalOpen(false);
+        // TO-DO: Web3 integration
     }
 
     return (

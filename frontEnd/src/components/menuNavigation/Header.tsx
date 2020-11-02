@@ -6,6 +6,7 @@ import { CustomButton } from "../../components"
 import { Link as RouterLink } from 'react-router-dom';
 import { makeStyles } from "@material-ui/core/styles";
 
+// TO-DO: Web3 integration
 const data = {
     walletAddress: '0xeB31973E0FeBF3e3D7058234a5eBbAe1aB4B8c23',
     walletBalance: 0.0,
@@ -52,46 +53,59 @@ export const Header: React.FC<Props> = (props: Props) => {
                         item
                         md
                     >
-                        <Typography>
-                            <RouterLink className={classes.routerLink} to={"/dashboard"}>
-                                <Link className={classes.link} color="textSecondary" href="" underline="none">
-                                    Dashboard
+                        {connected === true ?
+                            <Typography>
+                                <RouterLink className={classes.routerLink} to={"/dashboard"}>
+                                    <Link className={classes.link} color="textSecondary" href="" underline="none">
+                                        Dashboard
                                     </Link>
-                            </RouterLink>
-                        </Typography>
-                    </Grid>
-                    <Grid
-                        item
-                        md
-                    >
-                        <Typography>
-                            <RouterLink className={classes.routerLink} to={"/lender"}>
-                                <Link className={classes.link} color="textSecondary" href="" underline="none">
-                                    Lender
-                                    </Link>
-                            </RouterLink>
-                        </Typography>
-                    </Grid>
-                    <Grid
-                        item
-                        md
-                    >
-                        <Typography>
-                            <RouterLink className={classes.routerLink} to={"/borrower"}>
-                                <Link className={classes.link} color="textSecondary" href="" underline="none">
-                                    Borrower
-                                    </Link>
-                            </RouterLink>
-                        </Typography>
-                    </Grid>
-                    <Grid
-                        item
-                        md
-                    >
-                        <Typography>
+                                </RouterLink>
+                            </Typography> :
                             <Typography className={classes.link} color="textSecondary">
-                                Vote
+                                Dashboard
                             </Typography>
+                        }
+                    </Grid>
+                    <Grid
+                        item
+                        md
+                    >
+                        {connected === true ?
+                            <Typography>
+                                <RouterLink className={classes.routerLink} to={"/lender"}>
+                                    <Link className={classes.link} color="textSecondary" href="" underline="none">
+                                        Lender
+                                    </Link>
+                                </RouterLink>
+                            </Typography> :
+                            <Typography className={classes.link} color="textSecondary">
+                                Lender
+                            </Typography>
+                        }
+                    </Grid>
+                    <Grid
+                        item
+                        md
+                    >
+                        {connected === true ?
+                            <Typography>
+                                <RouterLink className={classes.routerLink} to={"/borrower"}>
+                                    <Link className={classes.link} color="textSecondary" href="" underline="none">
+                                        Borrower
+                                    </Link>
+                                </RouterLink>
+                            </Typography> :
+                            <Typography className={classes.link} color="textSecondary">
+                                Borrower
+                            </Typography>
+                        }
+                    </Grid>
+                    <Grid
+                        item
+                        md
+                    >
+                        <Typography className={classes.link} color="textSecondary">
+                            Vote
                         </Typography>
                     </Grid>
                     <Grid

@@ -2,6 +2,7 @@ import * as React from "react";
 
 import { Card, CardContent, Grid, Typography } from "@material-ui/core";
 
+// TO-DO: Web3 integration
 const borrowData = {
     totalMarket: 1253253.47,
     totalMarketApy: 1.25,
@@ -9,6 +10,7 @@ const borrowData = {
     numberOfParticipants: 6723
 }
 
+// TO-DO: Web3 integration
 const lendData = {
     totalMarket: 2556448.70,
     totalMarketApy: 3.40,
