@@ -13,6 +13,7 @@ const useStyles = makeStyles(theme => ({
 
 interface Props { }
 
+// TO-DO: Web3 integration
 const data = {
     borrowBalance: 0.00,
     borrowLimitPercentage: 0,

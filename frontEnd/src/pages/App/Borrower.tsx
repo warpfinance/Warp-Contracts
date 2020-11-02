@@ -10,6 +10,7 @@ interface Props {
 
 }
 
+// TO-DO: Web3 integration
 const data = {
     collateral: 123.00,
     borrowPercentage: 10,
@@ -35,6 +36,7 @@ function createBorrowData(icon, amount, currency) {
     return { icon, amount, currency, };
 }
 
+// TO-DO: Web3 integration
 const collateralData = [
     createWithdrawData(<AvatarGroup max={2}><Avatar alt={poolIcons["ETH - DAI"].primarySrc} src={poolIcons["ETH - DAI"].primarySrc} />
         <Avatar alt={poolIcons["ETH - DAI"].secondarySrc} src={poolIcons["ETH - DAI"].secondarySrc} /></AvatarGroup>,
@@ -50,6 +52,7 @@ const collateralData = [
         "USDT - wETH", 456, 456, "USD", 400, 400, "LP"),
 ];
 
+// TO-DO: Web3 integration
 const borrowData = [
     createBorrowData(<Avatar alt={"dai.png"} src={"dai.png"} />, 100, "DAI"),
     createBorrowData(<Avatar alt={"usdt.png"} src={"usdt.png"} />, 249, "USDT"),
