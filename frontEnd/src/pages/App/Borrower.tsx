@@ -1,7 +1,7 @@
 import * as React from "react";
 
+import { AmountModal, BigModal, BorrowerTable, Header, InformationCard, RowModal } from "../../components";
 import { Avatar, Grid } from "@material-ui/core";
-import { BigModal, BorrowerTable, Header, InformationCard, RowModal } from "../../components";
 
 import { AvatarGroup } from "@material-ui/lab";
 import { useState } from "react";
@@ -17,6 +17,12 @@ const data = {
     interestRate: 1.97,
     borrowLimit: 200,
     borrowLimitUsed: 50,
+}
+
+const currencyIcons: any = {
+    "DAI": "dai.png",
+    "USDT": "usdt.png",
+    "USDC": "usdc.png",
 }
 
 const poolIcons: any = {
@@ -54,9 +60,9 @@ const collateralData = [
 
 // TO-DO: Web3 integration
 const borrowData = [
-    createBorrowData(<Avatar alt={"dai.png"} src={"dai.png"} />, 100, "DAI"),
-    createBorrowData(<Avatar alt={"usdt.png"} src={"usdt.png"} />, 249, "USDT"),
-    createBorrowData(<Avatar alt={"usdc.png"} src={"usdc.png"} />, 68, "USDC"),
+    createBorrowData(<Avatar alt={currencyIcons["DAI"]} src={currencyIcons["DAI"]} />, 100, "DAI"),
+    createBorrowData(<Avatar alt={currencyIcons["USDT"]} src={currencyIcons["USDT"]} />, 249, "USDT"),
+    createBorrowData(<Avatar alt={currencyIcons["USDC"]} src={currencyIcons["USDC"]} />, 68, "USDC"),
 ];
 
 export const Borrower: React.FC<Props> = (props: Props) => {
@@ -86,11 +92,15 @@ export const Borrower: React.FC<Props> = (props: Props) => {
         if (provideAmountValue !== 0 && providePool !== "") {
             setProvideError(isProvideError(provideAmountValue, providePool));
         }
+        if (repayAmountValue !== 0 && repayAmountCurrency !== "") {
+            setRepayError(isRepayError(repayAmountValue, repayAmountCurrency));
+        }
         if (withdrawAmountValue !== 0 && withdrawPool !== "") {
             setWithdrawError(isWithdrawError(withdrawAmountValue, withdrawPool));
         }
     }, [borrowAmountValue, borrowAmountCurrency,
         provideAmountValue, providePool,
+        repayAmountValue, repayAmountCurrency,
         withdrawAmountValue, withdrawPool]
     );
 
@@ -135,6 +145,16 @@ export const Borrower: React.FC<Props> = (props: Props) => {
         return false;
     }
 
+    const isRepayError = (value: any, currency: string) => {
+        const index = borrowData.findIndex((value: any) => value.currency === currency);
+        if (index < 0) return true;
+        if (value <= 0 ||
+            value > borrowData[index].amount) {
+            return true;
+        }
+        return false;
+    }
+
     const isWithdrawError = (value: any, pool: string) => {
         const index = collateralData.findIndex((value: any) => value.pool === pool);
         if (index < 0) return true;
@@ -155,6 +175,10 @@ export const Borrower: React.FC<Props> = (props: Props) => {
         setProvideAmountValue(Number(event.target.value));
     };
 
+    const onRepayAmountChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+        setRepayAmountValue(Number(event.target.value));
+    };
+
     const onWithdrawAmountChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
         // TO-DO: Web3 integration, calculate LP value
         setWithdrawLpValue(Number(event.target.value));
@@ -171,6 +195,7 @@ export const Borrower: React.FC<Props> = (props: Props) => {
     }
 
     const onRepayClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+        setRepayAmountCurrency(event.currentTarget.id);
         setRepayModalOpen(true);
     }
 
@@ -186,6 +211,11 @@ export const Borrower: React.FC<Props> = (props: Props) => {
 
     const onProvide = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
         setProvideModalOpen(false);
+        // TO-DO: Web3 integration
+    }
+
+    const onRepay = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+        setRepayModalOpen(false);
         // TO-DO: Web3 integration
     }
 
@@ -278,6 +308,17 @@ export const Borrower: React.FC<Props> = (props: Props) => {
                 onButtonClick={onBorrow}
                 onChange={onBorrowAmountChange}
                 open={borrowModalOpen} />
+            <AmountModal
+                action={"Repay " + repayAmountCurrency}
+                amount={repayAmountValue}
+                currency={repayAmountCurrency}
+                error={repayError}
+                iconSrc={currencyIcons[repayAmountCurrency] || ""}
+                handleClose={handleRepayClose}
+                onButtonClick={onRepay}
+                onChange={onRepayAmountChange}
+                open={repayModalOpen}
+            />
         </React.Fragment>
     );
 }
