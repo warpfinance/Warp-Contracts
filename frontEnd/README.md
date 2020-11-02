@@ -16,7 +16,7 @@ npm install -g @zeplin/cli-connect-react-plugin
 
 Split frontEnd directory into its own branch
 ```bash
-git subtree split --prefix src -b deploy
+git subtree split --prefix master -b deploy
 ```
 
 Deploy on Heroku
