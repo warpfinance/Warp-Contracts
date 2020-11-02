@@ -1,6 +1,5 @@
 import logdown from 'logdown'
-
-import { LOGGER_ID } from '../common/constants'
+import { LOGGER_ID } from './constants'
 
 export const getLogger = (title: string) => {
   const logger = logdown(`${LOGGER_ID}::${title}`)

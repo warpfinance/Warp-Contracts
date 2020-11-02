@@ -1,4 +1,3 @@
-import { isNotNull } from '../util/type-utils'
 import { DEFAULT_TOKEN } from './constants'
 import { getImageUrl, Token } from './token'
 
@@ -43,6 +42,7 @@ const networks: { [K in NetworkId]: Network } = {
   }
 }
 
+export const supportedNetworks = networks;
 export const supportedNetworkIds = Object.keys(networks).map(Number) as NetworkId[]
 
 interface KnownTokenData {
@@ -156,6 +156,10 @@ export const getDefaultToken = (networkId: number) => {
   }
 
   return getToken(networkId, DEFAULT_TOKEN)
+}
+
+const isNotNull = <T>(x: T | null): x is T => {
+  return x !== null
 }
 
 export const getTokensByNetwork = (networkId: number): Token[] => {
