@@ -53,46 +53,59 @@ export const Header: React.FC<Props> = (props: Props) => {
                         item
                         md
                     >
-                        <Typography>
-                            <RouterLink className={classes.routerLink} to={"/dashboard"}>
-                                <Link className={classes.link} color="textSecondary" href="" underline="none">
-                                    Dashboard
+                        {connected === true ?
+                            <Typography>
+                                <RouterLink className={classes.routerLink} to={"/dashboard"}>
+                                    <Link className={classes.link} color="textSecondary" href="" underline="none">
+                                        Dashboard
                                     </Link>
-                            </RouterLink>
-                        </Typography>
-                    </Grid>
-                    <Grid
-                        item
-                        md
-                    >
-                        <Typography>
-                            <RouterLink className={classes.routerLink} to={"/lender"}>
-                                <Link className={classes.link} color="textSecondary" href="" underline="none">
-                                    Lender
-                                    </Link>
-                            </RouterLink>
-                        </Typography>
-                    </Grid>
-                    <Grid
-                        item
-                        md
-                    >
-                        <Typography>
-                            <RouterLink className={classes.routerLink} to={"/borrower"}>
-                                <Link className={classes.link} color="textSecondary" href="" underline="none">
-                                    Borrower
-                                    </Link>
-                            </RouterLink>
-                        </Typography>
-                    </Grid>
-                    <Grid
-                        item
-                        md
-                    >
-                        <Typography>
+                                </RouterLink>
+                            </Typography> :
                             <Typography className={classes.link} color="textSecondary">
-                                Vote
+                                Dashboard
                             </Typography>
+                        }
+                    </Grid>
+                    <Grid
+                        item
+                        md
+                    >
+                        {connected === true ?
+                            <Typography>
+                                <RouterLink className={classes.routerLink} to={"/lender"}>
+                                    <Link className={classes.link} color="textSecondary" href="" underline="none">
+                                        Lender
+                                    </Link>
+                                </RouterLink>
+                            </Typography> :
+                            <Typography className={classes.link} color="textSecondary">
+                                Lender
+                            </Typography>
+                        }
+                    </Grid>
+                    <Grid
+                        item
+                        md
+                    >
+                        {connected === true ?
+                            <Typography>
+                                <RouterLink className={classes.routerLink} to={"/borrower"}>
+                                    <Link className={classes.link} color="textSecondary" href="" underline="none">
+                                        Borrower
+                                    </Link>
+                                </RouterLink>
+                            </Typography> :
+                            <Typography className={classes.link} color="textSecondary">
+                                Borrower
+                            </Typography>
+                        }
+                    </Grid>
+                    <Grid
+                        item
+                        md
+                    >
+                        <Typography className={classes.link} color="textSecondary">
+                            Vote
                         </Typography>
                     </Grid>
                     <Grid

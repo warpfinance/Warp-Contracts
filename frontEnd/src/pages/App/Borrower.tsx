@@ -69,6 +69,9 @@ export const Borrower: React.FC<Props> = (props: Props) => {
     const [provideLpValue, setProvideLpValue] = React.useState(0);
     const [provideModalOpen, setProvideModalOpen] = useState(false);
     const [providePool, setProvidePool] = React.useState("");
+    const [repayAmountCurrency, setRepayAmountCurrency] = React.useState("DAI");
+    const [repayAmountValue, setRepayAmountValue] = React.useState(0);
+    const [repayError, setRepayError] = useState(false);
     const [repayModalOpen, setRepayModalOpen] = useState(false);
     const [withdrawAmountValue, setWithdrawAmountValue] = React.useState(0);
     const [withdrawError, setWithdrawError] = useState(false);
