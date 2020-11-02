@@ -27,6 +27,7 @@ interface Props {
     type: "long" | "short",
     disabled?: boolean,
     href?: string,
+    id?: string,
     iconSrc?: string,
     onClick?: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void,
     wallet?: boolean,
@@ -66,6 +67,7 @@ export const CustomButton: React.FC<Props> = (props: Props) => {
         color={color}
         className={classes.button}
         disabled={props.disabled}
+        id={props.id}
         onClick={props.onClick}
         startIcon={icon}
         style={{

@@ -53,7 +53,7 @@ export const Borrower: React.FC<Props> = (props: Props) => {
     /* eslint-disable @typescript-eslint/no-unused-vars */
     const [collateralAmountCurrency, setCollateralAmountCurrency] = React.useState("DAI");
     /* eslint-enable @typescript-eslint/no-unused-vars */
-    const [collateralAmountPool, setCollateralAmountPool] = React.useState("");
+    const [withdrawPool, setWithdrawPool] = React.useState("");
     const [collateralAmountValue, setCollateralAmountValue] = React.useState(0);
     const [borrowAmountCurrency, setBorrowAmountCurrency] = React.useState("DAI");
     const [borrowAmountValue, setBorrowAmountValue] = React.useState(0);
@@ -65,13 +65,10 @@ export const Borrower: React.FC<Props> = (props: Props) => {
     const [borrowError, setBorrowError] = useState(false);
 
     React.useEffect(() => {
-        if (collateralAmountValue !== 0 && collateralAmountPool !== "") {
-            setCollateralError(isCollateralError(collateralAmountValue, collateralAmountPool));
-        }
         if (borrowAmountValue !== 0 && borrowAmountCurrency !== "") {
             setBorrowError(isBorrowError(borrowAmountValue, borrowAmountCurrency));
         }
-    }, [collateralAmountValue, collateralAmountPool, borrowAmountValue, borrowAmountCurrency]
+    }, [collateralAmountValue, borrowAmountValue, borrowAmountCurrency]
     );
 
     const handleBorrowClose = (event: {}, reason: "backdropClick" | "escapeKeyDown") => {
@@ -128,11 +125,11 @@ export const Borrower: React.FC<Props> = (props: Props) => {
     }
 
     const onWithdrawClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+        setWithdrawPool(event.currentTarget.id);
         setWithdrawModalOpen(true);
     }
 
     const onCollateralAmountChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-        setCollateralAmountPool(event.target.id);
         setCollateralAmountValue(Number(event.target.value));
     };
 
@@ -147,11 +144,11 @@ export const Borrower: React.FC<Props> = (props: Props) => {
         setCollateralAmountCurrency(event.target.value);
     };
 
-    const onCollateral = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+    const onBorrow = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
         // TO-DO: Web3 integration
     }
 
-    const onBorrow = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+    const onWithdraw = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
         // TO-DO: Web3 integration
     }
 
@@ -204,6 +201,15 @@ export const Borrower: React.FC<Props> = (props: Props) => {
                     </Grid>
                 </Grid>
             </Grid >
+            <RowModal
+                action={"Withdraw Collateral"}
+                handleClose={handleWithdrawClose}
+                onButtonClick={onWithdraw}
+                open={withdrawModalOpen}
+                pool={withdrawPool}
+                rewardIconSrcPrimary={""}
+                rewardIconSrcSecondary={""}
+            />
             <BigModal
                 action="Borrow"
                 amount={borrowAmountValue}

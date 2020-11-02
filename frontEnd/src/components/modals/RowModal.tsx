@@ -19,30 +19,17 @@ const useStyles = makeStyles(theme => ({
 
 interface Props {
     action: string,
-    amount: number,
-    amountCurrency: string,
-    amountIconSrc: string,
     handleClose: (event: {}, reason: "backdropClick" | "escapeKeyDown") => void,
     onButtonClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void,
     open: boolean,
-    reward: number,
-    rewardCurrency: string,
+    pool: string,
     rewardIconSrcPrimary: string,
     rewardIconSrcSecondary: string,
 }
 
 export const RowModal: React.FC<Props> = (props: Props) => {
     const classes = useStyles();
-    const [amountChecked, setAmountChecked] = React.useState(false);
-    const [rewardChecked, setRewardChecked] = React.useState(false);
-
-    const handleAmountCheck = (event: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
-        setAmountChecked(event.target.checked);
-    };
-
-    const handleRewardCheck = (event: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
-        setRewardChecked(event.target.checked);
-    };
+    const [amount, setAmount] = React.useState(false);
 
     return (
         <Dialog
@@ -59,7 +46,13 @@ export const RowModal: React.FC<Props> = (props: Props) => {
                     alignItems="center"
                 >
                     <DialogTitle >{props.action}</DialogTitle>
-                    <Typography variant="subtitle1" color="textSecondary" >Please confirm {props.action.charAt(0).toLowerCase() + props.action.slice(1)}</Typography>
+                    <AvatarGroup max={2}>
+                        <Avatar alt={props.rewardIconSrcPrimary} className={classes.smallIcon} src={props.rewardIconSrcPrimary} />
+                        <Avatar alt={props.rewardIconSrcSecondary} className={classes.smallIcon} src={props.rewardIconSrcSecondary} />
+                    </AvatarGroup>
+                    <Typography>
+                        {props.pool}
+                    </Typography>
                     <Grid
                         container
                         direction="column"
@@ -67,7 +60,7 @@ export const RowModal: React.FC<Props> = (props: Props) => {
                         alignItems="stretch"
                     >
                         <Typography variant="subtitle2" color="textSecondary" >
-                            Repay
+                            {props.action.split(" ")[0]}
                         </Typography>
                         <Card>
                             <CardContent>
@@ -77,25 +70,16 @@ export const RowModal: React.FC<Props> = (props: Props) => {
                                     justify="flex-start"
                                     alignItems="center"
                                 >
-                                    <Grid item xs={4}>
-                                        <Checkbox
-                                            checked={amountChecked}
-                                            onChange={handleAmountCheck}
-                                        />
-                                    </Grid>
-                                    <Grid item>
-                                        <Avatar alt={props.amountIconSrc} className={classes.smallIcon} src={props.amountIconSrc} />
-                                    </Grid>
                                     <Grid item>
                                         <Typography variant="subtitle1">
-                                            {props.amount + " " + props.amountCurrency}
+                                            {"100 USD"}
                                         </Typography>
                                     </Grid>
                                 </Grid>
                             </CardContent>
                         </Card>
                         <Typography variant="subtitle2" color="textSecondary" >
-                            Recevie
+                            Amount of LP
                         </Typography>
                         <Card>
                             <CardContent>
@@ -105,30 +89,20 @@ export const RowModal: React.FC<Props> = (props: Props) => {
                                     justify="flex-start"
                                     alignItems="center"
                                 >
-                                    <Grid item xs={4}>
-                                        <Checkbox
-                                            checked={rewardChecked}
-                                            onChange={handleRewardCheck}
-                                        />
-                                    </Grid>
                                     <Grid item>
-                                        <AvatarGroup max={2}>
-                                            <Avatar alt={props.rewardIconSrcPrimary} className={classes.smallIcon} src={props.rewardIconSrcPrimary} />
-                                            <Avatar alt={props.rewardIconSrcSecondary} className={classes.smallIcon} src={props.rewardIconSrcSecondary} />
-                                        </AvatarGroup>
+
                                     </Grid>
                                     <Grid item>
                                         <Typography variant="subtitle1">
-                                            {props.reward + " " + props.rewardCurrency}
+                                            {"100 LP"}
                                         </Typography>
                                     </Grid>
                                 </Grid>
                             </CardContent>
                         </Card>
                         <CustomButton
-                            disabled={amountChecked !== true || rewardChecked !== true}
                             onClick={props.onButtonClick}
-                            text={props.action.charAt(0).toUpperCase() + props.action.slice(1)}
+                            text={props.action.split(" ")[0]}
                             type="short" />
                     </Grid>
                 </Grid>
