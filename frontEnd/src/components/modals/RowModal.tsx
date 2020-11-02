@@ -2,6 +2,7 @@ import * as React from "react";
 
 import { Avatar, Card, CardContent, Checkbox, Dialog, DialogContent, DialogTitle, Grid, Typography } from "@material-ui/core";
 
+import { Amount } from "../inputFields/Amount";
 import { AvatarGroup } from "@material-ui/lab";
 import { CustomButton } from "../buttons/CustomButton";
 import { makeStyles } from "@material-ui/core";
@@ -19,17 +20,19 @@ const useStyles = makeStyles(theme => ({
 
 interface Props {
     action: string,
+    error: boolean,
     handleClose: (event: {}, reason: "backdropClick" | "escapeKeyDown") => void,
+    lp: number,
     onButtonClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void,
+    onChange: (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void,
     open: boolean,
     pool: string,
-    rewardIconSrcPrimary: string,
-    rewardIconSrcSecondary: string,
+    poolIconSrcPrimary: string,
+    poolIconSrcSecondary: string,
 }
 
 export const RowModal: React.FC<Props> = (props: Props) => {
     const classes = useStyles();
-    const [amount, setAmount] = React.useState(false);
 
     return (
         <Dialog
@@ -46,13 +49,20 @@ export const RowModal: React.FC<Props> = (props: Props) => {
                     alignItems="center"
                 >
                     <DialogTitle >{props.action}</DialogTitle>
-                    <AvatarGroup max={2}>
-                        <Avatar alt={props.rewardIconSrcPrimary} className={classes.smallIcon} src={props.rewardIconSrcPrimary} />
-                        <Avatar alt={props.rewardIconSrcSecondary} className={classes.smallIcon} src={props.rewardIconSrcSecondary} />
-                    </AvatarGroup>
-                    <Typography>
-                        {props.pool}
-                    </Typography>
+                    <Grid
+                        container
+                        direction="row"
+                        justify="center"
+                        alignItems="center"
+                    >
+                        <AvatarGroup max={2}>
+                            <Avatar alt={props.poolIconSrcPrimary} className={classes.smallIcon} src={props.poolIconSrcPrimary} />
+                            <Avatar alt={props.poolIconSrcSecondary} className={classes.smallIcon} src={props.poolIconSrcSecondary} />
+                        </AvatarGroup>
+                        <Typography>
+                            {props.pool}
+                        </Typography>
+                    </Grid>
                     <Grid
                         container
                         direction="column"
@@ -62,45 +72,23 @@ export const RowModal: React.FC<Props> = (props: Props) => {
                         <Typography variant="subtitle2" color="textSecondary" >
                             {props.action.split(" ")[0]}
                         </Typography>
+                        <Amount adornment="USD" onChange={props.onChange} error={props.error} fullWidth={true} />
                         <Card>
                             <CardContent>
                                 <Grid
                                     container
-                                    direction="row"
-                                    justify="flex-start"
+                                    direction="column"
+                                    justify="center"
                                     alignItems="center"
                                 >
-                                    <Grid item>
-                                        <Typography variant="subtitle1">
-                                            {"100 USD"}
-                                        </Typography>
-                                    </Grid>
-                                </Grid>
-                            </CardContent>
-                        </Card>
-                        <Typography variant="subtitle2" color="textSecondary" >
-                            Amount of LP
-                        </Typography>
-                        <Card>
-                            <CardContent>
-                                <Grid
-                                    container
-                                    direction="row"
-                                    justify="flex-start"
-                                    alignItems="center"
-                                >
-                                    <Grid item>
-
-                                    </Grid>
-                                    <Grid item>
-                                        <Typography variant="subtitle1">
-                                            {"100 LP"}
-                                        </Typography>
-                                    </Grid>
+                                    <Typography variant="subtitle1">
+                                        {props.lp + " LP"}
+                                    </Typography>
                                 </Grid>
                             </CardContent>
                         </Card>
                         <CustomButton
+                            disabled={props.lp <= 0 || props.error === true}
                             onClick={props.onButtonClick}
                             text={props.action.split(" ")[0]}
                             type="short" />

@@ -12,16 +12,14 @@ const useStyles = makeStyles(theme => ({
         "& input[type=number]": {
             MozAppearance: "textfield",
         }
-    },
-    textField: {
-        maxWidth: "150px",
-    },
+    }
 }));
 
 
 interface Props {
     adornment: string,
     focusedAmountId?: string,
+    fullWidth?: boolean,
     error?: boolean,
     id?: string,
     onBlur?: (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void,
@@ -32,11 +30,16 @@ interface Props {
 
 export const Amount: React.FC<Props> = (props: Props) => {
     const classes = useStyles();
+    let maxWidth = "150px";
+
+    if (props.fullWidth === true) {
+        maxWidth = "";
+    }
 
     return (
         <TextField
             color="secondary"
-            className={`${classes.textField} ${classes.hideNumberPicker}`}
+            className={classes.hideNumberPicker}
             disabled={props.focusedAmountId !== "" && props.id !== props.focusedAmountId}
             error={props.error}
             id={props.id}
@@ -49,6 +52,9 @@ export const Amount: React.FC<Props> = (props: Props) => {
             onFocus={props.onFocus}
             placeholder={props.text ? props.text : "amount"}
             size="small"
+            style={{
+                maxWidth: maxWidth
+            }}
             type="number"
             variant="outlined"
         />);

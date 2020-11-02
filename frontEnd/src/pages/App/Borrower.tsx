@@ -19,7 +19,7 @@ const data = {
 }
 
 //@ts-ignore
-function createCollateralData(icon, pool, available, provided, currency, availableLp, providedLp, lpCurrency) {
+function createWithdrawData(icon, pool, available, provided, currency, availableLp, providedLp, lpCurrency) {
     return { icon, pool, available, provided, currency, availableLp, providedLp, lpCurrency };
 }
 
@@ -29,16 +29,16 @@ function createBorrowData(icon, amount, currency) {
 }
 
 const collateralData = [
-    createCollateralData(<AvatarGroup max={2}><Avatar alt={"eth.png"} src={"eth.png"} />
+    createWithdrawData(<AvatarGroup max={2}><Avatar alt={"eth.png"} src={"eth.png"} />
         <Avatar alt={"dai.png"} src={"dai.png"} /></AvatarGroup>,
         "ETH - DAI", 765, 765, "USD", 400, 400, "LP"),
-    createCollateralData(<AvatarGroup><Avatar alt={"eth.png"} src={"eth.png"} />
+    createWithdrawData(<AvatarGroup><Avatar alt={"eth.png"} src={"eth.png"} />
         <Avatar alt={"usdt.png"} src={"usdt.png"} /></AvatarGroup>,
         "ETH - USDT", 345, 345, "USD", 400, 400, "LP"),
-    createCollateralData(<AvatarGroup><Avatar alt={"wbtc.png"} src={"wbtc.png"} />
+    createWithdrawData(<AvatarGroup><Avatar alt={"wbtc.png"} src={"wbtc.png"} />
         <Avatar alt={"weth.png"} src={"weth.png"} /></AvatarGroup>,
         "wBTC - wETH", 765, 765, "USD", 400, 400, "LP"),
-    createCollateralData(<AvatarGroup><Avatar alt={"usdt.png"} src={"usdt.png"} />
+    createWithdrawData(<AvatarGroup><Avatar alt={"usdt.png"} src={"usdt.png"} />
         <Avatar alt={"weth.png"} src={"weth.png"} /></AvatarGroup>,
         "USDT - wETH", 456, 456, "USD", 400, 400, "LP"),
 ];
@@ -50,25 +50,26 @@ const borrowData = [
 ];
 
 export const Borrower: React.FC<Props> = (props: Props) => {
-    /* eslint-disable @typescript-eslint/no-unused-vars */
-    const [collateralAmountCurrency, setCollateralAmountCurrency] = React.useState("DAI");
-    /* eslint-enable @typescript-eslint/no-unused-vars */
-    const [withdrawPool, setWithdrawPool] = React.useState("");
-    const [collateralAmountValue, setCollateralAmountValue] = React.useState(0);
     const [borrowAmountCurrency, setBorrowAmountCurrency] = React.useState("DAI");
     const [borrowAmountValue, setBorrowAmountValue] = React.useState(0);
-    const [withdrawModalOpen, setWithdrawModalOpen] = useState(false);
+    const [borrowError, setBorrowError] = useState(false);
     const [provideModalOpen, setProvideModalOpen] = useState(false);
     const [borrowModalOpen, setBorrowModalOpen] = useState(false);
     const [repayModalOpen, setRepayModalOpen] = useState(false);
-    const [collateralError, setCollateralError] = useState(false);
-    const [borrowError, setBorrowError] = useState(false);
+    const [withdrawAmountValue, setWithdrawAmountValue] = React.useState(0);
+    const [withdrawError, setWithdrawError] = useState(false);
+    const [withdrawLpValue, setWithdrawLpValue] = React.useState(0);
+    const [withdrawModalOpen, setWithdrawModalOpen] = useState(false);
+    const [withdrawPool, setWithdrawPool] = React.useState("");
 
     React.useEffect(() => {
+        if (withdrawAmountValue !== 0 && withdrawPool !== "") {
+            setWithdrawError(isWithdrawError(withdrawAmountValue, withdrawPool));
+        }
         if (borrowAmountValue !== 0 && borrowAmountCurrency !== "") {
             setBorrowError(isBorrowError(borrowAmountValue, borrowAmountCurrency));
         }
-    }, [collateralAmountValue, borrowAmountValue, borrowAmountCurrency]
+    }, [borrowAmountValue, borrowAmountCurrency, withdrawAmountValue, withdrawPool]
     );
 
     const handleBorrowClose = (event: {}, reason: "backdropClick" | "escapeKeyDown") => {
@@ -94,11 +95,11 @@ export const Borrower: React.FC<Props> = (props: Props) => {
         setWithdrawModalOpen(false);
     }
 
-    const isCollateralError = (value: any, currency: string) => {
-        const index = collateralData.findIndex((value: any) => value.currency === currency);
+    const isWithdrawError = (value: any, pool: string) => {
+        const index = collateralData.findIndex((value: any) => value.pool === pool);
         if (index < 0) return true;
-        if (value <= 0 /*||
-            value > collateralData[index].amount*/) {
+        if (value <= 0 ||
+            value > collateralData[index].provided) {
             return true;
         }
         return false;
@@ -129,19 +130,14 @@ export const Borrower: React.FC<Props> = (props: Props) => {
         setWithdrawModalOpen(true);
     }
 
-    const onCollateralAmountChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-        setCollateralAmountValue(Number(event.target.value));
+    const onWithdrawAmountChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+        // TO-DO: Web3 integration, calculate LP value
+        setWithdrawLpValue(Number(event.target.value));
+        setWithdrawAmountValue(Number(event.target.value));
     };
 
     const onBorrowAmountChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
         setBorrowAmountValue(Number(event.target.value));
-    };
-
-    const handleCollateralSelect = (event: React.ChangeEvent<{
-        name?: string | undefined;
-        value: string;
-    }>, child: React.ReactNode) => {
-        setCollateralAmountCurrency(event.target.value);
     };
 
     const onBorrow = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
@@ -169,7 +165,7 @@ export const Borrower: React.FC<Props> = (props: Props) => {
                     alignItems="stretch"
                 >
                     <Grid item>
-                        <InformationCard header="Collateral" text={`$${data.collateral.toFixed(2)}`} />
+                        <InformationCard header="Withdraw" text={`$${data.collateral.toFixed(2)}`} />
                     </Grid>
                     <Grid item>
                         <InformationCard header="Borrow %" text={`${data.borrowPercentage.toFixed(0)}%`} />
@@ -203,12 +199,15 @@ export const Borrower: React.FC<Props> = (props: Props) => {
             </Grid >
             <RowModal
                 action={"Withdraw Collateral"}
+                error={withdrawError}
                 handleClose={handleWithdrawClose}
+                lp={withdrawLpValue}
                 onButtonClick={onWithdraw}
+                onChange={onWithdrawAmountChange}
                 open={withdrawModalOpen}
                 pool={withdrawPool}
-                rewardIconSrcPrimary={""}
-                rewardIconSrcSecondary={""}
+                poolIconSrcPrimary={""}
+                poolIconSrcSecondary={""}
             />
             <BigModal
                 action="Borrow"
