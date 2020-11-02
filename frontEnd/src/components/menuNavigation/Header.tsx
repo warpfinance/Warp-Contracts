@@ -6,6 +6,7 @@ import { CustomButton } from "../../components"
 import { Link as RouterLink } from 'react-router-dom';
 import { makeStyles } from "@material-ui/core/styles";
 
+// TO-DO: Web3 integration
 const data = {
     walletAddress: '0xeB31973E0FeBF3e3D7058234a5eBbAe1aB4B8c23',
     walletBalance: 0.0,
