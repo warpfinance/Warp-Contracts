@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { AmountModal, BigModal, BorrowerTable, Header, InformationCard, RowModal } from "../../components";
+import { AmountModal, AuthorizationModal, BigModal, BorrowerTable, Header, InformationCard, RowModal } from "../../components";
 import { Avatar, Grid } from "@material-ui/core";
 
 import { AvatarGroup } from "@material-ui/lab";
@@ -66,6 +66,8 @@ const borrowData = [
 ];
 
 export const Borrower: React.FC<Props> = (props: Props) => {
+    const [authAction, setAuthAction] = useState("borrow");
+    const [authorizationModalOpen, setAuthorizationModalOpen] = useState(false);
     const [borrowAmountCurrency, setBorrowAmountCurrency] = React.useState("DAI");
     const [borrowAmountValue, setBorrowAmountValue] = React.useState(0);
     const [borrowError, setBorrowError] = useState(false);
@@ -103,6 +105,10 @@ export const Borrower: React.FC<Props> = (props: Props) => {
         repayAmountValue, repayAmountCurrency,
         withdrawAmountValue, withdrawPool]
     );
+
+    const handleAuthClose = (event: {}, reason: "backdropClick" | "escapeKeyDown") => {
+        setAuthorizationModalOpen(false);
+    }
 
     const handleBorrowClose = (event: {}, reason: "backdropClick" | "escapeKeyDown") => {
         setBorrowModalOpen(false);
@@ -204,19 +210,34 @@ export const Borrower: React.FC<Props> = (props: Props) => {
         setWithdrawModalOpen(true);
     }
 
+    const onAuth = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+        setAuthorizationModalOpen(false);
+        // TO-DO: Web3 integration
+    }
+
     const onBorrow = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
         setBorrowModalOpen(false);
         // TO-DO: Web3 integration
     }
 
     const onProvide = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+        setAuthAction("provide");
         setProvideModalOpen(false);
         // TO-DO: Web3 integration
+        const provideAuthorization = false;
+        if (provideAuthorization === false) {
+            setAuthorizationModalOpen(true);
+        }
     }
 
     const onRepay = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+        setAuthAction("repay");
         setRepayModalOpen(false);
         // TO-DO: Web3 integration
+        const repayAuthorization = false;
+        if (repayAuthorization === false) {
+            setAuthorizationModalOpen(true);
+        }
     }
 
     const onWithdraw = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
@@ -318,6 +339,12 @@ export const Borrower: React.FC<Props> = (props: Props) => {
                 onButtonClick={onRepay}
                 onChange={onRepayAmountChange}
                 open={repayModalOpen}
+            />
+            <AuthorizationModal
+                action={authAction}
+                handleClose={handleAuthClose}
+                onButtonClick={onAuth}
+                open={authorizationModalOpen}
             />
         </React.Fragment>
     );

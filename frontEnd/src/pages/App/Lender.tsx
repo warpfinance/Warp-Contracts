@@ -1,11 +1,12 @@
 import * as React from "react";
 
+import { AuthorizationModal, Header, InformationCard, LenderTable, SimpleModal } from "../../components";
 import { Avatar, Grid } from "@material-ui/core";
-import { Header, InformationCard, LenderTable, SimpleModal } from "../../components";
 
 import { useState } from "react";
 
 // TO-DO: Web3 integration
+const authAction = "lend"
 const data = {
     stableCoinDeposit: 0.00,
     stableCoinReward: 4545,
@@ -33,6 +34,7 @@ interface Props {
 }
 
 export const Lender: React.FC<Props> = (props: Props) => {
+    const [authorizationModalOpen, setAuthorizationModalOpen] = useState(false);
     const [lendAmountCurrency, setLendAmountCurrency] = React.useState("");
     const [lendAmountValue, setLendAmountValue] = React.useState(0);
     const [lendFocusedAmountId, setLendFocusedAmountId] = React.useState("");
@@ -53,6 +55,10 @@ export const Lender: React.FC<Props> = (props: Props) => {
         }
     }, [lendAmountValue, lendAmountCurrency, withdrawAmountValue, withdrawAmountCurrency]
     );
+
+    const handleAuthClose = (event: {}, reason: "backdropClick" | "escapeKeyDown") => {
+        setAuthorizationModalOpen(false);
+    }
 
     const handleLendClose = (event: {}, reason: "backdropClick" | "escapeKeyDown") => {
         setLendModalOpen(false);
@@ -116,9 +122,18 @@ export const Lender: React.FC<Props> = (props: Props) => {
         }
     };
 
+    const onAuth = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+        setAuthorizationModalOpen(false);
+        // TO-DO: Web3 integration
+    }
+
     const onLend = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
         setLendModalOpen(false);
         // TO-DO: Web3 integration
+        const lendAuthorization = false;
+        if (lendAuthorization === false) {
+            setAuthorizationModalOpen(true);
+        }
     }
 
     const onWithdraw = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
@@ -201,6 +216,12 @@ export const Lender: React.FC<Props> = (props: Props) => {
                 onButtonClick={onWithdraw}
                 handleClose={handleWithdrawClose}
                 open={withdrawModalOpen} />
+            <AuthorizationModal
+                action={authAction}
+                handleClose={handleAuthClose}
+                onButtonClick={onAuth}
+                open={authorizationModalOpen}
+            />
         </React.Fragment>
     );
 }
