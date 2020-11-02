@@ -11,3 +11,12 @@ You can connect your components to Zeplin by following the docs [here](https://g
 npm install -g @zeplin/cli
 npm install -g @zeplin/cli-connect-react-plugin
 ```
+
+## Quickstart
+
+Split frontEnd directory into its own branch
+```bash
+git subtree split --prefix src -b deploy
+```
+
+Deploy on Heroku
