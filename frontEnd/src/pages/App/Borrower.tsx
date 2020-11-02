@@ -18,6 +18,13 @@ const data = {
     borrowLimitUsed: 50,
 }
 
+const poolIcons: any = {
+    "ETH - DAI": { primarySrc: "eth.png", secondarySrc: "dai.png" },
+    "ETH - USDT": { primarySrc: "eth.png", secondarySrc: "usdt.png" },
+    "wBTC - wETH": { primarySrc: "wbtc.png", secondarySrc: "weth.png" },
+    "USDT - wETH": { primarySrc: "usdt.png", secondarySrc: "weth.png" },
+}
+
 //@ts-ignore
 function createWithdrawData(icon, pool, available, provided, currency, availableLp, providedLp, lpCurrency) {
     return { icon, pool, available, provided, currency, availableLp, providedLp, lpCurrency };
@@ -29,17 +36,17 @@ function createBorrowData(icon, amount, currency) {
 }
 
 const collateralData = [
-    createWithdrawData(<AvatarGroup max={2}><Avatar alt={"eth.png"} src={"eth.png"} />
-        <Avatar alt={"dai.png"} src={"dai.png"} /></AvatarGroup>,
+    createWithdrawData(<AvatarGroup max={2}><Avatar alt={poolIcons["ETH - DAI"].primarySrc} src={poolIcons["ETH - DAI"].primarySrc} />
+        <Avatar alt={poolIcons["ETH - DAI"].secondarySrc} src={poolIcons["ETH - DAI"].secondarySrc} /></AvatarGroup>,
         "ETH - DAI", 765, 765, "USD", 400, 400, "LP"),
-    createWithdrawData(<AvatarGroup><Avatar alt={"eth.png"} src={"eth.png"} />
-        <Avatar alt={"usdt.png"} src={"usdt.png"} /></AvatarGroup>,
+    createWithdrawData(<AvatarGroup max={2}><Avatar alt={poolIcons["ETH - USDT"].primarySrc} src={poolIcons["ETH - USDT"].primarySrc} />
+        <Avatar alt={poolIcons["ETH - USDT"].secondarySrc} src={poolIcons["ETH - USDT"].secondarySrc} /></AvatarGroup>,
         "ETH - USDT", 345, 345, "USD", 400, 400, "LP"),
-    createWithdrawData(<AvatarGroup><Avatar alt={"wbtc.png"} src={"wbtc.png"} />
-        <Avatar alt={"weth.png"} src={"weth.png"} /></AvatarGroup>,
+    createWithdrawData(<AvatarGroup max={2}><Avatar alt={poolIcons["wBTC - wETH"].primarySrc} src={poolIcons["wBTC - wETH"].primarySrc} />
+        <Avatar alt={poolIcons["wBTC - wETH"].secondarySrc} src={poolIcons["wBTC - wETH"].secondarySrc} /></AvatarGroup>,
         "wBTC - wETH", 765, 765, "USD", 400, 400, "LP"),
-    createWithdrawData(<AvatarGroup><Avatar alt={"usdt.png"} src={"usdt.png"} />
-        <Avatar alt={"weth.png"} src={"weth.png"} /></AvatarGroup>,
+    createWithdrawData(<AvatarGroup max={2}><Avatar alt={poolIcons["USDT - wETH"].primarySrc} src={poolIcons["USDT - wETH"].primarySrc} />
+        <Avatar alt={poolIcons["USDT - wETH"].secondarySrc} src={poolIcons["USDT - wETH"].secondarySrc} /></AvatarGroup>,
         "USDT - wETH", 456, 456, "USD", 400, 400, "LP"),
 ];
 
@@ -206,8 +213,8 @@ export const Borrower: React.FC<Props> = (props: Props) => {
                 onChange={onWithdrawAmountChange}
                 open={withdrawModalOpen}
                 pool={withdrawPool}
-                poolIconSrcPrimary={""}
-                poolIconSrcSecondary={""}
+                poolIconSrcPrimary={poolIcons[withdrawPool]?.primarySrc || ""}
+                poolIconSrcSecondary={poolIcons[withdrawPool]?.secondarySrc || ""}
             />
             <BigModal
                 action="Borrow"
