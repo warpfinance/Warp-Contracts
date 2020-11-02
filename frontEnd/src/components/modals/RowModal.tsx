@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { Avatar, Card, CardContent, Checkbox, Dialog, DialogContent, DialogTitle, Grid, Typography } from "@material-ui/core";
+import { Avatar, Card, CardContent, Dialog, DialogContent, DialogTitle, Grid, Typography } from "@material-ui/core";
 
 import { Amount } from "../inputFields/Amount";
 import { AvatarGroup } from "@material-ui/lab";

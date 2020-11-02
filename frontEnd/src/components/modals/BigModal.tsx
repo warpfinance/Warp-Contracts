@@ -1,7 +1,7 @@
 import * as React from "react";
 
 import { Amount, CustomButton } from "../../components";
-import { Avatar, Card, CardContent, Checkbox, Dialog, DialogContent, DialogTitle, FormControl, Grid, MenuItem, Select, Typography } from "@material-ui/core";
+import { Avatar, Card, CardContent, Dialog, DialogContent, DialogTitle, FormControl, Grid, MenuItem, Select, Typography } from "@material-ui/core";
 
 import { makeStyles } from "@material-ui/core";
 
@@ -50,11 +50,6 @@ interface Props {
 
 export const BigModal: React.FC<Props> = (props: Props) => {
     const classes = useStyles();
-    const [checked, setChecked] = React.useState(false);
-
-    const handleCheck = (event: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
-        setChecked(event.target.checked);
-    };
 
     return (
         <Dialog
