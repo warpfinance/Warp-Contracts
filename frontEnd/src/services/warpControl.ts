@@ -22,10 +22,12 @@ export class WarpControlService {
     return await this.contract.checkCollateralValue(borrower, vault);
   }
 
-  getVaultFromLPToken = async (tokenAddress: string): Promise<string> => {
-    return await this.contract.instanceTracker(tokenAddress);
+  getLPVault = async (lpToken: string): Promise<string> => {
+    return "";
   }
 
-  
+  getStableCoinVault = async (token: string): Promise<string> => {
+    return "";
+  }
 
 }

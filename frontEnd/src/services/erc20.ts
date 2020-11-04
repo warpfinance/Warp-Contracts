@@ -75,8 +75,8 @@ export class ERC20Service {
     return this.provider.waitForTransaction(transactionObject.hash)
   }
 
-  getCollateral = async (marketMakerAddress: string): Promise<any> => {
-    return this.contract.balanceOf(marketMakerAddress)
+  balanceOf = async (owner: string): Promise<BigNumber> => {
+    return await this.contract.balanceOf(owner);
   }
 
   hasEnoughBalanceToFund = async (owner: string, amount: BigNumber): Promise<boolean> => {
@@ -105,11 +105,13 @@ export class ERC20Service {
   }
 
   getProfileSummary = async (): Promise<Token> => {
+
     let decimals
     let symbol
     try {
       ;[decimals, symbol] = await Promise.all([this.contract.decimals(), this.contract.symbol()])
-    } catch {
+    } catch(e) {
+      console.log(e);
       decimals = 18
       symbol = 'MKR'
     }

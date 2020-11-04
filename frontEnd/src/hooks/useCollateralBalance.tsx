@@ -14,18 +14,18 @@ export const useCollateralBalance = (collateral: Token, context: ConnectedWeb3Co
   useEffect(() => {
     const isSubscribed = true
 
-    const fetchCollateralBalance = async () => {
-      let collateralBalance = BigNumber.from(0);
-      if (account) {
-        const collateralService = new ERC20Service(provider, account, collateral.address)
-        collateralBalance = await collateralService.getCollateral(account)
-      }
+    // const fetchCollateralBalance = async () => {
+    //   let collateralBalance = BigNumber.from(0);
+    //   if (account) {
+    //     const collateralService = new ERC20Service(provider, account, collateral.address)
+    //     collateralBalance = await collateralService.getCollateral(account)
+    //   }
 
-      if (isSubscribed) {
-        setCollateralBalance(collateralBalance)
-      }
-    }
-    fetchCollateralBalance()
+    //   if (isSubscribed) {
+    //     setCollateralBalance(collateralBalance)
+    //   }
+    // }
+    // fetchCollateralBalance()
   }, [account, provider, collateral])
 
   return collateralBalance

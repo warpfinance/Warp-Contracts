@@ -2,16 +2,18 @@ import * as React from "react";
 
 import { Amount, CustomButton } from "../../components"
 import { Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@material-ui/core";
+import { LenderStableCoinRow } from "./LenderStableCoinRow";
+import { BigNumber } from "ethers";
 
 interface Props {
     amountCurrency: string,
-    amountValue: number,
+    amountValue: BigNumber,
     data: any,
     error: boolean,
     focusedAmountId: string | undefined,
     onButtonClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void,
     onBlur: (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>)=> void,
-    onChange: (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>)=> void,
+    onChange: any,
     onFocus: (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void,
     type: "lend" | "withdraw"
 }
@@ -48,61 +50,22 @@ export const LenderTable: React.FC<Props> = (props: Props) => {
                     </TableHead>
                     <TableBody>
                         {props.data.map((row: any) => (
-                            <TableRow>
-                                <TableCell>
-                                    <Grid
-                                        container
-                                        direction="row"
-                                        justify="flex-start"
-                                        alignItems="center"
-                                        spacing={2}
-                                    >
-
-                                        {row.icon}
-                                        <Typography variant="subtitle1">
-                                            {row.currency}
-                                        </Typography>
-                                    </Grid>
-                                </TableCell>
-                                <TableCell>
-                                    <Grid
-                                        container
-                                        direction="column"
-                                        justify="center"
-                                        alignItems="flex-start"
-                                    >
-                                        <Grid item>
-                                            <Typography variant="subtitle1">
-                                                {row.available.toLocaleString() + " " + row.currency}
-                                            </Typography>
-                                        </Grid>
-                                    </Grid>
-                                </TableCell>
-                                <TableCell>
-                                    <Grid
-                                        container
-                                        direction="column"
-                                        justify="center"
-                                        alignItems="flex-start"
-                                    >
-                                        <Amount
-                                            adornment={row.currency}
-                                            focusedAmountId={props.focusedAmountId}
-                                            error={props.error}
-                                            id={row.currency}
-                                            onBlur={props.onBlur}
-                                            onChange={props.onChange}
-                                            onFocus={props.onFocus} />
-                                    </Grid>
-                                </TableCell>
-                            </TableRow>
+                            <LenderStableCoinRow 
+                                token={row}
+                                error={props.error}
+                                focusedAmountId={props.focusedAmountId}
+                                onBlur={props.onBlur}
+                                onChange={props.onChange}
+                                onFocus={props.onFocus}
+                                type={props.type}
+                            />
                         ))}
 
                     </TableBody>
                 </Table>
             </TableContainer>
             <CustomButton
-                disabled={props.amountValue <= 0 || props.error}
+                disabled={props.amountValue.lte(BigNumber.from(0)) || props.error}
                 onClick={props.onButtonClick}
                 text={lendOrWithdraw.charAt(0).toUpperCase() + lendOrWithdraw.slice(1)}
                 type="long" />

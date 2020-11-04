@@ -5,11 +5,7 @@ import { Grid, Link, Typography } from "@material-ui/core";
 import { CustomButton } from "../../components"
 import { Link as RouterLink } from 'react-router-dom';
 import { makeStyles } from "@material-ui/core/styles";
-
-// TO-DO: Web3 integration
-const data = {
-    walletAddress: '0xeB31973E0FeBF3e3D7058234a5eBbAe1aB4B8c23',
-}
+import { useWeb3React } from "@web3-react/core";
 
 const useStyles = makeStyles(theme => ({
     logo: {
@@ -27,7 +23,6 @@ const useStyles = makeStyles(theme => ({
 
 
 interface Props {
-    connected?: boolean
     home?: boolean
 }
 
@@ -40,10 +35,14 @@ export const Header: React.FC<Props> = (props: Props) => {
         return input;
     };
 
+    const {account} = useWeb3React();
+    const walletAddress = account ? account : "Connect";
+    const isConnected = Boolean(account);
+
 
     const getHeaderContent = (connected: boolean) => {
         const connectButton =
-            <CustomButton disabled={true} text={!connected ? "No wallet" : truncate(data.walletAddress)} type={"short"} />
+            <CustomButton disabled={true} text={!connected ? "No wallet" : truncate(walletAddress)} type={"short"} />
 
         if (!props.home) {
             return (
@@ -167,7 +166,7 @@ export const Header: React.FC<Props> = (props: Props) => {
                     <img className={classes.logo} src={"warp logo.svg"} alt={"Warp"}></img>
                 </RouterLink>
             </Grid>
-            {getHeaderContent(props.connected || false)}
+            {getHeaderContent(isConnected || false)}
         </Grid>
     );
 }

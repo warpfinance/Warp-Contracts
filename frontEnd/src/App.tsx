@@ -22,6 +22,8 @@ import {
 	CssBaseline,
 } from "@material-ui/core";
 import { createMuiTheme, makeStyles } from "@material-ui/core/styles";
+import { ConnectedWeb3 } from "./hooks/connectedWeb3";
+import { ethers } from "ethers";
 
 const outerTheme = createMuiTheme({
 	palette: {
@@ -79,7 +81,8 @@ const useStyles = makeStyles(theme => ({
 interface Props { }
 
 function getLibrary(provider?: any, connector?: any): any {
-	return provider;
+	let ethersProvider = new ethers.providers.Web3Provider(provider);
+	return ethersProvider;
 }
 
 const App: React.FC = () => {
@@ -87,6 +90,7 @@ const App: React.FC = () => {
 
 	return (
 		<Web3ReactProvider getLibrary={getLibrary}>
+			<ConnectedWeb3>
 				<Router>
 					<ThemeProvider theme={outerTheme}>
 						<CssBaseline>
@@ -103,6 +107,7 @@ const App: React.FC = () => {
 						</CssBaseline>
 					</ThemeProvider>
 				</Router>
+			</ConnectedWeb3>
 		</Web3ReactProvider>
 	)
 }

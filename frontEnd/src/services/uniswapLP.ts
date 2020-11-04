@@ -37,5 +37,4 @@ export class UniswapLPTokenService extends ERC20Service {
   token1 = async (): Promise<string> => {
     return this.contract.token1()
   }
-
 }
