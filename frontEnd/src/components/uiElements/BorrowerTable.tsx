@@ -133,12 +133,22 @@ export const BorrowerTable: React.FC<Props> = (props: Props) => {
                                     >
                                         <Grid item>
                                             <CustomButton
+                                                id={props.type === "borrow" ?
+                                                    row.currency
+                                                    :
+                                                    row.pool
+                                                }
                                                 onClick={props.onLeftButtonClick}
                                                 text={props.type === "collateral" ? "Withdraw" : props.type.charAt(0).toUpperCase() + props.type.slice(1)}
                                                 type="short" />
                                         </Grid>
                                         <Grid item>
                                             <CustomButton
+                                                id={props.type === "borrow" ?
+                                                    row.currency
+                                                    :
+                                                    row.pool
+                                                }
                                                 onClick={props.onRightButtonClick}
                                                 text={props.type === "collateral" ? "Provide" : "Repay"}
                                                 type="short" />

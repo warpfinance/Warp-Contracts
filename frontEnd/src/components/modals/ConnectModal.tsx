@@ -3,9 +3,7 @@ import * as React from "react";
 import { Avatar, Card, CardContent, Dialog, DialogContent, DialogContentText, DialogTitle, Grid, Link, Typography } from "@material-ui/core";
 
 import { WalletType } from "../../util/types";
-import connectors from "../../util/connectors";
 import { makeStyles } from "@material-ui/core/styles";
-import { useWeb3React } from "@web3-react/core";
 
 const useStyles = makeStyles(theme => ({
     dialog: {
@@ -23,6 +21,7 @@ const useStyles = makeStyles(theme => ({
 
 interface Props {
     handleClose: (event: {}, reason: "backdropClick" | "escapeKeyDown") => void,
+    connectToWallet: (type: WalletType) => void,
     open: boolean,
 }
 
@@ -32,21 +31,6 @@ interface State {
 export const ConnectModal: React.FC<Props> = (props: Props) => {
     const classes = useStyles();
 
-    const context = useWeb3React();
-
-
-    const connectToWallet = async (type: WalletType) => {
-        if (type === WalletType.MetaMask) {
-            await context.activate(connectors.MetaMask);
-        }
-        if (type === WalletType.WalletLink) {
-            await context.activate(connectors.Coinbase);
-        }
-        if (type === WalletType.Portis) {
-            await context.activate(connectors.Portis);
-        }
-
-    }
 
     return (
         <Dialog
@@ -68,7 +52,7 @@ export const ConnectModal: React.FC<Props> = (props: Props) => {
                         justify="center"
                         alignItems="stretch"
                     >
-                        <Card className={classes.clickableCard} onClick={() => connectToWallet(WalletType.WalletLink)}>
+                        <Card className={classes.clickableCard} onClick={() => props.connectToWallet(WalletType.WalletLink)}>
                             <CardContent>
                                 <Grid
                                     container
@@ -88,7 +72,7 @@ export const ConnectModal: React.FC<Props> = (props: Props) => {
                                 </Grid>
                             </CardContent>
                         </Card>
-                        <Card className={classes.clickableCard} onClick={() => connectToWallet(WalletType.Portis)}>
+                        <Card className={classes.clickableCard} onClick={() => props.connectToWallet(WalletType.Portis)}>
                             <CardContent>
                                 <Grid
                                     container
@@ -108,7 +92,7 @@ export const ConnectModal: React.FC<Props> = (props: Props) => {
                                 </Grid>
                             </CardContent>
                         </Card>
-                        <Card className={classes.clickableCard} onClick={() => connectToWallet(WalletType.MetaMask)}>
+                        <Card className={classes.clickableCard} onClick={() => props.connectToWallet(WalletType.MetaMask)}>
                             <CardContent>
                                 <Grid
                                     container
