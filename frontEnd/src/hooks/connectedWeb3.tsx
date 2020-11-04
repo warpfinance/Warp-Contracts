@@ -1,6 +1,7 @@
 import { useWeb3React } from '@web3-react/core'
 import { providers } from 'ethers'
 import React, { useEffect, useState } from 'react'
+import connectors from '../util/connectors'
 
 export interface ConnectedWeb3Context {
   account: Maybe<string>
@@ -36,6 +37,8 @@ export const ConnectedWeb3: React.FC = props => {
   useEffect(() => {
     let isSubscribed = true
 
+    console.log(context)
+
     // @TODO Setup Infura and move ConnectedWeb3 over the root
     //const connector = localStorage.getItem('CONNECTOR')
 
@@ -50,6 +53,10 @@ export const ConnectedWeb3: React.FC = props => {
     // } else {
     //   context.setConnector('Infura')
     // }
+
+    if (!active) {
+      context.activate(connectors.Infura);
+    }
 
     const checkIfReady = async () => {
       if (context.chainId !== undefined && isSubscribed) {

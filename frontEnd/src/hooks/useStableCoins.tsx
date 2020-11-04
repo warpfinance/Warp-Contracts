@@ -8,9 +8,9 @@ import { getImageUrl, Token } from '../util/token'
 import { ConnectedWeb3Context } from './connectedWeb3'
 import { useContracts } from './useContracts'
 
-const logger = getLogger('Hooks::useTokens')
+const logger = getLogger('Hooks::useStableCoins')
 
-export const useTokens = (context: ConnectedWeb3Context) => {
+export const useStableCoinTokens = (context: ConnectedWeb3Context) => {
   const defaultTokens = getTokensByNetwork(context.networkId)
   const [tokens, setTokens] = useState<Token[]>(defaultTokens)
 
@@ -18,7 +18,7 @@ export const useTokens = (context: ConnectedWeb3Context) => {
     const fetchTokens = async () => {
       try {
         const tokens: Token[] = [];
-        setTokens(tokens)
+        //setTokens(tokens)
       } catch (e) {
         logger.error('There was an error getting the tokens:', e)
       }

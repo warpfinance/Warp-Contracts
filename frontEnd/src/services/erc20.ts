@@ -75,8 +75,8 @@ export class ERC20Service {
     return this.provider.waitForTransaction(transactionObject.hash)
   }
 
-  getCollateral = async (marketMakerAddress: string): Promise<any> => {
-    return this.contract.balanceOf(marketMakerAddress)
+  balanceOf = async (owner: string): Promise<BigNumber> => {
+    return await this.contract.balanceOf(owner);
   }
 
   hasEnoughBalanceToFund = async (owner: string, amount: BigNumber): Promise<boolean> => {

@@ -13,9 +13,6 @@ interface Network {
   uri: string
   contracts: {
     warpControl: string,
-    warpVault: string,
-    warpWrapperToken: string,
-
   }
 }
 
@@ -27,8 +24,6 @@ const networks: { [K in NetworkId]: Network } = {
     uri: "https://mainnet.infura.io/v3/f30a8e726a8c4851bfc92a44a04bc889",
     contracts: {
       warpControl: "",
-      warpVault: "",
-      warpWrapperToken: ""
     }
   },
   [networkIds.KOVAN]: {
@@ -36,8 +31,6 @@ const networks: { [K in NetworkId]: Network } = {
     uri: "https://kovan.infura.io/v3/f30a8e726a8c4851bfc92a44a04bc889",
     contracts: {
       warpControl: "",
-      warpVault: "",
-      warpWrapperToken: ""
     }
   }
 }
@@ -51,7 +44,7 @@ interface KnownTokenData {
   addresses: {
     [K in NetworkId]?: string
   }
-  order: number
+  order: number,
 }
 
 
