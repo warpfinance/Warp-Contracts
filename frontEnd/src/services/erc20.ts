@@ -105,6 +105,7 @@ export class ERC20Service {
   }
 
   getProfileSummary = async (): Promise<Token> => {
+
     let decimals
     let symbol
     try {

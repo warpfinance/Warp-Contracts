@@ -89,10 +89,10 @@ export const Dashboard: React.FC<Props> = (props: Props) => {
                 alignItems="stretch"
             >
                 <Grid item>
-                    <DashboardTable type="lending" />
+                    <DashboardTable tokens={stableCoins} type="lending" />
                 </Grid>
                 <Grid item>
-                    <DashboardTable type="borrowing" />
+                    <DashboardTable tokens={lpTokens} type="borrowing" />
                 </Grid>
             </Grid>
         </Grid >

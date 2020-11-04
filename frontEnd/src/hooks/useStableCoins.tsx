@@ -41,7 +41,7 @@ export const useStableCoinTokens = (context: ConnectedWeb3Context) => {
       }
     }
 
-    //fetchTokens()
+    fetchTokens()
   }, [context.library, context.networkId])
 
   return tokens
