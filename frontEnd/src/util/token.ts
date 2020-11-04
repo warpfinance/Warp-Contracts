@@ -37,6 +37,7 @@ export interface Token {
   symbol: string
   image?: string
   image2?: string
+  lpType?: string
 }
 
 export interface StableCoin extends Token {

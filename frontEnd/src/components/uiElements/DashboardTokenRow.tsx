@@ -19,7 +19,7 @@ export const DashboardTableRow: React.FC<Props> = (props: Props) => {
 
   const context = useConnectedWeb3Context();
   const {walletBalance, vaultBalance} = useTokenBalance(props.token, context);
-  const uniVersion = "Uni - LP - v2";
+  const uniVersion = props.token.lpType;
   const apy = 0;
 
   const [availableAmount, setAvailableAmount] = React.useState(BigNumber.from(0));

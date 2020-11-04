@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 
 import { ERC20Service } from '../services/erc20'
+import { UniswapLPTokenService } from '../services/uniswapLP'
 import { getLogger } from '../util/logger'
 import { getTokensByNetwork } from '../util/networks'
 import { getImageUrl, Token } from '../util/token'
@@ -17,18 +18,35 @@ export const useLPTokens = (context: ConnectedWeb3Context) => {
     const fetchTokens = async () => {
       try {
         const tokenAddresses = defaultTokens.map((token: Token) => {
-          return token.address
+          return {
+            address: token.address,
+            symbol: token.symbol
+          }
         });
         const tokens: Token[] = await Promise.all(
-          tokenAddresses.map(async tokenAddress => {
-            const erc20 = new ERC20Service(context.library, null, tokenAddress);
+          tokenAddresses.map(async (data: {
+            address: string,
+            symbol: string
+          }) => {
+            const erc20 = new UniswapLPTokenService(context.library, null, data.address);
             const erc20Info = await erc20.getProfileSummary();
-            const {image, image2} = getImageUrl(tokenAddress);
+            const {image, image2} = getImageUrl(data.address);
             const token = {
               ...erc20Info,
               image,
               image2
             }
+
+            token.lpType = token.symbol;
+            token.symbol = data.symbol;
+
+            // const tokenPairAddresses = [await erc20.token0(), await erc20.token1()];
+            // const tokenPair: Token[] = [];
+
+            // for (const address of tokenPairAddresses) {
+            //   const tokenERC20 = new ERC20Service(context.library, null, address);
+            //   const tokenInfo = await tokenERC20.getProfileSummary();
+            // }
 
             return token;
           }),
