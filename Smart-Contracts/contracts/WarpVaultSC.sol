@@ -4,28 +4,26 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/math/SafeMath.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "./compound/Exponential.sol";
-import "./compound/JumpRateModelV2.sol";
 import "./compound/InterestRateModel.sol";
 import "./interfaces/UniswapLPOracleFactoryI.sol";
 import "./WarpWrapperToken.sol";
 import "./interfaces/WarpControlI.sol";
 
 ////////////////////////////////////////////////////////////////////////////////////////////
-/// @title WarpVault
+/// @title WarpVaultSC
 /// @author Christopher Dixon
 ////////////////////////////////////////////////////////////////////////////////////////////
 /**
-@notice the WarpVault contract is the main point of interface for a specific LP asset class and an end user in the
+@notice the WarpVaultSC contract is the main point of interface for a specific LP asset class and an end user in the
 Warp lending platform. This contract is responsible for distributing WarpWrapper tokens in exchange for stablecoin assets,
 holding and accounting of stablecoins and LP tokens and all associates lending/borrowing calculations for a specific Warp LP asset class.
 This contract inherits Ownership and ERC20 functionality from the Open Zeppelin Library as well as Exponential and the InterestRateModel contracts
 from the coumpound protocol.
 **/
 
-contract WarpVault is Ownable, Exponential {
+contract WarpVaultSC is Ownable, Exponential {
     using SafeMath for uint256;
 
-    uint256 public lockTime;
     uint256 internal initialExchangeRateMantissa;
     uint256 public reserveFactorMantissa;
     uint256 public accrualBlockNumber;
@@ -36,30 +34,27 @@ contract WarpVault is Ownable, Exponential {
     uint256 internal constant reserveFactorMaxMantissa = 1e18;
     uint256 public liquidationIncentiveMantissa = 1.5e18; // 1.5
 
-    string public lpName;
     bool public initialized;
 
-    IERC20 public LPtoken;
     IERC20 public DAI;
     IERC20 public USDC;
     IERC20 public USDT;
     WarpWrapperToken public WDAI;
     WarpWrapperToken public WUSDC;
     WarpWrapperToken public WUSDT;
-    WarpWrapperToken public WLP;
     WarpControlI public WC;
-    UniswapLPOracleFactoryI public UOF;
     InterestRateModel public InterestRate;
 
     mapping(address => BorrowSnapshot) public accountBorrowsDAI;
     mapping(address => BorrowSnapshot) public accountBorrowsUSDC;
     mapping(address => BorrowSnapshot) public accountBorrowsUSDT;
-    mapping(address => mapping(address => uint256)) nonCompliant; // tracks user to a market to a time
     mapping(address => uint256) public accountLentDAI;
     mapping(address => uint256) public accountLentUSDC;
     mapping(address => uint256) public accountLentUSDT;
     mapping(address => address) public collateralAddressTracker;
     mapping(address => bool) public collateralLocked;
+    mapping(address => mapping(address => uint256)) nonCompliant; // tracks user to a market to a time
+
     /**
 @notice struct for borrow balance information
 @member principal Total balance (with accrued interest), after applying the most recent balance-changing action
@@ -72,106 +67,38 @@ contract WarpVault is Ownable, Exponential {
 
     /**
 @notice constructor sets up token names and symbols for the WarpWrapperToken
-@param _lp is the address of the lp token a specific Warp vault will represent
-@param _lpName is the name of the lp token
-@dev this function instantiates the lp token as a useable object and generates three WarpWrapperToken contracts to represent
-      each type of stable coin this vault can hold. this also instantiates each of these contracts as a usable object in this contract giving
-      this contract the ability to call their mint and burn functions.
+
 **/
     constructor(
-        address _lp,
-        address _WarpControl,
-        string memory _lpName
+        address _IR,
+        address _DAI,
+        address _USDC,
+        address _USDT,
+        uint256 _initialExchangeRate
     ) public {
-        lpName = _lpName;
-        LPtoken = IERC20(_lp);
-        WC = WarpControlI(_WarpControl);
-        accrualBlockNumber = getBlockNumber();
-        borrowIndex = mantissaOne;
-    }
+        WC = WarpControlI(msg.sender);
+        DAI = IERC20(_DAI);
+        USDC = IERC20(_USDC);
+        USDT = IERC20(_USDT);
+        InterestRate = InterestRateModel(_IR);
 
-    /**
-@notice setUp is called after the creation of a WarpVault to set up its Interest Rate Model and its initial exchange rate
-@param _baseRatePerYear The approximate target base APR, as a mantissa (scaled by 1e18)
-@param _multiplierPerYear  The rate of increase in interest rate wrt utilization (scaled by 1e18)
-@param _jumpMultiplierPerYear The multiplierPerBlock after hitting a specified utilization point
-@param _optimal The utilization point at which the jump multiplier is applied(Refered to as the Kink in the InterestRateModel)
-**/
-    function setUp(
-        uint256 _baseRatePerYear,
-        uint256 _multiplierPerYear,
-        uint256 _jumpMultiplierPerYear,
-        uint256 _optimal,
-        uint256 _initialExchangeRate,
-        address _oracle
-    ) public {
-        require(!initialized);
+        WDAI = new WarpWrapperToken(address(DAI), "Warp DAI", "WDAI");
 
-        UOF = UniswapLPOracleFactoryI(_oracle);
-        DAI = IERC20(WC.DAI());
-        USDC = IERC20(WC.USDC());
-        USDT = IERC20(WC.USDT());
-
-        address IR = address(
-            new JumpRateModelV2(
-                _baseRatePerYear,
-                _multiplierPerYear,
-                _jumpMultiplierPerYear,
-                _optimal,
-                address(this)
-            )
+        WUSDC = new WarpWrapperToken(
+            address(USDC),
+            "Warp US Dollar Coin",
+            "WUSDC"
         );
-
-        InterestRate = InterestRateModel(IR);
-
-        initialExchangeRateMantissa = _initialExchangeRate; //sets the initialExchangeRateMantissa
-        WDAI = new WarpWrapperToken(address(DAI), "WDAI", "WDAI");
-
-        WUSDC = new WarpWrapperToken(address(USDC), "WUS Dollar Coin", "WUSDC");
 
         WUSDT = new WarpWrapperToken(
             address(USDT),
-            "WUS Dollar Tether",
+            "Warp US Dollar Tether",
             "WUSDT"
         );
 
-        WLP = new WarpWrapperToken(address(LPtoken), lpName, "WLPW");
-        initialized = true;
-    }
-
-    /**
-@notice Get the underlying balance of an account
-@dev This also accrues interest in a transaction
-@param _account The address of the account to query
-@return The amount of underlying owned by `_account`
-*/
-    function balanceOfUnderlying(address _account) external returns (uint256) {
-        Exp memory exchangeRate = Exp({mantissa: exchangeRateCurrent()});
-        (MathError mErr, uint256 balance) = mulScalarTruncate(
-            exchangeRate,
-            WLP.balanceOf(_account)
-        );
-        require(mErr == MathError.NO_ERROR);
-        return balance;
-    }
-
-    /**
-@notice Get the underlying balance of the `owners`
-@param owner The address of the account to query
-@return The amount of underlying owned by `owner`
-**/
-    function balanceOfUnderlyingPrior(address owner)
-        public
-        view
-        returns (uint256)
-    {
-        Exp memory exchangeRate = Exp({mantissa: exchangeRatePrior()});
-        (MathError mErr, uint256 balance) = mulScalarTruncate(
-            exchangeRate,
-            WLP.balanceOf(owner)
-        );
-        require(mErr == MathError.NO_ERROR);
-        return balance;
+        accrualBlockNumber = getBlockNumber();
+        borrowIndex = mantissaOne;
+        initialExchangeRateMantissa = _initialExchangeRate; //sets the initialExchangeRateMantissa
     }
 
     /**
@@ -430,8 +357,23 @@ contract WarpVault is Ownable, Exponential {
          @notice  return the not up-to-date exchange rate
          @return Calculated exchange rate scaled by 1e18
          **/
-    function exchangeRatePrior() public view returns (uint256) {
-        if (WLP.totalSupply() == 0) {
+    function exchangeRatePrior(uint256 _assetType)
+        public
+        view
+        returns (uint256)
+    {
+        WarpWrapperToken asset;
+
+        if (_assetType == 1) {
+            asset = WDAI;
+        }
+        if (_assetType == 1) {
+            asset = WUSDC;
+        }
+        if (_assetType == 1) {
+            asset = WUSDT;
+        }
+        if (asset.totalSupply() == 0) {
             //If there are no tokens minted: exchangeRate = initialExchangeRate
             return initialExchangeRateMantissa;
         } else {
@@ -449,7 +391,7 @@ contract WarpVault is Ownable, Exponential {
             //calculate exchange rate
             (mathErr, exchangeRate) = getExp(
                 cashPlusBorrowsMinusReserves,
-                WLP.totalSupply()
+                asset.totalSupply()
             );
             return (exchangeRate.mantissa);
         }
@@ -459,9 +401,20 @@ contract WarpVault is Ownable, Exponential {
      @notice Accrue interest then return the up-to-date exchange rate
      @return Calculated exchange rate scaled by 1e18
      **/
-    function exchangeRateCurrent() public returns (uint256) {
+    function exchangeRateCurrent(uint256 _assetType) public returns (uint256) {
         accrueInterest();
-        if (WLP.totalSupply() == 0) {
+        WarpWrapperToken asset;
+
+        if (_assetType == 1) {
+            asset = WDAI;
+        }
+        if (_assetType == 1) {
+            asset = WUSDC;
+        }
+        if (_assetType == 1) {
+            asset = WUSDT;
+        }
+        if (asset.totalSupply() == 0) {
             //If there are no tokens minted: exchangeRate = initialExchangeRate
             return initialExchangeRateMantissa;
         } else {
@@ -479,7 +432,7 @@ contract WarpVault is Ownable, Exponential {
             //calculate exchange rate
             (mathErr, exchangeRate) = getExp(
                 cashPlusBorrowsMinusReserves,
-                WLP.totalSupply()
+                asset.totalSupply()
             );
             return (exchangeRate.mantissa);
         }
@@ -512,7 +465,7 @@ contract WarpVault is Ownable, Exponential {
         //declare struct
         MintLocalVars memory vars;
         //retrieve exchange rate
-        vars.exchangeRateMantissa = exchangeRateCurrent();
+        vars.exchangeRateMantissa = exchangeRateCurrent(_assetType);
         //We get the current exchange rate and calculate the number of WarpWrapperToken to be minted:
         //mintTokens = _amount / exchangeRate
         (vars.mathErr, vars.mintTokens) = divScalarByExpTruncate(
@@ -567,7 +520,7 @@ contract WarpVault is Ownable, Exponential {
         RedeemLocalVars memory vars;
 
         //get exchange rate
-        vars.exchangeRateMantissa = exchangeRateCurrent();
+        vars.exchangeRateMantissa = exchangeRateCurrent(_assetType);
         /**
 We calculate the exchange rate and the amount of underlying to be redeemed:
 redeemAmount = _amount x exchangeRateCurrent
@@ -621,7 +574,7 @@ redeemAmount = _amount x exchangeRateCurrent
         accrueInterest();
         //require an appropriate asset class is selected
         require(_assetType >= 1 && _assetType <= 3);
-        uint256 collatValue = WC.checkCollateralValue(
+        uint256 collatValue = WC.checkAvailibleCollateralValue(
             msg.sender,
             _WarpVaultCollat
         );
@@ -708,7 +661,6 @@ redeemAmount = _amount x exchangeRateCurrent
         //track that a collateral source is selected
         collateralLocked[msg.sender] = true;
         //track collateral globally through Warp Control
-        WC.trackCollateralDown(msg.sender, _WarpVaultCollat, _borrowAmount);
         WC.lockCollateralUp(msg.sender, _WarpVaultCollat, _borrowAmount);
     }
 
@@ -733,6 +685,7 @@ redeemAmount = _amount x exchangeRateCurrent
         //create local vars storage
         RepayBorrowLocalVars memory vars;
         if (_assetType == 1) {
+            DAI.transferFrom(msg.sender, address(this), repayAmount);
             //We remember the original borrowerIndex for verification purposes
             vars.borrowerIndex = accountBorrowsDAI[msg.sender].interestIndex;
             //We fetch the amount the borrower owes, with accumulated interest
@@ -773,10 +726,6 @@ redeemAmount = _amount x exchangeRateCurrent
                 //track collateral globally through Warp Control
                 WC.lockCollateralDown(
                     msg.sender,
-                    collateralAddressTracker[msg.sender],
-                    vars.lockedCollateral
-                );
-                WC.trackCollateralUp(
                     msg.sender,
                     collateralAddressTracker[msg.sender],
                     vars.lockedCollateral
@@ -785,6 +734,7 @@ redeemAmount = _amount x exchangeRateCurrent
         }
 
         if (_assetType == 2) {
+            USDC.transferFrom(msg.sender, address(this), repayAmount);
             //We remember the original borrowerIndex for verification purposes
             vars.borrowerIndex = accountBorrowsUSDC[msg.sender].interestIndex;
             //We fetch the amount the borrower owes, with accumulated interest
@@ -825,10 +775,6 @@ redeemAmount = _amount x exchangeRateCurrent
                 //track collateral globally through Warp Control
                 WC.lockCollateralDown(
                     msg.sender,
-                    collateralAddressTracker[msg.sender],
-                    vars.lockedCollateral
-                );
-                WC.trackCollateralUp(
                     msg.sender,
                     collateralAddressTracker[msg.sender],
                     vars.lockedCollateral
@@ -837,6 +783,7 @@ redeemAmount = _amount x exchangeRateCurrent
         }
 
         if (_assetType == 3) {
+            USDT.transferFrom(msg.sender, address(this), repayAmount);
             //We remember the original borrowerIndex for verification purposes
             vars.borrowerIndex = accountBorrowsUSDC[msg.sender].interestIndex;
             //We fetch the amount the borrower owes, with accumulated interest
@@ -877,10 +824,6 @@ redeemAmount = _amount x exchangeRateCurrent
                 //track collateral globally through Warp Control
                 WC.lockCollateralDown(
                     msg.sender,
-                    collateralAddressTracker[msg.sender],
-                    vars.lockedCollateral
-                );
-                WC.trackCollateralUp(
                     msg.sender,
                     collateralAddressTracker[msg.sender],
                     vars.lockedCollateral
@@ -890,29 +833,146 @@ redeemAmount = _amount x exchangeRateCurrent
     }
 
     /**
-@notice collateralizeLP allows a user to collateralize this contracts associated LP token
-@param _amount is the amount of LP being collateralized
-**/
-    function collateralizeLP(uint256 _amount) public {
-        LPtoken.transferFrom(msg.sender, address(this), _amount);
-        WC.trackCollateralUp(msg.sender, address(LPtoken), _amount);
-        WLP.mint(msg.sender, _amount);
+      @notice markAccountNonCompliant is used by a potential liquidator to mark an account as non compliant which starts its 30 minute timer
+      @param _borrower is the address of the non compliant borrower
+      @param _WarpVault is the address of the WarpVault LP the user is non-compliant in
+      **/
+    function markAccountNonCompliant(address _borrower, address _WarpVault)
+        public
+    {
+        //needs to check for account compliance
+        require(nonCompliant[_borrower][_WarpVault] == 0);
+        nonCompliant[_borrower][_WarpVault] = now;
+    }
+
+    //struct used to avoid stack too deep errors
+    struct liquidateLocalVar {
+        address assetOwed;
+        uint256 borrowedAmount;
+        uint256 collatAmount;
+        uint256 collatValue;
+        uint256 halfVal;
     }
 
     /**
-@notice getAssetAdd allows for easy retrieval of a WarpVaults LP token Adress
-**/
-    function getAssetAdd() public view returns (address) {
-        return address(LPtoken);
-    }
+      @notice The sender liquidates the borrowers collateral. This function is called on the WarpVault the borrower owes to.
+      @param borrower The borrower of a Warpvaults LP token to be liquidated
+      @param _WarpVaultOwed is the address of the WarpVault where the borrower owes asset
+      **/
 
-    /**
-@notice withdrawLP allows the user to trade in his WarpLP tokens for hiss underlying LP token collateral
-@param _amount is the amount of LP tokens he wishes to withdraw
-**/
-    function withdrawLP(uint256 _amount) public {
-        require(WC.checkCollateral(msg.sender, address(this)) >= _amount);
-        WLP.burn(msg.sender, _amount);
-        LPtoken.transfer(msg.sender, _amount);
+    function liquidateAccount(
+        address borrower,
+        uint256 _assetType,
+        address _WarpVaultOwed
+    ) public {
+        accrueInterest();
+        require(_assetType >= 1 && _assetType <= 3);
+        //checks if its been nonCompliant for more than a half hour
+        require(now >= nonCompliant[borrower][_WarpVaultOwed].add(1800));
+        //create local vars storage
+        liquidateLocalVar memory vars;
+        //get asset addresses of the LP WarpVault where the collateral is locked
+        vars.assetOwed = collateralAddressTracker[borrower];
+        //retrieve amount that was borrowed by borrower
+        vars.borrowedAmount = borrowBalanceCurrent(borrower, _assetType);
+        //retreive the USDC value of their locked collateral LP token
+        vars.collatValue = WC.checkLockedCollateralValue(
+            borrower,
+            _WarpVaultOwed
+        );
+        //divide collateral value in half
+        vars.halfVal = vars.collatValue.div(2);
+        //add 1/2 the collateral value to the total collateral value for 150% colleral value
+        vars.collatValue = vars.collatValue.add(vars.halfVal);
+        //subtract borrowed amount total borrows
+        totalBorrows = totalBorrows.sub(vars.borrowedAmount);
+        //if the borrowed value is greater than or equal to 150% of the collaterals value
+        if (vars.collatValue <= vars.borrowedAmount) {
+            //if asset type is DAI
+            if (_assetType == 1) {
+                //transfer the borrowed amount of DAI from the liquidator
+                DAI.transferFrom(
+                    msg.sender,
+                    address(this),
+                    vars.borrowedAmount
+                );
+                //retreive amount of lp collateral the borrower had locked for this loan
+                vars.collatAmount = WC.checkLockedCollateral(
+                    borrower,
+                    vars.assetOwed
+                );
+                //set their collateral source type back to false(meaning another source can now be used in future loans)
+                collateralLocked[borrower] = false;
+                //set their account borrow principle to zero
+                accountBorrowsDAI[borrower].principal = 0;
+                //set their account borrow interest index back to zero
+                accountBorrowsDAI[borrower].interestIndex = 0;
+                //track collateral globally through Warp Control sending the locked Warp Wrapper Token LP to the liquidator
+                WC.lockCollateralDown(
+                    borrower,
+                    msg.sender,
+                    vars.assetOwed,
+                    vars.collatAmount
+                );
+            }
+
+            if (_assetType == 2) {
+                //transfer the borrowed amount of USDC from the liquidator
+                USDC.transferFrom(
+                    msg.sender,
+                    address(this),
+                    vars.borrowedAmount
+                );
+                //retreive amount of lp collateral the borrower had locked for this loan
+                vars.collatAmount = WC.checkLockedCollateral(
+                    borrower,
+                    vars.assetOwed
+                );
+                //set their collateral source type back to false(meaning another source can now be used in future loans)
+                collateralLocked[borrower] = false;
+                //set their account borrow principle to zero
+                accountBorrowsUSDC[borrower].principal = 0;
+                //set their account borrow interest index back to zero
+                accountBorrowsUSDC[borrower].interestIndex = 0;
+                //track collateral globally through Warp Control sending the locked Warp Wrapper Token LP to the liquidator
+                WC.lockCollateralDown(
+                    borrower,
+                    msg.sender,
+                    vars.assetOwed,
+                    vars.collatAmount
+                );
+            }
+
+            if (_assetType == 3) {
+                //transfer the borrowed amount of USDT from the liquidator
+
+                USDT.transferFrom(
+                    msg.sender,
+                    address(this),
+                    vars.borrowedAmount
+                );
+                //retreive amount of lp collateral the borrower had locked for this loan
+
+                vars.collatAmount = WC.checkLockedCollateral(
+                    borrower,
+                    vars.assetOwed
+                );
+                //set their collateral source type back to false(meaning another source can now be used in future loans)
+                collateralLocked[borrower] = false;
+                //set their account borrow principle to zero
+                accountBorrowsUSDC[borrower].principal = 0;
+                //set their account borrow interest index back to zero
+                accountBorrowsUSDC[borrower].interestIndex = 0;
+                //track collateral globally through Warp Control sending the locked Warp Wrapper Token LP to the liquidator
+                WC.lockCollateralDown(
+                    borrower,
+                    msg.sender,
+                    vars.assetOwed,
+                    vars.collatAmount
+                );
+            }
+        }
+        //reset accounts compliant timer if its paid off OR if they where compliant by the time this function is run
+        nonCompliant[borrower][_WarpVaultOwed] = 0; //resets borrowers compliance timer
     }
 }

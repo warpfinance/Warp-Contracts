@@ -11,7 +11,7 @@ The WarpVaultI contract an abstract contract the MoneyMarketFactory uses to inte
     SafeMath instances
 **/
 
-abstract contract WarpVaultI {
+abstract contract WarpVaultSCI {
     /**
 @notice setUp is called after the creation of a WarpVault to set up its Interest Rate Model and its initial exchange rate
 @param _baseRatePerYear The approximate target base APR, as a mantissa (scaled by 1e18)
