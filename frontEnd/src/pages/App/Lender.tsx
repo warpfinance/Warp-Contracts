@@ -151,7 +151,7 @@ export const Lender: React.FC<Props> = (props: Props) => {
                 alignItems="center"
                 spacing={5}
             >
-                <Header connected={true} />
+                <Header />
                 <Grid
                     item
                     container

@@ -25,14 +25,12 @@ interface Props {
 export const Connect: React.FC<Props> = (props: Props) => {
     const classes = useStyles();
 
-    const [connected, setConnected] = useState(false);
     const [modalOpen, setModalOpen] = useState(false);
 
     const context = useWeb3React();
     const history = useHistory();
 
     const Connected = () => {
-        setConnected(true);
         setModalOpen(false);
         history.push("/dashboard");
     }
@@ -42,6 +40,7 @@ export const Connect: React.FC<Props> = (props: Props) => {
             await context.activate(connectors.MetaMask)
                 .then((result) => {
                     Connected();
+                    localStorage.setItem('CONNECTOR', type);
                 }).catch((e) => {
                     console.error(e);
                 });
@@ -50,6 +49,7 @@ export const Connect: React.FC<Props> = (props: Props) => {
             await context.activate(connectors.Coinbase)
                 .then((result) => {
                     Connected();
+                    localStorage.setItem('CONNECTOR', type);
                 }).catch((e) => {
                     console.error(e);
                 });
@@ -58,6 +58,7 @@ export const Connect: React.FC<Props> = (props: Props) => {
             await context.activate(connectors.Portis)
                 .then((result) => {
                     Connected();
+                    localStorage.setItem('CONNECTOR', type);
                 }).catch((e) => {
                     console.error(e);
                 });
@@ -80,7 +81,7 @@ export const Connect: React.FC<Props> = (props: Props) => {
                 alignItems="center"
                 spacing={10}
             >
-                <Header connected={connected} />
+                <Header />
                 <div className={classes.centerButton}>
                     <CustomButton onClick={onClick} text={"Connect wallet"} type={"long"} />
                 </div>

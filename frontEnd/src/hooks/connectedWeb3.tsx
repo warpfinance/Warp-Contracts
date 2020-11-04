@@ -1,7 +1,10 @@
 import { useWeb3React } from '@web3-react/core'
+import { NoEthereumProviderError, UserRejectedRequestError } from '@web3-react/injected-connector'
 import { providers } from 'ethers'
 import React, { useEffect, useState } from 'react'
+import { connect } from 'react-redux'
 import connectors from '../util/connectors'
+import { WalletType } from '../util/types'
 
 export interface ConnectedWeb3Context {
   account: Maybe<string>
@@ -31,31 +34,44 @@ export const useConnectedWeb3Context = () => {
  */
 export const ConnectedWeb3: React.FC = props => {
   const [networkId, setNetworkId] = useState<number | null>(null)
+  const [onLoadConnecting, setOnLoadConnecting] = useState<boolean>(true);
   const context = useWeb3React()
   const { account, active, error, library } = context
 
+  const isNoEthereumProviderError = error instanceof NoEthereumProviderError;
+  const isUserRejectedRequestError = error instanceof UserRejectedRequestError;
+
   useEffect(() => {
-    let isSubscribed = true
+    let isSubscribed = true;
 
-    console.log(context)
+    console.log(error);
+    console.log(context);
+    console.log(library);
 
-    // @TODO Setup Infura and move ConnectedWeb3 over the root
-    //const connector = localStorage.getItem('CONNECTOR')
+    const tryConnect = async () => {
+      const connector = localStorage.getItem('CONNECTOR');
 
-    // if (active) {
-    //   if (connector && connector in connectors) {
-    //     context.setConnector(connector)
-    //   }
-    // } else if (error) {
-    //   console.log("error:" + error.message)
-    //   localStorage.removeItem('CONNECTOR')
-    //   context.setConnector('Infura')
-    // } else {
-    //   context.setConnector('Infura')
-    // }
+      if (!active && connector) {
+        if (connector) {
+          try {
+            if (connector as WalletType === WalletType.MetaMask) {
+              await context.activate(connectors.MetaMask, undefined, true);
+            }
+          } catch (e) {
+            console.log(e);
+            localStorage.removeItem('CONNECTOR');
+            await context.activate(connectors.Infura);
+          }
+        }
+      } else {
+        console.log("fallback")
+        await context.activate(connectors.Infura);
+      }
+    }
 
-    if (!active) {
-      context.activate(connectors.Infura);
+    if (onLoadConnecting) {
+      setOnLoadConnecting(false);
+      tryConnect();
     }
 
     const checkIfReady = async () => {
@@ -90,5 +106,13 @@ export const ConnectedWeb3: React.FC = props => {
 export const WhenConnected: React.FC = props => {
   const { account } = useConnectedWeb3Context()
 
+  console.log("WhenConnected", account);
+
   return <>{account && props.children}</>
+}
+
+export const WhenNotConnected: React.FC = props => {
+  const { account } = useConnectedWeb3Context()
+
+  return <>{!account && props.children}</>
 }

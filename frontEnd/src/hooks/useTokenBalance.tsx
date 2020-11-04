@@ -22,9 +22,6 @@ export const useTokenBalance = (token: Token, context: ConnectedWeb3Context) => 
       if (account) {
         const tokenService = new ERC20Service(provider, account, token.address)
         walletBalance = await tokenService.balanceOf(account);
-        console.log(walletBalance.toString());
-
-
       }
 
       if (isSubscribed) {
