@@ -3,9 +3,10 @@ pragma solidity ^0.6.0;
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/math/SafeMath.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "./WarpVaultSC.sol";
+import "./interfaces/WarpVaultSCI.sol";
 import "./interfaces/WarpVaultLPI.sol";
 import "./interfaces/WarpVaultLPFactoryI.sol";
+import "./interfaces/WarpVaultSCFactoryI.sol";
 import "./interfaces/UniswapLPOracleFactoryI.sol";
 import "./compound/JumpRateModelV2.sol";
 import "./compound/Exponential.sol";
@@ -27,11 +28,12 @@ contract WarpControl is Ownable, Exponential {
 
     UniswapLPOracleFactoryI public Oracle; //oracle factory contract interface
     WarpVaultLPFactoryI public WVLPF;
-    WarpVaultSC public WVSC;
+    WarpVaultSCFactoryI public WVSCF;
 
     address[] public lpVaults;
 
-    mapping(address => address) public instanceTracker; //maps LP token address to the assets WarpVault
+    mapping(address => address) public instanceLPTracker; //maps LP token address to the assets WarpVault
+    mapping(address => address) public instanceSCTracker;
 
     /**
 @notice the constructor function is fired during the contract deployment process. The constructor can only be fired once and
@@ -40,17 +42,39 @@ contract WarpControl is Ownable, Exponential {
 **/
     constructor(
         address _oracle,
-        address _DAI,
-        address _USDC,
-        address _USDT,
+        address _WVLPF,
+        address _WVSCF
+    ) public {
+        Oracle = UniswapLPOracleFactoryI(_oracle);
+        WVLPF = WarpVaultLPFactoryI(_WVLPF);
+        WVSCF = WarpVaultSCFactoryI(_WVSCF);
+    }
+
+    /**
+@notice createNewVault allows the contract owner to create a new WarpVaultLP contract along with its associated Warp Wrapper Tokens
+**/
+    function createNewLPVault(
+        address _lp,
+        address _lpAsset1,
+        address _lpAsset2,
+        string memory _lpName
+    ) public onlyOwner {
+        Oracle.createNewOracles(_lpAsset1, _lpAsset2, _lp);
+        address _WarpVault = WVLPF.createWarpVaultLP(_lp, _lpName);
+        instanceLPTracker[_lp] = _WarpVault;
+        lpVaults.push(_WarpVault);
+    }
+
+    function createNewSCVault(
         uint256 _baseRatePerYear,
         uint256 _multiplierPerYear,
         uint256 _jumpMultiplierPerYear,
         uint256 _optimal,
-        uint256 _initialExchangeRate
-    ) public {
-        Oracle = UniswapLPOracleFactoryI(_oracle);
-
+        uint256 _initialExchangeRate,
+        address _StableCoin,
+        string memory _stableCoinName,
+        string memory _stableCoinSymbol
+    ) public onlyOwner {
         address IR = address(
             new JumpRateModelV2(
                 _baseRatePerYear,
@@ -61,24 +85,14 @@ contract WarpControl is Ownable, Exponential {
             )
         );
 
-        WVSC = new WarpVaultSC(IR, _DAI, _USDC, _USDT, _initialExchangeRate);
-    }
-
-    /**
-@notice createNewVault allows the contract owner to create a new WarpVaultLP contract along with its associated Warp Wrapper Tokens
-**/
-    function createNewLPVault(
-        address _WVLPF,
-        address _lp,
-        address _lpAsset1,
-        address _lpAsset2,
-        string memory _lpName
-    ) public onlyOwner {
-        Oracle.createNewOracles(_lpAsset1, _lpAsset2, _lp);
-        WVLPF = WarpVaultLPFactoryI(_WVLPF);
-        address _WarpVault = WVLPF.createWarpVaultLP(_lp, _lpName);
-        instanceTracker[_lp] = _WarpVault;
-        lpVaults.push(_WarpVault);
+        address WVSC = WVSCF.createNewWarpVaultSC(
+            IR,
+            _StableCoin,
+            _initialExchangeRate,
+            _stableCoinName,
+            _stableCoinSymbol
+        );
+        instanceSCTracker[_StableCoin] = WVSC;
     }
 
     /**
