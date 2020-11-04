@@ -5,6 +5,9 @@ import { Avatar, Grid } from "@material-ui/core";
 
 import { AvatarGroup } from "@material-ui/lab";
 import { useState } from "react";
+import { useConnectedWeb3Context } from "../../hooks/connectedWeb3";
+import { useStableCoinTokens } from "../../hooks/useStableCoins";
+import { useLPTokens } from "../../hooks/useLPTokens";
 
 interface Props {
 
@@ -66,6 +69,10 @@ const borrowData = [
 ];
 
 export const Borrower: React.FC<Props> = (props: Props) => {
+    const context = useConnectedWeb3Context();
+    const stableCoins = useStableCoinTokens(context);
+    const lpTokens = useLPTokens(context);
+
     const [authAction, setAuthAction] = useState("borrow");
     const [authorizationModalOpen, setAuthorizationModalOpen] = useState(false);
     const [borrowAmountCurrency, setBorrowAmountCurrency] = React.useState("DAI");

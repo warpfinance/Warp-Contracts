@@ -3,9 +3,11 @@ import * as React from "react";
 import { Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@material-ui/core";
 
 import { CustomButton } from "../../components"
+import { Token } from "../../util/token";
 
 interface Props {
     data: any,
+    tokens: Token[],
     onLeftButtonClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void,
     onRightButtonClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void,
     type: "collateral" | "borrow"
