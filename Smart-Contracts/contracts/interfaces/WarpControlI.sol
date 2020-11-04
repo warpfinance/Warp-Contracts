@@ -36,23 +36,23 @@ abstract contract WarpControlI {
 
     function lockCollateralDown(
         address _borrower,
+        address _redeemer,
         address _WarpVault,
         uint256 _amount
     ) external virtual;
 
-    function checkCollateralValue(address _borrower, address _WarpVault)
+    function checkAvailibleCollateralValue(
+        address _borrower,
+        address _WarpVault
+    ) external view virtual returns (uint256);
+
+    function checkLockedCollateralValue(address _borrower, address _WarpVault)
         external
         view
         virtual
         returns (uint256);
 
     function checkLockedCollateral(address _borrower, address _WarpVault)
-        external
-        view
-        virtual
-        returns (uint256);
-
-    function checkCollateral(address _borrower, address _WarpVault)
         external
         view
         virtual
