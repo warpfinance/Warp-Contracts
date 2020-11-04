@@ -9,14 +9,11 @@ import { useStableCoinTokens } from "../../hooks/useStableCoins";
 import { Token } from "../../util/token";
 import { BigNumber, utils} from "ethers";
 import { formatBigNumber } from "../../util/tools";
+import { useTotalWalletBalance } from "../../hooks/useTotalWalletBalance";
 
 // TO-DO: Web3 integration
 const authAction = "lend"
-const data = {
-    stableCoinDeposit: 0.00,
-    stableCoinReward: 4545,
-    walletBalance: 656
-}
+
 
 interface Props {
 }
@@ -25,6 +22,14 @@ interface Props {
 export const Lender: React.FC<Props> = (props: Props) => {
     const context = useConnectedWeb3Context();
     const tokens = useStableCoinTokens(context);
+
+    const walletBalance = useTotalWalletBalance(context);
+
+    const data = {
+        stableCoinDeposit: 0.00,
+        stableCoinReward: 4545,
+        walletBalance
+    }
 
     const [authorizationModalOpen, setAuthorizationModalOpen] = useState(false);
 
