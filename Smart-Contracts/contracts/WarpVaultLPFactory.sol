@@ -16,6 +16,7 @@ This contract uses the OpenZeppelin contract Library to inherit functions from
 contract WarpVaultLPFactory is Ownable {
     function createWarpVaultLP(address _lp, string memory _lpName)
         public
+        onlyOwner
         returns (address)
     {
         address _WVLP = address(new WarpVaultLP(_lp, msg.sender, _lpName));
