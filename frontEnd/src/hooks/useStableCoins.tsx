@@ -11,10 +11,8 @@ import { useContracts } from './useContracts'
 const logger = getLogger('Hooks::useStableCoins')
 
 export const useStableCoinTokens = (context: ConnectedWeb3Context) => {
-  const defaultTokens = getTokensByNetwork(context.networkId)
+  const defaultTokens = getTokensByNetwork(context.networkId, false)
   const [tokens, setTokens] = useState<Token[]>(defaultTokens)
-
-  
 
   useEffect(() => {
     const fetchTokens = async () => {
@@ -26,9 +24,11 @@ export const useStableCoinTokens = (context: ConnectedWeb3Context) => {
           tokenAddresses.map(async tokenAddress => {
             const erc20 = new ERC20Service(context.library, null, tokenAddress);
             const erc20Info = await erc20.getProfileSummary();
+            const {image, image2} = getImageUrl(tokenAddress);
             const token = {
               ...erc20Info,
-              image: getImageUrl(tokenAddress)
+              image,
+              image2
             }
 
             return token;

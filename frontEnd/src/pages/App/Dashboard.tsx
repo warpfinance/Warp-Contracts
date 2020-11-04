@@ -4,6 +4,9 @@ import { DashboardTable, Header, InformationCard } from "../../components";
 import { Grid, LinearProgress, Typography } from "@material-ui/core";
 
 import { makeStyles } from "@material-ui/core/styles";
+import { useStableCoinTokens } from "../../hooks/useStableCoins";
+import { useConnectedWeb3Context } from "../../hooks/connectedWeb3";
+import { useLPTokens } from "../../hooks/useLPTokens";
 
 const useStyles = makeStyles(theme => ({
     progress: {
@@ -24,6 +27,10 @@ const data = {
 
 export const Dashboard: React.FC<Props> = (props: Props) => {
     const classes = useStyles();
+    
+    const context = useConnectedWeb3Context();
+    const stableCoins = useStableCoinTokens(context);
+    const lpTokens = useLPTokens(context);
 
     return (
         <Grid

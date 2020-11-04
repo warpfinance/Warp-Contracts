@@ -45,6 +45,7 @@ interface KnownTokenData {
     [K in NetworkId]?: string
   }
   order: number,
+  lp: boolean
 }
 
 
@@ -57,6 +58,7 @@ export const knownTokens: { [name in KnownToken]: KnownTokenData } = {
       [networkIds.KOVAN]: '0x1528F3FCc26d13F7079325Fb78D9442607781c8C'
     },
     order: 1,
+    lp: false
   },
   usdc: {
     symbol: 'USDC',
@@ -66,6 +68,7 @@ export const knownTokens: { [name in KnownToken]: KnownTokenData } = {
       [networkIds.KOVAN]: '0x2F375e94FC336Cdec2Dc0cCB5277FE59CBf1cAe5'
     },
     order: 2,
+    lp: false
   },
   usdt: {
     symbol: 'USDT',
@@ -74,7 +77,45 @@ export const knownTokens: { [name in KnownToken]: KnownTokenData } = {
       [networkIds.MAINNET]: '0xdac17f958d2ee523a2206206994597c13d831ec7',
     },
     order: 3,
+    lp: false
   },
+  "eth-dai": {
+    symbol: 'ETH-DAI',
+    decimals: 18,
+    addresses: {
+      [networkIds.MAINNET]: '0xa478c2975ab1ea89e8196811f51a7b7ade33eb11'
+    },
+    order: 4,
+    lp: true
+  },
+  "eth-usdt": {
+    symbol: 'ETH-USDT',
+    decimals: 18,
+    addresses: {
+      [networkIds.MAINNET]: '0x0d4a11d5eeaac28ec3f61d100daf4d40471f1852'
+    },
+    order: 5,
+    lp: true
+  },
+  "eth-usdc": {
+    symbol: 'ETH-USDC',
+    decimals: 18,
+    addresses: {
+      [networkIds.MAINNET]: '0xb4e16d0168e52d35cacd2c6185b44281ec28c9dc'
+    },
+    order: 6,
+    lp: true
+  },
+  "eth-wbtc": {
+    symbol: 'ETH-wBTC',
+    decimals: 18,
+    addresses: {
+      [networkIds.MAINNET]: '0xbb2b8038a1640196fbe3e38816f3e67cba72d940'
+    },
+    order: 7,
+    lp: true
+  },
+
 }
 
 const validNetworkId = (networkId: number): networkId is NetworkId => {
@@ -86,30 +127,6 @@ export const getContractAddress = (networkId: number, contract: KnownContracts) 
     throw new Error(`Unsupported network id: '${networkId}'`)
   }
   return networks[networkId].contracts[contract]
-}
-
-export const getToken = (networkId: number, tokenId: KnownToken): Token => {
-  if (!validNetworkId(networkId)) {
-    throw new Error(`Unsupported network id: '${networkId}'`)
-  }
-
-  const token = knownTokens[tokenId]
-  if (!token) {
-    throw new Error(`Unsupported token id: '${tokenId}'`)
-  }
-
-  const address = token.addresses[networkId]
-
-  if (!address) {
-    throw new Error(`Unsupported network id: '${networkId}'`)
-  }
-
-  return {
-    address,
-    decimals: token.decimals,
-    symbol: token.symbol,
-    image: getImageUrl(address),
-  }
 }
 
 export const getTokenFromAddress = (networkId: number, address: string): Token => {
@@ -143,32 +160,34 @@ export const getContractAddressName = (networkId: number) => {
   return networkNameCase
 }
 
-export const getDefaultToken = (networkId: number) => {
-  if (!validNetworkId(networkId)) {
-    throw new Error(`Unsupported network id: '${networkId}'`)
-  }
-
-  return getToken(networkId, DEFAULT_TOKEN)
-}
-
 const isNotNull = <T>(x: T | null): x is T => {
   return x !== null
 }
 
-export const getTokensByNetwork = (networkId: number): Token[] => {
+export const getTokensByNetwork = (networkId: number, lp?: boolean): Token[] => {
   if (!validNetworkId(networkId)) {
     throw new Error(`Unsupported network id: '${networkId}'`)
   }
 
+  if (!lp) {
+    lp = false;
+  }
+
   return Object.values(knownTokens)
     .sort((a, b) => (a.order > b.order ? 1 : -1))
+    .filter((kt: KnownTokenData) => {
+      return kt.lp === lp;
+    })
     .map(token => {
       const address = token.addresses[networkId]
       if (address) {
+        const {image, image2} = getImageUrl(address);
+
         return {
           symbol: token.symbol,
           decimals: token.decimals,
-          image: getImageUrl(address),
+          image,
+          image2,
           address,
         }
       }
