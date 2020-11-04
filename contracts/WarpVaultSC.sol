@@ -2,7 +2,7 @@ pragma solidity ^0.6.2;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/math/SafeMath.sol";
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "./compound/Exponential.sol";
 import "./compound/InterestRateModel.sol";
 import "./interfaces/UniswapLPOracleFactoryI.sol";
@@ -34,9 +34,7 @@ contract WarpVaultSC is Ownable, Exponential {
     uint256 internal constant reserveFactorMaxMantissa = 1e18;
     uint256 public liquidationIncentiveMantissa = 1.5e18; // 1.5
 
-    bool public initialized;
-
-    IERC20 public stablecoin;
+    ERC20 public stablecoin;
     WarpWrapperToken public wStableCoin;
     WarpControlI public WC;
     InterestRateModel public InterestRate;
@@ -65,21 +63,19 @@ contract WarpVaultSC is Ownable, Exponential {
         address _InterestRate,
         address _StableCoin,
         address _warpControl,
-        uint256 _initialExchangeRate,
-        string memory _stableCoinName,
-        string memory _stableCoinSymbol
+        uint256 _initialExchangeRate
     ) public {
         WC = WarpControlI(_warpControl);
-        stablecoin = IERC20(_StableCoin);
+        stablecoin = ERC20(_StableCoin);
         InterestRate = InterestRateModel(_InterestRate);
-        wStableCoin = new WarpWrapperToken(
-            _StableCoin,
-            _stableCoinName,
-            _stableCoinSymbol
-        );
         accrualBlockNumber = getBlockNumber();
         borrowIndex = mantissaOne;
         initialExchangeRateMantissa = _initialExchangeRate; //sets the initialExchangeRateMantissa
+        wStableCoin = new WarpWrapperToken(
+            address(stablecoin),
+            stablecoin.name(),
+            stablecoin.symbol()
+        );
     }
 
     /**
