@@ -8,7 +8,7 @@ import { useConnectedWeb3Context } from "../../hooks/connectedWeb3";
 import { useStableCoinTokens } from "../../hooks/useStableCoins";
 import { Token } from "../../util/token";
 import { useWalletTokenBalance } from "../../hooks/useWalletBalance";
-import { BigNumber } from "ethers";
+import { BigNumber, utils} from "ethers";
 import { formatBigNumber } from "../../util/tools";
 
 // TO-DO: Web3 integration
@@ -22,21 +22,24 @@ const data = {
 interface Props {
 }
 
+
 export const Lender: React.FC<Props> = (props: Props) => {
     const context = useConnectedWeb3Context();
     const tokens = useStableCoinTokens(context);
 
     const [authorizationModalOpen, setAuthorizationModalOpen] = useState(false);
 
+    const [lendToken, setLendToken] = React.useState<Maybe<Token>>(null);
     const [lendAmountCurrency, setLendAmountCurrency] = React.useState("");
-    const [lendAmountValue, setLendAmountValue] = React.useState(0);
+    const [lendAmountValue, setLendAmountValue] = React.useState(BigNumber.from(0));
     const [lendFocusedAmountId, setLendFocusedAmountId] = React.useState("");
-    const [lendMaxAmount, setLendMaxAmount] = React.useState(0);
+    const [lendMaxAmount, setLendMaxAmount] = React.useState(BigNumber.from(0));
 
+    const [withdrawToken, setWithdrawToken] = React.useState<Maybe<Token>>(null);
     const [withdrawAmountCurrency, setWithdrawAmountCurrency] = React.useState("");
-    const [withdrawAmountValue, setWithdrawAmountValue] = React.useState(0);
+    const [withdrawAmountValue, setWithdrawAmountValue] = React.useState(BigNumber.from(0));
     const [withdrawFocusedAmountId, setWithdrawFocusedAmountId] = React.useState("");
-    const [withdrawMaxAmount, setWithdrawMaxAmount] = React.useState(0);
+    const [withdrawMaxAmount, setWithdrawMaxAmount] = React.useState(BigNumber.from(0));
 
     const [lendModalOpen, setLendModalOpen] = useState(false);
     const [withdrawModalOpen, setWithdrawModalOpen] = useState(false);
@@ -44,10 +47,10 @@ export const Lender: React.FC<Props> = (props: Props) => {
     const [withdrawError, setWithdrawError] = useState(false);
 
     React.useEffect(() => {
-        if (lendAmountValue !== 0 && lendAmountCurrency !== "") {
+        if (!lendAmountValue.eq(BigNumber.from(0)) && lendAmountCurrency !== "") {
             setLendError(isError(lendAmountValue, lendAmountCurrency, tokens, lendMaxAmount));
         }
-        if (withdrawAmountValue !== 0 && withdrawAmountCurrency !== "") {
+        if (!withdrawAmountValue.eq(BigNumber.from(0)) && withdrawAmountCurrency !== "") {
             setWithdrawError(isError(withdrawAmountValue, withdrawAmountCurrency, tokens, withdrawMaxAmount));
         }
     }, [lendAmountValue, lendAmountCurrency, withdrawAmountValue, withdrawAmountCurrency]
@@ -65,10 +68,10 @@ export const Lender: React.FC<Props> = (props: Props) => {
         setWithdrawModalOpen(false);
     }
 
-    const isError = (value: number, symbol: string, tokens: Token[], maxValue: number) => {
+    const isError = (value: BigNumber, symbol: string, tokens: Token[], maxValue: BigNumber) => {
         const index = tokens.findIndex((value: Token) => value.symbol === symbol);
         if (index < 0) return true;
-        if (value < 0 || value > maxValue) {
+        if (value.lt(BigNumber.from(0)) || value.gt(maxValue)) {
             return true;
         }
         return false;
@@ -82,15 +85,16 @@ export const Lender: React.FC<Props> = (props: Props) => {
         setWithdrawModalOpen(true);
     }
 
-    const onLendAmountChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>, maxAmount: number) => {
+    const onLendAmountChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>, maxAmount: BigNumber, token: Token) => {
         setLendAmountCurrency(event.target.id);
         setLendFocusedAmountId(event.target.id);
-        setLendAmountValue(Number(event.target.value));
+        setLendAmountValue(utils.parseUnits(event.target.value || "0", token.decimals));
         setLendMaxAmount(maxAmount);
+        setLendToken(token);
     };
 
     const onLendBlur = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-        if (lendAmountValue === 0) {
+        if (lendAmountValue.eq(BigNumber.from(0))) {
             setLendFocusedAmountId("");
         }
     };
@@ -101,15 +105,16 @@ export const Lender: React.FC<Props> = (props: Props) => {
         }
     };
 
-    const onWithdrawAmountChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>, maxAmount: number) => {
+    const onWithdrawAmountChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>, maxAmount: BigNumber, token: Token) => {
         setWithdrawFocusedAmountId(event.target.id)
         setWithdrawAmountCurrency(event.target.id);
-        setWithdrawAmountValue(Number(event.target.value));
+        setWithdrawAmountValue(utils.parseUnits(event.target.value || "0", token.decimals));
         setWithdrawMaxAmount(maxAmount);
+        setWithdrawToken(token);
     };
 
     const onWithdrawBlur = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-        if (withdrawAmountValue === 0) {
+        if (withdrawAmountValue.eq(BigNumber.from(0))) {
             setWithdrawFocusedAmountId("");
         }
     };
@@ -200,7 +205,7 @@ export const Lender: React.FC<Props> = (props: Props) => {
             </Grid >
             <SimpleModal
                 action="Lend"
-                amount={lendAmountValue}
+                amount={lendToken ? formatBigNumber(lendAmountValue, lendToken.decimals) : '0'}
                 currency={lendAmountCurrency}
                 iconSrc={`${lendAmountCurrency.toLowerCase()}.png`}
                 onButtonClick={onLend}
@@ -208,7 +213,7 @@ export const Lender: React.FC<Props> = (props: Props) => {
                 open={lendModalOpen} />
             <SimpleModal
                 action="Withdraw"
-                amount={withdrawAmountValue}
+                amount={withdrawToken ? formatBigNumber(withdrawAmountValue, withdrawToken.decimals) : '0'}
                 currency={withdrawAmountCurrency}
                 iconSrc={`${withdrawAmountCurrency.toLowerCase()}.png`}
                 onButtonClick={onWithdraw}

@@ -3,16 +3,17 @@ import * as React from "react";
 import { Amount, CustomButton } from "../../components"
 import { Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@material-ui/core";
 import { LenderStableCoinRow } from "./LenderStableCoinRow";
+import { BigNumber } from "ethers";
 
 interface Props {
     amountCurrency: string,
-    amountValue: number,
+    amountValue: BigNumber,
     data: any,
     error: boolean,
     focusedAmountId: string | undefined,
     onButtonClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void,
     onBlur: (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>)=> void,
-    onChange: (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>, maxAmount: number)=> void,
+    onChange: any,
     onFocus: (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void,
     type: "lend" | "withdraw"
 }
@@ -64,7 +65,7 @@ export const LenderTable: React.FC<Props> = (props: Props) => {
                 </Table>
             </TableContainer>
             <CustomButton
-                disabled={props.amountValue <= 0 || props.error}
+                disabled={props.amountValue.lte(BigNumber.from(0)) || props.error}
                 onClick={props.onButtonClick}
                 text={lendOrWithdraw.charAt(0).toUpperCase() + lendOrWithdraw.slice(1)}
                 type="long" />

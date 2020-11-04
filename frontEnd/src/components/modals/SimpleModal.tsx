@@ -18,7 +18,7 @@ const useStyles = makeStyles(theme => ({
 
 interface Props {
     action: string,
-    amount: number,
+    amount: number | string,
     currency: string,
     iconSrc: string,
     handleClose: (event: {}, reason: "backdropClick" | "escapeKeyDown") => void,
