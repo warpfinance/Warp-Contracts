@@ -14,17 +14,34 @@ export const useStableCoinTokens = (context: ConnectedWeb3Context) => {
   const defaultTokens = getTokensByNetwork(context.networkId)
   const [tokens, setTokens] = useState<Token[]>(defaultTokens)
 
+  
+
   useEffect(() => {
     const fetchTokens = async () => {
       try {
-        const tokens: Token[] = [];
-        //setTokens(tokens)
+        const tokenAddresses = defaultTokens.map((token: Token) => {
+          return token.address
+        });
+        const tokens: Token[] = await Promise.all(
+          tokenAddresses.map(async tokenAddress => {
+            const erc20 = new ERC20Service(context.library, null, tokenAddress);
+            const erc20Info = await erc20.getProfileSummary();
+            const token = {
+              ...erc20Info,
+              image: getImageUrl(tokenAddress)
+            }
+
+            return token;
+          }),
+        )
+        
+        setTokens(tokens);
       } catch (e) {
         logger.error('There was an error getting the tokens:', e)
       }
     }
 
-    fetchTokens()
+    //fetchTokens()
   }, [context.library, context.networkId])
 
   return tokens

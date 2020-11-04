@@ -109,7 +109,8 @@ export class ERC20Service {
     let symbol
     try {
       ;[decimals, symbol] = await Promise.all([this.contract.decimals(), this.contract.symbol()])
-    } catch {
+    } catch(e) {
+      console.log(e);
       decimals = 18
       symbol = 'MKR'
     }

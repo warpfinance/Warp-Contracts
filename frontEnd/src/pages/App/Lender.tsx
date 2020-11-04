@@ -7,7 +7,6 @@ import { useState } from "react";
 import { useConnectedWeb3Context } from "../../hooks/connectedWeb3";
 import { useStableCoinTokens } from "../../hooks/useStableCoins";
 import { Token } from "../../util/token";
-import { useWalletTokenBalance } from "../../hooks/useWalletBalance";
 import { BigNumber, utils} from "ethers";
 import { formatBigNumber } from "../../util/tools";
 

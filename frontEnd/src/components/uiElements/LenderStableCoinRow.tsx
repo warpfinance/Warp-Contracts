@@ -5,6 +5,8 @@ import { Avatar, Grid, TableCell, TableRow, Typography } from "@material-ui/core
 import { Token } from "../../util/token";
 import { BigNumber, utils } from "ethers";
 import { formatBigNumber } from "../../util/tools";
+import { useConnectedWeb3Context } from "../../hooks/connectedWeb3";
+import { useTokenBalance } from "../../hooks/useTokenBalance";
 
 interface Props {
   token: Token,
@@ -21,10 +23,26 @@ export const LenderStableCoinRow: React.FC<Props> = (props: Props) => {
 
   const icon = <Avatar alt={props.token.image} src={props.token.image} />;
   const currency = props.token.symbol;
-  const available = utils.parseUnits('10.0', props.token.decimals);
+
+  const [availableAmount, setAvailableAmount] = React.useState(BigNumber.from(0));
+
+  const context = useConnectedWeb3Context();
+  const {walletBalance, vaultBalance} = useTokenBalance(props.token, context);
+  
+  React.useEffect(() => {
+    let available = BigNumber.from(0);
+
+    if (lendOrWithdraw === 'withdraw') {
+      available = vaultBalance !== null ? vaultBalance : available;
+    } else {
+      available = walletBalance !== null ? walletBalance : available;
+    }
+
+    setAvailableAmount(available);
+  }, [walletBalance, vaultBalance]);
 
   const onChangeWrapped: (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-    props.onChange(event, available, props.token);
+    props.onChange(event, availableAmount, props.token);
   }
 
   return (
@@ -53,7 +71,7 @@ export const LenderStableCoinRow: React.FC<Props> = (props: Props) => {
           >
               <Grid item>
                   <Typography variant="subtitle1">
-                      {formatBigNumber(available, props.token.decimals) + " " + currency}
+                      {formatBigNumber(availableAmount, props.token.decimals) + " " + currency}
                   </Typography>
               </Grid>
           </Grid>

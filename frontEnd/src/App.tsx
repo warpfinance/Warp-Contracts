@@ -23,6 +23,7 @@ import {
 } from "@material-ui/core";
 import { createMuiTheme, makeStyles } from "@material-ui/core/styles";
 import { ConnectedWeb3 } from "./hooks/connectedWeb3";
+import { ethers } from "ethers";
 
 const outerTheme = createMuiTheme({
 	palette: {
@@ -80,7 +81,8 @@ const useStyles = makeStyles(theme => ({
 interface Props { }
 
 function getLibrary(provider?: any, connector?: any): any {
-	return provider;
+	let ethersProvider = new ethers.providers.Web3Provider(provider);
+	return ethersProvider;
 }
 
 const App: React.FC = () => {
