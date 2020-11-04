@@ -31,6 +31,7 @@ contract WarpControl is Ownable, Exponential {
     WarpVaultSCFactoryI public WVSCF;
 
     address[] public lpVaults;
+    address[] public scVaults;
 
     mapping(address => address) public instanceLPTracker; //maps LP token address to the assets WarpVault
     mapping(address => address) public instanceSCTracker;
@@ -93,6 +94,7 @@ contract WarpControl is Ownable, Exponential {
             _stableCoinSymbol
         );
         instanceSCTracker[_StableCoin] = WVSC;
+        scVaults.push(WVSC);
     }
 
     /**
@@ -156,6 +158,22 @@ contract WarpControl is Ownable, Exponential {
         uint256 amountOfAssetCollat = WV.lpBalanceOf(_borrower);
         //multiply the amount of collateral by the asset price and return it
         return amountOfAssetCollat.mul(priceOfAsset);
+    }
+    
+    function checkTotalAvailableCollateralValue(address account) external view returns (uint256) {
+        uint numVaults = lpVaults.length;
+        uint256 totalCollateral = 0;
+
+        for (uint i = 0; i < numVaults; ++i) {
+            WarpVaultLPI vault = WarpVaultLPI(lpVaults[i]);
+            address asset = vault.getAssetAdd();
+            uint256 assetPrice = Oracle.getUnderlyingPrice(asset);
+            uint256 accountAssets = IERC20(asset).balanceOf(account);
+            uint256 accountAssetsValue = accountAssets.mul(assetPrice);
+            totalCollateral = totalCollateral.add(accountAssetsValue);
+        }
+
+        return totalCollateral;
     }
 
     /**
