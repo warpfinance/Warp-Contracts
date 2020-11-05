@@ -300,58 +300,29 @@ export interface WarpVaultScInstance extends Truffle.ContractInstance {
     ): Promise<number>;
   };
 
-  /**
-   * markAccountNonCompliant is used by a potential liquidator to mark an account as non compliant which starts its 30 minute timer
-   * @param _WarpVault is the address of the WarpVault LP the user is non-compliant in*
-   * @param _borrower is the address of the non compliant borrower
-   */
-  markAccountNonCompliant: {
-    (
-      _borrower: string,
-      _WarpVault: string,
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<Truffle.TransactionResponse<AllEvents>>;
-    call(
-      _borrower: string,
-      _WarpVault: string,
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<void>;
-    sendTransaction(
-      _borrower: string,
-      _WarpVault: string,
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<string>;
-    estimateGas(
-      _borrower: string,
-      _WarpVault: string,
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<number>;
-  };
-
-  /**
-   * The sender liquidates the borrowers collateral. This function is called on the WarpVault the borrower owes to.
-   * @param _WarpVaultOwed is the address of the WarpVault where the borrower owes asset*
-   * @param borrower The borrower of a Warpvaults LP token to be liquidated
-   */
-  liquidateAccount: {
+  repayLiquidatedLoan: {
     (
       borrower: string,
-      _WarpVaultOwed: string,
+      liquidator: string,
+      amount: number | BN | string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<Truffle.TransactionResponse<AllEvents>>;
     call(
       borrower: string,
-      _WarpVaultOwed: string,
+      liquidator: string,
+      amount: number | BN | string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<void>;
     sendTransaction(
       borrower: string,
-      _WarpVaultOwed: string,
+      liquidator: string,
+      amount: number | BN | string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<string>;
     estimateGas(
       borrower: string,
-      _WarpVaultOwed: string,
+      liquidator: string,
+      amount: number | BN | string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<number>;
   };
@@ -632,58 +603,29 @@ export interface WarpVaultScInstance extends Truffle.ContractInstance {
       ): Promise<number>;
     };
 
-    /**
-     * markAccountNonCompliant is used by a potential liquidator to mark an account as non compliant which starts its 30 minute timer
-     * @param _WarpVault is the address of the WarpVault LP the user is non-compliant in*
-     * @param _borrower is the address of the non compliant borrower
-     */
-    markAccountNonCompliant: {
-      (
-        _borrower: string,
-        _WarpVault: string,
-        txDetails?: Truffle.TransactionDetails
-      ): Promise<Truffle.TransactionResponse<AllEvents>>;
-      call(
-        _borrower: string,
-        _WarpVault: string,
-        txDetails?: Truffle.TransactionDetails
-      ): Promise<void>;
-      sendTransaction(
-        _borrower: string,
-        _WarpVault: string,
-        txDetails?: Truffle.TransactionDetails
-      ): Promise<string>;
-      estimateGas(
-        _borrower: string,
-        _WarpVault: string,
-        txDetails?: Truffle.TransactionDetails
-      ): Promise<number>;
-    };
-
-    /**
-     * The sender liquidates the borrowers collateral. This function is called on the WarpVault the borrower owes to.
-     * @param _WarpVaultOwed is the address of the WarpVault where the borrower owes asset*
-     * @param borrower The borrower of a Warpvaults LP token to be liquidated
-     */
-    liquidateAccount: {
+    repayLiquidatedLoan: {
       (
         borrower: string,
-        _WarpVaultOwed: string,
+        liquidator: string,
+        amount: number | BN | string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<Truffle.TransactionResponse<AllEvents>>;
       call(
         borrower: string,
-        _WarpVaultOwed: string,
+        liquidator: string,
+        amount: number | BN | string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<void>;
       sendTransaction(
         borrower: string,
-        _WarpVaultOwed: string,
+        liquidator: string,
+        amount: number | BN | string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<string>;
       estimateGas(
         borrower: string,
-        _WarpVaultOwed: string,
+        liquidator: string,
+        amount: number | BN | string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<number>;
     };

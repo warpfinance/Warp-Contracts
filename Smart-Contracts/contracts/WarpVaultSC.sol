@@ -43,13 +43,13 @@ contract WarpVaultSC is Ownable, Exponential {
     mapping(address => uint256) public accountLent;
     mapping(address => address) public collateralAddressTracker;
     mapping(address => bool) public collateralLocked;
-    mapping(address => mapping(address => uint256)) nonCompliant; // tracks user to a market to a time
+    
 
     /**
-@notice struct for borrow balance information
-@member principal Total balance (with accrued interest), after applying the most recent balance-changing action
-@member interestIndex Global borrowIndex as of the most recent balance-changing action
-*/
+    @notice struct for borrow balance information
+    @member principal Total balance (with accrued interest), after applying the most recent balance-changing action
+    @member interestIndex Global borrowIndex as of the most recent balance-changing action
+    */
     struct BorrowSnapshot {
         uint256 principal;
         uint256 interestIndex;
@@ -64,9 +64,9 @@ contract WarpVaultSC is Ownable, Exponential {
     }
 
     /**
-@notice constructor sets up token names and symbols for the WarpWrapperToken
+    @notice constructor sets up token names and symbols for the WarpWrapperToken
 
-**/
+    **/
     constructor(
         address _InterestRate,
         address _StableCoin,
@@ -87,17 +87,17 @@ contract WarpVaultSC is Ownable, Exponential {
     }
 
     /**
-@notice getCashPrior is a view funcion that returns the USD balance of all held underlying stablecoin assets
-**/
+    @notice getCashPrior is a view funcion that returns the USD balance of all held underlying stablecoin assets
+    **/
     function getCashPrior() internal view returns (uint256) {
         return stablecoin.balanceOf(address(this));
     }
 
     /**
-@notice Applies accrued interest to total borrows and reserves
-@dev This calculates interest accrued from the last checkpointed block
-     up to the current block and writes new checkpoint to storage.
-**/
+    @notice Applies accrued interest to total borrows and reserves
+    @dev This calculates interest accrued from the last checkpointed block
+        up to the current block and writes new checkpoint to storage.
+    **/
     function accrueInterest() public {
         //Remember the initial block number
         uint256 currentBlockNumber = getBlockNumber();
@@ -160,10 +160,10 @@ contract WarpVaultSC is Ownable, Exponential {
     }
 
     /**
-@notice returns last calculated account's borrow balance using the prior borrowIndex
-@param account The address whose balance should be calculated after updating borrowIndex
-@return The calculated balance
-**/
+    @notice returns last calculated account's borrow balance using the prior borrowIndex
+    @param account The address whose balance should be calculated after updating borrowIndex
+    @return The calculated balance
+    **/
     function borrowBalancePrior(address account) public view returns (uint256) {
         MathError mathErr;
         uint256 principalTimesIndex;
@@ -198,26 +198,26 @@ contract WarpVaultSC is Ownable, Exponential {
     }
 
     /**
-@notice Accrue interest to updated borrowIndex and then calculate account's borrow balance using the updated borrowIndex
-@param account The address whose balance should be calculated after updating borrowIndex
-@return The calculated balance
-**/
+    @notice Accrue interest to updated borrowIndex and then calculate account's borrow balance using the updated borrowIndex
+    @param account The address whose balance should be calculated after updating borrowIndex
+    @return The calculated balance
+    **/
     function borrowBalanceCurrent(address account) public returns (uint256) {
         accrueInterest();
-        borrowBalancePrior(account);
+        return borrowBalancePrior(account);
     }
 
     /**
- @notice getBlockNumber allows for easy retrieval of block number
- **/
+    @notice getBlockNumber allows for easy retrieval of block number
+    **/
     function getBlockNumber() internal view returns (uint256) {
         return block.number;
     }
 
     /**
-@notice Returns the current per-block borrow interest rate for this cToken
-@return The borrow interest rate per block, scaled by 1e18
-**/
+    @notice Returns the current per-block borrow interest rate for this cToken
+    @return The borrow interest rate per block, scaled by 1e18
+    **/
     function borrowRatePerBlock() public view returns (uint256) {
         return
             InterestRate.getBorrowRate(
@@ -228,9 +228,9 @@ contract WarpVaultSC is Ownable, Exponential {
     }
 
     /**
-@notice Returns the current per-block supply interest rate for this cToken
-@return The supply interest rate per block, scaled by 1e18
-**/
+    @notice Returns the current per-block supply interest rate for this cToken
+    @return The supply interest rate per block, scaled by 1e18
+    **/
     function supplyRatePerBlock() public view returns (uint256) {
         return
             InterestRate.getSupplyRate(
@@ -242,16 +242,16 @@ contract WarpVaultSC is Ownable, Exponential {
     }
 
     /**
-@notice getSupplyAPY roughly calculates the current APY for supplying using an average of 6500 blocks per day
-**/
+    @notice getSupplyAPY roughly calculates the current APY for supplying using an average of 6500 blocks per day
+    **/
     function getSupplyAPY() public view returns (uint256) {
         //multiply rate per block by blocks per year with an average of 6500 blocks a day per https://ycharts.com/indicators/ethereum_blocks_per_day
         return supplyRatePerBlock().mul(2372500);
     }
 
     /**
-@notice getSupplyAPY roughly calculates the current APY for borrowing using an average of 6500 blocks per day
-**/
+    @notice getSupplyAPY roughly calculates the current APY for borrowing using an average of 6500 blocks per day
+    **/
     function getBorrowAPY() public view returns (uint256) {
         //multiply rate per block by blocks per year with an average of 6500 blocks a day per https://ycharts.com/indicators/ethereum_blocks_per_day
         return borrowRatePerBlock().mul(2372500);
@@ -267,9 +267,9 @@ contract WarpVaultSC is Ownable, Exponential {
     }
 
     /**
-         @notice  return the not up-to-date exchange rate
-         @return Calculated exchange rate scaled by 1e18
-         **/
+    @notice  return the not up-to-date exchange rate
+    @return Calculated exchange rate scaled by 1e18
+    **/
     function exchangeRatePrior() public view returns (uint256) {
         if (wStableCoin.totalSupply() == 0) {
             //If there are no tokens minted: exchangeRate = initialExchangeRate
@@ -327,9 +327,9 @@ contract WarpVaultSC is Ownable, Exponential {
     }
 
     /**
-@notice Get cash balance of this cToken in the underlying asset in other contracts
-@return The quantity of underlying asset owned by this contract
-**/
+    @notice Get cash balance of this cToken in the underlying asset in other contracts
+    @return The quantity of underlying asset owned by this contract
+    **/
     function getCash() external view returns (uint256) {
         return getCashPrior();
     }
@@ -342,10 +342,10 @@ contract WarpVaultSC is Ownable, Exponential {
     }
 
     /**
-@notice lendToWarpVault is used to lend stablecoin assets to a WaprVault
-@param _amount is the amount of the asset being lent
-@dev the user will need to first approve the transfer of the underlying asset
-**/
+    @notice lendToWarpVault is used to lend stablecoin assets to a WaprVault
+    @param _amount is the amount of the asset being lent
+    @dev the user will need to first approve the transfer of the underlying asset
+    **/
     function lendToWarpVault(uint256 _amount) public {
         //declare struct
         MintLocalVars memory vars;
@@ -373,9 +373,9 @@ contract WarpVaultSC is Ownable, Exponential {
     }
 
     /**
-@notice redeem allows a user to redeem their Warp Wrapper Token for the appropriate amount of underlying stablecoin asset
-@param _amount is the amount of Warp Wrapper token being exchanged
-**/
+    @notice redeem allows a user to redeem their Warp Wrapper Token for the appropriate amount of underlying stablecoin asset
+    @param _amount is the amount of Warp Wrapper token being exchanged
+    **/
     function redeem(uint256 _amount) public {
         accrueInterest();
         require(_amount != 0);
@@ -385,9 +385,9 @@ contract WarpVaultSC is Ownable, Exponential {
         //get exchange rate
         vars.exchangeRateMantissa = exchangeRateCurrent();
         /**
-We calculate the exchange rate and the amount of underlying to be redeemed:
-redeemAmount = _amount x exchangeRateCurrent
-*/
+        We calculate the exchange rate and the amount of underlying to be redeemed:
+        redeemAmount = _amount x exchangeRateCurrent
+        */
         (vars.mathErr, vars.redeemAmount) = mulScalarTruncate(
             Exp({mantissa: vars.exchangeRateMantissa}),
             _amount
@@ -409,9 +409,9 @@ redeemAmount = _amount x exchangeRateCurrent
     }
 
     /**
-@notice Sender borrows stablecoin assets from the protocol to their own address
-@param _borrowAmount The amount of the underlying asset to borrow
-*/
+    @notice Sender borrows stablecoin assets from the protocol to their own address
+    @param _borrowAmount The amount of the underlying asset to borrow
+    */
     function borrow(uint256 _borrowAmount, address _borrower) external onlyWC {
         // _collateral the address of the ALR the user has staked as collateral?
         accrueInterest();
@@ -452,9 +452,9 @@ redeemAmount = _amount x exchangeRateCurrent
     }
 
     /**
-@notice Sender repays their own borrow
-@param repayAmount The amount to repay
-*/
+    @notice Sender repays their own borrow
+    @param repayAmount The amount to repay
+    */
     function repayBorrow(uint256 repayAmount) public {
         accrueInterest();
 
@@ -490,73 +490,15 @@ redeemAmount = _amount x exchangeRateCurrent
         vars.totalOwed = accountBorrows[msg.sender].principal.add(
             accountBorrows[msg.sender].interestIndex
         );
-        //if the amount they owe is now zero
-        if (vars.totalOwed == 0) {
-            //track collateral globally through Warp Control
-            WC.unlockColateral(msg.sender, msg.sender, vars.lockedCollateral);
-        }
     }
 
-    /**
-      @notice markAccountNonCompliant is used by a potential liquidator to mark an account as non compliant which starts its 30 minute timer
-      @param _borrower is the address of the non compliant borrower
-      @param _WarpVault is the address of the WarpVault LP the user is non-compliant in
-      **/
-    function markAccountNonCompliant(address _borrower, address _WarpVault)
-        public
-    {
-        //needs to check for account compliance
-        require(nonCompliant[_borrower][_WarpVault] == 0);
-        nonCompliant[_borrower][_WarpVault] = now;
+    function repayLiquidatedLoan(address borrower, address liquidator, uint256 amount) public onlyWC {
+        stablecoin.transferFrom(liquidator, address(this), amount);
+
+        // Clear the borrowers loan
+        accountBorrows[borrower].principal = 0;
+        accountBorrows[borrower].interestIndex = 0;
     }
 
-    //struct used to avoid stack too deep errors
-    struct liquidateLocalVar {
-        address assetOwed;
-        uint256 borrowedAmount;
-        uint256 collatAmount;
-        uint256 collatValue;
-        uint256 halfVal;
-    }
 
-    /**
-      @notice The sender liquidates the borrowers collateral. This function is called on the WarpVault the borrower owes to.
-      @param borrower The borrower of a Warpvaults LP token to be liquidated
-      @param _WarpVaultOwed is the address of the WarpVault where the borrower owes asset
-      **/
-
-    function liquidateAccount(address borrower, address _WarpVaultOwed) public {
-        accrueInterest();
-        //checks if its been nonCompliant for more than a half hour
-        require(now >= nonCompliant[borrower][_WarpVaultOwed].add(1800));
-        //create local vars storage
-        liquidateLocalVar memory vars;
-        //retrieve amount that was borrowed by borrower
-        vars.borrowedAmount = borrowBalanceCurrent(borrower);
-        //retreive the USDC value of their locked collateral LP token
-        vars.collatValue = WC.checkTotalAvailableCollateralValue(borrower);
-        //divide collateral value in half
-        vars.halfVal = vars.collatValue.div(2);
-        //add 1/2 the collateral value to the total collateral value for 150% colleral value
-        vars.collatValue = vars.collatValue.add(vars.halfVal);
-        //subtract borrowed amount total borrows
-        totalBorrows = totalBorrows.sub(vars.borrowedAmount);
-        //if the borrowed value is greater than or equal to 150% of the collaterals value
-        if (vars.collatValue <= vars.borrowedAmount) {
-            //transfer the borrowed amount of stablecoin from the liquidator
-            stablecoin.transferFrom(
-                msg.sender,
-                address(this),
-                vars.borrowedAmount
-            );
-            //set their account borrow principle to zero
-            accountBorrows[borrower].principal = 0;
-            //set their account borrow interest index back to zero
-            accountBorrows[borrower].interestIndex = 0;
-            //track collateral globally through Warp Control sending the locked Warp Wrapper Token LP to the liquidator
-            WC.unlockColateral(borrower, msg.sender, vars.collatAmount);
-        }
-        //reset accounts compliant timer if its paid off OR if they where compliant by the time this function is run
-        nonCompliant[borrower][_WarpVaultOwed] = 0; //resets borrowers compliance timer
-    }
 }

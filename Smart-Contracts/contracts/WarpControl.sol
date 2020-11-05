@@ -38,6 +38,7 @@ contract WarpControl is Ownable, Exponential {
     mapping(address => uint256) public lockedLPValue;
     mapping(address => bool) public isVault;
 
+    mapping(address => uint256) nonCompliant;
     /**
      * @dev Throws if called by any account other than a warp vault
      */
@@ -47,10 +48,10 @@ contract WarpControl is Ownable, Exponential {
     }
 
     /**
-@notice the constructor function is fired during the contract deployment process. The constructor can only be fired once and
-        is used to set up Oracle variables for the MoneyMarketFactory contract.
-@param _oracle is the address for the UniswapOracleFactorycontract
-**/
+    @notice the constructor function is fired during the contract deployment process. The constructor can only be fired once and
+            is used to set up Oracle variables for the MoneyMarketFactory contract.
+    @param _oracle is the address for the UniswapOracleFactorycontract
+    **/
     constructor(
         address _oracle,
         address _WVLPF,
@@ -62,8 +63,8 @@ contract WarpControl is Ownable, Exponential {
     }
 
     /**
-@notice createNewVault allows the contract owner to create a new WarpVaultLP contract along with its associated Warp Wrapper Tokens
-**/
+    @notice createNewVault allows the contract owner to create a new WarpVaultLP contract along with its associated Warp Wrapper Tokens
+    **/
     function createNewLPVault(
         address _lp,
         address _lpAsset1,
@@ -106,47 +107,15 @@ contract WarpControl is Ownable, Exponential {
     }
 
     /**
-   @notice lockCollateralDown is an external function used to track locked collateral amounts globally as they decrease
-   @param _borrower is the address of the borrower
-   @param _amount is the amount of LP being collateralized
-   **/
-    function unlockColateral(
-        address _borrower,
-        address _redeemer,
-        uint256 _amount
-    ) external onlyVault {
-        uint256 numVaults = lpVaults.length;
-        uint256 remaining = _amount;
+    @notice Figures out how much of a given LP token an account is allowed to withdraw
+     */
+    function maxWithdrawAllowed(address account, address lpToken) public returns (uint256) {
+        uint256 borrowedTotal = currentTotalBorrowedValue(account);
+        uint256 borrowLimit = getBorrowLimit(account);
+        uint256 lpValue = checkLPprice(lpToken);
+        uint256 leftoverBorrowAmount = borrowLimit.sub(borrowedTotal);
 
-        //loop through each LP vault
-        for (uint256 i = 0; i < numVaults; ++i) {
-            //instantiate warp vault at that position
-            WarpVaultLPI vault = WarpVaultLPI(lpVaults[i]);
-            //retreive the address of its asset
-            address asset = vault.getAssetAdd();
-            //retreive amount of LP locked in this vault
-            uint256 amountOfLockedAsset = vault.collateralLPbalanceOf(
-                _borrower
-            );
-            //get USDC value of LP
-            uint256 lpValue = checkLPprice(asset);
-            //get USDC value of the locked amount
-            uint256 valueInVault = amountOfLockedAsset.mul(lpValue);
-            //if the remaining amount is less than the borrowers collateral value in thie cuurent vault
-            if (remaining <= valueInVault) {
-                //amount of lp to unlock is the remaining USDC loan amount divided by the USDC value of one LP
-                uint256 amountOfLP = remaining.div(lpValue);
-                //call the LP's vault and unlock the LP to the redeemer
-                vault.unlockLP(_borrower, _redeemer, amountOfLP);
-            } else {
-                //if the remaining amount is MORE than the value in the current LP vault
-                //determine how much more is needed and roll it over into the remaining variable
-                remaining = remaining.sub(valueInVault);
-                //call the LP's vault and unlock all of the LP locked in it
-                vault.unlockLP(_borrower, _redeemer, amountOfLockedAsset);
-            }
-        }
-        lockedLPValue[_borrower] = lockedLPValue[_borrower].sub(_amount);
+        return leftoverBorrowAmount.div(lpValue);
     }
 
     function checkLPprice(address _LP) public view returns (uint256) {
@@ -154,10 +123,10 @@ contract WarpControl is Ownable, Exponential {
     }
 
     /**
-@notice checkCollateralValue is a view function that accepts an account address and returns the total USDC value
-        of the accounts locked collateral
-@param _account is the address whos collateral value we are looking up
- **/
+    @notice checkCollateralValue is a view function that accepts an account address and returns the total USDC value
+            of the accounts locked collateral
+    @param _account is the address whos collateral value we are looking up
+    **/
     function checkTotalAvailableCollateralValue(address _account)
         public
         view
@@ -176,7 +145,7 @@ contract WarpControl is Ownable, Exponential {
             //retrieve the total amount of the asset availible as collateral
             uint256 availibleAccountAssets = IERC20(asset).balanceOf(_account);
             //retreive the amount of the asset locked as collateral
-            uint256 amountOfLockedAsset = vault.collateralLPbalanceOf(_account);
+            uint256 amountOfLockedAsset = vault.collateralOfAccount(_account);
             //calculate amount of collateral not locked up
             uint256 accountAssets = availibleAccountAssets.sub(
                 amountOfLockedAsset
@@ -190,29 +159,64 @@ contract WarpControl is Ownable, Exponential {
         return totalCollateral;
     }
 
-    function borrowSC(address _StableCoin, uint256 _amount) public {
+    function priorTotalBorrowedValue(address _account) public view returns (uint256) {
         uint256 numSCVaults = scVaults.length;
-        uint256 borrowedTotal = 0;
-        //retreive total amount of collateral value the user has
-        uint256 availibleCollateralValue = checkTotalAvailableCollateralValue(
-            msg.sender
-        );
+        uint256 totalBorrowedValue = 0;
+
         //loop through all stable coin vaults
         for (uint256 i = 0; i < numSCVaults; ++i) {
             //instantiate each LP warp vault
             WarpVaultSCI WVSC = WarpVaultSCI(scVaults[i]);
             //retreive the amount user has borrowed from each stablecoin vault
-            borrowedTotal = borrowedTotal.add(
-                WVSC.borrowBalanceCurrent(msg.sender)
+            totalBorrowedValue = totalBorrowedValue.add(
+                WVSC.borrowBalancePrior(_account)
             );
         }
-        //divide collateral value by half and add the half to the full value for a 150% collateral value
-        uint256 halfCollat = availibleCollateralValue.div(2);
-        availibleCollateralValue = availibleCollateralValue.add(halfCollat);
-        //calculate USDC amount of what the user is aloud to borrow
+
+        return totalBorrowedValue;
+    }
+
+    function currentTotalBorrowedValue(address _account) public returns (uint256) {
+        uint256 numSCVaults = scVaults.length;
+        uint256 totalBorrowedValue = 0;
+
+        //loop through all stable coin vaults
+        for (uint256 i = 0; i < numSCVaults; ++i) {
+            //instantiate each LP warp vault
+            WarpVaultSCI WVSC = WarpVaultSCI(scVaults[i]);
+            //retreive the amount user has borrowed from each stablecoin vault
+            totalBorrowedValue = totalBorrowedValue.add(
+                WVSC.borrowBalanceCurrent(_account)
+            );
+        }
+
+        return totalBorrowedValue;
+    }
+
+    function calcBorrowLimit(uint256 collateralValue) public pure returns (uint256) {
+        uint256 halfCollat = collateralValue.div(2);
+        collateralValue = collateralValue.add(halfCollat);
+
+        return collateralValue;
+    }
+
+    function getBorrowLimit(address _account) public view returns (uint256) {
+        uint256 availibleCollateralValue = checkTotalAvailableCollateralValue(
+            msg.sender
+        );
+
+        return calcBorrowLimit(availibleCollateralValue);
+    }
+
+    function borrowSC(address _StableCoin, uint256 _amount) public {
+        uint256 borrowedTotal = currentTotalBorrowedValue(msg.sender);
+        uint256 availibleCollateralValue = getBorrowLimit(msg.sender);
+        
+        //calculate USDC amount of what the user is allowed to borrow
         uint256 borrowAmountAllowed = availibleCollateralValue.sub(
             borrowedTotal
         );
+
         //require the amount being borrowed is less than or equal to the amount they are aloud to borrow
         require(borrowAmountAllowed >= _amount);
         //track USDC value of locked LP
@@ -221,5 +225,59 @@ contract WarpControl is Ownable, Exponential {
         WarpVaultSCI WV = WarpVaultSCI(instanceSCTracker[_StableCoin]);
         //call borrow function on the stablecoin warp vault
         WV.borrow(_amount, msg.sender);
+    }
+
+    /**
+      @notice markAccountNonCompliant is used by a potential liquidator to mark an account as non compliant which starts its 30 minute timer
+      @param _borrower is the address of the non compliant borrower
+      **/
+    function markAccountNonCompliant(address _borrower)
+        public
+    {
+        //needs to check for account compliance
+        require(nonCompliant[_borrower] == 0);
+        nonCompliant[_borrower] = now;
+    }
+
+    function liquidateAccount(address borrower) public {
+        require(now >= nonCompliant[borrower].add(1800));
+
+        uint256 numSCVaults = scVaults.length;
+        uint256 borrowedAmount = 0;
+        uint256[] memory scBalances = new uint256[](numSCVaults);
+
+        // Borrowed Amount From All Vaults
+        for (uint256 i = 0; i < numSCVaults; ++i) {
+            WarpVaultSCI scVault = WarpVaultSCI(scVaults[i]);
+            scBalances[i] = scVault.borrowBalanceCurrent(borrower);
+            borrowedAmount = borrowedAmount.add(
+                scBalances[i]
+            );
+        }
+
+        uint256 borrowLimit = getBorrowLimit(borrower);
+
+        nonCompliant[borrower] = 0;
+
+        if (borrowLimit > borrowedAmount) {
+            // The account was in good standing
+            return;
+        }
+
+        // Liquidate the account
+
+        // Liquidator pays off Stable Coin loans
+        for (uint256 i = 0; i < numSCVaults; ++i) {
+             WarpVaultSCI scVault = WarpVaultSCI(scVaults[i]);
+             scVault.repayLiquidatedLoan(borrower, msg.sender, scBalances[i]);
+        }
+
+        // Liquidator gets the LP tokens the borrower had
+        uint256 numLPVaults = lpVaults.length;
+        for (uint256 i = 0; i < numLPVaults; ++i ) {
+            WarpVaultLPI lpVault = WarpVaultLPI(lpVaults[i]);
+            lpVault.liquidateAccount(borrower, msg.sender);
+        }
+
     }
 }
