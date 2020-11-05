@@ -52,6 +52,11 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
     txDetails?: Truffle.TransactionDetails
   ): Promise<BN>;
 
+  lockedLPValue(
+    arg0: string,
+    txDetails?: Truffle.TransactionDetails
+  ): Promise<BN>;
+
   lpVaults(
     arg0: number | BN | string,
     txDetails?: Truffle.TransactionDetails
@@ -174,68 +179,32 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
   };
 
   /**
-   * lockCollateralUp is an external function used to track locked collateral amounts globally as they increase
-   * @param _amount is the USDC value thats looking to be locked up*
-   * @param _borrower is the address of the borrower
-   */
-  lockCollateralUp: {
-    (
-      _borrower: string,
-      _WVLP: string,
-      _amount: number | BN | string,
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<Truffle.TransactionResponse<AllEvents>>;
-    call(
-      _borrower: string,
-      _WVLP: string,
-      _amount: number | BN | string,
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<void>;
-    sendTransaction(
-      _borrower: string,
-      _WVLP: string,
-      _amount: number | BN | string,
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<string>;
-    estimateGas(
-      _borrower: string,
-      _WVLP: string,
-      _amount: number | BN | string,
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<number>;
-  };
-
-  /**
    * lockCollateralDown is an external function used to track locked collateral amounts globally as they decrease
    * @param _amount is the amount of LP being collateralized*
    * @param _borrower is the address of the borrower
    */
-  lockCollateralDown: {
+  unlockColateral: {
     (
       _borrower: string,
       _redeemer: string,
-      _WVLP: string,
       _amount: number | BN | string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<Truffle.TransactionResponse<AllEvents>>;
     call(
       _borrower: string,
       _redeemer: string,
-      _WVLP: string,
       _amount: number | BN | string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<void>;
     sendTransaction(
       _borrower: string,
       _redeemer: string,
-      _WVLP: string,
       _amount: number | BN | string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<string>;
     estimateGas(
       _borrower: string,
       _redeemer: string,
-      _WVLP: string,
       _amount: number | BN | string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<number>;
@@ -246,36 +215,37 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
     txDetails?: Truffle.TransactionDetails
   ): Promise<BN>;
 
-  checkLockedCollateral(
-    _borrower: string,
-    collateralVault: string,
-    txDetails?: Truffle.TransactionDetails
-  ): Promise<BN>;
-
   /**
    * checkCollateralValue is a view function that accepts an account address and returns the total USDC value of the accounts locked collateral
-   * @param _borrower is the address whos collateral value we are looking up*
+   * @param _account is the address whos collateral value we are looking up*
    */
-  checkAvailibleCollateralValue(
-    _borrower: string,
-    _WarpVault: string,
-    txDetails?: Truffle.TransactionDetails
-  ): Promise<BN>;
-
   checkTotalAvailableCollateralValue(
-    account: string,
+    _account: string,
     txDetails?: Truffle.TransactionDetails
   ): Promise<BN>;
 
-  /**
-   * checkCollateralValue is a view function that accepts an account address and returns the total USDC value of the accounts locked collateral
-   * @param _borrower is the address whos collateral value we are looking up*
-   */
-  checkLockedCollateralValue(
-    _borrower: string,
-    _WarpVault: string,
-    txDetails?: Truffle.TransactionDetails
-  ): Promise<BN>;
+  borrowSC: {
+    (
+      _StableCoin: string,
+      _amount: number | BN | string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<Truffle.TransactionResponse<AllEvents>>;
+    call(
+      _StableCoin: string,
+      _amount: number | BN | string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<void>;
+    sendTransaction(
+      _StableCoin: string,
+      _amount: number | BN | string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<string>;
+    estimateGas(
+      _StableCoin: string,
+      _amount: number | BN | string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<number>;
+  };
 
   methods: {
     Oracle(txDetails?: Truffle.TransactionDetails): Promise<string>;
@@ -300,6 +270,11 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
     ): Promise<boolean>;
 
     liquidationIncentiveMantissa(
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<BN>;
+
+    lockedLPValue(
+      arg0: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<BN>;
 
@@ -425,68 +400,32 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
     };
 
     /**
-     * lockCollateralUp is an external function used to track locked collateral amounts globally as they increase
-     * @param _amount is the USDC value thats looking to be locked up*
-     * @param _borrower is the address of the borrower
-     */
-    lockCollateralUp: {
-      (
-        _borrower: string,
-        _WVLP: string,
-        _amount: number | BN | string,
-        txDetails?: Truffle.TransactionDetails
-      ): Promise<Truffle.TransactionResponse<AllEvents>>;
-      call(
-        _borrower: string,
-        _WVLP: string,
-        _amount: number | BN | string,
-        txDetails?: Truffle.TransactionDetails
-      ): Promise<void>;
-      sendTransaction(
-        _borrower: string,
-        _WVLP: string,
-        _amount: number | BN | string,
-        txDetails?: Truffle.TransactionDetails
-      ): Promise<string>;
-      estimateGas(
-        _borrower: string,
-        _WVLP: string,
-        _amount: number | BN | string,
-        txDetails?: Truffle.TransactionDetails
-      ): Promise<number>;
-    };
-
-    /**
      * lockCollateralDown is an external function used to track locked collateral amounts globally as they decrease
      * @param _amount is the amount of LP being collateralized*
      * @param _borrower is the address of the borrower
      */
-    lockCollateralDown: {
+    unlockColateral: {
       (
         _borrower: string,
         _redeemer: string,
-        _WVLP: string,
         _amount: number | BN | string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<Truffle.TransactionResponse<AllEvents>>;
       call(
         _borrower: string,
         _redeemer: string,
-        _WVLP: string,
         _amount: number | BN | string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<void>;
       sendTransaction(
         _borrower: string,
         _redeemer: string,
-        _WVLP: string,
         _amount: number | BN | string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<string>;
       estimateGas(
         _borrower: string,
         _redeemer: string,
-        _WVLP: string,
         _amount: number | BN | string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<number>;
@@ -497,36 +436,37 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
       txDetails?: Truffle.TransactionDetails
     ): Promise<BN>;
 
-    checkLockedCollateral(
-      _borrower: string,
-      collateralVault: string,
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<BN>;
-
     /**
      * checkCollateralValue is a view function that accepts an account address and returns the total USDC value of the accounts locked collateral
-     * @param _borrower is the address whos collateral value we are looking up*
+     * @param _account is the address whos collateral value we are looking up*
      */
-    checkAvailibleCollateralValue(
-      _borrower: string,
-      _WarpVault: string,
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<BN>;
-
     checkTotalAvailableCollateralValue(
-      account: string,
+      _account: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<BN>;
 
-    /**
-     * checkCollateralValue is a view function that accepts an account address and returns the total USDC value of the accounts locked collateral
-     * @param _borrower is the address whos collateral value we are looking up*
-     */
-    checkLockedCollateralValue(
-      _borrower: string,
-      _WarpVault: string,
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<BN>;
+    borrowSC: {
+      (
+        _StableCoin: string,
+        _amount: number | BN | string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<Truffle.TransactionResponse<AllEvents>>;
+      call(
+        _StableCoin: string,
+        _amount: number | BN | string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<void>;
+      sendTransaction(
+        _StableCoin: string,
+        _amount: number | BN | string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<string>;
+      estimateGas(
+        _StableCoin: string,
+        _amount: number | BN | string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<number>;
+    };
   };
 
   getPastEvents(event: string): Promise<EventData[]>;

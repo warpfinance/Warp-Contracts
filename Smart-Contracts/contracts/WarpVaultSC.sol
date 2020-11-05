@@ -362,8 +362,6 @@ contract WarpVaultSC is Ownable, Exponential {
         stablecoin.transferFrom(msg.sender, address(this), _amount);
         //track amount lent
         accountLent[msg.sender] = _amount;
-        //track stablecoin values in Warp Control
-        WC.addSC(msg.sender, _amount);
         //mint appropriate Warp DAI
         wStableCoin.mint(msg.sender, vars.mintTokens);
     }
@@ -396,8 +394,6 @@ redeemAmount = _amount x exchangeRateCurrent
         );
         //Fail if protocol has insufficient cash
         require(stablecoin.balanceOf(address(this)) >= vars.redeemAmount);
-        //track stablecoin values in Warp Control
-        WC.subSC(msg.sender, _amount);
         //burn wrapped token from msg.sender
         wStableCoin.burn(msg.sender, _amount); //will fail id the msg.sender doesnt have the appropriateamount of wrapper token
         //transfer the calculated amount of underlying asset to the msg.sender
@@ -416,34 +412,16 @@ redeemAmount = _amount x exchangeRateCurrent
 @notice Sender borrows stablecoin assets from the protocol to their own address
 @param _borrowAmount The amount of the underlying asset to borrow
 */
-    function borrow(uint256 _borrowAmount, address _WarpVaultCollat)
-        external
-        onlyWC
-    {
+    function borrow(uint256 _borrowAmount, address _borrower) external onlyWC {
         // _collateral the address of the ALR the user has staked as collateral?
         accrueInterest();
-
-        uint256 collatValue = WC.checkAvailibleCollateralValue(
-            msg.sender,
-            _WarpVaultCollat
-        );
-        //divide collateral value by half and add the half to the full value for a 10% collateral value
-        uint256 halfCollat = collatValue.div(2);
-        collatValue = collatValue.add(halfCollat);
-        //require the amount being borrowed is less than or equal to the users availible collateral value
-        require(_borrowAmount <= collatValue);
-        //require the collateral being put up is either the same as existing loans OR that the user doesnt have a selected collateral type yet
-        require(
-            collateralAddressTracker[msg.sender] == _WarpVaultCollat ||
-                collateralLocked[msg.sender] == false
-        );
         //create local vars storage
         BorrowLocalVars memory vars;
 
         //Fail if protocol has insufficient underlying cash
         require(getCashPrior() > _borrowAmount);
         //calculate the new borrower and total borrow balances, failing on overflow:
-        vars.accountBorrows = borrowBalanceCurrent(msg.sender);
+        vars.accountBorrows = borrowBalanceCurrent(_borrower);
         //accountBorrowsNew = accountBorrows + borrowAmount
         (vars.mathErr, vars.accountBorrowsNew) = addUInt(
             vars.accountBorrows,
@@ -455,18 +433,11 @@ redeemAmount = _amount x exchangeRateCurrent
             _borrowAmount
         );
         //We write the previously calculated values into storage
-        accountBorrows[msg.sender].principal = vars.accountBorrowsNew;
-        accountBorrows[msg.sender].interestIndex = borrowIndex;
+        accountBorrows[_borrower].principal = vars.accountBorrowsNew;
+        accountBorrows[_borrower].interestIndex = borrowIndex;
         totalBorrows = vars.totalBorrowsNew;
         //send them their loaned asset
-        stablecoin.transfer(msg.sender, _borrowAmount);
-
-        //track where the collateral is
-        collateralAddressTracker[msg.sender] = _WarpVaultCollat;
-        //track that a collateral source is selected
-        collateralLocked[msg.sender] = true;
-        //track collateral globally through Warp Control
-        WC.lockCollateralUp(msg.sender, _WarpVaultCollat, _borrowAmount);
+        stablecoin.transfer(_borrower, _borrowAmount);
     }
 
     struct RepayBorrowLocalVars {
@@ -521,20 +492,8 @@ redeemAmount = _amount x exchangeRateCurrent
         );
         //if the amount they owe is now zero
         if (vars.totalOwed == 0) {
-            //retreive amount of collateral they had locked for this loan
-            vars.lockedCollateral = WC.checkLockedCollateral(
-                msg.sender,
-                collateralAddressTracker[msg.sender]
-            );
-            //set their collateral source type back to false(meaning another source can now be used in future loans)
-            collateralLocked[msg.sender] = false;
             //track collateral globally through Warp Control
-            WC.lockCollateralDown(
-                msg.sender,
-                msg.sender,
-                collateralAddressTracker[msg.sender],
-                vars.lockedCollateral
-            );
+            WC.unlockColateral(msg.sender, msg.sender, vars.lockedCollateral);
         }
     }
 
@@ -572,15 +531,10 @@ redeemAmount = _amount x exchangeRateCurrent
         require(now >= nonCompliant[borrower][_WarpVaultOwed].add(1800));
         //create local vars storage
         liquidateLocalVar memory vars;
-        //get asset addresses of the LP WarpVault where the collateral is locked
-        vars.assetOwed = collateralAddressTracker[borrower];
         //retrieve amount that was borrowed by borrower
         vars.borrowedAmount = borrowBalanceCurrent(borrower);
         //retreive the USDC value of their locked collateral LP token
-        vars.collatValue = WC.checkLockedCollateralValue(
-            borrower,
-            _WarpVaultOwed
-        );
+        vars.collatValue = WC.checkTotalAvailableCollateralValue(borrower);
         //divide collateral value in half
         vars.halfVal = vars.collatValue.div(2);
         //add 1/2 the collateral value to the total collateral value for 150% colleral value
@@ -595,24 +549,12 @@ redeemAmount = _amount x exchangeRateCurrent
                 address(this),
                 vars.borrowedAmount
             );
-            //retreive amount of lp collateral the borrower had locked for this loan
-            vars.collatAmount = WC.checkLockedCollateral(
-                borrower,
-                vars.assetOwed
-            );
-            //set their collateral source type back to false(meaning another source can now be used in future loans)
-            collateralLocked[borrower] = false;
             //set their account borrow principle to zero
             accountBorrows[borrower].principal = 0;
             //set their account borrow interest index back to zero
             accountBorrows[borrower].interestIndex = 0;
             //track collateral globally through Warp Control sending the locked Warp Wrapper Token LP to the liquidator
-            WC.lockCollateralDown(
-                borrower,
-                msg.sender,
-                vars.assetOwed,
-                vars.collatAmount
-            );
+            WC.unlockColateral(borrower, msg.sender, vars.collatAmount);
         }
         //reset accounts compliant timer if its paid off OR if they where compliant by the time this function is run
         nonCompliant[borrower][_WarpVaultOwed] = 0; //resets borrowers compliance timer

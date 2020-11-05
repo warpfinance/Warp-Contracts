@@ -18,82 +18,28 @@ export interface WarpControlIInstance extends Truffle.ContractInstance {
 
   USDT(txDetails?: Truffle.TransactionDetails): Promise<string>;
 
-  trackCollateralUp: {
+  unlockColateral: {
     (
       _borrower: string,
-      _WarpVault: string,
+      _redeemer: string,
       _amount: number | BN | string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<Truffle.TransactionResponse<AllEvents>>;
     call(
       _borrower: string,
-      _WarpVault: string,
+      _redeemer: string,
       _amount: number | BN | string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<void>;
     sendTransaction(
       _borrower: string,
-      _WarpVault: string,
+      _redeemer: string,
       _amount: number | BN | string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<string>;
     estimateGas(
       _borrower: string,
-      _WarpVault: string,
-      _amount: number | BN | string,
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<number>;
-  };
-
-  trackCollateralDown: {
-    (
-      _borrower: string,
-      _WarpVault: string,
-      _amount: number | BN | string,
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<Truffle.TransactionResponse<AllEvents>>;
-    call(
-      _borrower: string,
-      _WarpVault: string,
-      _amount: number | BN | string,
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<void>;
-    sendTransaction(
-      _borrower: string,
-      _WarpVault: string,
-      _amount: number | BN | string,
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<string>;
-    estimateGas(
-      _borrower: string,
-      _WarpVault: string,
-      _amount: number | BN | string,
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<number>;
-  };
-
-  lockCollateralUp: {
-    (
-      _borrower: string,
-      _WarpVault: string,
-      _amount: number | BN | string,
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<Truffle.TransactionResponse<AllEvents>>;
-    call(
-      _borrower: string,
-      _WarpVault: string,
-      _amount: number | BN | string,
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<void>;
-    sendTransaction(
-      _borrower: string,
-      _WarpVault: string,
-      _amount: number | BN | string,
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<string>;
-    estimateGas(
-      _borrower: string,
-      _WarpVault: string,
+      _redeemer: string,
       _amount: number | BN | string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<number>;
@@ -136,15 +82,8 @@ export interface WarpControlIInstance extends Truffle.ContractInstance {
     txDetails?: Truffle.TransactionDetails
   ): Promise<BN>;
 
-  checkLockedCollateralValue(
-    _borrower: string,
-    _WarpVault: string,
-    txDetails?: Truffle.TransactionDetails
-  ): Promise<BN>;
-
-  checkLockedCollateral(
-    _borrower: string,
-    _WarpVault: string,
+  checkTotalAvailableCollateralValue(
+    _account: string,
     txDetails?: Truffle.TransactionDetails
   ): Promise<BN>;
 
@@ -155,82 +94,28 @@ export interface WarpControlIInstance extends Truffle.ContractInstance {
 
     USDT(txDetails?: Truffle.TransactionDetails): Promise<string>;
 
-    trackCollateralUp: {
+    unlockColateral: {
       (
         _borrower: string,
-        _WarpVault: string,
+        _redeemer: string,
         _amount: number | BN | string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<Truffle.TransactionResponse<AllEvents>>;
       call(
         _borrower: string,
-        _WarpVault: string,
+        _redeemer: string,
         _amount: number | BN | string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<void>;
       sendTransaction(
         _borrower: string,
-        _WarpVault: string,
+        _redeemer: string,
         _amount: number | BN | string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<string>;
       estimateGas(
         _borrower: string,
-        _WarpVault: string,
-        _amount: number | BN | string,
-        txDetails?: Truffle.TransactionDetails
-      ): Promise<number>;
-    };
-
-    trackCollateralDown: {
-      (
-        _borrower: string,
-        _WarpVault: string,
-        _amount: number | BN | string,
-        txDetails?: Truffle.TransactionDetails
-      ): Promise<Truffle.TransactionResponse<AllEvents>>;
-      call(
-        _borrower: string,
-        _WarpVault: string,
-        _amount: number | BN | string,
-        txDetails?: Truffle.TransactionDetails
-      ): Promise<void>;
-      sendTransaction(
-        _borrower: string,
-        _WarpVault: string,
-        _amount: number | BN | string,
-        txDetails?: Truffle.TransactionDetails
-      ): Promise<string>;
-      estimateGas(
-        _borrower: string,
-        _WarpVault: string,
-        _amount: number | BN | string,
-        txDetails?: Truffle.TransactionDetails
-      ): Promise<number>;
-    };
-
-    lockCollateralUp: {
-      (
-        _borrower: string,
-        _WarpVault: string,
-        _amount: number | BN | string,
-        txDetails?: Truffle.TransactionDetails
-      ): Promise<Truffle.TransactionResponse<AllEvents>>;
-      call(
-        _borrower: string,
-        _WarpVault: string,
-        _amount: number | BN | string,
-        txDetails?: Truffle.TransactionDetails
-      ): Promise<void>;
-      sendTransaction(
-        _borrower: string,
-        _WarpVault: string,
-        _amount: number | BN | string,
-        txDetails?: Truffle.TransactionDetails
-      ): Promise<string>;
-      estimateGas(
-        _borrower: string,
-        _WarpVault: string,
+        _redeemer: string,
         _amount: number | BN | string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<number>;
@@ -273,15 +158,8 @@ export interface WarpControlIInstance extends Truffle.ContractInstance {
       txDetails?: Truffle.TransactionDetails
     ): Promise<BN>;
 
-    checkLockedCollateralValue(
-      _borrower: string,
-      _WarpVault: string,
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<BN>;
-
-    checkLockedCollateral(
-      _borrower: string,
-      _WarpVault: string,
+    checkTotalAvailableCollateralValue(
+      _account: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<BN>;
   };

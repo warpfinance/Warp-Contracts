@@ -27,7 +27,7 @@ contract WarpVaultLP is Ownable {
     WarpWrapperToken public WLP;
     WarpControlI public WC;
 
-    mapping(address => mapping(address => uint256)) public lockedWLP;
+    mapping(address => uint256) public collateralizedLP;
 
     /**
      * @dev Throws if called by any account other than a warp control
@@ -53,7 +53,6 @@ contract WarpVaultLP is Ownable {
         lpName = _lpName;
         LPtoken = IERC20(_lp);
         WC = WarpControlI(_WarpControl);
-        WLP = new WarpWrapperToken(address(LPtoken), lpName, "WLPW");
     }
 
     /**
@@ -61,8 +60,12 @@ contract WarpVaultLP is Ownable {
 @param _amount is the amount of LP being collateralized
 **/
     function collateralizeLP(uint256 _amount) public {
+        //transfer the msg,senders lp's to this vault
         LPtoken.transferFrom(msg.sender, address(this), _amount);
-        WLP.mint(msg.sender, _amount);
+        //track the amount taken
+        collateralizedLP[msg.sender] = collateralizedLP[msg.sender].add(
+            _amount
+        );
     }
 
     /**
@@ -72,49 +75,42 @@ contract WarpVaultLP is Ownable {
         return address(LPtoken);
     }
 
+    function collateralLPbalanceOf(address _account)
+        public
+        view
+        returns (uint256)
+    {
+        return collateralizedLP[_account];
+    }
+
     /**
 @notice withdrawLP allows the user to trade in his WarpLP tokens for hiss underlying LP token collateral
 @param _amount is the amount of LP tokens he wishes to withdraw
 **/
     function withdrawLP(uint256 _amount) public {
+        //require the availible value of the LP locked in this contract the user has
+        //is greater than or equal to the amount being withdrawn
         require(
             WC.checkAvailibleCollateralValue(msg.sender, address(this)) >=
                 _amount
         );
-        WLP.burn(msg.sender, _amount);
+        //subtract withdrawn amount from amount stored
+        collateralizedLP[msg.sender] = collateralizedLP[msg.sender].sub(
+            _amount
+        );
+        //transfer them their token
         LPtoken.transfer(msg.sender, _amount);
     }
 
-    function lpBalanceOf(address _account) public view returns (uint256) {
-        return WLP.balanceOf(_account);
-    }
-
-    function lockedWLPbalanceOf(address _account, address _lpVaultItsLockedIn)
-        public
-        view
-        returns (uint256)
-    {
-        return lockedWLP[_account][_lpVaultItsLockedIn];
-    }
-
-    function lockWLP(
-        address _account,
-        address _lpVaultItsLockedIn,
-        uint256 _amount
-    ) public onlyOwner {
-        lockedWLP[_account][_lpVaultItsLockedIn] = lockedWLP[_account][_lpVaultItsLockedIn]
-            .add(_amount);
-    }
-
-    function unlockWLP(
+    function unlockLP(
         address _borrower,
         address _redeemer,
-        address _lpVaultItsLockedIn,
         uint256 _amount
-    ) public onlyOwner {
-        require(_amount <= lockedWLP[_borrower][_lpVaultItsLockedIn]);
-        lockedWLP[_borrower][_lpVaultItsLockedIn] = lockedWLP[_borrower][_lpVaultItsLockedIn]
-            .add(_amount);
-        WLP.mint(_redeemer, _amount);
+    ) public onlyWC {
+        //subtract unlocked amount from total amount of LP the borrower has in the vault
+        collateralizedLP[_borrower] = collateralizedLP[_borrower].sub(_amount);
+        //transfer amount of LP token being unlocked to the redeemer
+        //this is necissary inorder for liquidate to function properly
+        LPtoken.transfer(_redeemer, _amount);
     }
 }

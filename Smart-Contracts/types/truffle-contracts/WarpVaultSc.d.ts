@@ -257,22 +257,22 @@ export interface WarpVaultScInstance extends Truffle.ContractInstance {
   borrow: {
     (
       _borrowAmount: number | BN | string,
-      _WarpVaultCollat: string,
+      _borrower: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<Truffle.TransactionResponse<AllEvents>>;
     call(
       _borrowAmount: number | BN | string,
-      _WarpVaultCollat: string,
+      _borrower: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<void>;
     sendTransaction(
       _borrowAmount: number | BN | string,
-      _WarpVaultCollat: string,
+      _borrower: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<string>;
     estimateGas(
       _borrowAmount: number | BN | string,
-      _WarpVaultCollat: string,
+      _borrower: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<number>;
   };
@@ -589,22 +589,22 @@ export interface WarpVaultScInstance extends Truffle.ContractInstance {
     borrow: {
       (
         _borrowAmount: number | BN | string,
-        _WarpVaultCollat: string,
+        _borrower: string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<Truffle.TransactionResponse<AllEvents>>;
       call(
         _borrowAmount: number | BN | string,
-        _WarpVaultCollat: string,
+        _borrower: string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<void>;
       sendTransaction(
         _borrowAmount: number | BN | string,
-        _WarpVaultCollat: string,
+        _borrower: string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<string>;
       estimateGas(
         _borrowAmount: number | BN | string,
-        _WarpVaultCollat: string,
+        _borrower: string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<number>;
     };

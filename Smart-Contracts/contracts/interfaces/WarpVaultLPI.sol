@@ -16,7 +16,7 @@ abstract contract WarpVaultLPI {
 
     function withdrawLP(uint256 _amount) public virtual;
 
-    function lpBalanceOf(address _account)
+    function collateralLPbalanceOf(address _account)
         public
         view
         virtual
@@ -28,16 +28,9 @@ abstract contract WarpVaultLPI {
         virtual
         returns (uint256);
 
-    function lockWLP(
+    function unlockLP(
         address _account,
         address _lpVaultItsLockedIn,
-        uint256 _amount
-    ) public virtual;
-
-    function unlockWLP(
-        address _account,
-        address _lpVaultItsLockedIn,
-        address _WVLP,
         uint256 _amount
     ) public virtual;
 }

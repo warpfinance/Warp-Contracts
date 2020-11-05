@@ -35,9 +35,8 @@ contract WarpControl is Ownable, Exponential {
 
     mapping(address => address) public instanceLPTracker; //maps LP token address to the assets WarpVault
     mapping(address => address) public instanceSCTracker;
+    mapping(address => uint256) public lockedLPValue;
     mapping(address => bool) public isVault;
-    mapping(address => mapping(address => uint256)) public amountLPtracker;
-    mapping(address => mapping(address => uint256)) public amountSCtracker;
 
     /**
      * @dev Throws if called by any account other than a warp vault
@@ -107,111 +106,120 @@ contract WarpControl is Ownable, Exponential {
     }
 
     /**
-  @notice lockCollateralUp is an external function used to track locked collateral amounts globally as they increase
-  @param _borrower is the address of the borrower
-  @param _amount is the USDC value thats looking to be locked up
-  **/
-    function lockCollateralUp(
-        address _borrower,
-        address _WVLP,
-        uint256 _amount
-    ) external onlyVault {
-        WarpVaultLPI WV = WarpVaultLPI(_WVLP);
-        WV.lockWLP(_borrower, _WVLP, _amount);
-    }
-
-    /**
    @notice lockCollateralDown is an external function used to track locked collateral amounts globally as they decrease
    @param _borrower is the address of the borrower
    @param _amount is the amount of LP being collateralized
    **/
-    function lockCollateralDown(
+    function unlockColateral(
         address _borrower,
         address _redeemer,
-        address _WVLP,
         uint256 _amount
     ) external onlyVault {
-        WarpVaultLPI WV = WarpVaultLPI(_WVLP);
-        WV.unlockWLP(_borrower, _redeemer, _WVLP, _amount);
+        uint256 numVaults = lpVaults.length;
+        uint256 remaining = _amount;
+
+        //loop through each LP vault
+        for (uint256 i = 0; i < numVaults; ++i) {
+            //instantiate warp vault at that position
+            WarpVaultLPI vault = WarpVaultLPI(lpVaults[i]);
+            //retreive the address of its asset
+            address asset = vault.getAssetAdd();
+            //retreive amount of LP locked in this vault
+            uint256 amountOfLockedAsset = vault.collateralLPbalanceOf(
+                _borrower
+            );
+            //get USDC value of LP
+            uint256 lpValue = checkLPprice(asset);
+            //get USDC value of the locked amount
+            uint256 valueInVault = amountOfLockedAsset.mul(lpValue);
+            //if the remaining amount is less than the borrowers collateral value in thie cuurent vault
+            if (remaining <= valueInVault) {
+                //amount of lp to unlock is the remaining USDC loan amount divided by the USDC value of one LP
+                uint256 amountOfLP = remaining.div(lpValue);
+                //call the LP's vault and unlock the LP to the redeemer
+                vault.unlockLP(_borrower, _redeemer, amountOfLP);
+            } else {
+                //if the remaining amount is MORE than the value in the current LP vault
+                //determine how much more is needed and roll it over into the remaining variable
+                remaining = remaining.sub(valueInVault);
+                //call the LP's vault and unlock all of the LP locked in it
+                vault.unlockLP(_borrower, _redeemer, amountOfLockedAsset);
+            }
+        }
+        lockedLPValue[_borrower] = lockedLPValue[_borrower].sub(_amount);
     }
 
     function checkLPprice(address _LP) public view returns (uint256) {
         return Oracle.getUnderlyingPrice(_LP);
     }
 
-    function checkLockedCollateral(address _borrower, address collateralVault)
-        public
-        view
-        returns (uint256)
-    {
-        WarpVaultLPI WV = WarpVaultLPI(collateralVault);
-        return WV.lockedWLPbalanceOf(_borrower, collateralVault);
-    }
-
     /**
 @notice checkCollateralValue is a view function that accepts an account address and returns the total USDC value
         of the accounts locked collateral
-@param _borrower is the address whos collateral value we are looking up
+@param _account is the address whos collateral value we are looking up
  **/
-    function checkAvailibleCollateralValue(
-        address _borrower,
-        address _WarpVault
-    ) external view returns (uint256) {
-        //instantiate warp vault at that position
-        WarpVaultLPI WV = WarpVaultLPI(_WarpVault);
-        //retreive the address of its asset
-        address asset = WV.getAssetAdd();
-        //retrieve USD price of this asset
-        uint256 priceOfAsset = Oracle.getUnderlyingPrice(asset);
-        //retrieve the amount of the asset locked as collateral
-        uint256 amountOfAssetCollat = WV.lpBalanceOf(_borrower);
-        //multiply the amount of collateral by the asset price and return it
-        return amountOfAssetCollat.mul(priceOfAsset);
-    }
-
-    function checkTotalAvailableCollateralValue(address account)
-        external
+    function checkTotalAvailableCollateralValue(address _account)
+        public
         view
         returns (uint256)
     {
         uint256 numVaults = lpVaults.length;
         uint256 totalCollateral = 0;
-
+        //loop through each lp wapr vault
         for (uint256 i = 0; i < numVaults; ++i) {
+            //instantiate warp vault at that position
             WarpVaultLPI vault = WarpVaultLPI(lpVaults[i]);
+            //retreive the address of its asset
             address asset = vault.getAssetAdd();
+            //retrieve USD price of this asset
             uint256 assetPrice = Oracle.getUnderlyingPrice(asset);
-            uint256 accountAssets = IERC20(asset).balanceOf(account);
+            //retrieve the total amount of the asset availible as collateral
+            uint256 availibleAccountAssets = IERC20(asset).balanceOf(_account);
+            //retreive the amount of the asset locked as collateral
+            uint256 amountOfLockedAsset = vault.collateralLPbalanceOf(_account);
+            //calculate amount of collateral not locked up
+            uint256 accountAssets = availibleAccountAssets.sub(
+                amountOfLockedAsset
+            );
+            //multiply the amount of collateral by the asset price and return it
             uint256 accountAssetsValue = accountAssets.mul(assetPrice);
+            //add value to total collateral
             totalCollateral = totalCollateral.add(accountAssetsValue);
         }
-
+        //return total USDC value of all collateral
         return totalCollateral;
     }
 
-    /**
-    @notice checkCollateralValue is a view function that accepts an account address and returns the total USDC value
-            of the accounts locked collateral
-    @param _borrower is the address whos collateral value we are looking up
-     **/
-    function checkLockedCollateralValue(address _borrower, address _WarpVault)
-        external
-        view
-        returns (uint256)
-    {
-        WarpVaultLPI WV = WarpVaultLPI(_WarpVault);
-        //retreive the address of its asset
-        address asset = WV.getAssetAdd();
-        //retrieve USD price of this asset
-        uint256 priceOfAsset = Oracle.getUnderlyingPrice(asset);
-        //retrieve the amount of the asset locked as collateral
-        uint256 amountOfAssetCollat = WV.lockedWLPbalanceOf(
-            _borrower,
-            _WarpVault
+    function borrowSC(address _StableCoin, uint256 _amount) public {
+        uint256 numSCVaults = scVaults.length;
+        uint256 borrowedTotal = 0;
+        //retreive total amount of collateral value the user has
+        uint256 availibleCollateralValue = checkTotalAvailableCollateralValue(
+            msg.sender
         );
-        //multiply the amount of collateral by the asset price and return it
-        return amountOfAssetCollat.mul(priceOfAsset);
+        //loop through all stable coin vaults
+        for (uint256 i = 0; i < numSCVaults; ++i) {
+            //instantiate each LP warp vault
+            WarpVaultSCI WVSC = WarpVaultSCI(scVaults[i]);
+            //retreive the amount user has borrowed from each stablecoin vault
+            borrowedTotal = borrowedTotal.add(
+                WVSC.borrowBalanceCurrent(msg.sender)
+            );
+        }
+        //divide collateral value by half and add the half to the full value for a 150% collateral value
+        uint256 halfCollat = availibleCollateralValue.div(2);
+        availibleCollateralValue = availibleCollateralValue.add(halfCollat);
+        //calculate USDC amount of what the user is aloud to borrow
+        uint256 borrowAmountAllowed = availibleCollateralValue.sub(
+            borrowedTotal
+        );
+        //require the amount being borrowed is less than or equal to the amount they are aloud to borrow
+        require(borrowAmountAllowed >= _amount);
+        //track USDC value of locked LP
+        lockedLPValue[msg.sender] = lockedLPValue[msg.sender].add(_amount);
+        //retreive stablecoin vault address being borrowed from and instantiate it
+        WarpVaultSCI WV = WarpVaultSCI(instanceSCTracker[_StableCoin]);
+        //call borrow function on the stablecoin warp vault
+        WV.borrow(_amount, msg.sender);
     }
-
-    function borrowSC(address _StableCoin, uint256 _amount) public {}
 }
