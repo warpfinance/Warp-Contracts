@@ -44,6 +44,11 @@ export interface WarpVaultLpiInstance extends Truffle.ContractInstance {
     txDetails?: Truffle.TransactionDetails
   ): Promise<BN>;
 
+  collateralOfAccount(
+    _account: string,
+    txDetails?: Truffle.TransactionDetails
+  ): Promise<BN>;
+
   unlockLP: {
     (
       _account: string,
@@ -67,6 +72,29 @@ export interface WarpVaultLpiInstance extends Truffle.ContractInstance {
       _account: string,
       _lpVaultItsLockedIn: string,
       _amount: number | BN | string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<number>;
+  };
+
+  liquidateAccount: {
+    (
+      account: string,
+      liquidator: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<Truffle.TransactionResponse<AllEvents>>;
+    call(
+      account: string,
+      liquidator: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<void>;
+    sendTransaction(
+      account: string,
+      liquidator: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<string>;
+    estimateGas(
+      account: string,
+      liquidator: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<number>;
   };
@@ -104,6 +132,11 @@ export interface WarpVaultLpiInstance extends Truffle.ContractInstance {
       txDetails?: Truffle.TransactionDetails
     ): Promise<BN>;
 
+    collateralOfAccount(
+      _account: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<BN>;
+
     unlockLP: {
       (
         _account: string,
@@ -127,6 +160,29 @@ export interface WarpVaultLpiInstance extends Truffle.ContractInstance {
         _account: string,
         _lpVaultItsLockedIn: string,
         _amount: number | BN | string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<number>;
+    };
+
+    liquidateAccount: {
+      (
+        account: string,
+        liquidator: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<Truffle.TransactionResponse<AllEvents>>;
+      call(
+        account: string,
+        liquidator: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<void>;
+      sendTransaction(
+        account: string,
+        liquidator: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<string>;
+      estimateGas(
+        account: string,
+        liquidator: string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<number>;
     };

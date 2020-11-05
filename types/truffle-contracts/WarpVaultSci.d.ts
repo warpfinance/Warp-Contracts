@@ -75,6 +75,11 @@ export interface WarpVaultSciInstance extends Truffle.ContractInstance {
     ): Promise<number>;
   };
 
+  borrowBalancePrior(
+    account: string,
+    txDetails?: Truffle.TransactionDetails
+  ): Promise<BN>;
+
   exchangeRateCurrent: {
     (txDetails?: Truffle.TransactionDetails): Promise<
       Truffle.TransactionResponse<AllEvents>
@@ -103,6 +108,33 @@ export interface WarpVaultSciInstance extends Truffle.ContractInstance {
     estimateGas(
       _borrowAmount: number | BN | string,
       _borrower: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<number>;
+  };
+
+  repayLiquidatedLoan: {
+    (
+      borrower: string,
+      liquidator: string,
+      amount: number | BN | string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<Truffle.TransactionResponse<AllEvents>>;
+    call(
+      borrower: string,
+      liquidator: string,
+      amount: number | BN | string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<void>;
+    sendTransaction(
+      borrower: string,
+      liquidator: string,
+      amount: number | BN | string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<string>;
+    estimateGas(
+      borrower: string,
+      liquidator: string,
+      amount: number | BN | string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<number>;
   };
@@ -174,6 +206,11 @@ export interface WarpVaultSciInstance extends Truffle.ContractInstance {
       ): Promise<number>;
     };
 
+    borrowBalancePrior(
+      account: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<BN>;
+
     exchangeRateCurrent: {
       (txDetails?: Truffle.TransactionDetails): Promise<
         Truffle.TransactionResponse<AllEvents>
@@ -202,6 +239,33 @@ export interface WarpVaultSciInstance extends Truffle.ContractInstance {
       estimateGas(
         _borrowAmount: number | BN | string,
         _borrower: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<number>;
+    };
+
+    repayLiquidatedLoan: {
+      (
+        borrower: string,
+        liquidator: string,
+        amount: number | BN | string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<Truffle.TransactionResponse<AllEvents>>;
+      call(
+        borrower: string,
+        liquidator: string,
+        amount: number | BN | string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<void>;
+      sendTransaction(
+        borrower: string,
+        liquidator: string,
+        amount: number | BN | string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<string>;
+      estimateGas(
+        borrower: string,
+        liquidator: string,
+        amount: number | BN | string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<number>;
     };

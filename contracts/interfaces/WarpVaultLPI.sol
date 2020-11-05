@@ -28,9 +28,17 @@ abstract contract WarpVaultLPI {
         virtual
         returns (uint256);
 
+    function collateralOfAccount(address _account)
+        public
+        virtual
+        view
+        returns (uint256);
+
     function unlockLP(
         address _account,
         address _lpVaultItsLockedIn,
         uint256 _amount
     ) public virtual;
+
+    function liquidateAccount(address account, address liquidator) public virtual;
 }

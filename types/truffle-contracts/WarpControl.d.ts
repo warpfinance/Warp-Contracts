@@ -179,33 +179,27 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
   };
 
   /**
-   * lockCollateralDown is an external function used to track locked collateral amounts globally as they decrease
-   * @param _amount is the amount of LP being collateralized*
-   * @param _borrower is the address of the borrower
+   * Figures out how much of a given LP token an account is allowed to withdraw
    */
-  unlockColateral: {
+  maxWithdrawAllowed: {
     (
-      _borrower: string,
-      _redeemer: string,
-      _amount: number | BN | string,
+      account: string,
+      lpToken: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<Truffle.TransactionResponse<AllEvents>>;
     call(
-      _borrower: string,
-      _redeemer: string,
-      _amount: number | BN | string,
+      account: string,
+      lpToken: string,
       txDetails?: Truffle.TransactionDetails
-    ): Promise<void>;
+    ): Promise<BN>;
     sendTransaction(
-      _borrower: string,
-      _redeemer: string,
-      _amount: number | BN | string,
+      account: string,
+      lpToken: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<string>;
     estimateGas(
-      _borrower: string,
-      _redeemer: string,
-      _amount: number | BN | string,
+      account: string,
+      lpToken: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<number>;
   };
@@ -220,6 +214,36 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
    * @param _account is the address whos collateral value we are looking up*
    */
   checkTotalAvailableCollateralValue(
+    _account: string,
+    txDetails?: Truffle.TransactionDetails
+  ): Promise<BN>;
+
+  priorTotalBorrowedValue(
+    _account: string,
+    txDetails?: Truffle.TransactionDetails
+  ): Promise<BN>;
+
+  currentTotalBorrowedValue: {
+    (_account: string, txDetails?: Truffle.TransactionDetails): Promise<
+      Truffle.TransactionResponse<AllEvents>
+    >;
+    call(_account: string, txDetails?: Truffle.TransactionDetails): Promise<BN>;
+    sendTransaction(
+      _account: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<string>;
+    estimateGas(
+      _account: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<number>;
+  };
+
+  calcBorrowLimit(
+    collateralValue: number | BN | string,
+    txDetails?: Truffle.TransactionDetails
+  ): Promise<BN>;
+
+  getBorrowLimit(
     _account: string,
     txDetails?: Truffle.TransactionDetails
   ): Promise<BN>;
@@ -243,6 +267,46 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
     estimateGas(
       _StableCoin: string,
       _amount: number | BN | string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<number>;
+  };
+
+  /**
+   * markAccountNonCompliant is used by a potential liquidator to mark an account as non compliant which starts its 30 minute timer
+   * @param _borrower is the address of the non compliant borrower*
+   */
+  markAccountNonCompliant: {
+    (_borrower: string, txDetails?: Truffle.TransactionDetails): Promise<
+      Truffle.TransactionResponse<AllEvents>
+    >;
+    call(
+      _borrower: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<void>;
+    sendTransaction(
+      _borrower: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<string>;
+    estimateGas(
+      _borrower: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<number>;
+  };
+
+  liquidateAccount: {
+    (borrower: string, txDetails?: Truffle.TransactionDetails): Promise<
+      Truffle.TransactionResponse<AllEvents>
+    >;
+    call(
+      borrower: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<void>;
+    sendTransaction(
+      borrower: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<string>;
+    estimateGas(
+      borrower: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<number>;
   };
@@ -400,33 +464,27 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
     };
 
     /**
-     * lockCollateralDown is an external function used to track locked collateral amounts globally as they decrease
-     * @param _amount is the amount of LP being collateralized*
-     * @param _borrower is the address of the borrower
+     * Figures out how much of a given LP token an account is allowed to withdraw
      */
-    unlockColateral: {
+    maxWithdrawAllowed: {
       (
-        _borrower: string,
-        _redeemer: string,
-        _amount: number | BN | string,
+        account: string,
+        lpToken: string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<Truffle.TransactionResponse<AllEvents>>;
       call(
-        _borrower: string,
-        _redeemer: string,
-        _amount: number | BN | string,
+        account: string,
+        lpToken: string,
         txDetails?: Truffle.TransactionDetails
-      ): Promise<void>;
+      ): Promise<BN>;
       sendTransaction(
-        _borrower: string,
-        _redeemer: string,
-        _amount: number | BN | string,
+        account: string,
+        lpToken: string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<string>;
       estimateGas(
-        _borrower: string,
-        _redeemer: string,
-        _amount: number | BN | string,
+        account: string,
+        lpToken: string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<number>;
     };
@@ -441,6 +499,39 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
      * @param _account is the address whos collateral value we are looking up*
      */
     checkTotalAvailableCollateralValue(
+      _account: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<BN>;
+
+    priorTotalBorrowedValue(
+      _account: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<BN>;
+
+    currentTotalBorrowedValue: {
+      (_account: string, txDetails?: Truffle.TransactionDetails): Promise<
+        Truffle.TransactionResponse<AllEvents>
+      >;
+      call(
+        _account: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<BN>;
+      sendTransaction(
+        _account: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<string>;
+      estimateGas(
+        _account: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<number>;
+    };
+
+    calcBorrowLimit(
+      collateralValue: number | BN | string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<BN>;
+
+    getBorrowLimit(
       _account: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<BN>;
@@ -464,6 +555,46 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
       estimateGas(
         _StableCoin: string,
         _amount: number | BN | string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<number>;
+    };
+
+    /**
+     * markAccountNonCompliant is used by a potential liquidator to mark an account as non compliant which starts its 30 minute timer
+     * @param _borrower is the address of the non compliant borrower*
+     */
+    markAccountNonCompliant: {
+      (_borrower: string, txDetails?: Truffle.TransactionDetails): Promise<
+        Truffle.TransactionResponse<AllEvents>
+      >;
+      call(
+        _borrower: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<void>;
+      sendTransaction(
+        _borrower: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<string>;
+      estimateGas(
+        _borrower: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<number>;
+    };
+
+    liquidateAccount: {
+      (borrower: string, txDetails?: Truffle.TransactionDetails): Promise<
+        Truffle.TransactionResponse<AllEvents>
+      >;
+      call(
+        borrower: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<void>;
+      sendTransaction(
+        borrower: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<string>;
+      estimateGas(
+        borrower: string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<number>;
     };

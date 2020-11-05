@@ -35,7 +35,11 @@ abstract contract WarpVaultSCI {
         virtual
         returns (uint256);
 
+    function borrowBalancePrior(address account) public virtual view returns (uint256);
+
     function exchangeRateCurrent() public virtual returns (uint256);
 
     function borrow(uint256 _borrowAmount, address _borrower) external virtual;
+
+    function repayLiquidatedLoan(address borrower, address liquidator, uint256 amount) public virtual;
 }

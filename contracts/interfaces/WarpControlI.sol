@@ -12,31 +12,5 @@ The WarpVaultI contract an abstract contract the MoneyMarketFactory uses to inte
 **/
 
 abstract contract WarpControlI {
-    address public DAI;
-    address public USDC;
-    address public USDT;
-
-    function unlockColateral(
-        address _borrower,
-        address _redeemer,
-        uint256 _amount
-    ) external virtual;
-
-    function lockCollateralDown(
-        address _borrower,
-        address _redeemer,
-        address _WarpVault,
-        uint256 _amount
-    ) external virtual;
-
-    function checkAvailibleCollateralValue(
-        address _borrower,
-        address _WarpVault
-    ) external view virtual returns (uint256);
-
-    function checkTotalAvailableCollateralValue(address _account)
-        public
-        view
-        virtual
-        returns (uint256);
+    function maxWithdrawAllowed(address account, address lpToken) public virtual returns (uint256);
 }
