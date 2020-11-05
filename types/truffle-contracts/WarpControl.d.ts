@@ -43,6 +43,11 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
     txDetails?: Truffle.TransactionDetails
   ): Promise<string>;
 
+  isVault(
+    arg0: string,
+    txDetails?: Truffle.TransactionDetails
+  ): Promise<boolean>;
+
   liquidationIncentiveMantissa(
     txDetails?: Truffle.TransactionDetails
   ): Promise<BN>;
@@ -137,8 +142,6 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
       _optimal: number | BN | string,
       _initialExchangeRate: number | BN | string,
       _StableCoin: string,
-      _stableCoinName: string,
-      _stableCoinSymbol: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<Truffle.TransactionResponse<AllEvents>>;
     call(
@@ -148,8 +151,6 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
       _optimal: number | BN | string,
       _initialExchangeRate: number | BN | string,
       _StableCoin: string,
-      _stableCoinName: string,
-      _stableCoinSymbol: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<void>;
     sendTransaction(
@@ -159,8 +160,6 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
       _optimal: number | BN | string,
       _initialExchangeRate: number | BN | string,
       _StableCoin: string,
-      _stableCoinName: string,
-      _stableCoinSymbol: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<string>;
     estimateGas(
@@ -170,8 +169,6 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
       _optimal: number | BN | string,
       _initialExchangeRate: number | BN | string,
       _StableCoin: string,
-      _stableCoinName: string,
-      _stableCoinSymbol: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<number>;
   };
@@ -297,6 +294,11 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
       txDetails?: Truffle.TransactionDetails
     ): Promise<string>;
 
+    isVault(
+      arg0: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<boolean>;
+
     liquidationIncentiveMantissa(
       txDetails?: Truffle.TransactionDetails
     ): Promise<BN>;
@@ -391,8 +393,6 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
         _optimal: number | BN | string,
         _initialExchangeRate: number | BN | string,
         _StableCoin: string,
-        _stableCoinName: string,
-        _stableCoinSymbol: string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<Truffle.TransactionResponse<AllEvents>>;
       call(
@@ -402,8 +402,6 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
         _optimal: number | BN | string,
         _initialExchangeRate: number | BN | string,
         _StableCoin: string,
-        _stableCoinName: string,
-        _stableCoinSymbol: string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<void>;
       sendTransaction(
@@ -413,8 +411,6 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
         _optimal: number | BN | string,
         _initialExchangeRate: number | BN | string,
         _StableCoin: string,
-        _stableCoinName: string,
-        _stableCoinSymbol: string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<string>;
       estimateGas(
@@ -424,8 +420,6 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
         _optimal: number | BN | string,
         _initialExchangeRate: number | BN | string,
         _StableCoin: string,
-        _stableCoinName: string,
-        _stableCoinSymbol: string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<number>;
     };

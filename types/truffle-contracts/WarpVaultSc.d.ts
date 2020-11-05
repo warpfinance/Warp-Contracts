@@ -11,8 +11,6 @@ export interface WarpVaultScContract
     _StableCoin: string,
     _warpControl: string,
     _initialExchangeRate: number | BN | string,
-    _stableCoinName: string,
-    _stableCoinSymbol: string,
     meta?: Truffle.TransactionDetails
   ): Promise<WarpVaultScInstance>;
 }
@@ -57,8 +55,6 @@ export interface WarpVaultScInstance extends Truffle.ContractInstance {
     arg0: string,
     txDetails?: Truffle.TransactionDetails
   ): Promise<boolean>;
-
-  initialized(txDetails?: Truffle.TransactionDetails): Promise<boolean>;
 
   liquidationIncentiveMantissa(
     txDetails?: Truffle.TransactionDetails
@@ -388,8 +384,6 @@ export interface WarpVaultScInstance extends Truffle.ContractInstance {
       arg0: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<boolean>;
-
-    initialized(txDetails?: Truffle.TransactionDetails): Promise<boolean>;
 
     liquidationIncentiveMantissa(
       txDetails?: Truffle.TransactionDetails

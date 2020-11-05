@@ -14,9 +14,6 @@ import { JumpRateModelV2Contract } from "./JumpRateModelV2";
 import { MigrationsContract } from "./Migrations";
 import { OwnableContract } from "./Ownable";
 import { TesterTokenContract } from "./TesterToken";
-import { TesterUniswapFactoryContract } from "./TesterUniswapFactory";
-import { TesterUniswapV2Erc20Contract } from "./TesterUniswapV2Erc20";
-import { TesterUniswapV2PairContract } from "./TesterUniswapV2Pair";
 import { UniswapLpOracleFactoryContract } from "./UniswapLpOracleFactory";
 import { UniswapLpOracleFactoryIContract } from "./UniswapLpOracleFactoryI";
 import { UniswapLpOracleInstanceContract } from "./UniswapLpOracleInstance";
@@ -55,9 +52,6 @@ declare global {
       require(name: "Migrations"): MigrationsContract;
       require(name: "Ownable"): OwnableContract;
       require(name: "TesterToken"): TesterTokenContract;
-      require(name: "TesterUniswapFactory"): TesterUniswapFactoryContract;
-      require(name: "TesterUniswapV2ERC20"): TesterUniswapV2Erc20Contract;
-      require(name: "TesterUniswapV2Pair"): TesterUniswapV2PairContract;
       require(name: "UniswapLPOracleFactory"): UniswapLpOracleFactoryContract;
       require(name: "UniswapLPOracleFactoryI"): UniswapLpOracleFactoryIContract;
       require(name: "UniswapLPOracleInstance"): UniswapLpOracleInstanceContract;
@@ -117,18 +111,6 @@ export {
 export { MigrationsContract, MigrationsInstance } from "./Migrations";
 export { OwnableContract, OwnableInstance } from "./Ownable";
 export { TesterTokenContract, TesterTokenInstance } from "./TesterToken";
-export {
-  TesterUniswapFactoryContract,
-  TesterUniswapFactoryInstance
-} from "./TesterUniswapFactory";
-export {
-  TesterUniswapV2Erc20Contract,
-  TesterUniswapV2Erc20Instance
-} from "./TesterUniswapV2Erc20";
-export {
-  TesterUniswapV2PairContract,
-  TesterUniswapV2PairInstance
-} from "./TesterUniswapV2Pair";
 export {
   UniswapLpOracleFactoryContract,
   UniswapLpOracleFactoryInstance

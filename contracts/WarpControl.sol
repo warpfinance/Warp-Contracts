@@ -31,9 +31,19 @@ contract WarpControl is Ownable, Exponential {
     WarpVaultSCFactoryI public WVSCF;
 
     address[] public lpVaults;
+    address[] public scVaults;
 
     mapping(address => address) public instanceLPTracker; //maps LP token address to the assets WarpVault
     mapping(address => address) public instanceSCTracker;
+    mapping(address => bool) public isVault;
+
+    /**
+     * @dev Throws if called by any account other than the owner.
+     */
+    modifier onlyVault() {
+        require(isVault[msg.sender] == true);
+        _;
+    }
 
     /**
 @notice the constructor function is fired during the contract deployment process. The constructor can only be fired once and
@@ -63,6 +73,7 @@ contract WarpControl is Ownable, Exponential {
         address _WarpVault = WVLPF.createWarpVaultLP(_lp, _lpName);
         instanceLPTracker[_lp] = _WarpVault;
         lpVaults.push(_WarpVault);
+        isVault[_WarpVault] = true;
     }
 
     function createNewSCVault(
@@ -71,9 +82,7 @@ contract WarpControl is Ownable, Exponential {
         uint256 _jumpMultiplierPerYear,
         uint256 _optimal,
         uint256 _initialExchangeRate,
-        address _StableCoin,
-        string memory _stableCoinName,
-        string memory _stableCoinSymbol
+        address _StableCoin
     ) public onlyOwner {
         address IR = address(
             new JumpRateModelV2(
@@ -85,14 +94,14 @@ contract WarpControl is Ownable, Exponential {
             )
         );
 
-        address WVSC = WVSCF.createNewWarpVaultSC(
+        address _WarpVault = WVSCF.createNewWarpVaultSC(
             IR,
             _StableCoin,
-            _initialExchangeRate,
-            _stableCoinName,
-            _stableCoinSymbol
+            _initialExchangeRate
         );
-        instanceSCTracker[_StableCoin] = WVSC;
+        instanceSCTracker[_StableCoin] = _WarpVault;
+        scVaults.push(_WarpVault);
+        isVault[_WarpVault] = true;
     }
 
     /**
@@ -104,7 +113,7 @@ contract WarpControl is Ownable, Exponential {
         address _borrower,
         address _WVLP,
         uint256 _amount
-    ) external {
+    ) external onlyVault {
         WarpVaultLPI WV = WarpVaultLPI(_WVLP);
         WV.lockWLP(_borrower, _WVLP, _amount);
     }
@@ -119,7 +128,7 @@ contract WarpControl is Ownable, Exponential {
         address _redeemer,
         address _WVLP,
         uint256 _amount
-    ) external {
+    ) external onlyVault {
         WarpVaultLPI WV = WarpVaultLPI(_WVLP);
         WV.unlockWLP(_borrower, _redeemer, _WVLP, _amount);
     }
@@ -156,6 +165,26 @@ contract WarpControl is Ownable, Exponential {
         uint256 amountOfAssetCollat = WV.lpBalanceOf(_borrower);
         //multiply the amount of collateral by the asset price and return it
         return amountOfAssetCollat.mul(priceOfAsset);
+    }
+
+    function checkTotalAvailableCollateralValue(address account)
+        external
+        view
+        returns (uint256)
+    {
+        uint256 numVaults = lpVaults.length;
+        uint256 totalCollateral = 0;
+
+        for (uint256 i = 0; i < numVaults; ++i) {
+            WarpVaultLPI vault = WarpVaultLPI(lpVaults[i]);
+            address asset = vault.getAssetAdd();
+            uint256 assetPrice = Oracle.getUnderlyingPrice(asset);
+            uint256 accountAssets = IERC20(asset).balanceOf(account);
+            uint256 accountAssetsValue = accountAssets.mul(assetPrice);
+            totalCollateral = totalCollateral.add(accountAssetsValue);
+        }
+
+        return totalCollateral;
     }
 
     /**
