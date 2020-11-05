@@ -56,6 +56,14 @@ contract WarpVaultSC is Ownable, Exponential {
     }
 
     /**
+     * @dev Throws if called by any account other than a warp control
+     */
+    modifier onlyWC() {
+        require(msg.sender == address(WC));
+        _;
+    }
+
+    /**
 @notice constructor sets up token names and symbols for the WarpWrapperToken
 
 **/
@@ -354,6 +362,8 @@ contract WarpVaultSC is Ownable, Exponential {
         stablecoin.transferFrom(msg.sender, address(this), _amount);
         //track amount lent
         accountLent[msg.sender] = _amount;
+        //track stablecoin values in Warp Control
+        WC.addSC(msg.sender, _amount);
         //mint appropriate Warp DAI
         wStableCoin.mint(msg.sender, vars.mintTokens);
     }
@@ -384,10 +394,13 @@ redeemAmount = _amount x exchangeRateCurrent
             Exp({mantissa: vars.exchangeRateMantissa}),
             _amount
         );
-        //transfer the calculated amount of underlying asset to the msg.sender
         //Fail if protocol has insufficient cash
         require(stablecoin.balanceOf(address(this)) >= vars.redeemAmount);
+        //track stablecoin values in Warp Control
+        WC.subSC(msg.sender, _amount);
+        //burn wrapped token from msg.sender
         wStableCoin.burn(msg.sender, _amount); //will fail id the msg.sender doesnt have the appropriateamount of wrapper token
+        //transfer the calculated amount of underlying asset to the msg.sender
         stablecoin.transfer(msg.sender, vars.redeemAmount);
     }
 
@@ -403,7 +416,10 @@ redeemAmount = _amount x exchangeRateCurrent
 @notice Sender borrows stablecoin assets from the protocol to their own address
 @param _borrowAmount The amount of the underlying asset to borrow
 */
-    function borrow(uint256 _borrowAmount, address _WarpVaultCollat) public {
+    function borrow(uint256 _borrowAmount, address _WarpVaultCollat)
+        external
+        onlyWC
+    {
         // _collateral the address of the ALR the user has staked as collateral?
         accrueInterest();
 

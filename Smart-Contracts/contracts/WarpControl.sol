@@ -36,9 +36,11 @@ contract WarpControl is Ownable, Exponential {
     mapping(address => address) public instanceLPTracker; //maps LP token address to the assets WarpVault
     mapping(address => address) public instanceSCTracker;
     mapping(address => bool) public isVault;
+    mapping(address => mapping(address => uint256)) public amountLPtracker;
+    mapping(address => mapping(address => uint256)) public amountSCtracker;
 
     /**
-     * @dev Throws if called by any account other than the owner.
+     * @dev Throws if called by any account other than a warp vault
      */
     modifier onlyVault() {
         require(isVault[msg.sender] == true);
@@ -210,4 +212,6 @@ contract WarpControl is Ownable, Exponential {
         //multiply the amount of collateral by the asset price and return it
         return amountOfAssetCollat.mul(priceOfAsset);
     }
+
+    function borrowSC(address _StableCoin, uint256 _amount) public {}
 }
