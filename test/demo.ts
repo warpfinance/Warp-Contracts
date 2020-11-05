@@ -134,9 +134,9 @@ contract("Warp Finance Demo", function (accounts) {
     await warpControl.createNewLPVault(ethDaiPair.address, wethToken.address, daiToken.address, 'ETH-DAI-LP');
 
     // Create Stable Coin Vaults
-    await warpControl.createNewSCVault("1000000000000000000", "2000000000000000000", "2000000000000000000", 4204800, "1000000000000000000", daiToken.address, "DAI", "DAI");
-    await warpControl.createNewSCVault("1000000000000000000", "2000000000000000000", "2000000000000000000", 4204800, "1000000000000000000", usdtToken.address, "USDT", "USDT");
-    await warpControl.createNewSCVault("1000000000000000000", "2000000000000000000", "2000000000000000000", 4204800, "1000000000000000000", usdcToken.address, "USDC", "USDC");
+    await warpControl.createNewSCVault("1000000000000000000", "2000000000000000000", "2000000000000000000", 4204800, "1000000000000000000", daiToken.address);
+    await warpControl.createNewSCVault("1000000000000000000", "2000000000000000000", "2000000000000000000", 4204800, "1000000000000000000", usdtToken.address);
+    await warpControl.createNewSCVault("1000000000000000000", "2000000000000000000", "2000000000000000000", 4204800, "1000000000000000000", usdcToken.address);
     
 
     const user1 = accounts[1];
