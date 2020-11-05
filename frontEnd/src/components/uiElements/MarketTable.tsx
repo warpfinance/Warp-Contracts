@@ -22,12 +22,12 @@ const borrowData = [
     createData(<AvatarGroup><Avatar alt={'eth.png'} src={'eth.png'} />
         <Avatar alt={'usdt.png'} src={'usdt.png'} /></AvatarGroup>,
         'ETH - USDT', 3.25, 100, 'USD', 2.25, 45.23, -3.44),
-    createData(<AvatarGroup><Avatar alt={'wbtc.png'} src={'wbtc.png'} />
-        <Avatar alt={'weth.png'} src={'weth.png'} /></AvatarGroup>,
-        'wBTC - wETH', 1.32, 100, 'USD', 1.89, 45.23, -2.95),
-    createData(<AvatarGroup><Avatar alt={'usdt.png'} src={'usdt.png'} />
-        <Avatar alt={'weth.png'} src={'weth.png'} /></AvatarGroup>,
-        'USDT - wETH', 2.18, 100, 'USD', 1.12, 45.23, -2.13),
+    createData(<AvatarGroup><Avatar alt={'eth.png'} src={'eth.png'} />
+        <Avatar alt={'usdc.png'} src={'usdc.png'} /></AvatarGroup>,
+        'ETH - USDC', 1.32, 100, 'USD', 1.89, 45.23, -2.95),
+    createData(<AvatarGroup><Avatar alt={'eth.png'} src={'eth.png'} />
+        <Avatar alt={'wbtc.png'} src={'wbtc.png'} /></AvatarGroup>,
+        'ETH - WBTC', 2.18, 100, 'USD', 1.12, 45.23, -2.13),
 ];
 
 interface Props {

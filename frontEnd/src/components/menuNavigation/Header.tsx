@@ -8,6 +8,9 @@ import { makeStyles } from "@material-ui/core/styles";
 import { useWeb3React } from "@web3-react/core";
 
 const useStyles = makeStyles(theme => ({
+    content: {
+        zIndex: 1,
+    },
     logo: {
         maxHeight: '36px'
     },
@@ -35,7 +38,7 @@ export const Header: React.FC<Props> = (props: Props) => {
         return input;
     };
 
-    const {account} = useWeb3React();
+    const { account } = useWeb3React();
     const walletAddress = account ? account : "Connect";
     const isConnected = Boolean(account);
 
@@ -49,7 +52,7 @@ export const Header: React.FC<Props> = (props: Props) => {
                 <React.Fragment>
                     <Grid
                         item
-                        md
+                        sm
                     >
                         {connected === true ?
                             <Typography>
@@ -66,7 +69,7 @@ export const Header: React.FC<Props> = (props: Props) => {
                     </Grid>
                     <Grid
                         item
-                        md
+                        sm
                     >
                         {connected === true ?
                             <Typography>
@@ -83,7 +86,7 @@ export const Header: React.FC<Props> = (props: Props) => {
                     </Grid>
                     <Grid
                         item
-                        md
+                        sm
                     >
                         {connected === true ?
                             <Typography>
@@ -100,15 +103,7 @@ export const Header: React.FC<Props> = (props: Props) => {
                     </Grid>
                     <Grid
                         item
-                        md
-                    >
-                        <Typography className={classes.link} color="textSecondary">
-                            Vote
-                        </Typography>
-                    </Grid>
-                    <Grid
-                        item
-                        md
+                        sm
                     >
                         {connectButton}
                     </Grid>
@@ -157,10 +152,11 @@ export const Header: React.FC<Props> = (props: Props) => {
             justify="space-evenly"
             alignItems="center"
             spacing={(!props.home) ? 3 : 1}
+            className={classes.content}
         >
             <Grid
                 item
-                md={(!props.home) ? 7 : 1}
+                sm={(!props.home) ? 8 : 1}
             >
                 <RouterLink to={"/"}>
                     <img className={classes.logo} src={"warp logo.svg"} alt={"Warp"}></img>
