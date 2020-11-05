@@ -30,10 +30,12 @@ abstract contract WarpVaultSCI {
 
     function getAssetAdd() public view virtual returns (address);
 
-    function borrowBalanceCurrent(address account, uint256 _assetType)
+    function borrowBalanceCurrent(address account)
         public
         virtual
         returns (uint256);
 
     function exchangeRateCurrent() public virtual returns (uint256);
+
+    function borrow(uint256 _borrowAmount, address _borrower) external virtual;
 }

@@ -4,14 +4,14 @@
 import BN from "bn.js";
 import { EventData, PastEventOptions } from "web3-eth-contract";
 
-export interface WarpVaultSciContract
-  extends Truffle.Contract<WarpVaultSciInstance> {
-  "new"(meta?: Truffle.TransactionDetails): Promise<WarpVaultSciInstance>;
+export interface WarpVaultIContract
+  extends Truffle.Contract<WarpVaultIInstance> {
+  "new"(meta?: Truffle.TransactionDetails): Promise<WarpVaultIInstance>;
 }
 
 type AllEvents = never;
 
-export interface WarpVaultSciInstance extends Truffle.ContractInstance {
+export interface WarpVaultIInstance extends Truffle.ContractInstance {
   /**
    * setUp is called after the creation of a WarpVault to set up its Interest Rate Model and its initial exchange rate
    * @param _baseRatePerYear The approximate target base APR, as a mantissa (scaled by 1e18)
@@ -61,16 +61,24 @@ export interface WarpVaultSciInstance extends Truffle.ContractInstance {
   getAssetAdd(txDetails?: Truffle.TransactionDetails): Promise<string>;
 
   borrowBalanceCurrent: {
-    (account: string, txDetails?: Truffle.TransactionDetails): Promise<
-      Truffle.TransactionResponse<AllEvents>
-    >;
-    call(account: string, txDetails?: Truffle.TransactionDetails): Promise<BN>;
+    (
+      account: string,
+      _assetType: number | BN | string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<Truffle.TransactionResponse<AllEvents>>;
+    call(
+      account: string,
+      _assetType: number | BN | string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<BN>;
     sendTransaction(
       account: string,
+      _assetType: number | BN | string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<string>;
     estimateGas(
       account: string,
+      _assetType: number | BN | string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<number>;
   };
@@ -82,29 +90,6 @@ export interface WarpVaultSciInstance extends Truffle.ContractInstance {
     call(txDetails?: Truffle.TransactionDetails): Promise<BN>;
     sendTransaction(txDetails?: Truffle.TransactionDetails): Promise<string>;
     estimateGas(txDetails?: Truffle.TransactionDetails): Promise<number>;
-  };
-
-  borrow: {
-    (
-      _borrowAmount: number | BN | string,
-      _borrower: string,
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<Truffle.TransactionResponse<AllEvents>>;
-    call(
-      _borrowAmount: number | BN | string,
-      _borrower: string,
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<void>;
-    sendTransaction(
-      _borrowAmount: number | BN | string,
-      _borrower: string,
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<string>;
-    estimateGas(
-      _borrowAmount: number | BN | string,
-      _borrower: string,
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<number>;
   };
 
   methods: {
@@ -157,19 +142,24 @@ export interface WarpVaultSciInstance extends Truffle.ContractInstance {
     getAssetAdd(txDetails?: Truffle.TransactionDetails): Promise<string>;
 
     borrowBalanceCurrent: {
-      (account: string, txDetails?: Truffle.TransactionDetails): Promise<
-        Truffle.TransactionResponse<AllEvents>
-      >;
+      (
+        account: string,
+        _assetType: number | BN | string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<Truffle.TransactionResponse<AllEvents>>;
       call(
         account: string,
+        _assetType: number | BN | string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<BN>;
       sendTransaction(
         account: string,
+        _assetType: number | BN | string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<string>;
       estimateGas(
         account: string,
+        _assetType: number | BN | string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<number>;
     };
@@ -181,29 +171,6 @@ export interface WarpVaultSciInstance extends Truffle.ContractInstance {
       call(txDetails?: Truffle.TransactionDetails): Promise<BN>;
       sendTransaction(txDetails?: Truffle.TransactionDetails): Promise<string>;
       estimateGas(txDetails?: Truffle.TransactionDetails): Promise<number>;
-    };
-
-    borrow: {
-      (
-        _borrowAmount: number | BN | string,
-        _borrower: string,
-        txDetails?: Truffle.TransactionDetails
-      ): Promise<Truffle.TransactionResponse<AllEvents>>;
-      call(
-        _borrowAmount: number | BN | string,
-        _borrower: string,
-        txDetails?: Truffle.TransactionDetails
-      ): Promise<void>;
-      sendTransaction(
-        _borrowAmount: number | BN | string,
-        _borrower: string,
-        txDetails?: Truffle.TransactionDetails
-      ): Promise<string>;
-      estimateGas(
-        _borrowAmount: number | BN | string,
-        _borrower: string,
-        txDetails?: Truffle.TransactionDetails
-      ): Promise<number>;
     };
   };
 

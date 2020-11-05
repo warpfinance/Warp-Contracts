@@ -33,9 +33,8 @@ export interface WarpVaultLpInstance extends Truffle.ContractInstance {
 
   WLP(txDetails?: Truffle.TransactionDetails): Promise<string>;
 
-  lockedWLP(
+  collateralizedLP(
     arg0: string,
-    arg1: string,
     txDetails?: Truffle.TransactionDetails
   ): Promise<BN>;
 
@@ -107,6 +106,11 @@ export interface WarpVaultLpInstance extends Truffle.ContractInstance {
    */
   getAssetAdd(txDetails?: Truffle.TransactionDetails): Promise<string>;
 
+  collateralLPbalanceOf(
+    _account: string,
+    txDetails?: Truffle.TransactionDetails
+  ): Promise<BN>;
+
   /**
    * withdrawLP allows the user to trade in his WarpLP tokens for hiss underlying LP token collateral
    * @param _amount is the amount of LP tokens he wishes to withdraw*
@@ -130,70 +134,28 @@ export interface WarpVaultLpInstance extends Truffle.ContractInstance {
     ): Promise<number>;
   };
 
-  lpBalanceOf(
-    _account: string,
-    txDetails?: Truffle.TransactionDetails
-  ): Promise<BN>;
-
-  lockedWLPbalanceOf(
-    _account: string,
-    _lpVaultItsLockedIn: string,
-    txDetails?: Truffle.TransactionDetails
-  ): Promise<BN>;
-
-  lockWLP: {
-    (
-      _account: string,
-      _lpVaultItsLockedIn: string,
-      _amount: number | BN | string,
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<Truffle.TransactionResponse<AllEvents>>;
-    call(
-      _account: string,
-      _lpVaultItsLockedIn: string,
-      _amount: number | BN | string,
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<void>;
-    sendTransaction(
-      _account: string,
-      _lpVaultItsLockedIn: string,
-      _amount: number | BN | string,
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<string>;
-    estimateGas(
-      _account: string,
-      _lpVaultItsLockedIn: string,
-      _amount: number | BN | string,
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<number>;
-  };
-
-  unlockWLP: {
+  unlockLP: {
     (
       _borrower: string,
       _redeemer: string,
-      _lpVaultItsLockedIn: string,
       _amount: number | BN | string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<Truffle.TransactionResponse<AllEvents>>;
     call(
       _borrower: string,
       _redeemer: string,
-      _lpVaultItsLockedIn: string,
       _amount: number | BN | string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<void>;
     sendTransaction(
       _borrower: string,
       _redeemer: string,
-      _lpVaultItsLockedIn: string,
       _amount: number | BN | string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<string>;
     estimateGas(
       _borrower: string,
       _redeemer: string,
-      _lpVaultItsLockedIn: string,
       _amount: number | BN | string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<number>;
@@ -206,9 +168,8 @@ export interface WarpVaultLpInstance extends Truffle.ContractInstance {
 
     WLP(txDetails?: Truffle.TransactionDetails): Promise<string>;
 
-    lockedWLP(
+    collateralizedLP(
       arg0: string,
-      arg1: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<BN>;
 
@@ -280,6 +241,11 @@ export interface WarpVaultLpInstance extends Truffle.ContractInstance {
      */
     getAssetAdd(txDetails?: Truffle.TransactionDetails): Promise<string>;
 
+    collateralLPbalanceOf(
+      _account: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<BN>;
+
     /**
      * withdrawLP allows the user to trade in his WarpLP tokens for hiss underlying LP token collateral
      * @param _amount is the amount of LP tokens he wishes to withdraw*
@@ -303,70 +269,28 @@ export interface WarpVaultLpInstance extends Truffle.ContractInstance {
       ): Promise<number>;
     };
 
-    lpBalanceOf(
-      _account: string,
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<BN>;
-
-    lockedWLPbalanceOf(
-      _account: string,
-      _lpVaultItsLockedIn: string,
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<BN>;
-
-    lockWLP: {
-      (
-        _account: string,
-        _lpVaultItsLockedIn: string,
-        _amount: number | BN | string,
-        txDetails?: Truffle.TransactionDetails
-      ): Promise<Truffle.TransactionResponse<AllEvents>>;
-      call(
-        _account: string,
-        _lpVaultItsLockedIn: string,
-        _amount: number | BN | string,
-        txDetails?: Truffle.TransactionDetails
-      ): Promise<void>;
-      sendTransaction(
-        _account: string,
-        _lpVaultItsLockedIn: string,
-        _amount: number | BN | string,
-        txDetails?: Truffle.TransactionDetails
-      ): Promise<string>;
-      estimateGas(
-        _account: string,
-        _lpVaultItsLockedIn: string,
-        _amount: number | BN | string,
-        txDetails?: Truffle.TransactionDetails
-      ): Promise<number>;
-    };
-
-    unlockWLP: {
+    unlockLP: {
       (
         _borrower: string,
         _redeemer: string,
-        _lpVaultItsLockedIn: string,
         _amount: number | BN | string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<Truffle.TransactionResponse<AllEvents>>;
       call(
         _borrower: string,
         _redeemer: string,
-        _lpVaultItsLockedIn: string,
         _amount: number | BN | string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<void>;
       sendTransaction(
         _borrower: string,
         _redeemer: string,
-        _lpVaultItsLockedIn: string,
         _amount: number | BN | string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<string>;
       estimateGas(
         _borrower: string,
         _redeemer: string,
-        _lpVaultItsLockedIn: string,
         _amount: number | BN | string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<number>;

@@ -16,21 +16,9 @@ abstract contract WarpControlI {
     address public USDC;
     address public USDT;
 
-    function trackCollateralUp(
+    function unlockColateral(
         address _borrower,
-        address _WarpVault,
-        uint256 _amount
-    ) external virtual;
-
-    function trackCollateralDown(
-        address _borrower,
-        address _WarpVault,
-        uint256 _amount
-    ) external virtual;
-
-    function lockCollateralUp(
-        address _borrower,
-        address _WarpVault,
+        address _redeemer,
         uint256 _amount
     ) external virtual;
 
@@ -46,14 +34,8 @@ abstract contract WarpControlI {
         address _WarpVault
     ) external view virtual returns (uint256);
 
-    function checkLockedCollateralValue(address _borrower, address _WarpVault)
-        external
-        view
-        virtual
-        returns (uint256);
-
-    function checkLockedCollateral(address _borrower, address _WarpVault)
-        external
+    function checkTotalAvailableCollateralValue(address _account)
+        public
         view
         virtual
         returns (uint256);
