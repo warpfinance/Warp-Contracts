@@ -105,14 +105,6 @@ export const Header: React.FC<Props> = (props: Props) => {
                         item
                         md
                     >
-                        <Typography className={classes.link} color="textSecondary">
-                            Vote
-                        </Typography>
-                    </Grid>
-                    <Grid
-                        item
-                        md
-                    >
                         {connectButton}
                     </Grid>
                 </React.Fragment>
@@ -164,7 +156,7 @@ export const Header: React.FC<Props> = (props: Props) => {
         >
             <Grid
                 item
-                md={(!props.home) ? 7 : 1}
+                md={(!props.home) ? 8 : 1}
             >
                 <RouterLink to={"/"}>
                     <img className={classes.logo} src={"warp logo.svg"} alt={"Warp"}></img>
