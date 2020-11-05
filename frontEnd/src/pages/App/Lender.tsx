@@ -2,13 +2,13 @@ import * as React from "react";
 
 import { AuthorizationModal, Header, InformationCard, LenderTable, SimpleModal } from "../../components";
 import { Avatar, Grid } from "@material-ui/core";
+import { BigNumber, utils } from "ethers";
 
-import { useState } from "react";
+import { Token } from "../../util/token";
+import { formatBigNumber } from "../../util/tools";
 import { useConnectedWeb3Context } from "../../hooks/connectedWeb3";
 import { useStableCoinTokens } from "../../hooks/useStableCoins";
-import { Token } from "../../util/token";
-import { BigNumber, utils} from "ethers";
-import { formatBigNumber } from "../../util/tools";
+import { useState } from "react";
 import { useTotalWalletBalance } from "../../hooks/useTotalWalletBalance";
 
 // TO-DO: Web3 integration
@@ -180,8 +180,9 @@ export const Lender: React.FC<Props> = (props: Props) => {
                     direction="row"
                     justify="space-evenly"
                     alignItems="stretch"
+                    spacing={3}
                 >
-                    <Grid item>
+                    <Grid item sm>
                         <LenderTable amountCurrency={lendAmountCurrency}
                             amountValue={lendAmountValue}
                             data={tokens}
@@ -193,7 +194,7 @@ export const Lender: React.FC<Props> = (props: Props) => {
                             onFocus={onLendFocus}
                             type="lend" />
                     </Grid>
-                    <Grid item>
+                    <Grid item sm>
                         <LenderTable amountCurrency={withdrawAmountCurrency}
                             amountValue={withdrawAmountValue}
                             data={tokens}

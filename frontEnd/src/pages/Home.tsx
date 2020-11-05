@@ -12,7 +12,7 @@ const useStyles = makeStyles(theme => ({
         bottom: 0,
         minWidth: '100%',
         minHeight: '100%',
-        zIndex: -1,
+        zIndex: 0,
     },
     bottomSocial: {
         position: 'absolute',

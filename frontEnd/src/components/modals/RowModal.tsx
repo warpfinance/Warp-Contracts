@@ -85,7 +85,7 @@ export const RowModal: React.FC<Props> = (props: Props) => {
                                     alignItems="center"
                                 >
                                     <Typography variant="subtitle1">
-                                        {props.lp + " USD"}
+                                        {props.lp + " LP"}
                                     </Typography>
                                 </Grid>
                             </CardContent>
