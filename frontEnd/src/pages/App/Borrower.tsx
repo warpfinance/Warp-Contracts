@@ -277,15 +277,16 @@ export const Borrower: React.FC<Props> = (props: Props) => {
                     direction="row"
                     justify="space-evenly"
                     alignItems="stretch"
+                    spacing={3}
                 >
-                    <Grid item>
+                    <Grid item sm>
                         <BorrowerTable
                             data={collateralData}
                             onLeftButtonClick={onProvideClick}
                             onRightButtonClick={onWithdrawClick}
                             type="collateral" />
                     </Grid>
-                    <Grid item>
+                    <Grid item sm>
                         <BorrowerTable
                             data={borrowData}
                             onLeftButtonClick={onBorrowClick}

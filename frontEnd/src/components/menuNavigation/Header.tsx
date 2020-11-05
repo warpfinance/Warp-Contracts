@@ -52,7 +52,7 @@ export const Header: React.FC<Props> = (props: Props) => {
                 <React.Fragment>
                     <Grid
                         item
-                        md
+                        sm
                     >
                         {connected === true ?
                             <Typography>
@@ -69,7 +69,7 @@ export const Header: React.FC<Props> = (props: Props) => {
                     </Grid>
                     <Grid
                         item
-                        md
+                        sm
                     >
                         {connected === true ?
                             <Typography>
@@ -86,7 +86,7 @@ export const Header: React.FC<Props> = (props: Props) => {
                     </Grid>
                     <Grid
                         item
-                        md
+                        sm
                     >
                         {connected === true ?
                             <Typography>
@@ -103,7 +103,7 @@ export const Header: React.FC<Props> = (props: Props) => {
                     </Grid>
                     <Grid
                         item
-                        md
+                        sm
                     >
                         {connectButton}
                     </Grid>
@@ -156,7 +156,7 @@ export const Header: React.FC<Props> = (props: Props) => {
         >
             <Grid
                 item
-                md={(!props.home) ? 8 : 1}
+                sm={(!props.home) ? 8 : 1}
             >
                 <RouterLink to={"/"}>
                     <img className={classes.logo} src={"warp logo.svg"} alt={"Warp"}></img>

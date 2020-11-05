@@ -54,7 +54,7 @@ export const BigModal: React.FC<Props> = (props: Props) => {
     return (
         <Dialog
             className={classes.dialog}
-            maxWidth={"md"}
+            maxWidth={"sm"}
             onClose={props.handleClose}
             open={props.open} >
             <DialogContent>
