@@ -28,8 +28,8 @@ const currencyIcons: any = {
 const poolIcons: any = {
     "ETH - DAI": { primarySrc: "eth.png", secondarySrc: "dai.png" },
     "ETH - USDT": { primarySrc: "eth.png", secondarySrc: "usdt.png" },
-    "wBTC - wETH": { primarySrc: "wbtc.png", secondarySrc: "weth.png" },
-    "USDT - wETH": { primarySrc: "usdt.png", secondarySrc: "weth.png" },
+    "ETH - USDC": { primarySrc: "eth.png", secondarySrc: "usdc.png" },
+    "ETH - WBTC": { primarySrc: "eth.png", secondarySrc: "wbtc.png" },
 }
 
 //@ts-ignore
@@ -50,12 +50,12 @@ const collateralData = [
     createWithdrawData(<AvatarGroup max={2}><Avatar alt={poolIcons["ETH - USDT"].primarySrc} src={poolIcons["ETH - USDT"].primarySrc} />
         <Avatar alt={poolIcons["ETH - USDT"].secondarySrc} src={poolIcons["ETH - USDT"].secondarySrc} /></AvatarGroup>,
         "ETH - USDT", 345, 345, "USD", 400, 400, "LP"),
-    createWithdrawData(<AvatarGroup max={2}><Avatar alt={poolIcons["wBTC - wETH"].primarySrc} src={poolIcons["wBTC - wETH"].primarySrc} />
-        <Avatar alt={poolIcons["wBTC - wETH"].secondarySrc} src={poolIcons["wBTC - wETH"].secondarySrc} /></AvatarGroup>,
-        "wBTC - wETH", 765, 765, "USD", 400, 400, "LP"),
-    createWithdrawData(<AvatarGroup max={2}><Avatar alt={poolIcons["USDT - wETH"].primarySrc} src={poolIcons["USDT - wETH"].primarySrc} />
-        <Avatar alt={poolIcons["USDT - wETH"].secondarySrc} src={poolIcons["USDT - wETH"].secondarySrc} /></AvatarGroup>,
-        "USDT - wETH", 456, 456, "USD", 400, 400, "LP"),
+    createWithdrawData(<AvatarGroup max={2}><Avatar alt={poolIcons["ETH - USDC"].primarySrc} src={poolIcons["ETH - USDC"].primarySrc} />
+        <Avatar alt={poolIcons["ETH - USDC"].secondarySrc} src={poolIcons["ETH - USDC"].secondarySrc} /></AvatarGroup>,
+        "ETH - USDC", 765, 765, "USD", 400, 400, "LP"),
+    createWithdrawData(<AvatarGroup max={2}><Avatar alt={poolIcons["ETH - WBTC"].primarySrc} src={poolIcons["ETH - WBTC"].primarySrc} />
+        <Avatar alt={poolIcons["ETH - WBTC"].secondarySrc} src={poolIcons["ETH - WBTC"].secondarySrc} /></AvatarGroup>,
+        "ETH - WBTC", 456, 456, "USD", 400, 400, "LP"),
 ];
 
 // TO-DO: Web3 integration
