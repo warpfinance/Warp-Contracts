@@ -60,37 +60,29 @@ export interface WarpVaultScFactoryInstance extends Truffle.ContractInstance {
     ): Promise<number>;
   };
 
-  createNewSCVault: {
+  createNewWarpVaultSC: {
     (
       _InterestRate: string,
       _StableCoin: string,
       _initialExchangeRate: number | BN | string,
-      _stableCoinName: string,
-      _stableCoinSymbol: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<Truffle.TransactionResponse<AllEvents>>;
     call(
       _InterestRate: string,
       _StableCoin: string,
       _initialExchangeRate: number | BN | string,
-      _stableCoinName: string,
-      _stableCoinSymbol: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<string>;
     sendTransaction(
       _InterestRate: string,
       _StableCoin: string,
       _initialExchangeRate: number | BN | string,
-      _stableCoinName: string,
-      _stableCoinSymbol: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<string>;
     estimateGas(
       _InterestRate: string,
       _StableCoin: string,
       _initialExchangeRate: number | BN | string,
-      _stableCoinName: string,
-      _stableCoinSymbol: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<number>;
   };
@@ -134,37 +126,29 @@ export interface WarpVaultScFactoryInstance extends Truffle.ContractInstance {
       ): Promise<number>;
     };
 
-    createNewSCVault: {
+    createNewWarpVaultSC: {
       (
         _InterestRate: string,
         _StableCoin: string,
         _initialExchangeRate: number | BN | string,
-        _stableCoinName: string,
-        _stableCoinSymbol: string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<Truffle.TransactionResponse<AllEvents>>;
       call(
         _InterestRate: string,
         _StableCoin: string,
         _initialExchangeRate: number | BN | string,
-        _stableCoinName: string,
-        _stableCoinSymbol: string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<string>;
       sendTransaction(
         _InterestRate: string,
         _StableCoin: string,
         _initialExchangeRate: number | BN | string,
-        _stableCoinName: string,
-        _stableCoinSymbol: string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<string>;
       estimateGas(
         _InterestRate: string,
         _StableCoin: string,
         _initialExchangeRate: number | BN | string,
-        _stableCoinName: string,
-        _stableCoinSymbol: string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<number>;
     };

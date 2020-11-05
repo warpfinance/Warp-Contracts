@@ -14,8 +14,6 @@ abstract contract WarpVaultSCFactoryI {
     function createNewWarpVaultSC(
         address _InterestRate,
         address _StableCoin,
-        uint256 _initialExchangeRate,
-        string memory _stableCoinName,
-        string memory _stableCoinSymbol
+        uint256 _initialExchangeRate
     ) public virtual returns (address);
 }
