@@ -176,7 +176,7 @@ export const Borrower: React.FC<Props> = (props: Props) => {
     };
 
     const onProvideAmountChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-        // TO-DO: Web3 integration, calculate LP value
+        // TO-DO: Web3 integration, calculate USD to LP value
         setProvideLpValue(Number(event.target.value));
         setProvideAmountValue(Number(event.target.value));
     };
@@ -186,7 +186,7 @@ export const Borrower: React.FC<Props> = (props: Props) => {
     };
 
     const onWithdrawAmountChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-        // TO-DO: Web3 integration, calculate LP value
+        // TO-DO: Web3 integration, calculate USD to LP value
         setWithdrawLpValue(Number(event.target.value));
         setWithdrawAmountValue(Number(event.target.value));
     };
