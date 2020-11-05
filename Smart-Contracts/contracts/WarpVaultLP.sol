@@ -30,6 +30,14 @@ contract WarpVaultLP is Ownable {
     mapping(address => mapping(address => uint256)) public lockedWLP;
 
     /**
+     * @dev Throws if called by any account other than a warp control
+     */
+    modifier onlyWC() {
+        require(msg.sender == address(WC));
+        _;
+    }
+
+    /**
 @notice constructor sets up token names and symbols for the WarpWrapperToken
 @param _lp is the address of the lp token a specific Warp vault will represent
 @param _lpName is the name of the lp token
@@ -94,7 +102,6 @@ contract WarpVaultLP is Ownable {
         address _lpVaultItsLockedIn,
         uint256 _amount
     ) public onlyOwner {
-        WLP.burn(_account, _amount);
         lockedWLP[_account][_lpVaultItsLockedIn] = lockedWLP[_account][_lpVaultItsLockedIn]
             .add(_amount);
     }
