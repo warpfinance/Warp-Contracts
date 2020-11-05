@@ -18,7 +18,6 @@ This contract uses the OpenZeppelin contract Library to inherit functions from
 
 contract UniswapLPOracleFactory is Ownable {
     using SafeMath for uint256;
-    address public ura = 0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D;
     address public usdc_add;
     address public factory;
     IUniswapV2Router02 public uniswapRouter;
@@ -32,8 +31,8 @@ contract UniswapLPOracleFactory is Ownable {
 @param usdcAdd is the address of the ERC20 USDC address
 @param _uniFactoryAdd is the address of the uniswap factory contract
 **/
-    constructor(address usdcAdd, address _uniFactoryAdd) public {
-        uniswapRouter = IUniswapV2Router02(ura);
+    constructor(address usdcAdd, address _uniFactoryAdd, address _uniRouterAddress) public {
+        uniswapRouter = IUniswapV2Router02(_uniRouterAddress);
         usdc_add = usdcAdd;
         factory = _uniFactoryAdd;
     }
@@ -101,7 +100,7 @@ contract UniswapLPOracleFactory is Ownable {
         //get USDC value for each reserve
         uint256 totalUSDCpriceOfPool = reserveAUSDCprice.add(reserveBUSDCprice);
         //add values together to get total USDC of the pool
-        return totalUSDCpriceOfPool.div(totalSupplyOfLP);
+        return totalUSDCpriceOfPool / totalSupplyOfLP;
         //return USDC price of the pool divided by totalSupply of its LPs to get price
         //of one LP
     }
@@ -143,7 +142,7 @@ contract UniswapLPOracleFactory is Ownable {
         //get USDC value for each reserve
         uint256 totalUSDCpriceOfPool = reserveAUSDCprice.add(reserveBUSDCprice);
         //add values together to get total USDC of the pool
-        return totalUSDCpriceOfPool.div(totalSupplyOfLP);
+        return totalUSDCpriceOfPool / totalSupplyOfLP;
         //return USDC price of the pool divided by totalSupply of its LPs to get price
         //of one LP
     }
