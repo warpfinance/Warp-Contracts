@@ -1,12 +1,21 @@
 import { DEFAULT_TOKEN } from './constants'
 import { getImageUrl, Token } from './token'
 
-export type NetworkId = 1 | 42 | 1604695712750
+const getEnv = (variable: string, fallback?: string): string => {
+  const res = process.env[variable];
+  if (res) {
+    return res;
+  }
+
+  return fallback ? fallback : "";
+}
+
+export type NetworkId = 1 | 42 | 1337
 
 export const networkIds = {
   MAINNET: 1,
   KOVAN: 42,
-  LOCALHOST: 1604695712750
+  LOCALHOST: 1337
 } as const
 
 interface Network {
@@ -38,7 +47,7 @@ const networks: { [K in NetworkId]: Network } = {
     label: 'ganache',
     uri: "https://localhost:8545",
     contracts: {
-      warpControl: "",
+      warpControl: getEnv("REACT_APP_LOCALHOST_CONTROL"),
     }
   }
 }
@@ -63,7 +72,8 @@ export const knownTokens: { [name in KnownToken]: KnownTokenData } = {
     decimals: 18,
     addresses: {
       [networkIds.MAINNET]: '0x6b175474e89094c44da98b954eedeac495271d0f',
-      [networkIds.KOVAN]: '0x1528F3FCc26d13F7079325Fb78D9442607781c8C'
+      [networkIds.KOVAN]: '0x1528F3FCc26d13F7079325Fb78D9442607781c8C',
+      [networkIds.LOCALHOST]: getEnv("REACT_APP_LOCALHOST_DAI")
     },
     order: 1,
     lp: false
@@ -73,7 +83,8 @@ export const knownTokens: { [name in KnownToken]: KnownTokenData } = {
     decimals: 6,
     addresses: {
       [networkIds.MAINNET]: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-      [networkIds.KOVAN]: '0x2F375e94FC336Cdec2Dc0cCB5277FE59CBf1cAe5'
+      [networkIds.KOVAN]: '0x2F375e94FC336Cdec2Dc0cCB5277FE59CBf1cAe5',
+      [networkIds.LOCALHOST]: getEnv("REACT_APP_LOCALHOST_USDC")
     },
     order: 2,
     lp: false
@@ -83,6 +94,7 @@ export const knownTokens: { [name in KnownToken]: KnownTokenData } = {
     decimals: 6,
     addresses: {
       [networkIds.MAINNET]: '0xdac17f958d2ee523a2206206994597c13d831ec7',
+      [networkIds.LOCALHOST]: getEnv("REACT_APP_LOCALHOST_USDT")
     },
     order: 3,
     lp: false
@@ -91,7 +103,8 @@ export const knownTokens: { [name in KnownToken]: KnownTokenData } = {
     symbol: 'ETH-DAI',
     decimals: 18,
     addresses: {
-      [networkIds.MAINNET]: '0xa478c2975ab1ea89e8196811f51a7b7ade33eb11'
+      [networkIds.MAINNET]: '0xa478c2975ab1ea89e8196811f51a7b7ade33eb11',
+      [networkIds.LOCALHOST]: getEnv("REACT_APP_LOCALHOST_ETH_DAI")
     },
     order: 4,
     lp: true
@@ -100,25 +113,27 @@ export const knownTokens: { [name in KnownToken]: KnownTokenData } = {
     symbol: 'ETH-USDT',
     decimals: 18,
     addresses: {
-      [networkIds.MAINNET]: '0x0d4a11d5eeaac28ec3f61d100daf4d40471f1852'
+      [networkIds.MAINNET]: '0x0d4a11d5eeaac28ec3f61d100daf4d40471f1852',
+      [networkIds.LOCALHOST]: getEnv("REACT_APP_LOCALHOST_ETH_USDT")
     },
     order: 5,
     lp: true
   },
-  "eth-usdc": {
-    symbol: 'ETH-USDC',
-    decimals: 18,
-    addresses: {
-      [networkIds.MAINNET]: '0xb4e16d0168e52d35cacd2c6185b44281ec28c9dc'
-    },
-    order: 6,
-    lp: true
-  },
+  // "eth-usdc": {
+  //   symbol: 'ETH-USDC',
+  //   decimals: 18,
+  //   addresses: {
+  //     [networkIds.MAINNET]: '0xb4e16d0168e52d35cacd2c6185b44281ec28c9dc'
+  //   },
+  //   order: 6,
+  //   lp: true
+  // },
   "eth-wbtc": {
     symbol: 'ETH-wBTC',
     decimals: 18,
     addresses: {
-      [networkIds.MAINNET]: '0xbb2b8038a1640196fbe3e38816f3e67cba72d940'
+      [networkIds.MAINNET]: '0xbb2b8038a1640196fbe3e38816f3e67cba72d940',
+      [networkIds.LOCALHOST]: getEnv("REACT_APP_LOCALHOST_ETH_WBTC")
     },
     order: 7,
     lp: true
