@@ -4,12 +4,14 @@ import { Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
 
 import { CustomButton } from "../../components"
 import { Token } from "../../util/token";
+import { BorrowerTableLoanRow } from "./BorrowerTableLoanRow";
+import { BorrowerTableCollateralRow } from "./BorrowerTableCollateralRow";
 
 interface Props {
     data: any,
     tokens: Token[],
-    onLeftButtonClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void,
-    onRightButtonClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void,
+    onLeftButtonClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, token: Token) => void,
+    onRightButtonClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, token: Token) => void,
     type: "collateral" | "borrow"
 }
 
@@ -52,114 +54,25 @@ export const BorrowerTable: React.FC<Props> = (props: Props) => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {props.data.map((row: any) => (
-                            <TableRow>
-                                <TableCell>
-                                    <Grid
-                                        container
-                                        direction="row"
-                                        justify="flex-start"
-                                        alignItems="center"
-                                        spacing={2}
-                                    >
-
-                                        {row.icon}
-                                        <Typography variant="subtitle1">
-                                            {props.type === "borrow" ?
-                                                row.currency
-                                                :
-                                                row.pool
-                                            }
-                                        </Typography>
-                                    </Grid>
-                                </TableCell>
-                                <TableCell>
-                                    <Grid
-                                        container
-                                        direction="column"
-                                        justify="center"
-                                        alignItems="flex-start"
-                                    >
-                                        {props.type === "borrow" ?
-                                            <Grid item>
-                                                <Typography variant="subtitle1">
-                                                    {row.amount.toLocaleString() + " " + row.currency}
-                                                </Typography>
-                                            </Grid>
-                                            :
-                                            <Grid item>
-                                                <Typography variant="subtitle1">
-                                                    {row.available.toLocaleString() + " " + row.currency}
-                                                </Typography>
-                                            </Grid>
-                                        }
-                                        {props.type === "collateral" ?
-                                            <Grid item>
-                                                <Typography color="textSecondary">
-                                                    {row.availableLp + " " + row.lpCurrency}
-                                                </Typography>
-                                            </Grid> :
-                                            null
-                                        }
-                                    </Grid>
-                                </TableCell>
-                                {props.type === "collateral" ?
-                                    <TableCell>
-                                        <Grid
-                                            container
-                                            direction="column"
-                                            justify="center"
-                                            alignItems="flex-start"
-                                        >
-                                            <Grid item>
-                                                <Typography variant="subtitle1">
-                                                    {row.provided.toLocaleString() + " " + row.currency}
-                                                </Typography>
-                                            </Grid>
-                                            <Grid item>
-                                                <Typography color="textSecondary">
-                                                    {row.providedLp + " " + row.lpCurrency}
-                                                </Typography>
-                                            </Grid>
-                                        </Grid>
-                                    </TableCell> :
-                                    null
-                                }
-                                <TableCell>
-                                    <Grid
-                                        container
-                                        direction="row"
-                                        justify="center"
-                                        alignItems="flex-start"
-                                        spacing={1}
-                                    >
-                                        <Grid item>
-                                            <CustomButton
-                                                id={props.type === "borrow" ?
-                                                    row.currency
-                                                    :
-                                                    row.pool
-                                                }
-                                                onClick={props.onLeftButtonClick}
-                                                text={props.type === "collateral" ? "Provide" : "Repay"}
-                                                type="short" />
-                                        </Grid>
-                                        <Grid item>
-                                            <CustomButton
-                                                id={props.type === "borrow" ?
-                                                    row.currency
-                                                    :
-                                                    row.pool
-                                                }
-                                                onClick={props.onRightButtonClick}
-                                                text={props.type === "collateral" ? "Withdraw" : props.type.charAt(0).toUpperCase() + props.type.slice(1)}
-                                                type="short" />
-                                        </Grid>
-                                    </Grid>
-                                </TableCell>
-                            </TableRow>
-                        ))}
-
+                        {props.tokens.map((token: Token) => {
+                            if (props.type === "borrow") {
+                                return (
+                                    <BorrowerTableLoanRow
+                                        token={token}
+                                        onLeftButtonClick={props.onLeftButtonClick}
+                                        onRightButtonClick={props.onRightButtonClick}
+                                     />
+                                )
+                            } else {
+                                return (
+                                    <BorrowerTableCollateralRow
+                                        token={token}
+                                        onLeftButtonClick={props.onLeftButtonClick}
+                                        onRightButtonClick={props.onRightButtonClick}
+                                    />
+                                )
+                            }
+                        })}
                     </TableBody>
                 </Table>
             </TableContainer>

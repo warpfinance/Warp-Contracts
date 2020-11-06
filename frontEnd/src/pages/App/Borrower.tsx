@@ -8,6 +8,7 @@ import { useState } from "react";
 import { useConnectedWeb3Context } from "../../hooks/connectedWeb3";
 import { useStableCoinTokens } from "../../hooks/useStableCoins";
 import { useLPTokens } from "../../hooks/useLPTokens";
+import { Token } from "../../util/token";
 
 interface Props {
 
@@ -198,21 +199,21 @@ export const Borrower: React.FC<Props> = (props: Props) => {
         setWithdrawAmountValue(Number(event.target.value));
     };
 
-    const onBorrowClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+    const onBorrowClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, token: Token) => {
         setBorrowModalOpen(true);
     }
 
-    const onProvideClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+    const onProvideClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, token: Token) => {
         setProvidePool(event.currentTarget.id);
         setProvideModalOpen(true);
     }
 
-    const onRepayClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+    const onRepayClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, token: Token) => {
         setRepayAmountCurrency(event.currentTarget.id);
         setRepayModalOpen(true);
     }
 
-    const onWithdrawClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+    const onWithdrawClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, token: Token) => {
         setWithdrawPool(event.currentTarget.id);
         setWithdrawModalOpen(true);
     }
