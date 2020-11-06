@@ -164,15 +164,13 @@ contract("Setup Test Env", function (accounts) {
     await giveLPTokens(testerAddress, ethTPair, wethToken, usdtToken, conversionRates.eth.usdt, 1000);
     await giveLPTokens(testerAddress, ethBtcPair, wethToken, wbtcToken, conversionRates.eth.btc, 1000);
 
-    console.log("dai: " + daiToken.address);
-    console.log("usdc: " + usdcToken.address);
-    console.log("usdt: " + usdtToken.address);
-
-    console.log("eth-dai: " + ethDaiPair.address);
-    console.log("eth-usdt: " + ethTPair.address);
-    console.log("eth-wbtc: " + ethBtcPair.address);
-
-    console.log("control: " + warpControl.address);
+    console.log("REACT_APP_LOCALHOST_DAI=" + daiToken.address);
+    console.log("REACT_APP_LOCALHOST_USDC=" + usdcToken.address);
+    console.log("REACT_APP_LOCALHOST_USDT=" + usdtToken.address);
+    console.log("REACT_APP_LOCALHOST_ETH_DAI=" + ethDaiPair.address);
+    console.log("REACT_APP_LOCALHOST_ETH_USDT=" + ethTPair.address);
+    console.log("REACT_APP_LOCALHOST_ETH_WBTC=" + ethBtcPair.address);
+    console.log("REACT_APP_LOCALHOST_CONTROL=" + warpControl.address);
   });
 
 });
