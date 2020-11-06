@@ -43,7 +43,6 @@ contract WarpVaultSC is Ownable, Exponential {
     mapping(address => uint256) public accountLent;
     mapping(address => address) public collateralAddressTracker;
     mapping(address => bool) public collateralLocked;
-    
 
     /**
     @notice struct for borrow balance information
@@ -347,6 +346,7 @@ contract WarpVaultSC is Ownable, Exponential {
     @dev the user will need to first approve the transfer of the underlying asset
     **/
     function lendToWarpVault(uint256 _amount) public {
+        accrueInterest();
         //declare struct
         MintLocalVars memory vars;
         //retrieve exchange rate
@@ -412,7 +412,7 @@ contract WarpVaultSC is Ownable, Exponential {
     @notice Sender borrows stablecoin assets from the protocol to their own address
     @param _borrowAmount The amount of the underlying asset to borrow
     */
-    function borrow(uint256 _borrowAmount, address _borrower) external onlyWC {
+    function _borrow(uint256 _borrowAmount, address _borrower) external onlyWC {
         // _collateral the address of the ALR the user has staked as collateral?
         accrueInterest();
         //create local vars storage
@@ -492,13 +492,22 @@ contract WarpVaultSC is Ownable, Exponential {
         );
     }
 
-    function repayLiquidatedLoan(address borrower, address liquidator, uint256 amount) public onlyWC {
-        stablecoin.transferFrom(liquidator, address(this), amount);
-
+    /**
+    @notice repayLiquidatedLoan is a function used by the Warp Control contract to repay a loan on behalf of a liquidator
+    @param _borrower is the address of the borrower who took out the loan
+    @param _liquidator is the address of the account who is liquidating the loan
+    @param _amount is the amount of StableCoin being repayed
+    @dev this function uses the onlyWC modifier which means it can only be called by the Warp Control contract
+    **/
+    function _repayLiquidatedLoan(
+        address _borrower,
+        address _liquidator,
+        uint256 _amount
+    ) public onlyWC {
+        //transfer the owed amount of stablecoin from the borrower to this contract
+        stablecoin.transferFrom(_liquidator, address(this), _amount);
         // Clear the borrowers loan
-        accountBorrows[borrower].principal = 0;
-        accountBorrows[borrower].interestIndex = 0;
+        accountBorrows[_borrower].principal = 0;
+        accountBorrows[_borrower].interestIndex = 0;
     }
-
-
 }
