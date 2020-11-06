@@ -31,6 +31,11 @@ abstract contract UniswapLPOracleFactoryI {
 **/
     function getUnderlyingPrice(address _MMI)
         public
+        virtual
+        returns (uint256);
+
+    function viewUnderlyingPrice(address _MMI)
+        public
         view
         virtual
         returns (uint256);

@@ -12,7 +12,7 @@ export interface WarpControlIContract
 type AllEvents = never;
 
 export interface WarpControlIInstance extends Truffle.ContractInstance {
-  maxWithdrawAllowed: {
+  getMaxWithdrawAllowed: {
     (
       account: string,
       lpToken: string,
@@ -36,7 +36,7 @@ export interface WarpControlIInstance extends Truffle.ContractInstance {
   };
 
   methods: {
-    maxWithdrawAllowed: {
+    getMaxWithdrawAllowed: {
       (
         account: string,
         lpToken: string,

@@ -14,6 +14,18 @@ export interface UniswapLpOracleInstanceContract
   ): Promise<UniswapLpOracleInstanceInstance>;
 }
 
+export interface DebugOracle {
+  name: "DebugOracle";
+  args: {
+    timeElapsed: BN;
+    price1: BN;
+    price2: BN;
+    0: BN;
+    1: BN;
+    2: BN;
+  };
+}
+
 export interface OwnershipTransferred {
   name: "OwnershipTransferred";
   args: {
@@ -24,7 +36,7 @@ export interface OwnershipTransferred {
   };
 }
 
-type AllEvents = OwnershipTransferred;
+type AllEvents = DebugOracle | OwnershipTransferred;
 
 export interface UniswapLpOracleInstanceInstance
   extends Truffle.ContractInstance {
