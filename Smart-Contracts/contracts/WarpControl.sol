@@ -159,9 +159,6 @@ contract WarpControl is Ownable, Exponential {
         return leftoverBorrowAmount.div(lpValue);
     }
 
-    //event DebugValues(uint256 collateral, uint256 oraclePrice);
-
-
     function getTotalAvailableCollateralValue(address _account)
         public
         returns (uint256)
