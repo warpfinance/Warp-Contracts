@@ -27,16 +27,24 @@ contract WarpVaultLP is Ownable {
     WarpWrapperToken public WLP;
     WarpControlI public WC;
 
-    mapping(address => mapping(address => uint256)) public lockedWLP;
+    mapping(address => uint256) public collateralizedLP;
 
     /**
-@notice constructor sets up token names and symbols for the WarpWrapperToken
-@param _lp is the address of the lp token a specific Warp vault will represent
-@param _lpName is the name of the lp token
-@dev this function instantiates the lp token as a useable object and generates three WarpWrapperToken contracts to represent
-      each type of stable coin this vault can hold. this also instantiates each of these contracts as a usable object in this contract giving
-      this contract the ability to call their mint and burn functions.
-**/
+     * @dev Throws if called by any account other than a warp control
+     */
+    modifier onlyWC() {
+        require(msg.sender == address(WC));
+        _;
+    }
+
+    /**
+    @notice constructor sets up token names and symbols for the WarpWrapperToken
+    @param _lp is the address of the lp token a specific Warp vault will represent
+    @param _lpName is the name of the lp token
+    @dev this function instantiates the lp token as a useable object and generates three WarpWrapperToken contracts to represent
+        each type of stable coin this vault can hold. this also instantiates each of these contracts as a usable object in this contract giving
+        this contract the ability to call their mint and burn functions.
+    **/
     constructor(
         address _lp,
         address _WarpControl,
@@ -45,69 +53,79 @@ contract WarpVaultLP is Ownable {
         lpName = _lpName;
         LPtoken = IERC20(_lp);
         WC = WarpControlI(_WarpControl);
-        WLP = new WarpWrapperToken(address(LPtoken), lpName, "WLPW");
     }
 
     /**
-@notice collateralizeLP allows a user to collateralize this contracts associated LP token
-@param _amount is the amount of LP being collateralized
-**/
-    function collateralizeLP(uint256 _amount) public {
+    @notice provideCollateral allows a user to collateralize this contracts associated LP token
+    @param _amount is the amount of LP being collateralized
+    **/
+    function provideCollateral(uint256 _amount) public {
+        require(LPtoken.allowance(msg.sender, address(this)) >= _amount, "Vault must have enough allowance.");
+        require(LPtoken.balanceOf(msg.sender) > _amount, "Must have enough LP to provide");
         LPtoken.transferFrom(msg.sender, address(this), _amount);
-        WLP.mint(msg.sender, _amount);
+        collateralizedLP[msg.sender] = collateralizedLP[msg.sender].add(
+            _amount
+        );
     }
 
     /**
-@notice getAssetAdd allows for easy retrieval of a WarpVaults LP token Adress
-**/
+    @notice withdrawCollateral allows the user to trade in his WarpLP tokens for hiss underlying LP token collateral
+    @param _amount is the amount of LP tokens he wishes to withdraw
+    **/
+    function withdrawCollateral(uint256 _amount) public {
+        //require the availible value of the LP locked in this contract the user has
+        //is greater than or equal to the amount being withdrawn
+        require(
+            WC.getMaxWithdrawAllowed(msg.sender, address(LPtoken)) > _amount,
+            "Trying to withdraw too much"
+        );
+
+        //subtract withdrawn amount from amount stored
+        collateralizedLP[msg.sender] = collateralizedLP[msg.sender].sub(
+            _amount
+        );
+        //transfer them their token
+        LPtoken.transfer(msg.sender, _amount);
+    }
+
+    /**
+    @notice getAssetAdd allows for easy retrieval of a WarpVaults LP token Adress
+    **/
     function getAssetAdd() public view returns (address) {
         return address(LPtoken);
     }
 
     /**
-@notice withdrawLP allows the user to trade in his WarpLP tokens for hiss underlying LP token collateral
-@param _amount is the amount of LP tokens he wishes to withdraw
+@notice collateralOfAccount is a view function to retreive an accounts collateralized LP amount
+@param _account is the address of the account being looked up
 **/
-    function withdrawLP(uint256 _amount) public {
-        require(
-            WC.checkAvailibleCollateralValue(msg.sender, address(this)) >=
-                _amount
-        );
-        WLP.burn(msg.sender, _amount);
-        LPtoken.transfer(msg.sender, _amount);
-    }
-
-    function lpBalanceOf(address _account) public view returns (uint256) {
-        return WLP.balanceOf(_account);
-    }
-
-    function lockedWLPbalanceOf(address _account, address _lpVaultItsLockedIn)
+    function collateralOfAccount(address _account)
         public
         view
         returns (uint256)
     {
-        return lockedWLP[_account][_lpVaultItsLockedIn];
+        return collateralizedLP[_account];
     }
 
-    function lockWLP(
-        address _account,
-        address _lpVaultItsLockedIn,
-        uint256 _amount
-    ) public onlyOwner {
-        WLP.burn(_account, _amount);
-        lockedWLP[_account][_lpVaultItsLockedIn] = lockedWLP[_account][_lpVaultItsLockedIn]
-            .add(_amount);
+    /**
+@notice _liquidateAccount is a function to liquidate the LP tokens of the input account
+@param _account is the address of the account being liquidated
+@param _liquidator is the address of the account doing the liquidating who receives the liquidated LP's
+@dev this function uses the onlyWC modifier meaning that only the Warp Control contract can call it
+**/
+    function _liquidateAccount(address _account, address _liquidator)
+        public
+        onlyWC
+    {
+        //transfer the LP tokens to the liquidator
+        LPtoken.transfer(_liquidator, collateralizedLP[_account]);
+        //reset the borrowers collateral tracker
+        collateralizedLP[_account] = 0;
     }
 
-    function unlockWLP(
-        address _borrower,
-        address _redeemer,
-        address _lpVaultItsLockedIn,
-        uint256 _amount
-    ) public onlyOwner {
-        require(_amount <= lockedWLP[_borrower][_lpVaultItsLockedIn]);
-        lockedWLP[_borrower][_lpVaultItsLockedIn] = lockedWLP[_borrower][_lpVaultItsLockedIn]
-            .add(_amount);
-        WLP.mint(_redeemer, _amount);
+    function valueOfAccountCollateral(address _account) external view returns(uint256) {
+        uint256 collateralPrice = WC.viewPriceOfCollateral(address(LPtoken));
+        uint256 collateralValue = collateralizedLP[_account].mul(collateralPrice);
+        return collateralValue;
     }
 }

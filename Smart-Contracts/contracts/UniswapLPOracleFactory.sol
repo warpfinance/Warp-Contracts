@@ -18,13 +18,13 @@ This contract uses the OpenZeppelin contract Library to inherit functions from
 
 contract UniswapLPOracleFactory is Ownable {
     using SafeMath for uint256;
-    address public ura = 0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D;
     address public usdc_add;
     address public factory;
     IUniswapV2Router02 public uniswapRouter;
 
     mapping(address => address[]) LPAssetTracker;
     mapping(address => address) instanceTracker;
+    mapping(address => address) public tokenToUSDC;
 
     /**
 @notice constructor function is fired once during contract creation. This constructor initializes uniswapRouter
@@ -32,8 +32,12 @@ contract UniswapLPOracleFactory is Ownable {
 @param usdcAdd is the address of the ERC20 USDC address
 @param _uniFactoryAdd is the address of the uniswap factory contract
 **/
-    constructor(address usdcAdd, address _uniFactoryAdd) public {
-        uniswapRouter = IUniswapV2Router02(ura);
+    constructor(
+        address usdcAdd,
+        address _uniFactoryAdd,
+        address _uniRouterAddress
+    ) public {
+        uniswapRouter = IUniswapV2Router02(_uniRouterAddress);
         usdc_add = usdcAdd;
         factory = _uniFactoryAdd;
     }
@@ -47,25 +51,27 @@ contract UniswapLPOracleFactory is Ownable {
   @param _tokenA is the address of the first token in an Liquidity pair
   @param _tokenB is the address of the second token in a liquidity pair
   @param _lpToken is the address of the token that this oracle will provide a price feed for
-
-
   **/
     function createNewOracles(
         address _tokenA,
         address _tokenB,
         address _lpToken
     ) public onlyOwner {
-        address _oracle1 = address(
-            new UniswapLPOracleInstance(factory, _tokenA, usdc_add)
-        );
+        address oracle1 = tokenToUSDC[_tokenA];
+        if (oracle1 == address(0)) {
+            oracle1 = address(new UniswapLPOracleInstance(factory, _tokenA, usdc_add));
+            tokenToUSDC[_tokenA] = oracle1;
+        }
 
-        address _oracle2 = address(
-            new UniswapLPOracleInstance(factory, _tokenB, usdc_add)
-        );
+        address oracle2 = tokenToUSDC[_tokenB];
+        if (oracle2 == address(0)) {
+            oracle2 = address(new UniswapLPOracleInstance(factory, _tokenB, usdc_add));
+            tokenToUSDC[_tokenB] = oracle2;
+        }
 
-        LPAssetTracker[_lpToken] = [_oracle1, _oracle2];
-        instanceTracker[_oracle1] = _tokenA;
-        instanceTracker[_oracle2] = _tokenB;
+        LPAssetTracker[_lpToken] = [oracle1, oracle2];
+        instanceTracker[oracle1] = _tokenA;
+        instanceTracker[oracle2] = _tokenB;
     }
 
     /**
@@ -101,7 +107,7 @@ contract UniswapLPOracleFactory is Ownable {
         //get USDC value for each reserve
         uint256 totalUSDCpriceOfPool = reserveAUSDCprice.add(reserveBUSDCprice);
         //add values together to get total USDC of the pool
-        return totalUSDCpriceOfPool.div(totalSupplyOfLP);
+        return totalUSDCpriceOfPool / totalSupplyOfLP;
         //return USDC price of the pool divided by totalSupply of its LPs to get price
         //of one LP
     }
@@ -143,57 +149,15 @@ contract UniswapLPOracleFactory is Ownable {
         //get USDC value for each reserve
         uint256 totalUSDCpriceOfPool = reserveAUSDCprice.add(reserveBUSDCprice);
         //add values together to get total USDC of the pool
-        return totalUSDCpriceOfPool.div(totalSupplyOfLP);
+        return totalUSDCpriceOfPool / totalSupplyOfLP;
         //return USDC price of the pool divided by totalSupply of its LPs to get price
         //of one LP
     }
 
-    /**
-@notice getPathForERC20Swap is an internal function used to create a uniswap trade path for two input
-        ERC20 tokens using WETH as a medium of exchange.
-@param _tokenA is the address of the token being exchanged from
-@param _tokenB is the address of the token being exchanged to
-@dev example: LINK => Augur swap _tokenA would be LINK address while _tokenB would be Augur Address
-**/
-    function getPathForERC20Swap(address _tokenA, address _tokenB)
-        private
-        view
-        returns (address[] memory)
-    {
-        address[] memory path = new address[](3);
-        path[0] = _tokenA;
-        path[1] = uniswapRouter.WETH();
-        path[2] = _tokenB;
+    function viewPriceOfToken(address _token) public view returns(uint256) {
+        require(tokenToUSDC[_token] != address(0), "Token not registered with a USDC pairing");
 
-        return path;
-    }
-
-    /**
-@notice swapERC20 is an external function that swaps one ERC20 token for another
-        using WETH as a medium of exchange.
-@param _tokenA is the address of the token being exchanged from
-@param _tokenB is the address of the token being exchanged to
-@param _to is the address of the MoneyMarketInstance calling this function
-@param _amountIn is the amount of _tokenA being exchanged
-@param _amountOutMin is the minimum amount of _tokenB to be received
-@dev example: LINK => Augur swap _tokenA would be LINK address while _tokenB would be Augur Address
-@dev _amountOutMin will need to be atleast enough to cover the cost of collateral liquidation
-      (loan amount +i nterest) and its liquidation fee amount.
-**/
-    function swapERC20(
-        address _tokenA,
-        address _tokenB,
-        address _to,
-        uint256 _amountIn,
-        uint256 _amountOutMin
-    ) external {
-        uint256 deadline = block.timestamp + 60;
-        uniswapRouter.swapExactTokensForTokens(
-            _amountIn,
-            _amountOutMin,
-            getPathForERC20Swap(_tokenA, _tokenB),
-            _to,
-            deadline
-        );
+        UniswapLPOracleInstance oracle = UniswapLPOracleInstance(tokenToUSDC[_token]);
+        return oracle.viewPrice();
     }
 }

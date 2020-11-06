@@ -1,39 +1,59 @@
 pragma solidity ^0.6.0;
 
 ////////////////////////////////////////////////////////////////////////////////////////////
-/// @title WarpVaultI
+/// @title WarpVaultSCI
 /// @author Christopher Dixon
 ////////////////////////////////////////////////////////////////////////////////////////////
 /**
-The WarpVaultI contract an abstract contract the MoneyMarketFactory uses to interface
-    eith the UniswapOracleFactory. This is necissary as the OpenZeppelin and Uniswap libraries cause a
-    truffle compiler error due when imported into the same contract due to the use of two seperate
-    SafeMath instances
+The WarpVaultSCI contract an abstract contract the WarpControl contract uses to interface
+    with a WarpVaultSC contract.
 **/
 
 abstract contract WarpVaultSCI {
     /**
-@notice setUp is called after the creation of a WarpVault to set up its Interest Rate Model and its initial exchange rate
-@param _baseRatePerYear The approximate target base APR, as a mantissa (scaled by 1e18)
-@param _multiplierPerYear  The rate of increase in interest rate wrt utilization (scaled by 1e18)
-@param _jumpMultiplierPerYear The multiplierPerBlock after hitting a specified utilization point
-@param _optimal The utilization point at which the jump multiplier is applied(Refered to as the Kink in the InterestRateModel)
-**/
-    function setUp(
-        uint256 _baseRatePerYear,
-        uint256 _multiplierPerYear,
-        uint256 _jumpMultiplierPerYear,
-        uint256 _optimal,
-        uint256 _initialExchangeRate,
-        address _oracle
-    ) public virtual;
-
-    function getAssetAdd() public view virtual returns (address);
-
-    function borrowBalanceCurrent(address account, uint256 _assetType)
+    @notice Accrue interest to updated borrowIndex and then calculate account's borrow balance using the updated borrowIndex
+    @param account The address whose balance should be calculated after updating borrowIndex
+    @return The calculated balance
+    **/
+    function borrowBalanceCurrent(address account)
         public
         virtual
         returns (uint256);
 
+    /**
+    @notice returns last calculated account's borrow balance using the prior borrowIndex
+    @param account The address whose balance should be calculated after updating borrowIndex
+    @return The calculated balance
+    **/
+    function borrowBalancePrior(address account)
+        public
+        view
+        virtual
+        returns (uint256);
+
+    /**
+     @notice Accrue interest then return the up-to-date exchange rate
+     @return Calculated exchange rate scaled by 1e18
+     **/
     function exchangeRateCurrent() public virtual returns (uint256);
+
+    /**
+    @notice Sender borrows stablecoin assets from the protocol to their own address
+    @param _borrowAmount The amount of the underlying asset to borrow
+    @param _borrower The borrower
+    */
+    function _borrow(uint256 _borrowAmount, address _borrower) external virtual;
+
+    /**
+    @notice repayLiquidatedLoan is a function used by the Warp Control contract to repay a loan on behalf of a liquidator
+    @param _borrower is the address of the borrower who took out the loan
+    @param _liquidator is the address of the account who is liquidating the loan
+    @param _amount is the amount of StableCoin being repayed
+    @dev this function uses the onlyWC modifier which means it can only be called by the Warp Control contract
+    **/
+    function _repayLiquidatedLoan(
+        address _borrower,
+        address _liquidator,
+        uint256 _amount
+    ) public virtual;
 }

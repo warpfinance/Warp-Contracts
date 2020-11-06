@@ -141,7 +141,7 @@ export const BorrowerTable: React.FC<Props> = (props: Props) => {
                                                     row.pool
                                                 }
                                                 onClick={props.onLeftButtonClick}
-                                                text={props.type === "collateral" ? "Withdraw" : props.type.charAt(0).toUpperCase() + props.type.slice(1)}
+                                                text={props.type === "collateral" ? "Provide" : "Repay"}
                                                 type="short" />
                                         </Grid>
                                         <Grid item>
@@ -152,7 +152,7 @@ export const BorrowerTable: React.FC<Props> = (props: Props) => {
                                                     row.pool
                                                 }
                                                 onClick={props.onRightButtonClick}
-                                                text={props.type === "collateral" ? "Provide" : "Repay"}
+                                                text={props.type === "collateral" ? "Withdraw" : props.type.charAt(0).toUpperCase() + props.type.slice(1)}
                                                 type="short" />
                                         </Grid>
                                     </Grid>

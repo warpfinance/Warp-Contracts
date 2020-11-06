@@ -37,11 +37,12 @@ export const Markets: React.FC<Props> = (props: Props) => {
                 direction="row"
                 justify="space-evenly"
                 alignItems="stretch"
+                spacing={3}
             >
-                <Grid item>
+                <Grid item sm>
                     <MarketTable type="lender" />
                 </Grid>
-                <Grid item>
+                <Grid item sm>
                     <MarketTable type="borrower" />
                 </Grid>
             </Grid>
