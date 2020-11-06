@@ -5,12 +5,18 @@ pragma solidity ^0.6.0;
 /// @author Christopher Dixon
 ////////////////////////////////////////////////////////////////////////////////////////////
 /**
-The WarpVaultI contract an abstract contract the MoneyMarketFactory uses to interface
-    eith the UniswapOracleFactory. This is necissary as the OpenZeppelin and Uniswap libraries cause a
-    truffle compiler error due when imported into the same contract due to the use of two seperate
-    SafeMath instances
+The WarpControlI contract is an abstract contract used by individual WarpVault contracts to call the
+  maxWithdrawAllowed function on the WarpControl contract
 **/
 
 abstract contract WarpControlI {
-    function maxWithdrawAllowed(address account, address lpToken) public virtual returns (uint256);
+    /**
+      @notice Figures out how much of a given LP token an account is allowed to withdraw
+      @param _account is the address of the account being looked up
+      @param _lpToken is the address of the LP token being looked up
+       **/
+    function maxWithdrawAllowed(address account, address lpToken)
+        public
+        virtual
+        returns (uint256);
 }
