@@ -197,8 +197,8 @@ contract("Warp Finance Demo", function (accounts) {
     await oracleFactory.getUnderlyingPrice(ethDaiPair.address);
     const priceOfLP = parseFloat(fromWei(await oracleFactory.viewUnderlyingPrice(ethDaiPair.address)));
 
-    // Take out a loan for 50% of the value of the LP we put in
-    const loanAmount = givenLP * priceOfLP * 0.5;
+    // Take out a loan for 30% of the value of the LP we put in
+    const loanAmount = givenLP * priceOfLP * 0.3;
     await warpControl.borrowSC(daiToken.address, toWei(loanAmount.toString()), {from: user2});
 
     // Check how much DAI we have (assumes 1 DAI === 1 USDC)

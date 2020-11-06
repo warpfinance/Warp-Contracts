@@ -1,44 +1,38 @@
 pragma solidity ^0.6.0;
 
 ////////////////////////////////////////////////////////////////////////////////////////////
-/// @title WarpVaultI
+/// @title WarpVaultLPI
 /// @author Christopher Dixon
 ////////////////////////////////////////////////////////////////////////////////////////////
 /**
-The WarpVaultI contract an abstract contract the MoneyMarketFactory uses to interface
-    eith the UniswapOracleFactory. This is necissary as the OpenZeppelin and Uniswap libraries cause a
-    truffle compiler error due when imported into the same contract due to the use of two seperate
-    SafeMath instances
+The WarpVaultLPI contract an abstract contract the WarpControl contract uses to interface
+    with a WarpVaultLP contract.
 **/
 
 abstract contract WarpVaultLPI {
+    /**
+    @notice getAssetAdd allows for easy retrieval of a WarpVaults LP token Adress
+    **/
     function getAssetAdd() public view virtual returns (address);
 
-    function withdrawLP(uint256 _amount) public virtual;
-
-    function collateralLPbalanceOf(address _account)
-        public
-        view
-        virtual
-        returns (uint256);
-
-    function lockedWLPbalanceOf(address _account, address _lpVaultItsLockedIn)
-        public
-        view
-        virtual
-        returns (uint256);
+    /**
+    @notice collateralOfAccount is a view function to retreive an accounts collateralized LP amount
+    @param _account is the address of the account being looked up
+    **/
 
     function collateralOfAccount(address _account)
         public
-        virtual
         view
+        virtual
         returns (uint256);
 
-    function unlockLP(
-        address _account,
-        address _lpVaultItsLockedIn,
-        uint256 _amount
-    ) public virtual;
-
-    function liquidateAccount(address account, address liquidator) public virtual;
+    /**
+    @notice _liquidateAccount is a function to liquidate the LP tokens of the input account
+    @param _account is the address of the account being liquidated
+    @param _liquidator is the address of the account doing the liquidating who receives the liquidated LP's
+    @dev this function uses the onlyWC modifier meaning that only the Warp Control contract can call it
+    **/
+    function _liquidateAccount(address _account, address _liquidator)
+        public
+        virtual;
 }

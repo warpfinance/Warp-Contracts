@@ -31,7 +31,11 @@ contract UniswapLPOracleFactory is Ownable {
 @param usdcAdd is the address of the ERC20 USDC address
 @param _uniFactoryAdd is the address of the uniswap factory contract
 **/
-    constructor(address usdcAdd, address _uniFactoryAdd, address _uniRouterAddress) public {
+    constructor(
+        address usdcAdd,
+        address _uniFactoryAdd,
+        address _uniRouterAddress
+    ) public {
         uniswapRouter = IUniswapV2Router02(_uniRouterAddress);
         usdc_add = usdcAdd;
         factory = _uniFactoryAdd;
@@ -46,8 +50,6 @@ contract UniswapLPOracleFactory is Ownable {
   @param _tokenA is the address of the first token in an Liquidity pair
   @param _tokenB is the address of the second token in a liquidity pair
   @param _lpToken is the address of the token that this oracle will provide a price feed for
-
-
   **/
     function createNewOracles(
         address _tokenA,
@@ -145,54 +147,5 @@ contract UniswapLPOracleFactory is Ownable {
         return totalUSDCpriceOfPool / totalSupplyOfLP;
         //return USDC price of the pool divided by totalSupply of its LPs to get price
         //of one LP
-    }
-
-    /**
-@notice getPathForERC20Swap is an internal function used to create a uniswap trade path for two input
-        ERC20 tokens using WETH as a medium of exchange.
-@param _tokenA is the address of the token being exchanged from
-@param _tokenB is the address of the token being exchanged to
-@dev example: LINK => Augur swap _tokenA would be LINK address while _tokenB would be Augur Address
-**/
-    function getPathForERC20Swap(address _tokenA, address _tokenB)
-        private
-        view
-        returns (address[] memory)
-    {
-        address[] memory path = new address[](3);
-        path[0] = _tokenA;
-        path[1] = uniswapRouter.WETH();
-        path[2] = _tokenB;
-
-        return path;
-    }
-
-    /**
-@notice swapERC20 is an external function that swaps one ERC20 token for another
-        using WETH as a medium of exchange.
-@param _tokenA is the address of the token being exchanged from
-@param _tokenB is the address of the token being exchanged to
-@param _to is the address of the MoneyMarketInstance calling this function
-@param _amountIn is the amount of _tokenA being exchanged
-@param _amountOutMin is the minimum amount of _tokenB to be received
-@dev example: LINK => Augur swap _tokenA would be LINK address while _tokenB would be Augur Address
-@dev _amountOutMin will need to be atleast enough to cover the cost of collateral liquidation
-      (loan amount +i nterest) and its liquidation fee amount.
-**/
-    function swapERC20(
-        address _tokenA,
-        address _tokenB,
-        address _to,
-        uint256 _amountIn,
-        uint256 _amountOutMin
-    ) external {
-        uint256 deadline = block.timestamp + 60;
-        uniswapRouter.swapExactTokensForTokens(
-            _amountIn,
-            _amountOutMin,
-            getPathForERC20Swap(_tokenA, _tokenB),
-            _to,
-            deadline
-        );
     }
 }
