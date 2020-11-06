@@ -413,7 +413,7 @@ contract WarpVaultSC is Ownable, Exponential {
         MathError mathError;
         uint256 balance;
        (mathError, balance) =  mulScalarTruncate(
-            Exp({mantissa: vars.exchangeRateMantissa}),
+            Exp({mantissa: exchangeRate}),
             accountBalance
         );
 
@@ -425,7 +425,7 @@ contract WarpVaultSC is Ownable, Exponential {
         uint256 currentWarpBalance = wStableCoin.balanceOf(_account);
         uint256 principal = principalBalance[_account];
 
-        if (currentBalance === 0) {
+        if (currentWarpBalance == 0) {
             return historicalReward[_account];
         }
 
@@ -436,7 +436,7 @@ contract WarpVaultSC is Ownable, Exponential {
             currentWarpBalance
         );
 
-        uint256 currentGains = currentStableCoinBalance.sub(depositedAmount);
+        uint256 currentGains = currentStableCoinBalance.sub(principal);
         uint256 totalGains = currentGains.add(historicalReward[_account]);
 
         return totalGains;

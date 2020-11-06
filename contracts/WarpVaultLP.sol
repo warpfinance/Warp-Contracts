@@ -122,4 +122,10 @@ contract WarpVaultLP is Ownable {
         //reset the borrowers collateral tracker
         collateralizedLP[_account] = 0;
     }
+
+    function valueOfAccountCollateral(address _account) external view returns(uint256) {
+        uint256 collateralPrice = WC.viewPriceOfCollateral(address(LPtoken));
+        uint256 collateralValue = collateralizedLP[_account].mul(collateralPrice);
+        return collateralValue;
+    }
 }
