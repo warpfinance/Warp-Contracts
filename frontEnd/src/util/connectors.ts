@@ -19,7 +19,7 @@ const portisAppId = "TODO: Get Portis ID";
 
 const Portis = new PortisConnector({
     dAppId: portisAppId,
-    networks: supportedNetworkIds
+    networks: [1, 42]
 });
 
 const infuraNetworks = Object.entries(supportedNetworks).reduce(function (map: any, [key, value]: any) {
