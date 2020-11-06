@@ -60,6 +60,7 @@ contract WarpVaultLP is Ownable {
     @param _amount is the amount of LP being collateralized
     **/
     function provideCollateral(uint256 _amount) public {
+        require(LPtoken.allowance(msg.sender, address(this)) >= _amount, "Vault must have enough allowance.");
         require(LPtoken.balanceOf(msg.sender) > _amount, "Must have enough LP to provide");
         LPtoken.transferFrom(msg.sender, address(this), _amount);
         collateralizedLP[msg.sender] = collateralizedLP[msg.sender].add(
@@ -75,7 +76,7 @@ contract WarpVaultLP is Ownable {
         //require the availible value of the LP locked in this contract the user has
         //is greater than or equal to the amount being withdrawn
         require(
-            WC.maxWithdrawAllowed(msg.sender, address(LPtoken)) > _amount,
+            WC.getMaxWithdrawAllowed(msg.sender, address(LPtoken)) > _amount,
             "Trying to withdraw too much"
         );
 

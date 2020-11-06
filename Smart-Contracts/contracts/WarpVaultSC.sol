@@ -103,7 +103,7 @@ contract WarpVaultSC is Ownable, Exponential {
         uint256 currentBlockNumber = getBlockNumber();
         uint256 accrualBlockNumberPrior = accrualBlockNumber;
         //Short-circuit accumulating 0 interest
-        require(accrualBlockNumberPrior != currentBlockNumber);
+        require(accrualBlockNumberPrior != currentBlockNumber, "Trying to accrue interest twice");
         //Read the previous values out of storage
         uint256 cashPrior = getCashPrior();
         uint256 borrowsPrior = totalBorrows;
@@ -115,7 +115,7 @@ contract WarpVaultSC is Ownable, Exponential {
             borrowsPrior,
             reservesPrior
         );
-        require(borrowRateMantissa <= borrowRateMaxMantissa);
+        require(borrowRateMantissa <= borrowRateMaxMantissa, "Borrow Rate mantissa error");
         //Calculate the number of blocks elapsed since the last accrual
         (MathError mathErr, uint256 blockDelta) = subUInt(
             currentBlockNumber,
@@ -239,22 +239,6 @@ contract WarpVaultSC is Ownable, Exponential {
                 totalReserves,
                 reserveFactorMantissa
             );
-    }
-
-    /**
-    @notice getSupplyAPY roughly calculates the current APY for supplying using an average of 6500 blocks per day
-    **/
-    function getSupplyAPY() public view returns (uint256) {
-        //multiply rate per block by blocks per year with an average of 6500 blocks a day per https://ycharts.com/indicators/ethereum_blocks_per_day
-        return supplyRatePerBlock().mul(2372500);
-    }
-
-    /**
-    @notice getSupplyAPY roughly calculates the current APY for borrowing using an average of 6500 blocks per day
-    **/
-    function getBorrowAPY() public view returns (uint256) {
-        //multiply rate per block by blocks per year with an average of 6500 blocks a day per https://ycharts.com/indicators/ethereum_blocks_per_day
-        return borrowRatePerBlock().mul(2372500);
     }
 
     /**
@@ -413,15 +397,13 @@ contract WarpVaultSC is Ownable, Exponential {
     @param _borrowAmount The amount of the underlying asset to borrow
     */
     function borrow(uint256 _borrowAmount, address _borrower) external onlyWC {
-        // _collateral the address of the ALR the user has staked as collateral?
-        accrueInterest();
         //create local vars storage
         BorrowLocalVars memory vars;
 
         //Fail if protocol has insufficient underlying cash
-        require(getCashPrior() > _borrowAmount);
+        require(getCashPrior() > _borrowAmount, "Not enough tokens to lend");
         //calculate the new borrower and total borrow balances, failing on overflow:
-        vars.accountBorrows = borrowBalanceCurrent(_borrower);
+        vars.accountBorrows = borrowBalancePrior(_borrower);
         //accountBorrowsNew = accountBorrows + borrowAmount
         (vars.mathErr, vars.accountBorrowsNew) = addUInt(
             vars.accountBorrows,

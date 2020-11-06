@@ -12,5 +12,5 @@ The WarpVaultI contract an abstract contract the MoneyMarketFactory uses to inte
 **/
 
 abstract contract WarpControlI {
-    function maxWithdrawAllowed(address account, address lpToken) public virtual returns (uint256);
+    function getMaxWithdrawAllowed(address account, address lpToken) public virtual returns (uint256);
 }

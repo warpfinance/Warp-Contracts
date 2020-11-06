@@ -181,7 +181,7 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
   /**
    * Figures out how much of a given LP token an account is allowed to withdraw
    */
-  maxWithdrawAllowed: {
+  getMaxWithdrawAllowed: {
     (
       account: string,
       lpToken: string,
@@ -204,26 +204,38 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
     ): Promise<number>;
   };
 
-  checkLPprice(
-    _LP: string,
+  viewMaxWithdrawAllowed(
+    account: string,
+    lpToken: string,
     txDetails?: Truffle.TransactionDetails
   ): Promise<BN>;
 
-  /**
-   * checkCollateralValue is a view function that accepts an account address and returns the total USDC value of the accounts locked collateral
-   * @param _account is the address whos collateral value we are looking up*
-   */
-  checkTotalAvailableCollateralValue(
+  getTotalAvailableCollateralValue: {
+    (_account: string, txDetails?: Truffle.TransactionDetails): Promise<
+      Truffle.TransactionResponse<AllEvents>
+    >;
+    call(_account: string, txDetails?: Truffle.TransactionDetails): Promise<BN>;
+    sendTransaction(
+      _account: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<string>;
+    estimateGas(
+      _account: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<number>;
+  };
+
+  viewTotalAvailableCollateralValue(
     _account: string,
     txDetails?: Truffle.TransactionDetails
   ): Promise<BN>;
 
-  priorTotalBorrowedValue(
+  viewTotalBorrowedValue(
     _account: string,
     txDetails?: Truffle.TransactionDetails
   ): Promise<BN>;
 
-  currentTotalBorrowedValue: {
+  getTotalBorrowedValue: {
     (_account: string, txDetails?: Truffle.TransactionDetails): Promise<
       Truffle.TransactionResponse<AllEvents>
     >;
@@ -243,7 +255,22 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
     txDetails?: Truffle.TransactionDetails
   ): Promise<BN>;
 
-  getBorrowLimit(
+  getBorrowLimit: {
+    (_account: string, txDetails?: Truffle.TransactionDetails): Promise<
+      Truffle.TransactionResponse<AllEvents>
+    >;
+    call(_account: string, txDetails?: Truffle.TransactionDetails): Promise<BN>;
+    sendTransaction(
+      _account: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<string>;
+    estimateGas(
+      _account: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<number>;
+  };
+
+  viewBorrowLimit(
     _account: string,
     txDetails?: Truffle.TransactionDetails
   ): Promise<BN>;
@@ -466,7 +493,7 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
     /**
      * Figures out how much of a given LP token an account is allowed to withdraw
      */
-    maxWithdrawAllowed: {
+    getMaxWithdrawAllowed: {
       (
         account: string,
         lpToken: string,
@@ -489,26 +516,41 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
       ): Promise<number>;
     };
 
-    checkLPprice(
-      _LP: string,
+    viewMaxWithdrawAllowed(
+      account: string,
+      lpToken: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<BN>;
 
-    /**
-     * checkCollateralValue is a view function that accepts an account address and returns the total USDC value of the accounts locked collateral
-     * @param _account is the address whos collateral value we are looking up*
-     */
-    checkTotalAvailableCollateralValue(
+    getTotalAvailableCollateralValue: {
+      (_account: string, txDetails?: Truffle.TransactionDetails): Promise<
+        Truffle.TransactionResponse<AllEvents>
+      >;
+      call(
+        _account: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<BN>;
+      sendTransaction(
+        _account: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<string>;
+      estimateGas(
+        _account: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<number>;
+    };
+
+    viewTotalAvailableCollateralValue(
       _account: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<BN>;
 
-    priorTotalBorrowedValue(
+    viewTotalBorrowedValue(
       _account: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<BN>;
 
-    currentTotalBorrowedValue: {
+    getTotalBorrowedValue: {
       (_account: string, txDetails?: Truffle.TransactionDetails): Promise<
         Truffle.TransactionResponse<AllEvents>
       >;
@@ -531,7 +573,25 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
       txDetails?: Truffle.TransactionDetails
     ): Promise<BN>;
 
-    getBorrowLimit(
+    getBorrowLimit: {
+      (_account: string, txDetails?: Truffle.TransactionDetails): Promise<
+        Truffle.TransactionResponse<AllEvents>
+      >;
+      call(
+        _account: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<BN>;
+      sendTransaction(
+        _account: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<string>;
+      estimateGas(
+        _account: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<number>;
+    };
+
+    viewBorrowLimit(
       _account: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<BN>;

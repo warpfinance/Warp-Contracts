@@ -109,25 +109,55 @@ contract WarpControl is Ownable, Exponential {
     /**
     @notice Figures out how much of a given LP token an account is allowed to withdraw
      */
-    function maxWithdrawAllowed(address account, address lpToken) public returns (uint256) {
-        uint256 borrowedTotal = currentTotalBorrowedValue(account);
+    function getMaxWithdrawAllowed(address account, address lpToken) public returns (uint256) {
+        uint256 borrowedTotal = getTotalBorrowedValue(account);
         uint256 borrowLimit = getBorrowLimit(account);
-        uint256 lpValue = checkLPprice(lpToken);
+        uint256 lpValue = Oracle.getUnderlyingPrice(lpToken);
         uint256 leftoverBorrowAmount = borrowLimit.sub(borrowedTotal);
 
         return leftoverBorrowAmount.div(lpValue);
     }
 
-    function checkLPprice(address _LP) public view returns (uint256) {
-        return Oracle.getUnderlyingPrice(_LP);
+    function viewMaxWithdrawAllowed(address account, address lpToken) public view returns (uint256) {
+        uint256 borrowedTotal = viewTotalBorrowedValue(account);
+        uint256 borrowLimit = viewBorrowLimit(account);
+        uint256 lpValue = Oracle.viewUnderlyingPrice(lpToken);
+        uint256 leftoverBorrowAmount = borrowLimit.sub(borrowedTotal);
+
+        return leftoverBorrowAmount.div(lpValue);
     }
 
-    /**
-    @notice checkCollateralValue is a view function that accepts an account address and returns the total USDC value
-            of the accounts locked collateral
-    @param _account is the address whos collateral value we are looking up
-    **/
-    function checkTotalAvailableCollateralValue(address _account)
+    //event DebugValues(uint256 collateral, uint256 oraclePrice);
+
+
+    function getTotalAvailableCollateralValue(address _account)
+        public
+        returns (uint256)
+    {
+        uint256 numVaults = lpVaults.length;
+        uint256 totalCollateral = 0;
+        //loop through each lp wapr vault
+        for (uint256 i = 0; i < numVaults; ++i) {
+            //instantiate warp vault at that position
+            WarpVaultLPI vault = WarpVaultLPI(lpVaults[i]);
+            //retreive the address of its asset
+            address asset = vault.getAssetAdd();
+            //retrieve USD price of this asset
+            uint256 assetPrice = Oracle.getUnderlyingPrice(asset);
+            
+            uint256 accountCollateral = vault.collateralOfAccount(_account);
+            //emit DebugValues(accountCollateral, assetPrice);
+
+            //multiply the amount of collateral by the asset price and return it
+            uint256 accountAssetsValue = accountCollateral.mul(assetPrice);
+            //add value to total collateral
+            totalCollateral = totalCollateral.add(accountAssetsValue);
+        }
+        //return total USDC value of all collateral
+        return totalCollateral;
+    }
+
+    function viewTotalAvailableCollateralValue(address _account)
         public
         view
         returns (uint256)
@@ -141,17 +171,12 @@ contract WarpControl is Ownable, Exponential {
             //retreive the address of its asset
             address asset = vault.getAssetAdd();
             //retrieve USD price of this asset
-            uint256 assetPrice = Oracle.getUnderlyingPrice(asset);
-            //retrieve the total amount of the asset availible as collateral
-            uint256 availibleAccountAssets = IERC20(asset).balanceOf(_account);
-            //retreive the amount of the asset locked as collateral
-            uint256 amountOfLockedAsset = vault.collateralOfAccount(_account);
-            //calculate amount of collateral not locked up
-            uint256 accountAssets = availibleAccountAssets.sub(
-                amountOfLockedAsset
-            );
+            uint256 assetPrice = Oracle.viewUnderlyingPrice(asset);
+            
+            uint256 accountCollateral = vault.collateralOfAccount(_account);
+
             //multiply the amount of collateral by the asset price and return it
-            uint256 accountAssetsValue = accountAssets.mul(assetPrice);
+            uint256 accountAssetsValue = accountCollateral.mul(assetPrice);
             //add value to total collateral
             totalCollateral = totalCollateral.add(accountAssetsValue);
         }
@@ -159,7 +184,7 @@ contract WarpControl is Ownable, Exponential {
         return totalCollateral;
     }
 
-    function priorTotalBorrowedValue(address _account) public view returns (uint256) {
+    function viewTotalBorrowedValue(address _account) public view returns (uint256) {
         uint256 numSCVaults = scVaults.length;
         uint256 totalBorrowedValue = 0;
 
@@ -176,7 +201,7 @@ contract WarpControl is Ownable, Exponential {
         return totalBorrowedValue;
     }
 
-    function currentTotalBorrowedValue(address _account) public returns (uint256) {
+    function getTotalBorrowedValue(address _account) public returns (uint256) {
         uint256 numSCVaults = scVaults.length;
         uint256 totalBorrowedValue = 0;
 
@@ -200,16 +225,24 @@ contract WarpControl is Ownable, Exponential {
         return collateralValue;
     }
 
-    function getBorrowLimit(address _account) public view returns (uint256) {
-        uint256 availibleCollateralValue = checkTotalAvailableCollateralValue(
-            msg.sender
+    function getBorrowLimit(address _account) public returns (uint256) {
+        uint256 availibleCollateralValue = getTotalAvailableCollateralValue(
+            _account
+        );
+
+        return calcBorrowLimit(availibleCollateralValue);
+    }
+
+    function viewBorrowLimit(address _account) public view returns (uint256) {
+        uint256 availibleCollateralValue = viewTotalAvailableCollateralValue(
+            _account
         );
 
         return calcBorrowLimit(availibleCollateralValue);
     }
 
     function borrowSC(address _StableCoin, uint256 _amount) public {
-        uint256 borrowedTotal = currentTotalBorrowedValue(msg.sender);
+        uint256 borrowedTotal = getTotalBorrowedValue(msg.sender);
         uint256 availibleCollateralValue = getBorrowLimit(msg.sender);
         
         //calculate USDC amount of what the user is allowed to borrow
@@ -218,7 +251,7 @@ contract WarpControl is Ownable, Exponential {
         );
 
         //require the amount being borrowed is less than or equal to the amount they are aloud to borrow
-        require(borrowAmountAllowed >= _amount);
+        require(borrowAmountAllowed >= _amount, "Borrowing more than allowed");
         //track USDC value of locked LP
         lockedLPValue[msg.sender] = lockedLPValue[msg.sender].add(_amount);
         //retreive stablecoin vault address being borrowed from and instantiate it

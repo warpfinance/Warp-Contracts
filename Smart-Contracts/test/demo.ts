@@ -1,6 +1,7 @@
 
 const truffleAssert = require("truffle-assertions");
 const w3 = require("web3");
+const utils = require("./utils.js");
 
 const toWei = w3.utils.toWei;
 const fromWei = w3.utils.fromWei;
@@ -19,6 +20,7 @@ const WarpWrapperToken = artifacts.require("WarpWrapperToken");
 const ERC20 = artifacts.require("ERC20");
 const TestToken = artifacts.require("TesterToken");
 
+const ONE_DAY = 1000 * 86400;
 
 const getEvent = async (txResult, eventName) => {
   let res = undefined;
@@ -49,7 +51,7 @@ const giveTokens = async (token, account, amount) => {
 //await giveTokens(wbtcToken, usdcBTCPair.address,  1 / conversionRates.usdc.btc * minimumLiquidity)
 const giveEqualTokens = async (account, token0, token1, conversion, amount) => {
   await giveTokens(token0, account, conversion * amount);
-  await giveTokens(token1, account, (1 / conversion) * amount);
+  await giveTokens(token1, account, amount);
 }
 
 contract("Warp Finance Demo", function (accounts) {
@@ -62,7 +64,7 @@ contract("Warp Finance Demo", function (accounts) {
     const wethToken = await TestToken.new("WETH", "WETH");
 
     // Give root some tokens to get things started
-    const minimumLiquidity = 1000 * 3;
+    const minimumLiquidity = 1000 * 100;
 
     // conversionRates[token0][token1] = x
     // X of token0 = token1
@@ -73,10 +75,10 @@ contract("Warp Finance Demo", function (accounts) {
         dai: 1.0,
       },
       eth: {
-        btc: 0.029,
-        usdt: 404,
-        usdc: 404,
-        dai: 404,
+        btc: 34,
+        usdt: 0.00247,
+        usdc: 0.00247,
+        dai: 0.00247,
       },
     }
 
@@ -88,13 +90,12 @@ contract("Warp Finance Demo", function (accounts) {
     await usdcBTCPair.mint(accounts[0]);
 
     const usdctPair = await getCreatedPair(await uniFactory.createPair(usdcToken.address, usdtToken.address));
-    await giveEqualTokens(usdctPair.address, usdcToken, usdtToken, conversionRates.usdc.usdt , minimumLiquidity);
+    await giveEqualTokens(usdctPair.address, usdcToken, usdtToken, conversionRates.usdc.usdt, minimumLiquidity);
     await usdctPair.mint(accounts[0]);
 
     const usdcDaiPair = await getCreatedPair(await uniFactory.createPair(usdcToken.address, daiToken.address));
-    await giveEqualTokens(usdcDaiPair.address, usdcToken, daiToken, conversionRates.usdc.dai , minimumLiquidity);
+    await giveEqualTokens(usdcDaiPair.address, usdcToken, daiToken, conversionRates.usdc.dai, minimumLiquidity);
     await usdcDaiPair.mint(accounts[0]);
-
 
 
     /* Warp Support pairs */
@@ -113,7 +114,6 @@ contract("Warp Finance Demo", function (accounts) {
     const ethDaiPair = await getCreatedPair(await uniFactory.createPair(wethToken.address, daiToken.address));
     await giveEqualTokens(ethDaiPair.address, wethToken, daiToken, conversionRates.eth.dai, minimumLiquidity);
     await ethDaiPair.mint(accounts[0]);
-
 
     const uniRouter = await UniswapV2Router02.new(uniFactory.address, wethToken.address);
 
@@ -137,25 +137,78 @@ contract("Warp Finance Demo", function (accounts) {
     await warpControl.createNewSCVault("1000000000000000000", "2000000000000000000", "2000000000000000000", 4204800, "1000000000000000000", daiToken.address);
     await warpControl.createNewSCVault("1000000000000000000", "2000000000000000000", "2000000000000000000", 4204800, "1000000000000000000", usdtToken.address);
     await warpControl.createNewSCVault("1000000000000000000", "2000000000000000000", "2000000000000000000", 4204800, "1000000000000000000", usdcToken.address);
-    
 
-    const user1 = accounts[1];
-    const user2 = accounts[2];
-
-    await daiToken.mint(user1, toWei('100'));
-    await usdtToken.mint(user1, toWei('100'));
+    await utils.increaseTime(ONE_DAY);
 
     // Test lending to vault
+    const user1 = accounts[1];
+    const daiInVault = 1000000;
+    await daiToken.mint(user1, toWei(daiInVault.toString()));
+
     const daiWarpVault = await WarpVaultSC.at(await warpControl.instanceSCTracker(daiToken.address));
     await daiToken.approve(daiWarpVault.address, toWei('1000000000000'), {from: user1});
-    await daiWarpVault.lendToWarpVault(toWei('10'), {from: user1});
+    await daiWarpVault.lendToWarpVault(toWei(daiInVault.toString()), {from: user1});
+
+    const warpWrapperToken = await WarpWrapperToken.at(await daiWarpVault.wStableCoin());
+    expect(fromWei(await warpWrapperToken.balanceOf(user1))).equals(daiInVault.toString());
+
+
+    // Test providing LP to vault as collateral
+    const user2 = accounts[2];
+
+    // Give user 2 some LP tokens for ETH-wBTC
+
+    // We have 2x1000 $ in collateral
+    const lpInDollars = 10000;
+    // Put ~50% of it into the Warp LP Vault ($1000)
+    const collateralProportion = 0.5;
+
+    await giveEqualTokens(ethDaiPair.address, wethToken, daiToken, conversionRates.eth.dai, lpInDollars);
+    await ethDaiPair.mint(user2);
+
+    const initialLPBalance = parseFloat(fromWei(await ethDaiPair.balanceOf(user2)));
+
+    const amountOfLPToProvide = initialLPBalance * collateralProportion;
+
+    const ethDaiVault = await WarpVaultLP.at(await warpControl.instanceLPTracker(ethDaiPair.address));
+    await ethDaiPair.approve(ethDaiVault.address, toWei('10000000000'), {from: user2});
+    await ethDaiVault.provideCollateral(toWei(amountOfLPToProvide.toString()), {from: user2});
+
+    const postLPBalance = parseFloat(fromWei(await ethDaiPair.balanceOf(user2)));
+    expect(postLPBalance).lessThan(initialLPBalance);
+    const givenLP = initialLPBalance - postLPBalance;
+
+    const calcAPY = (borrowRate) => {
+      const ethMantissa = 1e18;
+      const blocksPerDay = 4 * 60 * 24;
+      const daysPerYear = 365;
+
+      const borrowApy = (((Math.pow((borrowRate / ethMantissa * blocksPerDay) + 1, daysPerYear - 1))) - 1) * 100;
+
+      return borrowApy;
+    }
+
+
+    // Test getting a loan based on provided collateral
+    //const borrowLimit = await warpControl.getTotalAvailableCollateralValue(user2);
+
+    console.log(calcAPY((await daiWarpVault.borrowRatePerBlock()).toNumber()));
+   
+    await oracleFactory.getUnderlyingPrice(ethDaiPair.address);
+    const priceOfLP = parseFloat(fromWei(await oracleFactory.viewUnderlyingPrice(ethDaiPair.address)));
+
+    // Take out a loan for 50% of the value of the LP we put in
+    const loanAmount = givenLP * priceOfLP * 0.5;
+    await warpControl.borrowSC(daiToken.address, toWei(loanAmount.toString()), {from: user2});
+
+    // Check how much DAI we have (assumes 1 DAI === 1 USDC)
+    const daiBorrowed = await daiToken.balanceOf(user2);
+    expect(parseFloat(fromWei(daiBorrowed))).eq(loanAmount);
+
+    console.log(calcAPY((await daiWarpVault.borrowRatePerBlock()).toNumber()));
+
+    // interest rates do go up, but they seem really high
     
-
-
-
-
-
-
   });
 
 });

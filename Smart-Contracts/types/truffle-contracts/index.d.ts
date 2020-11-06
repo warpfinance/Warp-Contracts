@@ -2,6 +2,7 @@
 /* tslint:disable */
 
 import { BaseJumpRateModelV2Contract } from "./BaseJumpRateModelV2";
+import { DaiContract } from "./Dai";
 import { Erc20Contract } from "./Erc20";
 import { Ierc20Contract } from "./Ierc20";
 import { InterestRateModelContract } from "./InterestRateModel";
@@ -23,9 +24,12 @@ import { UniswapOracleInstanceContract } from "./UniswapOracleInstance";
 import { UniswapV2FactoryContract } from "./UniswapV2Factory";
 import { UniswapV2PairContract } from "./UniswapV2Pair";
 import { UniswapV2Router02Contract } from "./UniswapV2Router02";
+import { UsdcContract } from "./Usdc";
+import { UsdtContract } from "./Usdt";
 import { WarpControlContract } from "./WarpControl";
 import { WarpControlIContract } from "./WarpControlI";
 import { WarpVaultContract } from "./WarpVault";
+import { WarpVaultIContract } from "./WarpVaultI";
 import { WarpVaultLpContract } from "./WarpVaultLp";
 import { WarpVaultLpFactoryContract } from "./WarpVaultLpFactory";
 import { WarpVaultLpFactoryIContract } from "./WarpVaultLpFactoryI";
@@ -35,11 +39,14 @@ import { WarpVaultScFactoryContract } from "./WarpVaultScFactory";
 import { WarpVaultScFactoryIContract } from "./WarpVaultScFactoryI";
 import { WarpVaultSciContract } from "./WarpVaultSci";
 import { WarpWrapperTokenContract } from "./WarpWrapperToken";
+import { WrappedBitcoinContract } from "./WrappedBitcoin";
+import { WrappedEthereumContract } from "./WrappedEthereum";
 
 declare global {
   namespace Truffle {
     interface Artifacts {
       require(name: "BaseJumpRateModelV2"): BaseJumpRateModelV2Contract;
+      require(name: "DAI"): DaiContract;
       require(name: "ERC20"): Erc20Contract;
       require(name: "IERC20"): Ierc20Contract;
       require(name: "InterestRateModel"): InterestRateModelContract;
@@ -61,9 +68,12 @@ declare global {
       require(name: "UniswapV2Factory"): UniswapV2FactoryContract;
       require(name: "UniswapV2Pair"): UniswapV2PairContract;
       require(name: "UniswapV2Router02"): UniswapV2Router02Contract;
+      require(name: "USDC"): UsdcContract;
+      require(name: "USDT"): UsdtContract;
       require(name: "WarpControl"): WarpControlContract;
       require(name: "WarpControlI"): WarpControlIContract;
       require(name: "WarpVault"): WarpVaultContract;
+      require(name: "WarpVaultI"): WarpVaultIContract;
       require(name: "WarpVaultLP"): WarpVaultLpContract;
       require(name: "WarpVaultLPFactory"): WarpVaultLpFactoryContract;
       require(name: "WarpVaultLPFactoryI"): WarpVaultLpFactoryIContract;
@@ -73,6 +83,8 @@ declare global {
       require(name: "WarpVaultSCFactoryI"): WarpVaultScFactoryIContract;
       require(name: "WarpVaultSCI"): WarpVaultSciContract;
       require(name: "WarpWrapperToken"): WarpWrapperTokenContract;
+      require(name: "WrappedBitcoin"): WrappedBitcoinContract;
+      require(name: "WrappedEthereum"): WrappedEthereumContract;
     }
   }
 }
@@ -81,6 +93,7 @@ export {
   BaseJumpRateModelV2Contract,
   BaseJumpRateModelV2Instance
 } from "./BaseJumpRateModelV2";
+export { DaiContract, DaiInstance } from "./Dai";
 export { Erc20Contract, Erc20Instance } from "./Erc20";
 export { Ierc20Contract, Ierc20Instance } from "./Ierc20";
 export {
@@ -144,9 +157,12 @@ export {
   UniswapV2Router02Contract,
   UniswapV2Router02Instance
 } from "./UniswapV2Router02";
+export { UsdcContract, UsdcInstance } from "./Usdc";
+export { UsdtContract, UsdtInstance } from "./Usdt";
 export { WarpControlContract, WarpControlInstance } from "./WarpControl";
 export { WarpControlIContract, WarpControlIInstance } from "./WarpControlI";
 export { WarpVaultContract, WarpVaultInstance } from "./WarpVault";
+export { WarpVaultIContract, WarpVaultIInstance } from "./WarpVaultI";
 export { WarpVaultLpContract, WarpVaultLpInstance } from "./WarpVaultLp";
 export {
   WarpVaultLpFactoryContract,
@@ -171,3 +187,11 @@ export {
   WarpWrapperTokenContract,
   WarpWrapperTokenInstance
 } from "./WarpWrapperToken";
+export {
+  WrappedBitcoinContract,
+  WrappedBitcoinInstance
+} from "./WrappedBitcoin";
+export {
+  WrappedEthereumContract,
+  WrappedEthereumInstance
+} from "./WrappedEthereum";

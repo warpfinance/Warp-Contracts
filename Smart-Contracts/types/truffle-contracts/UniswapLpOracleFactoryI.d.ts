@@ -50,7 +50,22 @@ export interface UniswapLpOracleFactoryIInstance
    * getUnderlyingPrice allows for the price retrieval of a MoneyMarketInstances underlying asset
    * @param _MMI is the address of the MoneyMarketInstance whos asset price is being retrieved
    */
-  getUnderlyingPrice(
+  getUnderlyingPrice: {
+    (_MMI: string, txDetails?: Truffle.TransactionDetails): Promise<
+      Truffle.TransactionResponse<AllEvents>
+    >;
+    call(_MMI: string, txDetails?: Truffle.TransactionDetails): Promise<BN>;
+    sendTransaction(
+      _MMI: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<string>;
+    estimateGas(
+      _MMI: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<number>;
+  };
+
+  viewUnderlyingPrice(
     _MMI: string,
     txDetails?: Truffle.TransactionDetails
   ): Promise<BN>;
@@ -135,7 +150,22 @@ export interface UniswapLpOracleFactoryIInstance
      * getUnderlyingPrice allows for the price retrieval of a MoneyMarketInstances underlying asset
      * @param _MMI is the address of the MoneyMarketInstance whos asset price is being retrieved
      */
-    getUnderlyingPrice(
+    getUnderlyingPrice: {
+      (_MMI: string, txDetails?: Truffle.TransactionDetails): Promise<
+        Truffle.TransactionResponse<AllEvents>
+      >;
+      call(_MMI: string, txDetails?: Truffle.TransactionDetails): Promise<BN>;
+      sendTransaction(
+        _MMI: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<string>;
+      estimateGas(
+        _MMI: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<number>;
+    };
+
+    viewUnderlyingPrice(
       _MMI: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<BN>;
