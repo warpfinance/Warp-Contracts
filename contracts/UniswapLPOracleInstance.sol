@@ -15,7 +15,7 @@ contract UniswapLPOracleInstance is Ownable {
 
     using FixedPoint for *;
 
-    uint256 public constant PERIOD = 24 hours;
+    uint256 public constant PERIOD = 1 hours;
 
     IUniswapV2Pair public pair;
     address public token0;
