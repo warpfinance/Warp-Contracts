@@ -1,11 +1,12 @@
 import { DEFAULT_TOKEN } from './constants'
 import { getImageUrl, Token } from './token'
 
-export type NetworkId = 1 | 42
+export type NetworkId = 1 | 42 | 1604695712750
 
 export const networkIds = {
   MAINNET: 1,
   KOVAN: 42,
+  LOCALHOST: 1604695712750
 } as const
 
 interface Network {
@@ -29,6 +30,13 @@ const networks: { [K in NetworkId]: Network } = {
   [networkIds.KOVAN]: {
     label: 'Kovan',
     uri: "https://kovan.infura.io/v3/f30a8e726a8c4851bfc92a44a04bc889",
+    contracts: {
+      warpControl: "",
+    }
+  },
+  [networkIds.LOCALHOST]: {
+    label: 'ganache',
+    uri: "https://localhost:8545",
     contracts: {
       warpControl: "",
     }

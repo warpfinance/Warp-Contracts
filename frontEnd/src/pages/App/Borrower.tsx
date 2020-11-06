@@ -288,6 +288,7 @@ export const Borrower: React.FC<Props> = (props: Props) => {
                 >
                     <Grid item sm>
                         <BorrowerTable
+                            tokens={lpTokens}
                             data={collateralData}
                             onLeftButtonClick={onProvideClick}
                             onRightButtonClick={onWithdrawClick}
@@ -295,6 +296,7 @@ export const Borrower: React.FC<Props> = (props: Props) => {
                     </Grid>
                     <Grid item sm>
                         <BorrowerTable
+                            tokens={stableCoins}
                             data={borrowData}
                             onLeftButtonClick={onBorrowClick}
                             onRightButtonClick={onRepayClick}
