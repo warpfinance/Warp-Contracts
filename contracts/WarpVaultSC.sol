@@ -40,7 +40,8 @@ contract WarpVaultSC is Ownable, Exponential {
     InterestRateModel public InterestRate;
 
     mapping(address => BorrowSnapshot) public accountBorrows;
-    mapping(address => uint256) public accountLent;
+    mapping(address => uint256) public principalBalance;
+    mapping(address => uint256) public historicalReward;
     mapping(address => address) public collateralAddressTracker;
     mapping(address => bool) public collateralLocked;
 
@@ -343,8 +344,8 @@ contract WarpVaultSC is Ownable, Exponential {
 
         //transfer appropriate amount of DAI from msg.sender to the Vault
         stablecoin.transferFrom(msg.sender, address(this), _amount);
-        //track amount lent
-        accountLent[msg.sender] = _amount;
+
+        principalBalance[msg.sender] = principalBalance[msg.sender] + _amount;
         //mint appropriate Warp DAI
         wStableCoin.mint(msg.sender, vars.mintTokens);
     }
@@ -353,6 +354,8 @@ contract WarpVaultSC is Ownable, Exponential {
         MathError mathErr;
         uint256 exchangeRateMantissa;
         uint256 redeemAmount;
+        uint256 currentWarpBalance;
+        uint256 currentCoinBalance;
     }
 
     /**
@@ -361,26 +364,82 @@ contract WarpVaultSC is Ownable, Exponential {
     **/
     function redeem(uint256 _amount) public {
         accrueInterest();
-        require(_amount != 0);
 
         RedeemLocalVars memory vars;
 
-        //get exchange rate
-        vars.exchangeRateMantissa = exchangeRateCurrent();
-        /**
-        We calculate the exchange rate and the amount of underlying to be redeemed:
-        redeemAmount = _amount x exchangeRateCurrent
-        */
-        (vars.mathErr, vars.redeemAmount) = mulScalarTruncate(
+        vars.currentWarpBalance = wStableCoin.balanceOf(msg.sender);
+        require(_amount < vars.currentWarpBalance, "Cannot redeem more Warp-LP than is in your account.");
+
+        if (_amount > 0) {
+            (vars.mathErr, vars.redeemAmount) = mulScalarTruncate(
+                Exp({mantissa: vars.exchangeRateMantissa}),
+                _amount
+            );
+        } else {
+            // Withdraw everything if withdraw amount is zero
+            vars.redeemAmount = vars.currentWarpBalance;
+        }
+
+        vars.exchangeRateMantissa = exchangeRatePrior();
+
+        
+        (vars.mathErr, vars.currentCoinBalance) = mulScalarTruncate(
             Exp({mantissa: vars.exchangeRateMantissa}),
-            _amount
+            vars.currentWarpBalance
         );
-        //Fail if protocol has insufficient cash
-        require(stablecoin.balanceOf(address(this)) >= vars.redeemAmount);
-        //burn wrapped token from msg.sender
-        wStableCoin.burn(msg.sender, _amount); //will fail id the msg.sender doesnt have the appropriateamount of wrapper token
-        //transfer the calculated amount of underlying asset to the msg.sender
+
+        require(stablecoin.balanceOf(address(this)) >= vars.redeemAmount, "Not enough stablecoin in vault.");
+
+        // Take away Warp Tokens and exchange for StableCoin
+        wStableCoin.burn(msg.sender, _amount);
         stablecoin.transfer(msg.sender, vars.redeemAmount);
+        
+
+        uint256 currentStableCoinReward = vars.currentCoinBalance.sub(principalBalance[msg.sender]);
+        if (vars.redeemAmount >= currentStableCoinReward) {
+            historicalReward[msg.sender] = historicalReward[msg.sender].add(currentStableCoinReward);
+            uint256 principalRedeemed = vars.redeemAmount.sub(currentStableCoinReward);
+            require(principalRedeemed <= principalBalance[msg.sender], "Error calculating reward.");
+            principalBalance[msg.sender] = principalBalance[msg.sender].sub(principalRedeemed);
+        } else {
+            historicalReward[msg.sender] = historicalReward[msg.sender].add(vars.redeemAmount);
+        }
+    }
+
+    function viewAccountBalance(address _account) public view returns (uint256) {
+        uint256 exchangeRate = exchangeRatePrior();
+        uint256 accountBalance = wStableCoin.balanceOf(_account);
+
+        MathError mathError;
+        uint256 balance;
+       (mathError, balance) =  mulScalarTruncate(
+            Exp({mantissa: vars.exchangeRateMantissa}),
+            accountBalance
+        );
+
+        return accountBalance;
+    }
+
+    function viewHistoricalReward(address _account) public view returns (uint256) {
+        uint256 exchangeRate = exchangeRatePrior();
+        uint256 currentWarpBalance = wStableCoin.balanceOf(_account);
+        uint256 principal = principalBalance[_account];
+
+        if (currentBalance === 0) {
+            return historicalReward[_account];
+        }
+
+        MathError mathError;
+        uint256 currentStableCoinBalance;
+        (mathError, currentStableCoinBalance) =  mulScalarTruncate(
+            Exp({mantissa: exchangeRate}),
+            currentWarpBalance
+        );
+
+        uint256 currentGains = currentStableCoinBalance.sub(depositedAmount);
+        uint256 totalGains = currentGains.add(historicalReward[_account]);
+
+        return totalGains;
     }
 
     //struct used by borrow function to avoid stack too deep errors

@@ -64,6 +64,14 @@ contract WarpControl is Ownable, Exponential {
         WVSCF = WarpVaultSCFactoryI(_WVSCF);
     }
 
+    function numLPVaults() external view returns(uint256) {
+        return lpVaults.length;
+    }
+
+    function numSCVaults() external view returns(uint256) {
+        return scVaults.length;
+    }
+
     /**
     @notice createNewLPVault allows the contract owner to create a new WarpVaultLP contract for a specific LP token
     @param _lp is the address for the LP token this Warp Vault will manage
@@ -208,6 +216,16 @@ contract WarpControl is Ownable, Exponential {
         }
         //return total USDC value of all collateral
         return totalCollateral;
+    }
+
+    function viewPriceOfCollateral(address collateral) public view returns(uint256)
+    {
+        return Oracle.viewUnderlyingPrice(collateral);
+    }
+
+    function viewPriceOfToken(address token) public view returns(uint256)
+    {
+        return Oracle.viewPriceOfToken(token);
     }
 
     function viewTotalBorrowedValue(address _account) public view returns (uint256) {
