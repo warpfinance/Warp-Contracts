@@ -24,6 +24,7 @@ contract UniswapLPOracleFactory is Ownable {
 
     mapping(address => address[]) LPAssetTracker;
     mapping(address => address) instanceTracker;
+    mapping(address => address) public tokenToUSDC;
 
     /**
 @notice constructor function is fired once during contract creation. This constructor initializes uniswapRouter
@@ -56,17 +57,21 @@ contract UniswapLPOracleFactory is Ownable {
         address _tokenB,
         address _lpToken
     ) public onlyOwner {
-        address _oracle1 = address(
-            new UniswapLPOracleInstance(factory, _tokenA, usdc_add)
-        );
+        address oracle1 = tokenToUSDC[_tokenA];
+        if (oracle1 == address(0)) {
+            oracle1 = new UniswapLPOracleInstance(factory, _tokenA, usdc_add);
+            tokenToUSDC[_tokenA] = oracle1;
+        }
 
-        address _oracle2 = address(
-            new UniswapLPOracleInstance(factory, _tokenB, usdc_add)
-        );
+        address oracle2 = tokenToUSDC[_tokenA];
+        if (oracle2 == address(0)) {
+            oracle2 = new UniswapLPOracleInstance(factory, _tokenB, usdc_add);
+            tokenToUSDC[_tokenB] = oracle2;
+        }
 
-        LPAssetTracker[_lpToken] = [_oracle1, _oracle2];
-        instanceTracker[_oracle1] = _tokenA;
-        instanceTracker[_oracle2] = _tokenB;
+        LPAssetTracker[_lpToken] = [oracle1, oracle2];
+        instanceTracker[oracle1] = _tokenA;
+        instanceTracker[oracle2] = _tokenB;
     }
 
     /**
@@ -147,5 +152,12 @@ contract UniswapLPOracleFactory is Ownable {
         return totalUSDCpriceOfPool / totalSupplyOfLP;
         //return USDC price of the pool divided by totalSupply of its LPs to get price
         //of one LP
+    }
+
+    function viewPriceOfToken(address _token) public view returns(uint256) {
+        require(tokenToUSDC[_token] != address(0), "Token not registered with a USDC pairing");
+
+        UniswapLPOracleInstance oracle = UniswapLPOracleInstance(tokenToUSDC[_token]);
+        return oracle.viewPrice();
     }
 }
