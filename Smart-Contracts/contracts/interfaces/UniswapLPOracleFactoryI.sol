@@ -37,4 +37,6 @@ abstract contract UniswapLPOracleFactoryI {
         view
         virtual
         returns (uint256);
+
+    function viewPriceOfToken(address token) public view virtual returns (uint256);
 }

@@ -59,13 +59,13 @@ contract UniswapLPOracleFactory is Ownable {
     ) public onlyOwner {
         address oracle1 = tokenToUSDC[_tokenA];
         if (oracle1 == address(0)) {
-            oracle1 = new UniswapLPOracleInstance(factory, _tokenA, usdc_add);
+            oracle1 = address(new UniswapLPOracleInstance(factory, _tokenA, usdc_add));
             tokenToUSDC[_tokenA] = oracle1;
         }
 
-        address oracle2 = tokenToUSDC[_tokenA];
+        address oracle2 = tokenToUSDC[_tokenB];
         if (oracle2 == address(0)) {
-            oracle2 = new UniswapLPOracleInstance(factory, _tokenB, usdc_add);
+            oracle2 = address(new UniswapLPOracleInstance(factory, _tokenB, usdc_add));
             tokenToUSDC[_tokenB] = oracle2;
         }
 

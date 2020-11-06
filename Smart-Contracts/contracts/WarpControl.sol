@@ -64,11 +64,11 @@ contract WarpControl is Ownable, Exponential {
         WVSCF = WarpVaultSCFactoryI(_WVSCF);
     }
 
-    function numLPVaults() external view returns(uint256) {
+    function viewNumLPVaults() external view returns(uint256) {
         return lpVaults.length;
     }
 
-    function numSCVaults() external view returns(uint256) {
+    function viewNumSCVaults() external view returns(uint256) {
         return scVaults.length;
     }
 
@@ -218,9 +218,9 @@ contract WarpControl is Ownable, Exponential {
         return totalCollateral;
     }
 
-    function viewPriceOfCollateral(address collateral) public view returns(uint256)
+    function viewPriceOfCollateral(address lpToken) public view returns(uint256)
     {
-        return Oracle.viewUnderlyingPrice(collateral);
+        return Oracle.viewUnderlyingPrice(lpToken);
     }
 
     function viewPriceOfToken(address token) public view returns(uint256)
