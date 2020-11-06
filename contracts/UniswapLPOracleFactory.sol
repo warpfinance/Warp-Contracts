@@ -59,13 +59,17 @@ contract UniswapLPOracleFactory is Ownable {
     ) public onlyOwner {
         address oracle1 = tokenToUSDC[_tokenA];
         if (oracle1 == address(0)) {
-            oracle1 = address(new UniswapLPOracleInstance(factory, _tokenA, usdc_add));
+            oracle1 = address(
+                new UniswapLPOracleInstance(factory, _tokenA, usdc_add)
+            );
             tokenToUSDC[_tokenA] = oracle1;
         }
 
         address oracle2 = tokenToUSDC[_tokenB];
         if (oracle2 == address(0)) {
-            oracle2 = address(new UniswapLPOracleInstance(factory, _tokenB, usdc_add));
+            oracle2 = address(
+                new UniswapLPOracleInstance(factory, _tokenB, usdc_add)
+            );
             tokenToUSDC[_tokenB] = oracle2;
         }
 
@@ -154,10 +158,15 @@ contract UniswapLPOracleFactory is Ownable {
         //of one LP
     }
 
-    function viewPriceOfToken(address _token) public view returns(uint256) {
-        require(tokenToUSDC[_token] != address(0), "Token not registered with a USDC pairing");
+    function viewPriceOfToken(address _token) public view returns (uint256) {
+        require(
+            tokenToUSDC[_token] != address(0),
+            "Token not registered with a USDC pairing"
+        );
 
-        UniswapLPOracleInstance oracle = UniswapLPOracleInstance(tokenToUSDC[_token]);
+        UniswapLPOracleInstance oracle = UniswapLPOracleInstance(
+            tokenToUSDC[_token]
+        );
         return oracle.viewPrice();
     }
 }

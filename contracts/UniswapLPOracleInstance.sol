@@ -39,21 +39,26 @@ contract UniswapLPOracleInstance is Ownable {
         address _tokenA,
         address _tokenB
     ) public {
-        IUniswapV2Pair _pair = IUniswapV2Pair(
-            UniswapV2Library.pairFor(_factory, _tokenA, _tokenB)
-        );
-        pair = _pair;
-        token0 = _pair.token0();
-        token1 = _pair.token1();
-        price0CumulativeLast = _pair.price0CumulativeLast(); // fetch the current accumulated price value (1 / 0)
-        price1CumulativeLast = _pair.price1CumulativeLast(); // fetch the current accumulated price value (0 / 1)
-        uint112 reserve0;
-        uint112 reserve1;
-        (reserve0, reserve1, blockTimestampLast) = _pair.getReserves();
-        require(
-            reserve0 != 0 && reserve1 != 0,
-            "ExampleOracleSimple: NO_RESERVES"
-        ); // ensure that there's liquidity in the pair
+        if (_tokenA == _tokenB) {
+            price0Average = 1;
+            price1Average = 1;
+        } else {
+            IUniswapV2Pair _pair = IUniswapV2Pair(
+                UniswapV2Library.pairFor(_factory, _tokenA, _tokenB)
+            );
+            pair = _pair;
+            token0 = _pair.token0();
+            token1 = _pair.token1();
+            price0CumulativeLast = _pair.price0CumulativeLast(); // fetch the current accumulated price value (1 / 0)
+            price1CumulativeLast = _pair.price1CumulativeLast(); // fetch the current accumulated price value (0 / 1)
+            uint112 reserve0;
+            uint112 reserve1;
+            (reserve0, reserve1, blockTimestampLast) = _pair.getReserves();
+            require(
+                reserve0 != 0 && reserve1 != 0,
+                "ExampleOracleSimple: NO_RESERVES"
+            ); // ensure that there's liquidity in the pair
+        }
     }
 
     /**
@@ -90,8 +95,12 @@ contract UniswapLPOracleInstance is Ownable {
 @return price is the price of one asset in USDC(example 1WETH in USDC)
 **/
     function consult() external returns (uint256 price) {
-        update();
-        price = price0Average.mul(1 ether).decode144();
+        if (token0 != token1) {
+            update();
+            price = price0Average.mul(1 ether).decode144();
+        } else {
+            price = price0Average.mul(1 ether).decode144();
+        }
     }
 
     /**
