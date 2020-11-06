@@ -40,8 +40,8 @@ contract UniswapLPOracleInstance is Ownable {
         address _tokenB
     ) public {
         if (_tokenA == _tokenB) {
-            price0Average = 1;
-            price1Average = 1;
+            price0Average = FixedPoint.uq112x112(uint224(1));
+            price1Average = FixedPoint.uq112x112(uint224(1));
         } else {
             IUniswapV2Pair _pair = IUniswapV2Pair(
                 UniswapV2Library.pairFor(_factory, _tokenA, _tokenB)
