@@ -24,28 +24,47 @@
       ],
       "stateMutability": "nonpayable",
       "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "lpToken",
+          "type": "address"
+        }
+      ],
+      "name": "viewPriceOfCollateral",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
     }
   ],
-  "metadata": "{\"compiler\":{\"version\":\"0.6.6+commit.6c089d02\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"lpToken\",\"type\":\"address\"}],\"name\":\"getMaxWithdrawAllowed\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{},\"notice\":\"The WarpVaultI contract an abstract contract the MoneyMarketFactory uses to interface eith the UniswapOracleFactory. This is necissary as the OpenZeppelin and Uniswap libraries cause a truffle compiler error due when imported into the same contract due to the use of two seperate SafeMath instances*\"}},\"settings\":{\"compilationTarget\":{\"/E/dOrg/warp/Smart-Contracts/contracts/interfaces/WarpControlI.sol\":\"WarpControlI\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":1},\"remappings\":[]},\"sources\":{\"/E/dOrg/warp/Smart-Contracts/contracts/interfaces/WarpControlI.sol\":{\"keccak256\":\"0xadc304894ca7b99793a382542cfc60346f4249dc6a3cf9f49732768a84b6ea40\",\"urls\":[\"bzz-raw://c34f0ca46db35579249afb738e6818836beb8fb2cfec160cb282458814fcf435\",\"dweb:/ipfs/QmcFd7wfhgWevBhSZzKEDEZFzFYWgwWABtDWiTNbgqvJ5m\"]}},\"version\":1}",
+  "metadata": "{\"compiler\":{\"version\":\"0.6.6+commit.6c089d02\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"lpToken\",\"type\":\"address\"}],\"name\":\"getMaxWithdrawAllowed\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"lpToken\",\"type\":\"address\"}],\"name\":\"viewPriceOfCollateral\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{},\"notice\":\"The WarpControlI contract is an abstract contract used by individual WarpVault contracts to call the maxWithdrawAllowed function on the WarpControl contract*\"}},\"settings\":{\"compilationTarget\":{\"/home/stan36/repos/Warp/Smart-Contracts/contracts/interfaces/WarpControlI.sol\":\"WarpControlI\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":1},\"remappings\":[]},\"sources\":{\"/home/stan36/repos/Warp/Smart-Contracts/contracts/interfaces/WarpControlI.sol\":{\"keccak256\":\"0x470432e75dbd783a8d48b35321ada96e989eb4ce854969a6f35fd7f38c371e0e\",\"urls\":[\"bzz-raw://5f1555d0ff030558047f435c9e62b99b589bd986635afa4b57f48e25316879fd\",\"dweb:/ipfs/QmShwjwabmUmex6e4pY7fk2ir1sq8CjgJ9bfUuFpzh7imu\"]}},\"version\":1}",
   "bytecode": "0x",
   "deployedBytecode": "0x",
   "immutableReferences": {},
   "sourceMap": "",
   "deployedSourceMap": "",
-  "source": "pragma solidity ^0.6.0;\r\n\r\n////////////////////////////////////////////////////////////////////////////////////////////\r\n/// @title WarpVaultI\r\n/// @author Christopher Dixon\r\n////////////////////////////////////////////////////////////////////////////////////////////\r\n/**\r\nThe WarpVaultI contract an abstract contract the MoneyMarketFactory uses to interface\r\n    eith the UniswapOracleFactory. This is necissary as the OpenZeppelin and Uniswap libraries cause a\r\n    truffle compiler error due when imported into the same contract due to the use of two seperate\r\n    SafeMath instances\r\n**/\r\n\r\nabstract contract WarpControlI {\r\n    function getMaxWithdrawAllowed(address account, address lpToken) public virtual returns (uint256);\r\n}\r\n",
-  "sourcePath": "E:\\dOrg\\warp\\Smart-Contracts\\contracts\\interfaces\\WarpControlI.sol",
+  "source": "pragma solidity ^0.6.0;\n\n////////////////////////////////////////////////////////////////////////////////////////////\n/// @title WarpVaultI\n/// @author Christopher Dixon\n////////////////////////////////////////////////////////////////////////////////////////////\n/**\nThe WarpControlI contract is an abstract contract used by individual WarpVault contracts to call the\n  maxWithdrawAllowed function on the WarpControl contract\n**/\n\nabstract contract WarpControlI {\n    function getMaxWithdrawAllowed(address account, address lpToken) public virtual returns (uint256);\n    function viewPriceOfCollateral(address lpToken) public virtual view returns (uint256);\n}\n",
+  "sourcePath": "/home/stan36/repos/Warp/Smart-Contracts/contracts/interfaces/WarpControlI.sol",
   "ast": {
-    "absolutePath": "/E/dOrg/warp/Smart-Contracts/contracts/interfaces/WarpControlI.sol",
+    "absolutePath": "/home/stan36/repos/Warp/Smart-Contracts/contracts/interfaces/WarpControlI.sol",
     "exportedSymbols": {
       "WarpControlI": [
-        4728
+        5011
       ]
     },
-    "id": 4729,
+    "id": 5012,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 4717,
+        "id": 4993,
         "literals": [
           "solidity",
           "^",
@@ -61,15 +80,15 @@
         "contractDependencies": [],
         "contractKind": "contract",
         "documentation": {
-          "id": 4718,
+          "id": 4994,
           "nodeType": "StructuredDocumentation",
-          "src": "269:323:16",
-          "text": "The WarpVaultI contract an abstract contract the MoneyMarketFactory uses to interface\neith the UniswapOracleFactory. This is necissary as the OpenZeppelin and Uniswap libraries cause a\ntruffle compiler error due when imported into the same contract due to the use of two seperate\nSafeMath instances*"
+          "src": "263:166:16",
+          "text": "The WarpControlI contract is an abstract contract used by individual WarpVault contracts to call the\nmaxWithdrawAllowed function on the WarpControl contract*"
         },
         "fullyImplemented": false,
-        "id": 4728,
+        "id": 5011,
         "linearizedBaseContracts": [
-          4728
+          5011
         ],
         "name": "WarpControlI",
         "nodeType": "ContractDefinition",
@@ -78,7 +97,7 @@
             "body": null,
             "documentation": null,
             "functionSelector": "ab5e2c99",
-            "id": 4727,
+            "id": 5003,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
@@ -86,18 +105,18 @@
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
-              "id": 4723,
+              "id": 4999,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 4720,
+                  "id": 4996,
                   "mutability": "mutable",
                   "name": "account",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 4727,
-                  "src": "665:15:16",
+                  "scope": 5003,
+                  "src": "499:15:16",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -105,10 +124,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 4719,
+                    "id": 4995,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "665:7:16",
+                    "src": "499:7:16",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -120,13 +139,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 4722,
+                  "id": 4998,
                   "mutability": "mutable",
                   "name": "lpToken",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 4727,
-                  "src": "682:15:16",
+                  "scope": 5003,
+                  "src": "516:15:16",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -134,10 +153,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 4721,
+                    "id": 4997,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "682:7:16",
+                    "src": "516:7:16",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -148,21 +167,21 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "664:34:16"
+              "src": "498:34:16"
             },
             "returnParameters": {
-              "id": 4726,
+              "id": 5002,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 4725,
+                  "id": 5001,
                   "mutability": "mutable",
                   "name": "",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 4727,
-                  "src": "723:7:16",
+                  "scope": 5003,
+                  "src": "557:7:16",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -170,10 +189,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 4724,
+                    "id": 5000,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "723:7:16",
+                    "src": "557:7:16",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -183,33 +202,121 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "722:9:16"
+              "src": "556:9:16"
             },
-            "scope": 4728,
-            "src": "634:98:16",
+            "scope": 5011,
+            "src": "468:98:16",
             "stateMutability": "nonpayable",
+            "virtual": true,
+            "visibility": "public"
+          },
+          {
+            "body": null,
+            "documentation": null,
+            "functionSelector": "4e590bee",
+            "id": 5010,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "viewPriceOfCollateral",
+            "nodeType": "FunctionDefinition",
+            "overrides": null,
+            "parameters": {
+              "id": 5006,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 5005,
+                  "mutability": "mutable",
+                  "name": "lpToken",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 5010,
+                  "src": "602:15:16",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 5004,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "602:7:16",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "601:17:16"
+            },
+            "returnParameters": {
+              "id": 5009,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 5008,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 5010,
+                  "src": "648:7:16",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 5007,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "648:7:16",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "647:9:16"
+            },
+            "scope": 5011,
+            "src": "571:86:16",
+            "stateMutability": "view",
             "virtual": true,
             "visibility": "public"
           }
         ],
-        "scope": 4729,
-        "src": "596:139:16"
+        "scope": 5012,
+        "src": "431:228:16"
       }
     ],
-    "src": "0:737:16"
+    "src": "0:660:16"
   },
   "legacyAST": {
-    "absolutePath": "/E/dOrg/warp/Smart-Contracts/contracts/interfaces/WarpControlI.sol",
+    "absolutePath": "/home/stan36/repos/Warp/Smart-Contracts/contracts/interfaces/WarpControlI.sol",
     "exportedSymbols": {
       "WarpControlI": [
-        4728
+        5011
       ]
     },
-    "id": 4729,
+    "id": 5012,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 4717,
+        "id": 4993,
         "literals": [
           "solidity",
           "^",
@@ -225,15 +332,15 @@
         "contractDependencies": [],
         "contractKind": "contract",
         "documentation": {
-          "id": 4718,
+          "id": 4994,
           "nodeType": "StructuredDocumentation",
-          "src": "269:323:16",
-          "text": "The WarpVaultI contract an abstract contract the MoneyMarketFactory uses to interface\neith the UniswapOracleFactory. This is necissary as the OpenZeppelin and Uniswap libraries cause a\ntruffle compiler error due when imported into the same contract due to the use of two seperate\nSafeMath instances*"
+          "src": "263:166:16",
+          "text": "The WarpControlI contract is an abstract contract used by individual WarpVault contracts to call the\nmaxWithdrawAllowed function on the WarpControl contract*"
         },
         "fullyImplemented": false,
-        "id": 4728,
+        "id": 5011,
         "linearizedBaseContracts": [
-          4728
+          5011
         ],
         "name": "WarpControlI",
         "nodeType": "ContractDefinition",
@@ -242,7 +349,7 @@
             "body": null,
             "documentation": null,
             "functionSelector": "ab5e2c99",
-            "id": 4727,
+            "id": 5003,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
@@ -250,18 +357,18 @@
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
-              "id": 4723,
+              "id": 4999,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 4720,
+                  "id": 4996,
                   "mutability": "mutable",
                   "name": "account",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 4727,
-                  "src": "665:15:16",
+                  "scope": 5003,
+                  "src": "499:15:16",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -269,10 +376,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 4719,
+                    "id": 4995,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "665:7:16",
+                    "src": "499:7:16",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -284,13 +391,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 4722,
+                  "id": 4998,
                   "mutability": "mutable",
                   "name": "lpToken",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 4727,
-                  "src": "682:15:16",
+                  "scope": 5003,
+                  "src": "516:15:16",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -298,10 +405,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 4721,
+                    "id": 4997,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "682:7:16",
+                    "src": "516:7:16",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -312,21 +419,21 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "664:34:16"
+              "src": "498:34:16"
             },
             "returnParameters": {
-              "id": 4726,
+              "id": 5002,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 4725,
+                  "id": 5001,
                   "mutability": "mutable",
                   "name": "",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 4727,
-                  "src": "723:7:16",
+                  "scope": 5003,
+                  "src": "557:7:16",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -334,10 +441,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 4724,
+                    "id": 5000,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "723:7:16",
+                    "src": "557:7:16",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -347,33 +454,121 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "722:9:16"
+              "src": "556:9:16"
             },
-            "scope": 4728,
-            "src": "634:98:16",
+            "scope": 5011,
+            "src": "468:98:16",
             "stateMutability": "nonpayable",
+            "virtual": true,
+            "visibility": "public"
+          },
+          {
+            "body": null,
+            "documentation": null,
+            "functionSelector": "4e590bee",
+            "id": 5010,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "viewPriceOfCollateral",
+            "nodeType": "FunctionDefinition",
+            "overrides": null,
+            "parameters": {
+              "id": 5006,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 5005,
+                  "mutability": "mutable",
+                  "name": "lpToken",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 5010,
+                  "src": "602:15:16",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 5004,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "602:7:16",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "601:17:16"
+            },
+            "returnParameters": {
+              "id": 5009,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 5008,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 5010,
+                  "src": "648:7:16",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 5007,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "648:7:16",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "647:9:16"
+            },
+            "scope": 5011,
+            "src": "571:86:16",
+            "stateMutability": "view",
             "virtual": true,
             "visibility": "public"
           }
         ],
-        "scope": 4729,
-        "src": "596:139:16"
+        "scope": 5012,
+        "src": "431:228:16"
       }
     ],
-    "src": "0:737:16"
+    "src": "0:660:16"
   },
   "compiler": {
     "name": "solc",
     "version": "0.6.6+commit.6c089d02.Emscripten.clang"
   },
   "networks": {},
-  "schemaVersion": "3.3.1",
-  "updatedAt": "2020-11-06T02:17:38.798Z",
+  "schemaVersion": "3.2.4",
+  "updatedAt": "2020-11-06T21:15:11.648Z",
   "devdoc": {
     "methods": {}
   },
   "userdoc": {
     "methods": {},
-    "notice": "The WarpVaultI contract an abstract contract the MoneyMarketFactory uses to interface eith the UniswapOracleFactory. This is necissary as the OpenZeppelin and Uniswap libraries cause a truffle compiler error due when imported into the same contract due to the use of two seperate SafeMath instances*"
+    "notice": "The WarpControlI contract is an abstract contract used by individual WarpVault contracts to call the maxWithdrawAllowed function on the WarpControl contract*"
   }
 }
