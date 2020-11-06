@@ -501,17 +501,21 @@ contract WarpVaultSC is Ownable, Exponential {
         //create local vars storage
         RepayBorrowLocalVars memory vars;
 
-        stablecoin.transferFrom(msg.sender, address(this), repayAmount);
+        
         //We remember the original borrowerIndex for verification purposes
         vars.borrowerIndex = accountBorrows[msg.sender].interestIndex;
         //We fetch the amount the borrower owes, with accumulated interest
-        vars.accountBorrows = borrowBalanceCurrent(msg.sender);
+        vars.accountBorrows = borrowBalancePrior(msg.sender);
         //If repayAmount == 0, repayAmount = accountBorrows
         if (repayAmount == 0) {
             vars.repayAmount = vars.accountBorrows;
         } else {
             vars.repayAmount = repayAmount;
         }
+
+        require(stablecoin.balanceOf(msg.sender) >= vars.repayAmount, "Not enough stablecoin to repay");
+        stablecoin.transferFrom(msg.sender, address(this), vars.repayAmount);
+
         //We calculate the new borrower and total borrow balances
         //accountBorrowsNew = accountBorrows - actualRepayAmount
         (vars.mathErr, vars.accountBorrowsNew) = subUInt(
