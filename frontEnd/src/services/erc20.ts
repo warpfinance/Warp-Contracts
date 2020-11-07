@@ -122,4 +122,8 @@ export class ERC20Service {
       symbol,
     }
   }
+
+  decimals = async (): Promise<number> => {
+    return await this.contract.decimals();
+  }
 }

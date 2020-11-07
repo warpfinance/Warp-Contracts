@@ -14,6 +14,7 @@ import { ERC20Service } from "../../services/erc20";
 import { useWarpControl } from "../../hooks/useWarpControl";
 import { useForceUpdate } from "../../hooks/useForceUpdate";
 import { StableCoinWarpVaultService } from "../../services/stableCoinWarpVault";
+import { useTotalLentAmount } from "../../hooks/useTotalLentAmount";
 
 // TO-DO: Web3 integration
 const authAction = "lend"
@@ -29,9 +30,10 @@ export const Lender: React.FC<Props> = (props: Props) => {
 
     const walletBalance = useTotalWalletBalance(context);
     const {control} = useWarpControl(context);
+    const totalLentAmount = useTotalLentAmount(context, control);
 
     const data = {
-        stableCoinDeposit: 0.00,
+        stableCoinDeposit: totalLentAmount,
         stableCoinReward: 4545,
         walletBalance
     }
@@ -201,13 +203,13 @@ export const Lender: React.FC<Props> = (props: Props) => {
                     alignItems="stretch"
                 >
                     <Grid item>
-                        <InformationCard header="Stable coin deposit" text={`$${data.stableCoinDeposit.toFixed(2)}`} />
+                        <InformationCard header="Wallet balance" text={`$${data.walletBalance}`} />
                     </Grid>
                     <Grid item>
                         <InformationCard header="Stable coin reward" text={`$${data.stableCoinReward}`} />
                     </Grid>
                     <Grid item>
-                        <InformationCard header="Wallet balance" text={`$${data.walletBalance}`} />
+                        <InformationCard header="Stable coin deposit" text={`$${data.stableCoinDeposit.toFixed(2)}`} />
                     </Grid>
                 </Grid>
                 <Grid

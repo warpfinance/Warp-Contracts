@@ -1,5 +1,6 @@
 import { BigNumber, Contract, ethers, Wallet } from "ethers";
 import { getLogger } from "../util/logger";
+import { OracleFactoryService } from "./oracleFactory";
 
 const warpControlABI:string [] = [
   'function instanceSCTracker(address _address) public view returns (address)',
@@ -10,7 +11,8 @@ const warpControlABI:string [] = [
   'function viewTotalAvailableCollateralValue(address _account) public view returns (uint256)',
   'function viewTotalBorrowedValue(address _account) public view returns (uint256)',
   'function viewBorrowLimit(address _account) public view returns (uint256)',
-  'function borrowSC(address _StableCoin, uint256 _amount) public'
+  'function borrowSC(address _StableCoin, uint256 _amount) public',
+  'function Oracle() public view returns (address)'
 ]
 
 const logger = getLogger('Services::WarpControlService')
@@ -72,6 +74,10 @@ export class WarpControlService {
     logger.log("borrowSC: " + tx.hash);
     
     return this.provider.waitForTransaction(tx.hash);
+  }
+
+  oracle = async (): Promise<string> => {
+    return await this.contract.Oracle();
   }
 
 
