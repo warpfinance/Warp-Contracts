@@ -143,20 +143,22 @@ contract WarpControl is Ownable, Exponential {
      */
     function getMaxWithdrawAllowed(address account, address lpToken) public returns (uint256) {
         uint256 borrowedTotal = getTotalBorrowedValue(account);
-        uint256 borrowLimit = getBorrowLimit(account);
+        uint256 collateralValue = getTotalAvailableCollateralValue(account);
+        uint256 requiredCollateral = calcCollateralRequired(borrowedTotal);
+        uint256 leftoverCollateral = collateralValue.sub(requiredCollateral);
         uint256 lpValue = Oracle.getUnderlyingPrice(lpToken);
-        uint256 leftoverBorrowAmount = borrowLimit.sub(borrowedTotal);
 
-        return leftoverBorrowAmount.div(lpValue);
+        return leftoverCollateral.div(lpValue);
     }
 
     function viewMaxWithdrawAllowed(address account, address lpToken) public view returns (uint256) {
         uint256 borrowedTotal = viewTotalBorrowedValue(account);
-        uint256 borrowLimit = viewBorrowLimit(account);
+        uint256 collateralValue = viewTotalAvailableCollateralValue(account);
+        uint256 requiredCollateral = calcCollateralRequired(borrowedTotal);
+        uint256 leftoverCollateral = collateralValue.sub(requiredCollateral);
         uint256 lpValue = Oracle.viewUnderlyingPrice(lpToken);
-        uint256 leftoverBorrowAmount = borrowLimit.sub(borrowedTotal);
 
-        return leftoverBorrowAmount.div(lpValue);
+        return leftoverCollateral.div(lpValue);
     }
 
     function getTotalAvailableCollateralValue(address _account)
@@ -276,6 +278,12 @@ contract WarpControl is Ownable, Exponential {
         uint256 thirdCollatVal = _collateralValue.div(oneUSDC.mul(3));
         //add this 1/3rd value to itself to get 2/3rds of the original value
         return thirdCollatVal.add(thirdCollatVal);
+    }
+
+    function calcCollateralRequired(uint256 _borrowAmount) public view returns (uint256) {
+        uint256 oneUSDC = Oracle.OneUSDC();
+        uint256 factor = oneUSDC.div(calcBorrowLimit(oneUSDC));
+        return _borrowAmount.mul(factor);
     }
 
     function getBorrowLimit(address _account) public returns (uint256) {
