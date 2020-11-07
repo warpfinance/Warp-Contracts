@@ -10,9 +10,11 @@ import { useStableCoinTokens } from "../../hooks/useStableCoins";
 import { useLPTokens } from "../../hooks/useLPTokens";
 import { Token } from "../../util/token";
 import { useUSDCToken } from "../../hooks/useUSDC";
-import { BigNumber } from "ethers";
+import { BigNumber, utils } from "ethers";
 import { useWarpControl } from "../../hooks/useWarpControl";
 import { parseBigNumber } from "../../util/tools";
+import { ERC20Service } from "../../services/erc20";
+import { WarpLPVaultService } from "../../services/warpLPVault";
 
 interface Props {
 
@@ -205,9 +207,13 @@ export const Borrower: React.FC<Props> = (props: Props) => {
         await getLPToUSDCRatio(token);
     }
 
-    const onAuth = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+    const onAuth = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+
+        const erc20 = new ERC20Service(context.library, context.account, currentToken.address);
+        const targetVault = await control.getLPVault(currentToken.address);
+        await erc20.approveUnlimited(targetVault);
+
         setAuthorizationModalOpen(false);
-        // TO-DO: Web3 integration
     }
 
     const onBorrow = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
@@ -215,14 +221,28 @@ export const Borrower: React.FC<Props> = (props: Props) => {
         // TO-DO: Web3 integration
     }
 
-    const onProvide = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-        setAuthAction("provide");
-        setProvideModalOpen(false);
-        // TO-DO: Web3 integration
-        const provideAuthorization = false;
-        if (provideAuthorization === false) {
-            setAuthorizationModalOpen(true);
+    const onProvide = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+        if (!context.account) {
+            return;
         }
+
+        const erc20 = new ERC20Service(context.library, context.account, currentToken.address);
+        const targetVault = await control.getLPVault(currentToken.address);
+        const enabledAmount = parseBigNumber(await erc20.allowance(context.account, targetVault), currentToken.decimals);
+        const needsAuth = provideLpValue > enabledAmount;
+
+        if (needsAuth) {
+            setAuthorizationModalOpen(true);
+            setAuthAction("provide");
+            return;
+        }
+
+        const lpVault = new WarpLPVaultService(context.library, context.account, targetVault);
+        const amount = utils.parseUnits(provideLpValue.toString(), currentToken.decimals);
+
+        await lpVault.provideCollateral(amount);
+
+        setProvideModalOpen(false);
     }
 
     const onRepay = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
