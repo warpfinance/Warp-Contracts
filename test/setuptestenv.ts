@@ -144,6 +144,12 @@ contract("Setup Test Env", function (accounts) {
 
     await utils.increaseTime(ONE_DAY);
 
+    await oracleFactory.getUnderlyingPrice(ethTPair.address);
+    await oracleFactory.getUnderlyingPrice(ethDaiPair.address);
+    await oracleFactory.getUnderlyingPrice(ethBtcPair.address);
+
+    await utils.increaseTime(ONE_DAY);
+
     // Test lending to vault
     const user1 = accounts[1];
     const daiInVault = 1000000;

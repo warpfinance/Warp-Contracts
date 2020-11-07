@@ -395,7 +395,11 @@ contract WarpVaultSC is Ownable, Exponential {
         stablecoin.transfer(msg.sender, vars.redeemAmount);
         
 
-        uint256 currentStableCoinReward = vars.currentCoinBalance.sub(principalBalance[msg.sender]);
+        uint256 currentStableCoinReward = 0;
+        if (vars.currentCoinBalance > principalBalance[msg.sender]) {
+            currentStableCoinReward = vars.currentCoinBalance.sub(principalBalance[msg.sender]);
+        }
+        
         if (vars.redeemAmount >= currentStableCoinReward) {
             historicalReward[msg.sender] = historicalReward[msg.sender].add(currentStableCoinReward);
             uint256 principalRedeemed = vars.redeemAmount.sub(currentStableCoinReward);
