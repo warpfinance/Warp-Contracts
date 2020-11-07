@@ -15,19 +15,14 @@ import { useWarpControl } from "../../hooks/useWarpControl";
 import { parseBigNumber } from "../../util/tools";
 import { ERC20Service } from "../../services/erc20";
 import { WarpLPVaultService } from "../../services/warpLPVault";
+import { useBorrowLimit } from "../../hooks/useBorrowLimit";
 
 interface Props {
 
 }
 
 // TO-DO: Web3 integration
-const data = {
-    collateral: 123.00,
-    borrowPercentage: 10,
-    interestRate: 1.97,
-    borrowLimit: 200,
-    borrowLimitUsed: 50,
-}
+
 
 export const Borrower: React.FC<Props> = (props: Props) => {
     const context = useConnectedWeb3Context();
@@ -35,6 +30,21 @@ export const Borrower: React.FC<Props> = (props: Props) => {
     const lpTokens = useLPTokens(context);
     const usdcToken = useUSDCToken(context);
     const {control} = useWarpControl(context);
+    const {totalBorrowedAmount, borrowLimit} = useBorrowLimit(context, control);
+
+
+    const data = {
+        collateral: parseBigNumber(borrowLimit, usdcToken?.decimals),
+        borrowPercentage: 0,
+        interestRate: 1.97,
+        borrowLimit: parseBigNumber(borrowLimit, usdcToken?.decimals),
+        borrowLimitUsed: parseBigNumber(totalBorrowedAmount, usdcToken?.decimals),
+    }
+
+    if (borrowLimit.gt(totalBorrowedAmount)) {
+        let percentage = parseBigNumber(totalBorrowedAmount.div(borrowLimit), usdcToken?.decimals);
+        data.borrowPercentage = (percentage * 100);
+    }
 
     const [authAction, setAuthAction] = useState("borrow");
     const [authorizationModalOpen, setAuthorizationModalOpen] = useState(false);
@@ -282,10 +292,10 @@ export const Borrower: React.FC<Props> = (props: Props) => {
                     alignItems="stretch"
                 >
                     <Grid item>
-                        <InformationCard header="Withdraw" text={`$${data.collateral.toFixed(2)}`} />
+                        <InformationCard header="Borrow Limit" text={`$${data.collateral.toFixed(2)}`} />
                     </Grid>
                     <Grid item>
-                        <InformationCard header="Borrow %" text={`${data.borrowPercentage.toFixed(0)}%`} />
+                        <InformationCard header="Limit Used %" text={`${data.borrowPercentage.toFixed(0)}%`} />
                     </Grid>
                     <Grid item>
                         <InformationCard header="Interest rate" text={`${data.interestRate.toFixed(2)}%`} />

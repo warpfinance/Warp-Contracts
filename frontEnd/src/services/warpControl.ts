@@ -4,7 +4,11 @@ const warpControlABI:string [] = [
   'function instanceSCTracker(address _address) public view returns (address)',
   'function instanceLPTracker(address _address) public view returns (address)',
   'function viewPriceOfCollateral(address lpToken) public view returns(uint256)',
-  'function viewPriceOfToken(address token) public view returns(uint256)'
+  'function viewPriceOfToken(address token) public view returns(uint256)',
+  'function viewMaxWithdrawAllowed(address account, address lpToken) public view returns (uint256)',
+  'function viewTotalAvailableCollateralValue(address _account) public view returns (uint256)',
+  'function viewTotalBorrowedValue(address _account) public view returns (uint256)',
+  'function viewBorrowLimit(address _account) public view returns (uint256)'
 ]
 
 export class WarpControlService {
@@ -39,5 +43,24 @@ export class WarpControlService {
   getLPPrice = async (lpToken: string): Promise<BigNumber> => {
     return await this.contract.viewPriceOfCollateral(lpToken);
   }
+
+  getBorrowAmount = async (account: string): Promise<BigNumber> => {
+    return this.contract.viewTotalBorrowedValue(account);
+  }
+
+  getBorrowLimit = async (account: string): Promise<BigNumber> => {
+    return this.contract.viewBorrowLimit(account);
+  }
+
+  // Returns value in USDC
+  getTotalCollateralValue = async (account: string): Promise<BigNumber> => {
+    return this.contract.viewTotalAvailableCollateralValue(account);
+  }
+
+  getMaxCollateralWithdrawAmount = async (account: string, lpToken: string): Promise<BigNumber> => {
+    return this.contract.viewMaxWithdrawAllowed(account, lpToken);
+  }
+
+
 
 }

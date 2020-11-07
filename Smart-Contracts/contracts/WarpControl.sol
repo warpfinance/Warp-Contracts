@@ -267,11 +267,13 @@ contract WarpControl is Ownable, Exponential {
     **/
     function calcBorrowLimit(uint256 _collateralValue)
         public
-        pure
+        view
         returns (uint256)
     {
+        // We must do this math in terms of a single USDC
+        uint256 oneUSDC = Oracle.OneUSDC();
         //divide the collaterals value by 3 to get 1/3rd of its value
-        uint256 thirdCollatVal = _collateralValue.div(3);
+        uint256 thirdCollatVal = _collateralValue.div(oneUSDC.mul(3));
         //add this 1/3rd value to itself to get 2/3rds of the original value
         return thirdCollatVal.add(thirdCollatVal);
     }

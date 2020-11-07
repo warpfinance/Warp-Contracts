@@ -5,6 +5,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@uniswap/v2-periphery/contracts/UniswapV2Router02.sol";
 import "@uniswap/v2-periphery/contracts/libraries/UniswapV2Library.sol";
 import "./UniswapLPOracleInstance.sol";
+import "./interfaces/ExtendedIERC20.sol";
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 /// @title UniswapLPOracleFactory
@@ -40,6 +41,15 @@ contract UniswapLPOracleFactory is Ownable {
         uniswapRouter = IUniswapV2Router02(_uniRouterAddress);
         usdc_add = usdcAdd;
         factory = _uniFactoryAdd;
+    }
+
+    function USDC() public view returns (address) {
+        return usdc_add;
+    }
+
+    function OneUSDC() public view returns (uint256) {
+        ExtendedIERC20 token = ExtendedIERC20(usdc_add);
+        return uint256(10) ** uint256(token.decimals());
     }
 
     /**

@@ -22,6 +22,8 @@ abstract contract UniswapLPOracleFactoryI {
         address _lpToken
     ) public virtual;
 
+    function OneUSDC() public virtual view returns (uint256);
+
     /**
 @notice getUnderlyingPrice allows for the price retrieval of a MoneyMarketInstances underlying asset
 @param _MMI is the address of the MoneyMarketInstance whos asset price is being retrieved
