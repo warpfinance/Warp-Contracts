@@ -255,9 +255,14 @@ export const Borrower: React.FC<Props> = (props: Props) => {
         }
     }
 
-    const onWithdraw = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+    const onWithdraw = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+        const targetVault = await control.getLPVault(currentToken.address);
+        const lpVault = new WarpLPVaultService(context.library, context.account, targetVault);
+        const amount = utils.parseUnits(withdrawLpValue.toString(), currentToken.decimals);
+
+        await lpVault.withdrawCollateral(amount);
+
         setWithdrawModalOpen(false);
-        // TO-DO: Web3 integration
     }
 
     return (
