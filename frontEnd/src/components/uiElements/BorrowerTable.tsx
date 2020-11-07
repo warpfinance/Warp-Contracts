@@ -8,10 +8,10 @@ import { BorrowerTableLoanRow } from "./BorrowerTableLoanRow";
 import { BorrowerTableCollateralRow } from "./BorrowerTableCollateralRow";
 
 interface Props {
-    data: any,
     tokens: Token[],
-    onLeftButtonClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, token: Token) => void,
-    onRightButtonClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, token: Token) => void,
+    usdc: Maybe<Token>,
+    onLeftButtonClick: any,
+    onRightButtonClick: any,
     type: "collateral" | "borrow"
 }
 
@@ -67,6 +67,7 @@ export const BorrowerTable: React.FC<Props> = (props: Props) => {
                                 return (
                                     <BorrowerTableCollateralRow
                                         token={token}
+                                        usdc={props.usdc}
                                         onLeftButtonClick={props.onLeftButtonClick}
                                         onRightButtonClick={props.onRightButtonClick}
                                     />

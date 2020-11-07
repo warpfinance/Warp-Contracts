@@ -4,107 +4,133 @@ import { Token } from "../../util/token";
 import { Avatar, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@material-ui/core";
 import { AvatarGroup } from "@material-ui/lab";
 import { CustomButton } from "..";
+import { useTokenBalance } from "../../hooks/useTokenBalance";
+import { useConnectedWeb3Context } from "../../hooks/connectedWeb3";
+import { formatBigNumber, parseBigNumber } from "../../util/tools";
+import { useTokenValue } from "../../hooks/useTokenValue";
+import { useWarpControl } from "../../hooks/useWarpControl";
+import { BigNumber } from "ethers";
 
 interface Props {
   token: Token,
-  onLeftButtonClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, token: Token) => void,
-  onRightButtonClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, token: Token) => void,
+  usdc: Maybe<Token>,
+  onLeftButtonClick: any,
+  onRightButtonClick: any,
 }
 
-export const BorrowerTableCollateralRow: React.FC<Props> = (props: Props) => {
-  const icon = <AvatarGroup max={2}>
-    <Avatar alt={props.token.image} src={props.token.image} />;
-    <Avatar alt={props.token.image2} src={props.token.image2} />;
-  </AvatarGroup>
 
-    const wrapMouseEventWithToken = (func: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, token: Token) => void) => {
-        return (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-        func(event, props.token);
+
+export const BorrowerTableCollateralRow: React.FC<Props> = (props: Props) => {
+    const icon = <AvatarGroup max={2}>
+        <Avatar alt={props.token.image} src={props.token.image} />;
+        <Avatar alt={props.token.image2} src={props.token.image2} />;
+    </AvatarGroup>
+
+    const context = useConnectedWeb3Context();
+    const {walletBalance, vaultBalance} = useTokenBalance(props.token, context);
+    const {control} = useWarpControl(context);
+    const {tokenValueInUSDC} = useTokenValue(control, props.token, context);
+
+    const walletAmount = parseBigNumber(walletBalance, props.token.decimals).toLocaleString(undefined, {maximumFractionDigits: 2});
+    const providedAmount = parseBigNumber(vaultBalance, props.token.decimals).toLocaleString(undefined, {maximumFractionDigits: 2});
+    
+    const calculateValueInUSDC = (amount: BigNumber, value: BigNumber, usdc: Maybe<Token>) => {
+        if (!usdc) {
+            return '';
         }
+        const estimateAmount = parseBigNumber(amount, props.token.decimals);
+        const estimateValue = parseBigNumber(value, usdc.decimals);
+
+        return (estimateAmount * estimateValue).toLocaleString(undefined, {maximumFractionDigits: 2});
     }
 
-  const walletValueInUSD = '100';
-  const walletAmount = '10';
-  const providedValueInUSD = '50';
-  const providedAmount = '5';
+    let walletValueInUSD = calculateValueInUSDC(walletBalance, tokenValueInUSDC, props.usdc);
+    let providedValueInUSD = calculateValueInUSDC(vaultBalance, tokenValueInUSDC, props.usdc);
 
-  return (<TableRow>
-    <TableCell>
-        <Grid
-            container
-            direction="row"
-            justify="flex-start"
-            alignItems="center"
-            spacing={2}
-        >
+    const wrapMouseEventWithToken = (func: any) => {
+        return (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+            func(event, props.token, walletBalance, vaultBalance);
+        }
+    }
+    
 
-            {icon}
-            <Typography variant="subtitle1">
-                {props.token.symbol}
-            </Typography>
-        </Grid>
-    </TableCell>
-    <TableCell>
-        <Grid
-            container
-            direction="column"
-            justify="center"
-            alignItems="flex-start"
-        >
-            <Grid item>
+    return (<TableRow>
+        <TableCell>
+            <Grid
+                container
+                direction="row"
+                justify="flex-start"
+                alignItems="center"
+                spacing={2}
+            >
+
+                {icon}
                 <Typography variant="subtitle1">
-                    {walletValueInUSD + " USD"}
+                    {props.token.symbol}
                 </Typography>
             </Grid>
-            <Grid item>
-                <Typography color="textSecondary">
-                    {walletAmount + " LP"}
-                </Typography>
+        </TableCell>
+        <TableCell>
+            <Grid
+                container
+                direction="column"
+                justify="center"
+                alignItems="flex-start"
+            >
+                <Grid item>
+                    <Typography variant="subtitle1">
+                        {walletValueInUSD + " USD"}
+                    </Typography>
+                </Grid>
+                <Grid item>
+                    <Typography color="textSecondary">
+                        {walletAmount + " LP"}
+                    </Typography>
+                </Grid>
             </Grid>
-        </Grid>
-    </TableCell>
-    <TableCell>
-        <Grid
-            container
-            direction="column"
-            justify="center"
-            alignItems="flex-start"
-        >
-            <Grid item>
-                <Typography variant="subtitle1">
-                    {providedValueInUSD + " USD"}
-                </Typography>
+        </TableCell>
+        <TableCell>
+            <Grid
+                container
+                direction="column"
+                justify="center"
+                alignItems="flex-start"
+            >
+                <Grid item>
+                    <Typography variant="subtitle1">
+                        {providedValueInUSD + " USD"}
+                    </Typography>
+                </Grid>
+                <Grid item>
+                    <Typography color="textSecondary">
+                        {providedAmount + " LP"}
+                    </Typography>
+                </Grid>
             </Grid>
-            <Grid item>
-                <Typography color="textSecondary">
-                    {providedAmount + " LP"}
-                </Typography>
+        </TableCell>
+        <TableCell>
+            <Grid
+                container
+                direction="row"
+                justify="center"
+                alignItems="flex-start"
+                spacing={1}
+            >
+                <Grid item>
+                    <CustomButton
+                        id={"provide" + props.token.symbol}
+                        onClick={wrapMouseEventWithToken(props.onLeftButtonClick)}
+                        text={"Provide"}
+                        type="short" />
+                </Grid>
+                <Grid item>
+                    <CustomButton
+                        id={"withdraw" + props.token.symbol}
+                        onClick={wrapMouseEventWithToken(props.onRightButtonClick)}
+                        text={"Withdraw"}
+                        type="short" />
+                </Grid>
             </Grid>
-        </Grid>
-    </TableCell>
-    <TableCell>
-        <Grid
-            container
-            direction="row"
-            justify="center"
-            alignItems="flex-start"
-            spacing={1}
-        >
-            <Grid item>
-                <CustomButton
-                    id={"provide" + props.token.symbol}
-                    onClick={wrapMouseEventWithToken(props.onLeftButtonClick)}
-                    text={"Provide"}
-                    type="short" />
-            </Grid>
-            <Grid item>
-                <CustomButton
-                    id={"withdraw" + props.token.symbol}
-                    onClick={wrapMouseEventWithToken(props.onRightButtonClick)}
-                    text={"Withdraw"}
-                    type="short" />
-            </Grid>
-        </Grid>
-    </TableCell>
-  </TableRow>);
+        </TableCell>
+    </TableRow>);
 }

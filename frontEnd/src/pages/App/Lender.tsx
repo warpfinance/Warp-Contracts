@@ -5,7 +5,7 @@ import { Avatar, Grid } from "@material-ui/core";
 import { BigNumber, utils } from "ethers";
 
 import { Token } from "../../util/token";
-import { formatBigNumber } from "../../util/tools";
+import { formatBigNumber, parseBigNumber } from "../../util/tools";
 import { useConnectedWeb3Context } from "../../hooks/connectedWeb3";
 import { useStableCoinTokens } from "../../hooks/useStableCoins";
 import { useState } from "react";
@@ -13,6 +13,7 @@ import { useTotalWalletBalance } from "../../hooks/useTotalWalletBalance";
 import { ERC20Service } from "../../services/erc20";
 import { useWarpControl } from "../../hooks/useWarpControl";
 import { useForceUpdate } from "../../hooks/useForceUpdate";
+import { StableCoinWarpVaultService } from "../../services/stableCoinWarpVault";
 
 // TO-DO: Web3 integration
 const authAction = "lend"
@@ -147,8 +148,6 @@ export const Lender: React.FC<Props> = (props: Props) => {
     }
 
     const onLend = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-        setLendModalOpen(false);
-
         if (!lendToken || !context.account) {
             return;
         }
@@ -163,11 +162,26 @@ export const Lender: React.FC<Props> = (props: Props) => {
             setAuthorizationModalOpen(true);
             return;
         }
+
+        const scVault = new StableCoinWarpVaultService(context.library, context.account, targetVault);
+        await scVault.lendToVault(lendAmountValue);
+
+        setLendModalOpen(false);
     }
 
-    const onWithdraw = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+    const onWithdraw = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+        if (!withdrawToken || !context.account) {
+            return;
+        }
+
+        const erc20 = new ERC20Service(context.library, context.account, withdrawToken.address);
+        const targetVault = await control.getStableCoinVault(withdrawToken.address);
+        const scVault = new StableCoinWarpVaultService(context.library, context.account, targetVault);
+
+        await scVault.withdraw(withdrawAmountValue);
+        
+
         setWithdrawModalOpen(false);
-        // TO-DO: Web3 integration
     }
 
     return (

@@ -9,6 +9,10 @@ import { useConnectedWeb3Context } from "../../hooks/connectedWeb3";
 import { useStableCoinTokens } from "../../hooks/useStableCoins";
 import { useLPTokens } from "../../hooks/useLPTokens";
 import { Token } from "../../util/token";
+import { useUSDCToken } from "../../hooks/useUSDC";
+import { BigNumber } from "ethers";
+import { useWarpControl } from "../../hooks/useWarpControl";
+import { parseBigNumber } from "../../util/tools";
 
 interface Props {
 
@@ -23,95 +27,58 @@ const data = {
     borrowLimitUsed: 50,
 }
 
-const currencyIcons: any = {
-    "DAI": "dai.png",
-    "USDT": "usdt.png",
-    "USDC": "usdc.png",
-}
-
-const poolIcons: any = {
-    "ETH - DAI": { primarySrc: "eth.png", secondarySrc: "dai.png" },
-    "ETH - USDT": { primarySrc: "eth.png", secondarySrc: "usdt.png" },
-    "ETH - USDC": { primarySrc: "eth.png", secondarySrc: "usdc.png" },
-    "ETH - WBTC": { primarySrc: "eth.png", secondarySrc: "wbtc.png" },
-}
-
-//@ts-ignore
-function createWithdrawData(icon, pool, available, provided, currency, availableLp, providedLp, lpCurrency) {
-    return { icon, pool, available, provided, currency, availableLp, providedLp, lpCurrency };
-}
-
-//@ts-ignore
-function createBorrowData(icon, amount, currency) {
-    return { icon, amount, currency, };
-}
-
-// TO-DO: Web3 integration
-const collateralData = [
-    createWithdrawData(<AvatarGroup max={2}><Avatar alt={poolIcons["ETH - DAI"].primarySrc} src={poolIcons["ETH - DAI"].primarySrc} />
-        <Avatar alt={poolIcons["ETH - DAI"].secondarySrc} src={poolIcons["ETH - DAI"].secondarySrc} /></AvatarGroup>,
-        "ETH - DAI", 765, 765, "USD", 400, 400, "LP"),
-    createWithdrawData(<AvatarGroup max={2}><Avatar alt={poolIcons["ETH - USDT"].primarySrc} src={poolIcons["ETH - USDT"].primarySrc} />
-        <Avatar alt={poolIcons["ETH - USDT"].secondarySrc} src={poolIcons["ETH - USDT"].secondarySrc} /></AvatarGroup>,
-        "ETH - USDT", 345, 345, "USD", 400, 400, "LP"),
-    createWithdrawData(<AvatarGroup max={2}><Avatar alt={poolIcons["ETH - USDC"].primarySrc} src={poolIcons["ETH - USDC"].primarySrc} />
-        <Avatar alt={poolIcons["ETH - USDC"].secondarySrc} src={poolIcons["ETH - USDC"].secondarySrc} /></AvatarGroup>,
-        "ETH - USDC", 765, 765, "USD", 400, 400, "LP"),
-    createWithdrawData(<AvatarGroup max={2}><Avatar alt={poolIcons["ETH - WBTC"].primarySrc} src={poolIcons["ETH - WBTC"].primarySrc} />
-        <Avatar alt={poolIcons["ETH - WBTC"].secondarySrc} src={poolIcons["ETH - WBTC"].secondarySrc} /></AvatarGroup>,
-        "ETH - WBTC", 456, 456, "USD", 400, 400, "LP"),
-];
-
-// TO-DO: Web3 integration
-const borrowData = [
-    createBorrowData(<Avatar alt={currencyIcons["DAI"]} src={currencyIcons["DAI"]} />, 100, "DAI"),
-    createBorrowData(<Avatar alt={currencyIcons["USDT"]} src={currencyIcons["USDT"]} />, 249, "USDT"),
-    createBorrowData(<Avatar alt={currencyIcons["USDC"]} src={currencyIcons["USDC"]} />, 68, "USDC"),
-];
-
 export const Borrower: React.FC<Props> = (props: Props) => {
     const context = useConnectedWeb3Context();
     const stableCoins = useStableCoinTokens(context);
     const lpTokens = useLPTokens(context);
+    const usdcToken = useUSDCToken(context);
+    const {control} = useWarpControl(context);
 
     const [authAction, setAuthAction] = useState("borrow");
     const [authorizationModalOpen, setAuthorizationModalOpen] = useState(false);
+
     const [borrowAmountCurrency, setBorrowAmountCurrency] = React.useState("DAI");
     const [borrowAmountValue, setBorrowAmountValue] = React.useState(0);
     const [borrowError, setBorrowError] = useState(false);
     const [borrowModalOpen, setBorrowModalOpen] = useState(false);
+
     const [provideAmountValue, setProvideAmountValue] = React.useState(0);
     const [provideError, setProvideError] = useState(false);
     const [provideLpValue, setProvideLpValue] = React.useState(0);
     const [provideModalOpen, setProvideModalOpen] = useState(false);
-    const [providePool, setProvidePool] = React.useState("");
-    const [repayAmountCurrency, setRepayAmountCurrency] = React.useState("DAI");
+
     const [repayAmountValue, setRepayAmountValue] = React.useState(0);
     const [repayError, setRepayError] = useState(false);
     const [repayModalOpen, setRepayModalOpen] = useState(false);
+
     const [withdrawAmountValue, setWithdrawAmountValue] = React.useState(0);
     const [withdrawError, setWithdrawError] = useState(false);
     const [withdrawLpValue, setWithdrawLpValue] = React.useState(0);
     const [withdrawModalOpen, setWithdrawModalOpen] = useState(false);
-    const [withdrawPool, setWithdrawPool] = React.useState("");
+
+    const [currentToken, setCurrentToken] = React.useState<Token>({} as Token);
+    const [tokenToUSDCRate, setTokenToUSDCRate] = React.useState(0); 
+    const [walletAmount, setWalletAmount] = React.useState(0);
+    const [vaultAmount, setVaultAmount] = React.useState(0);
 
     React.useEffect(() => {
-        if (borrowAmountValue !== 0 && borrowAmountCurrency !== "") {
-            setBorrowError(isBorrowError(borrowAmountValue, borrowAmountCurrency));
+        if (borrowAmountValue !== 0) {
+            setBorrowError(isBorrowError(borrowAmountValue, currentToken));
         }
-        if (provideAmountValue !== 0 && providePool !== "") {
-            setProvideError(isProvideError(provideAmountValue, providePool));
+        if (provideLpValue !== 0) {
+            setProvideError(isProvideError(provideLpValue, currentToken));
         }
-        if (repayAmountValue !== 0 && repayAmountCurrency !== "") {
-            setRepayError(isRepayError(repayAmountValue, repayAmountCurrency));
+        if (repayAmountValue !== 0) {
+            setRepayError(isRepayError(repayAmountValue, currentToken));
         }
-        if (withdrawAmountValue !== 0 && withdrawPool !== "") {
-            setWithdrawError(isWithdrawError(withdrawAmountValue, withdrawPool));
+        if (withdrawLpValue !== 0) {
+            setWithdrawError(isWithdrawError(withdrawLpValue, currentToken));
         }
     }, [borrowAmountValue, borrowAmountCurrency,
-        provideAmountValue, providePool,
-        repayAmountValue, repayAmountCurrency,
-        withdrawAmountValue, withdrawPool]
+        provideLpValue, currentToken,
+        repayAmountValue,
+        withdrawLpValue,
+        tokenToUSDCRate]
     );
 
     const handleAuthClose = (event: {}, reason: "backdropClick" | "escapeKeyDown") => {
@@ -141,7 +108,7 @@ export const Borrower: React.FC<Props> = (props: Props) => {
         setWithdrawModalOpen(false);
     }
 
-    const isBorrowError = (value: any, currency: string) => {
+    const isBorrowError = (value: number, token: Token) => {
         if (value <= 0 ||
             value > data.borrowLimit - data.borrowLimitUsed) {
             return true;
@@ -149,34 +116,40 @@ export const Borrower: React.FC<Props> = (props: Props) => {
         return false;
     }
 
-    const isProvideError = (value: any, pool: string) => {
-        const index = collateralData.findIndex((value: any) => value.pool === pool);
+    const isProvideError = (value: number, token: Token) => {
+        const index = lpTokens.findIndex((elem: any) => elem === token);
         if (index < 0) return true;
         if (value <= 0 ||
-            value > collateralData[index].available) {
+            value > walletAmount) {//collateralData[index].available) {
             return true;
         }
         return false;
     }
 
-    const isRepayError = (value: any, currency: string) => {
-        const index = borrowData.findIndex((value: any) => value.currency === currency);
+    const isRepayError = (value: number, token: Token) => {
+        const index = stableCoins.findIndex((elem: any) => elem === token);
         if (index < 0) return true;
         if (value <= 0 ||
-            value > borrowData[index].amount) {
+            value > 0) { // borrowData[index].amount) {
             return true;
         }
         return false;
     }
 
-    const isWithdrawError = (value: any, pool: string) => {
-        const index = collateralData.findIndex((value: any) => value.pool === pool);
+    const isWithdrawError = (value: number, token: Token) => {
+        const index = lpTokens.findIndex((elem: any) => elem === token);
         if (index < 0) return true;
         if (value <= 0 ||
-            value > collateralData[index].provided) {
+            value > vaultAmount) { //collateralData[index].provided) {
             return true;
         }
         return false;
+    }
+
+    const getLPToUSDCRatio = async (token: Token) => {
+        const value = await control.getLPPrice(token.address);
+        const ratio = parseBigNumber(value, usdcToken?.decimals);
+        setTokenToUSDCRate(ratio);
     }
 
     const onBorrowAmountChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
@@ -184,9 +157,11 @@ export const Borrower: React.FC<Props> = (props: Props) => {
     };
 
     const onProvideAmountChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-        // TO-DO: Web3 integration, calculate USD to LP value
-        setProvideLpValue(Number(event.target.value));
-        setProvideAmountValue(Number(event.target.value));
+        const usdAmount = Number(event.target.value);
+        const lpAmount = usdAmount / tokenToUSDCRate;
+
+        setProvideLpValue(lpAmount);
+        setProvideAmountValue(usdAmount);
     };
 
     const onRepayAmountChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
@@ -194,28 +169,40 @@ export const Borrower: React.FC<Props> = (props: Props) => {
     };
 
     const onWithdrawAmountChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-        // TO-DO: Web3 integration, calculate USD to LP value
-        setWithdrawLpValue(Number(event.target.value));
-        setWithdrawAmountValue(Number(event.target.value));
+        const usdAmount = Number(event.target.value);
+        const lpAmount = usdAmount / tokenToUSDCRate;
+
+        setWithdrawLpValue(lpAmount);
+        setWithdrawAmountValue(usdAmount);
     };
 
     const onBorrowClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, token: Token) => {
+        setBorrowAmountCurrency(token.symbol);
         setBorrowModalOpen(true);
+        setCurrentToken(token);
     }
 
-    const onProvideClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, token: Token) => {
-        setProvidePool(event.currentTarget.id);
+    const onProvideClick = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, token: Token, walletAmount: BigNumber, vaultAmount: BigNumber) => {
+        setCurrentToken(token);
         setProvideModalOpen(true);
+        setWalletAmount(parseBigNumber(walletAmount, token.decimals));
+        setVaultAmount(parseBigNumber(vaultAmount, token.decimals));
+
+        await getLPToUSDCRatio(token);
     }
 
     const onRepayClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, token: Token) => {
-        setRepayAmountCurrency(event.currentTarget.id);
         setRepayModalOpen(true);
+        setCurrentToken(token);
     }
 
-    const onWithdrawClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, token: Token) => {
-        setWithdrawPool(event.currentTarget.id);
+    const onWithdrawClick = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, token: Token, walletAmount: BigNumber, vaultAmount: BigNumber) => {
+        setCurrentToken(token);
         setWithdrawModalOpen(true);
+        setWalletAmount(parseBigNumber(walletAmount, token.decimals));
+        setVaultAmount(parseBigNumber(vaultAmount, token.decimals));
+
+        await getLPToUSDCRatio(token);
     }
 
     const onAuth = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
@@ -290,17 +277,17 @@ export const Borrower: React.FC<Props> = (props: Props) => {
                     <Grid item sm>
                         <BorrowerTable
                             tokens={lpTokens}
-                            data={collateralData}
+                            usdc={usdcToken}
                             onLeftButtonClick={onProvideClick}
                             onRightButtonClick={onWithdrawClick}
                             type="collateral" />
                     </Grid>
                     <Grid item sm>
                         <BorrowerTable
+                            usdc={usdcToken}
                             tokens={stableCoins}
-                            data={borrowData}
-                            onLeftButtonClick={onBorrowClick}
-                            onRightButtonClick={onRepayClick}
+                            onLeftButtonClick={onRepayClick}
+                            onRightButtonClick={onBorrowClick}
                             type="borrow" />
                     </Grid>
                 </Grid>
@@ -313,9 +300,9 @@ export const Borrower: React.FC<Props> = (props: Props) => {
                 onButtonClick={onWithdraw}
                 onChange={onWithdrawAmountChange}
                 open={withdrawModalOpen}
-                pool={withdrawPool}
-                poolIconSrcPrimary={poolIcons[withdrawPool]?.primarySrc || ""}
-                poolIconSrcSecondary={poolIcons[withdrawPool]?.secondarySrc || ""}
+                poolIconSrcPrimary={currentToken.image || ""}
+                poolIconSrcSecondary={currentToken.image2 || ""}
+                token={currentToken}
             />
             <RowModal
                 action={"Provide Collateral"}
@@ -325,9 +312,9 @@ export const Borrower: React.FC<Props> = (props: Props) => {
                 onButtonClick={onProvide}
                 onChange={onProvideAmountChange}
                 open={provideModalOpen}
-                pool={providePool}
-                poolIconSrcPrimary={poolIcons[providePool]?.primarySrc || ""}
-                poolIconSrcSecondary={poolIcons[providePool]?.secondarySrc || ""}
+                poolIconSrcPrimary={currentToken.image || ""}
+                poolIconSrcSecondary={currentToken.image2 || ""}
+                token={currentToken}
             />
             <BigModal
                 action="Borrow"
@@ -341,11 +328,11 @@ export const Borrower: React.FC<Props> = (props: Props) => {
                 onChange={onBorrowAmountChange}
                 open={borrowModalOpen} />
             <AmountModal
-                action={"Repay " + repayAmountCurrency}
+                action={"Repay " + currentToken.symbol}
                 amount={repayAmountValue}
-                currency={repayAmountCurrency}
+                currency={currentToken.symbol}
                 error={repayError}
-                iconSrc={currencyIcons[repayAmountCurrency] || ""}
+                iconSrc={currentToken.symbol || ""}
                 handleClose={handleRepayClose}
                 onButtonClick={onRepay}
                 onChange={onRepayAmountChange}

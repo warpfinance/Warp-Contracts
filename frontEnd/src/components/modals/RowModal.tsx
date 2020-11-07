@@ -6,6 +6,7 @@ import { Amount } from "../inputFields/Amount";
 import { AvatarGroup } from "@material-ui/lab";
 import { CustomButton } from "../buttons/CustomButton";
 import { makeStyles } from "@material-ui/core";
+import { Token } from "../../util/token";
 
 const useStyles = makeStyles(theme => ({
     dialog: {
@@ -26,7 +27,7 @@ interface Props {
     onButtonClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void,
     onChange: (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void,
     open: boolean,
-    pool: string,
+    token: Token,
     poolIconSrcPrimary: string,
     poolIconSrcSecondary: string,
 }
@@ -60,7 +61,7 @@ export const RowModal: React.FC<Props> = (props: Props) => {
                             <Avatar alt={props.poolIconSrcSecondary} className={classes.smallIcon} src={props.poolIconSrcSecondary} />
                         </AvatarGroup>
                         <Typography>
-                            {props.pool}
+                            {props.token.symbol}
                         </Typography>
                     </Grid>
                     <Grid
@@ -85,7 +86,7 @@ export const RowModal: React.FC<Props> = (props: Props) => {
                                     alignItems="center"
                                 >
                                     <Typography variant="subtitle1">
-                                        {props.lp + " LP"}
+                                        {props.lp.toLocaleString(undefined, {maximumFractionDigits: 6}) + " LP"}
                                     </Typography>
                                 </Grid>
                             </CardContent>
