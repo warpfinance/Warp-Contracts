@@ -262,6 +262,11 @@ export interface WarpWrapperTokenInstance extends Truffle.ContractInstance {
     ): Promise<number>;
   };
 
+  /**
+   * mint is an only owner function that allows the owner to mint new tokens to an input account
+   * @param _amount is the amount of token they will receive*
+   * @param _to is the address that will receive the new tokens
+   */
   mint: {
     (
       _to: string,
@@ -285,6 +290,11 @@ export interface WarpWrapperTokenInstance extends Truffle.ContractInstance {
     ): Promise<number>;
   };
 
+  /**
+   * burn is an only owner function that allows the owner to burn  tokens from an input account
+   * @param _amount is the amount of token to be burnt*
+   * @param _from is the address where the tokens will be burnt
+   */
   burn: {
     (
       _from: string,
@@ -520,6 +530,11 @@ export interface WarpWrapperTokenInstance extends Truffle.ContractInstance {
       ): Promise<number>;
     };
 
+    /**
+     * mint is an only owner function that allows the owner to mint new tokens to an input account
+     * @param _amount is the amount of token they will receive*
+     * @param _to is the address that will receive the new tokens
+     */
     mint: {
       (
         _to: string,
@@ -543,6 +558,11 @@ export interface WarpWrapperTokenInstance extends Truffle.ContractInstance {
       ): Promise<number>;
     };
 
+    /**
+     * burn is an only owner function that allows the owner to burn  tokens from an input account
+     * @param _amount is the amount of token to be burnt*
+     * @param _from is the address where the tokens will be burnt
+     */
     burn: {
       (
         _from: string,

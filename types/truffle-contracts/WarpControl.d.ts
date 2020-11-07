@@ -48,10 +48,6 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
     txDetails?: Truffle.TransactionDetails
   ): Promise<boolean>;
 
-  liquidationIncentiveMantissa(
-    txDetails?: Truffle.TransactionDetails
-  ): Promise<BN>;
-
   lockedLPValue(
     arg0: string,
     txDetails?: Truffle.TransactionDetails
@@ -105,8 +101,16 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
     ): Promise<number>;
   };
 
+  viewNumLPVaults(txDetails?: Truffle.TransactionDetails): Promise<BN>;
+
+  viewNumSCVaults(txDetails?: Truffle.TransactionDetails): Promise<BN>;
+
   /**
-   * createNewVault allows the contract owner to create a new WarpVaultLP contract along with its associated Warp Wrapper Tokens*
+   * createNewLPVault allows the contract owner to create a new WarpVaultLP contract for a specific LP token
+   * @param _lp is the address for the LP token this Warp Vault will manage
+   * @param _lpAsset1 is the address for the first asset in a pair that the LP token represents(ex: wETH in a wETH-wBTC uniswap pair)
+   * @param _lpAsset2 is the address for the second asset in a pair that the LP token represents(ex: wBTC in a wETH-wBTC uniswap pair)
+   * @param _lpName is the name of the LP token (ex:wETH-wBTC)*
    */
   createNewLPVault: {
     (
@@ -139,6 +143,15 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
     ): Promise<number>;
   };
 
+  /**
+   * createNewSCVault allows the contract owner to create a new WarpVaultLP contract for a specific LP token
+   * @param _StableCoin is the address of the StableCoin this Warp Vault will manage*
+   * @param _baseRatePerYear is the base rate per year(approx target base APR)
+   * @param _initialExchangeRate is the intitial exchange rate(the rate at which the initial exchange of asset/ART is set)
+   * @param _jumpMultiplierPerYear is the Jump Multiplier Per Year(the multiplier per block after hitting a specific utilizastion point)
+   * @param _multiplierPerYear is the multiplier per year(rate of increase in interest w/ utilizastion)
+   * @param _optimal is the this is the utilizastion point or "kink" at which the jump multiplier is applied
+   */
   createNewSCVault: {
     (
       _baseRatePerYear: number | BN | string,
@@ -230,6 +243,16 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
     txDetails?: Truffle.TransactionDetails
   ): Promise<BN>;
 
+  viewPriceOfCollateral(
+    lpToken: string,
+    txDetails?: Truffle.TransactionDetails
+  ): Promise<BN>;
+
+  viewPriceOfToken(
+    token: string,
+    txDetails?: Truffle.TransactionDetails
+  ): Promise<BN>;
+
   viewTotalBorrowedValue(
     _account: string,
     txDetails?: Truffle.TransactionDetails
@@ -250,8 +273,13 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
     ): Promise<number>;
   };
 
+  /**
+   * this function divides the input value by 3 and then adds that value to itself so it can return 2/3rds of the availible collateral as the borrow limit. If a usser has $150 USDC value in collateral this function will return $100 USDC as their borrow limit.*
+   * calcBorrowLimit is used to calculate the borrow limit for an account based on the input value of their collateral
+   * @param _collateralValue is the USDC value of the users collateral
+   */
   calcBorrowLimit(
-    collateralValue: number | BN | string,
+    _collateralValue: number | BN | string,
     txDetails?: Truffle.TransactionDetails
   ): Promise<BN>;
 
@@ -275,6 +303,11 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
     txDetails?: Truffle.TransactionDetails
   ): Promise<BN>;
 
+  /**
+   * borrowSC is the function an end user will call when they wish to borrow a stablecoin from the warp platform
+   * @param _StableCoin is the address of the stablecoin the user wishes to borrow
+   * @param _amount is the amount of that stablecoin the user wants to borrow*
+   */
   borrowSC: {
     (
       _StableCoin: string,
@@ -320,20 +353,24 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
     ): Promise<number>;
   };
 
+  /**
+   * liquidateAccount is used to liquidate a non-compliant loan after it has reached its 30 minute grace period
+   * @param _borrower is the address of the borrower whos loan is non-compliant*
+   */
   liquidateAccount: {
-    (borrower: string, txDetails?: Truffle.TransactionDetails): Promise<
+    (_borrower: string, txDetails?: Truffle.TransactionDetails): Promise<
       Truffle.TransactionResponse<AllEvents>
     >;
     call(
-      borrower: string,
+      _borrower: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<void>;
     sendTransaction(
-      borrower: string,
+      _borrower: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<string>;
     estimateGas(
-      borrower: string,
+      _borrower: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<number>;
   };
@@ -359,10 +396,6 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
       arg0: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<boolean>;
-
-    liquidationIncentiveMantissa(
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<BN>;
 
     lockedLPValue(
       arg0: string,
@@ -417,8 +450,16 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
       ): Promise<number>;
     };
 
+    viewNumLPVaults(txDetails?: Truffle.TransactionDetails): Promise<BN>;
+
+    viewNumSCVaults(txDetails?: Truffle.TransactionDetails): Promise<BN>;
+
     /**
-     * createNewVault allows the contract owner to create a new WarpVaultLP contract along with its associated Warp Wrapper Tokens*
+     * createNewLPVault allows the contract owner to create a new WarpVaultLP contract for a specific LP token
+     * @param _lp is the address for the LP token this Warp Vault will manage
+     * @param _lpAsset1 is the address for the first asset in a pair that the LP token represents(ex: wETH in a wETH-wBTC uniswap pair)
+     * @param _lpAsset2 is the address for the second asset in a pair that the LP token represents(ex: wBTC in a wETH-wBTC uniswap pair)
+     * @param _lpName is the name of the LP token (ex:wETH-wBTC)*
      */
     createNewLPVault: {
       (
@@ -451,6 +492,15 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
       ): Promise<number>;
     };
 
+    /**
+     * createNewSCVault allows the contract owner to create a new WarpVaultLP contract for a specific LP token
+     * @param _StableCoin is the address of the StableCoin this Warp Vault will manage*
+     * @param _baseRatePerYear is the base rate per year(approx target base APR)
+     * @param _initialExchangeRate is the intitial exchange rate(the rate at which the initial exchange of asset/ART is set)
+     * @param _jumpMultiplierPerYear is the Jump Multiplier Per Year(the multiplier per block after hitting a specific utilizastion point)
+     * @param _multiplierPerYear is the multiplier per year(rate of increase in interest w/ utilizastion)
+     * @param _optimal is the this is the utilizastion point or "kink" at which the jump multiplier is applied
+     */
     createNewSCVault: {
       (
         _baseRatePerYear: number | BN | string,
@@ -545,6 +595,16 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
       txDetails?: Truffle.TransactionDetails
     ): Promise<BN>;
 
+    viewPriceOfCollateral(
+      lpToken: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<BN>;
+
+    viewPriceOfToken(
+      token: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<BN>;
+
     viewTotalBorrowedValue(
       _account: string,
       txDetails?: Truffle.TransactionDetails
@@ -568,8 +628,13 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
       ): Promise<number>;
     };
 
+    /**
+     * this function divides the input value by 3 and then adds that value to itself so it can return 2/3rds of the availible collateral as the borrow limit. If a usser has $150 USDC value in collateral this function will return $100 USDC as their borrow limit.*
+     * calcBorrowLimit is used to calculate the borrow limit for an account based on the input value of their collateral
+     * @param _collateralValue is the USDC value of the users collateral
+     */
     calcBorrowLimit(
-      collateralValue: number | BN | string,
+      _collateralValue: number | BN | string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<BN>;
 
@@ -596,6 +661,11 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
       txDetails?: Truffle.TransactionDetails
     ): Promise<BN>;
 
+    /**
+     * borrowSC is the function an end user will call when they wish to borrow a stablecoin from the warp platform
+     * @param _StableCoin is the address of the stablecoin the user wishes to borrow
+     * @param _amount is the amount of that stablecoin the user wants to borrow*
+     */
     borrowSC: {
       (
         _StableCoin: string,
@@ -641,20 +711,24 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
       ): Promise<number>;
     };
 
+    /**
+     * liquidateAccount is used to liquidate a non-compliant loan after it has reached its 30 minute grace period
+     * @param _borrower is the address of the borrower whos loan is non-compliant*
+     */
     liquidateAccount: {
-      (borrower: string, txDetails?: Truffle.TransactionDetails): Promise<
+      (_borrower: string, txDetails?: Truffle.TransactionDetails): Promise<
         Truffle.TransactionResponse<AllEvents>
       >;
       call(
-        borrower: string,
+        _borrower: string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<void>;
       sendTransaction(
-        borrower: string,
+        _borrower: string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<string>;
       estimateGas(
-        borrower: string,
+        _borrower: string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<number>;
     };

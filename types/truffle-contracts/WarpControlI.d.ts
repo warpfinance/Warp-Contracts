@@ -35,6 +35,11 @@ export interface WarpControlIInstance extends Truffle.ContractInstance {
     ): Promise<number>;
   };
 
+  viewPriceOfCollateral(
+    lpToken: string,
+    txDetails?: Truffle.TransactionDetails
+  ): Promise<BN>;
+
   methods: {
     getMaxWithdrawAllowed: {
       (
@@ -58,6 +63,11 @@ export interface WarpControlIInstance extends Truffle.ContractInstance {
         txDetails?: Truffle.TransactionDetails
       ): Promise<number>;
     };
+
+    viewPriceOfCollateral(
+      lpToken: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<BN>;
   };
 
   getPastEvents(event: string): Promise<EventData[]>;

@@ -60,6 +60,11 @@ export interface WarpVaultLpFactoryInstance extends Truffle.ContractInstance {
     ): Promise<number>;
   };
 
+  /**
+   * createWarpVaultLP allows the contract owner to create a new WarpVaultLP contract for a specific LP token
+   * @param _lp is the address for the LP token this Warp Vault will manage
+   * @param _lpName is the name of the LP token (ex:wETH-wBTC)*
+   */
   createWarpVaultLP: {
     (
       _lp: string,
@@ -122,6 +127,11 @@ export interface WarpVaultLpFactoryInstance extends Truffle.ContractInstance {
       ): Promise<number>;
     };
 
+    /**
+     * createWarpVaultLP allows the contract owner to create a new WarpVaultLP contract for a specific LP token
+     * @param _lp is the address for the LP token this Warp Vault will manage
+     * @param _lpName is the name of the LP token (ex:wETH-wBTC)*
+     */
     createWarpVaultLP: {
       (
         _lp: string,
