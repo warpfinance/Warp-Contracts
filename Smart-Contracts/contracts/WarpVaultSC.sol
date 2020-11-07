@@ -363,12 +363,13 @@ contract WarpVaultSC is Ownable, Exponential {
     @param _amount is the amount of Warp Wrapper token being exchanged
     **/
     function redeem(uint256 _amount) public {
-        accrueInterest();
 
         RedeemLocalVars memory vars;
 
         vars.currentWarpBalance = wStableCoin.balanceOf(msg.sender);
-        require(_amount < vars.currentWarpBalance, "Cannot redeem more Warp-LP than is in your account.");
+        require(_amount < vars.currentWarpBalance, "Cannot redeem more Warp-SC than is in your account.");
+
+        vars.exchangeRateMantissa = exchangeRateCurrent();
 
         if (_amount > 0) {
             (vars.mathErr, vars.redeemAmount) = mulScalarTruncate(
@@ -380,9 +381,8 @@ contract WarpVaultSC is Ownable, Exponential {
             vars.redeemAmount = vars.currentWarpBalance;
         }
 
-        vars.exchangeRateMantissa = exchangeRatePrior();
 
-        
+
         (vars.mathErr, vars.currentCoinBalance) = mulScalarTruncate(
             Exp({mantissa: vars.exchangeRateMantissa}),
             vars.currentWarpBalance
@@ -390,16 +390,13 @@ contract WarpVaultSC is Ownable, Exponential {
 
         require(stablecoin.balanceOf(address(this)) >= vars.redeemAmount, "Not enough stablecoin in vault.");
 
-        // Take away Warp Tokens and exchange for StableCoin
-        wStableCoin.burn(msg.sender, _amount);
-        stablecoin.transfer(msg.sender, vars.redeemAmount);
-        
+
 
         uint256 currentStableCoinReward = 0;
         if (vars.currentCoinBalance > principalBalance[msg.sender]) {
             currentStableCoinReward = vars.currentCoinBalance.sub(principalBalance[msg.sender]);
         }
-        
+
         if (vars.redeemAmount >= currentStableCoinReward) {
             historicalReward[msg.sender] = historicalReward[msg.sender].add(currentStableCoinReward);
             uint256 principalRedeemed = vars.redeemAmount.sub(currentStableCoinReward);
@@ -408,6 +405,9 @@ contract WarpVaultSC is Ownable, Exponential {
         } else {
             historicalReward[msg.sender] = historicalReward[msg.sender].add(vars.redeemAmount);
         }
+        // Take away Warp Tokens and exchange for StableCoin
+        wStableCoin.burn(msg.sender, _amount);
+        stablecoin.transfer(msg.sender, vars.redeemAmount);
     }
 
     function viewAccountBalance(address _account) public view returns (uint256) {
@@ -505,7 +505,7 @@ contract WarpVaultSC is Ownable, Exponential {
         //create local vars storage
         RepayBorrowLocalVars memory vars;
 
-        
+
         //We remember the original borrowerIndex for verification purposes
         vars.borrowerIndex = accountBorrows[msg.sender].interestIndex;
         //We fetch the amount the borrower owes, with accumulated interest
