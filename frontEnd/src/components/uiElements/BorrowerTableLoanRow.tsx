@@ -4,6 +4,10 @@ import { Token } from "../../util/token";
 import { Avatar, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@material-ui/core";
 import { AvatarGroup } from "@material-ui/lab";
 import { CustomButton } from "..";
+import { useWarpControl } from "../../hooks/useWarpControl";
+import { useConnectedWeb3Context } from "../../hooks/connectedWeb3";
+import { useBorrowedAmount } from "../../hooks/useBorrowedAmount";
+import { parseBigNumber } from "../../util/tools";
 
 interface Props {
   token: Token,
@@ -13,7 +17,11 @@ interface Props {
 
 export const BorrowerTableLoanRow: React.FC<Props> = (props: Props) => {
   const icon = <Avatar alt={props.token.image} src={props.token.image} />;
-  const amountDue = "0";
+  const context = useConnectedWeb3Context();
+  const {control} = useWarpControl(context);
+  const borrowedAmount = useBorrowedAmount(context, control, props.token);
+
+  const amountDue = parseBigNumber(borrowedAmount, props.token.decimals);
 
   const wrapMouseEventWithToken = (func: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, token: Token) => void) => {
       return (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
@@ -47,7 +55,7 @@ export const BorrowerTableLoanRow: React.FC<Props> = (props: Props) => {
             >
                 <Grid item>
                     <Typography variant="subtitle1">
-                        {amountDue + " " + props.token.symbol}
+                        {amountDue.toLocaleString(undefined, {maximumFractionDigits: 4}) + " " + props.token.symbol}
                     </Typography>
                 </Grid>
             </Grid>

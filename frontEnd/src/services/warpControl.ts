@@ -1,4 +1,5 @@
 import { BigNumber, Contract, ethers, Wallet } from "ethers";
+import { getLogger } from "../util/logger";
 
 const warpControlABI:string [] = [
   'function instanceSCTracker(address _address) public view returns (address)',
@@ -8,14 +9,18 @@ const warpControlABI:string [] = [
   'function viewMaxWithdrawAllowed(address account, address lpToken) public view returns (uint256)',
   'function viewTotalAvailableCollateralValue(address _account) public view returns (uint256)',
   'function viewTotalBorrowedValue(address _account) public view returns (uint256)',
-  'function viewBorrowLimit(address _account) public view returns (uint256)'
+  'function viewBorrowLimit(address _account) public view returns (uint256)',
+  'function borrowSC(address _StableCoin, uint256 _amount) public'
 ]
+
+const logger = getLogger('Services::WarpControlService')
 
 export class WarpControlService {
   provider: any
   contract: Contract
 
   constructor(provider: any, signerAddress: Maybe<string>, controlAddress: string) {
+    this.provider = provider;
     if (signerAddress) {
       const signer: Wallet = provider.getSigner()
       this.contract = new ethers.Contract(controlAddress, warpControlABI, provider).connect(signer)
@@ -59,6 +64,14 @@ export class WarpControlService {
 
   getMaxCollateralWithdrawAmount = async (account: string, lpToken: string): Promise<BigNumber> => {
     return this.contract.viewMaxWithdrawAllowed(account, lpToken);
+  }
+
+  borrowStableCoin = async (stableCoin: string, amount: BigNumber): Promise<void> => {
+    const tx = await this.contract.borrowSC(stableCoin, amount);
+
+    logger.log("borrowSC: " + tx.hash);
+    
+    return this.provider.waitForTransaction(tx.hash);
   }
 
 

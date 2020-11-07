@@ -16,6 +16,8 @@ import { parseBigNumber } from "../../util/tools";
 import { ERC20Service } from "../../services/erc20";
 import { WarpLPVaultService } from "../../services/warpLPVault";
 import { useBorrowLimit } from "../../hooks/useBorrowLimit";
+import { getLogger } from "../../util/logger";
+import { useCombinedBorrowRate } from "../../hooks/useCombinedBorrowRate";
 
 interface Props {
 
@@ -23,6 +25,7 @@ interface Props {
 
 // TO-DO: Web3 integration
 
+const logger = getLogger("Page::Borrower");
 
 export const Borrower: React.FC<Props> = (props: Props) => {
     const context = useConnectedWeb3Context();
@@ -31,19 +34,18 @@ export const Borrower: React.FC<Props> = (props: Props) => {
     const usdcToken = useUSDCToken(context);
     const {control} = useWarpControl(context);
     const {totalBorrowedAmount, borrowLimit} = useBorrowLimit(context, control);
-
+    const combinedBorrowRate = useCombinedBorrowRate(context, control, stableCoins);
 
     const data = {
         collateral: parseBigNumber(borrowLimit, usdcToken?.decimals),
         borrowPercentage: 0,
-        interestRate: 1.97,
+        interestRate: combinedBorrowRate,
         borrowLimit: parseBigNumber(borrowLimit, usdcToken?.decimals),
         borrowLimitUsed: parseBigNumber(totalBorrowedAmount, usdcToken?.decimals),
     }
 
-    if (borrowLimit.gt(totalBorrowedAmount)) {
-        let percentage = parseBigNumber(totalBorrowedAmount.div(borrowLimit), usdcToken?.decimals);
-        data.borrowPercentage = (percentage * 100);
+    if (data.borrowLimit > 0) {
+        data.borrowPercentage = (data.borrowLimitUsed / data.borrowLimit) * 100;
     }
 
     const [authAction, setAuthAction] = useState("borrow");
@@ -226,9 +228,17 @@ export const Borrower: React.FC<Props> = (props: Props) => {
         setAuthorizationModalOpen(false);
     }
 
-    const onBorrow = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+    const onBorrow = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+        console.log(borrowAmountValue);
+
+        const coinPrice = await control.getStableCoinPrice(currentToken.address);
+        const priceMultiplier = parseBigNumber(coinPrice, usdcToken?.decimals);
+        const numCoins = borrowAmountValue * priceMultiplier;
+
+        const amount = utils.parseUnits(numCoins.toString(), currentToken.decimals);
+        await control.borrowStableCoin(currentToken.address, amount);
+
         setBorrowModalOpen(false);
-        // TO-DO: Web3 integration
     }
 
     const onProvide = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
