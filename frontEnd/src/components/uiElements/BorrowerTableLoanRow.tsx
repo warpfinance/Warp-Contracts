@@ -2,17 +2,17 @@ import * as React from "react";
 import { Token } from "../../util/token";
 
 import { Avatar, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@material-ui/core";
-import { AvatarGroup } from "@material-ui/lab";
 import { CustomButton } from "..";
 import { useWarpControl } from "../../hooks/useWarpControl";
 import { useConnectedWeb3Context } from "../../hooks/connectedWeb3";
 import { useBorrowedAmount } from "../../hooks/useBorrowedAmount";
 import { parseBigNumber } from "../../util/tools";
+import { useTokenBalance } from "../../hooks/useTokenBalance";
 
 interface Props {
   token: Token,
-  onLeftButtonClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, token: Token) => void,
-  onRightButtonClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, token: Token) => void,
+  onLeftButtonClick: any,
+  onRightButtonClick: any,
 }
 
 export const BorrowerTableLoanRow: React.FC<Props> = (props: Props) => {
@@ -20,12 +20,13 @@ export const BorrowerTableLoanRow: React.FC<Props> = (props: Props) => {
   const context = useConnectedWeb3Context();
   const {control} = useWarpControl(context);
   const borrowedAmount = useBorrowedAmount(context, control, props.token);
+  const {walletBalance} = useTokenBalance(props.token, context);
 
   const amountDue = parseBigNumber(borrowedAmount, props.token.decimals);
 
-  const wrapMouseEventWithToken = (func: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, token: Token) => void) => {
+  const wrapMouseEventWithToken = (func: any) => {
       return (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-        func(event, props.token);
+        func(event, props.token, walletBalance);
       }
   }
 

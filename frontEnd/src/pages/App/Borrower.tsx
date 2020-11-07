@@ -18,6 +18,7 @@ import { WarpLPVaultService } from "../../services/warpLPVault";
 import { useBorrowLimit } from "../../hooks/useBorrowLimit";
 import { getLogger } from "../../util/logger";
 import { useCombinedBorrowRate } from "../../hooks/useCombinedBorrowRate";
+import { StableCoinWarpVaultService } from "../../services/stableCoinWarpVault";
 
 interface Props {
 
@@ -144,7 +145,7 @@ export const Borrower: React.FC<Props> = (props: Props) => {
         const index = stableCoins.findIndex((elem: any) => elem === token);
         if (index < 0) return true;
         if (value <= 0 ||
-            value > 0) { // borrowData[index].amount) {
+            value > walletAmount) { // borrowData[index].amount) {
             return true;
         }
         return false;
@@ -205,9 +206,10 @@ export const Borrower: React.FC<Props> = (props: Props) => {
         await getLPToUSDCRatio(token);
     }
 
-    const onRepayClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, token: Token) => {
+    const onRepayClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, token: Token, walletAmount: BigNumber) => {
         setRepayModalOpen(true);
         setCurrentToken(token);
+        setWalletAmount(parseBigNumber(walletAmount, token.decimals));
     }
 
     const onWithdrawClick = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, token: Token, walletAmount: BigNumber, vaultAmount: BigNumber) => {
@@ -220,7 +222,6 @@ export const Borrower: React.FC<Props> = (props: Props) => {
     }
 
     const onAuth = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-
         const erc20 = new ERC20Service(context.library, context.account, currentToken.address);
         const targetVault = await control.getLPVault(currentToken.address);
         await erc20.approveUnlimited(targetVault);
@@ -229,8 +230,6 @@ export const Borrower: React.FC<Props> = (props: Props) => {
     }
 
     const onBorrow = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-        console.log(borrowAmountValue);
-
         const coinPrice = await control.getStableCoinPrice(currentToken.address);
         const priceMultiplier = parseBigNumber(coinPrice, usdcToken?.decimals);
         const numCoins = borrowAmountValue * priceMultiplier;
@@ -265,14 +264,28 @@ export const Borrower: React.FC<Props> = (props: Props) => {
         setProvideModalOpen(false);
     }
 
-    const onRepay = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-        setAuthAction("repay");
-        setRepayModalOpen(false);
-        // TO-DO: Web3 integration
-        const repayAuthorization = false;
-        if (repayAuthorization === false) {
-            setAuthorizationModalOpen(true);
+    const onRepay = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+        if (!context.account) {
+            return;
         }
+
+        const erc20 = new ERC20Service(context.library, context.account, currentToken.address);
+        const targetVault = await control.getStableCoinVault(currentToken.address);
+        const enabledAmount = parseBigNumber(await erc20.allowance(context.account, targetVault), currentToken.decimals);
+        const needsAuth = repayAmountValue > enabledAmount;
+
+        if (needsAuth) {
+            setAuthorizationModalOpen(true);
+            setAuthAction("repay");
+            return;
+        }
+
+        const scVault = new StableCoinWarpVaultService(context.library, context.account, targetVault);
+        const amount = utils.parseUnits(repayAmountValue.toString(), currentToken.decimals);
+
+        await scVault.repay(amount);
+
+        setRepayModalOpen(false);
     }
 
     const onWithdraw = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {

@@ -52,9 +52,6 @@ export const useCombinedBorrowRate = (context: ConnectedWeb3Context, control: Wa
             calculatedRate = calculatedRate + (stats.amount / totalBorrowedAmount) * stats.rate;
           }
 
-          console.log(borrowStats);
-          console.log(calculatedRate);
-
           if (isSubscribed) {
               setTotalInterestRate(calculatedRate);
           }
