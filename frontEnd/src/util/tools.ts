@@ -21,3 +21,7 @@ export const isContract = async (provider: any, address: string): Promise<boolea
   const code = await provider.getCode(address)
   return code && code !== '0x'
 }
+
+export const parseBigNumber = (value: BigNumber, decimals = 18): number => {
+  return Number(utils.formatUnits(value, decimals));
+}

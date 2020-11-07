@@ -1,8 +1,8 @@
 import { BigNumber, Contract, ethers, Wallet } from "ethers";
 
-const warpControlABI = [
-  'mapping(address => address) public instanceTracker',
-  'function checkCollateralValue(address _borrower, address _WarpVault) external view  returns(uint)',
+const warpControlABI:string [] = [
+  'function instanceSCTracker(address _address) public view returns (address)',
+  'function instanceLPTracker(address _address) public view returns (address)'
 ]
 
 export class WarpControlService {
@@ -23,11 +23,11 @@ export class WarpControlService {
   }
 
   getLPVault = async (lpToken: string): Promise<string> => {
-    return "";
+    return await this.contract.instanceLPTracker(lpToken);
   }
 
   getStableCoinVault = async (token: string): Promise<string> => {
-    return "";
+    return await this.contract.instanceSCTracker(token);
   }
 
 }

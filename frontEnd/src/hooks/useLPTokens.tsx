@@ -39,6 +39,7 @@ export const useLPTokens = (context: ConnectedWeb3Context) => {
 
             token.lpType = token.symbol;
             token.symbol = data.symbol;
+            token.isLP = true;
 
             // const tokenPairAddresses = [await erc20.token0(), await erc20.token1()];
             // const tokenPair: Token[] = [];

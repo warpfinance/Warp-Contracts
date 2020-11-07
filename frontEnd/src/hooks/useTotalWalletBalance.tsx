@@ -7,7 +7,6 @@ import { getTokensByNetwork } from '../util/networks'
 import { getImageUrl, Token } from '../util/token'
 
 import { ConnectedWeb3Context } from './connectedWeb3'
-import { useContracts } from './useContracts'
 
 import { utils } from 'ethers'
 

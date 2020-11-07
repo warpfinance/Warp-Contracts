@@ -38,6 +38,7 @@ export interface Token {
   image?: string
   image2?: string
   lpType?: string
+  isLP?: boolean
 }
 
 export interface StableCoin extends Token {

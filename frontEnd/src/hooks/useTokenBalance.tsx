@@ -13,7 +13,7 @@ export const useTokenBalance = (token: Token, context: ConnectedWeb3Context) => 
   const [vaultBalance, setVaultBalance] = useState<Maybe<BigNumber>>(null);
 
   useEffect(() => {
-    const isSubscribed = true
+    let isSubscribed = true
 
     const fetchTokenBalances = async () => {
       let walletBalance = BigNumber.from(0);
@@ -30,7 +30,11 @@ export const useTokenBalance = (token: Token, context: ConnectedWeb3Context) => 
     }
 
 
-    fetchTokenBalances()
+    fetchTokenBalances();
+
+    return () => {
+      isSubscribed = false;
+    }
   }, [account, provider, token])
 
   return {walletBalance, vaultBalance}

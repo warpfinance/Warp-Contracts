@@ -10,6 +10,9 @@ import { useConnectedWeb3Context } from "../../hooks/connectedWeb3";
 import { useStableCoinTokens } from "../../hooks/useStableCoins";
 import { useState } from "react";
 import { useTotalWalletBalance } from "../../hooks/useTotalWalletBalance";
+import { ERC20Service } from "../../services/erc20";
+import { useWarpControl } from "../../hooks/useWarpControl";
+import { useForceUpdate } from "../../hooks/useForceUpdate";
 
 // TO-DO: Web3 integration
 const authAction = "lend"
@@ -24,6 +27,7 @@ export const Lender: React.FC<Props> = (props: Props) => {
     const tokens = useStableCoinTokens(context);
 
     const walletBalance = useTotalWalletBalance(context);
+    const {control} = useWarpControl(context);
 
     const data = {
         stableCoinDeposit: 0.00,
@@ -129,17 +133,35 @@ export const Lender: React.FC<Props> = (props: Props) => {
         }
     };
 
-    const onAuth = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+    const onAuth = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+        if (!lendToken) {
+            return;
+        }
+
+        const erc20 = new ERC20Service(context.library, context.account, lendToken.address);
+        const targetVault = await control.getStableCoinVault(lendToken.address);
+        await erc20.approveUnlimited(targetVault);
+
         setAuthorizationModalOpen(false);
-        // TO-DO: Web3 integration
+        setLendModalOpen(true);
     }
 
-    const onLend = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+    const onLend = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
         setLendModalOpen(false);
-        // TO-DO: Web3 integration
-        const lendAuthorization = false;
-        if (lendAuthorization === false) {
+
+        if (!lendToken || !context.account) {
+            return;
+        }
+
+        const erc20 = new ERC20Service(context.library, context.account, lendToken.address);
+        const targetVault = await control.getStableCoinVault(lendToken.address);
+        const enabledAmount = await erc20.allowance(context.account, targetVault);
+
+        const needsAuth = lendAmountValue.gt(enabledAmount);
+
+        if (needsAuth) {
             setAuthorizationModalOpen(true);
+            return;
         }
     }
 

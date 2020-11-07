@@ -7,6 +7,9 @@ import { BigNumber, utils } from "ethers";
 import { formatBigNumber } from "../../util/tools";
 import { useConnectedWeb3Context } from "../../hooks/connectedWeb3";
 import { useTokenBalance } from "../../hooks/useTokenBalance";
+import { useTokenInterest } from "../../hooks/useTokenInterest";
+import { useWarpControl } from "../../hooks/useWarpControl";
+import { useTokenEnabled } from "../../hooks/useTokenEnabled";
 
 interface Props {
   token: Token,
@@ -28,6 +31,8 @@ export const LenderStableCoinRow: React.FC<Props> = (props: Props) => {
 
   const context = useConnectedWeb3Context();
   const {walletBalance, vaultBalance} = useTokenBalance(props.token, context);
+  const {control} = useWarpControl(context);
+  const {tokenSupplyRate} = useTokenInterest(control, props.token, context);
   
   React.useEffect(() => {
     let available = BigNumber.from(0);
@@ -41,7 +46,7 @@ export const LenderStableCoinRow: React.FC<Props> = (props: Props) => {
     setAvailableAmount(available);
   }, [walletBalance, vaultBalance]);
 
-  const onChangeWrapped: (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+  const onChangeWrapped = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
     props.onChange(event, availableAmount, props.token);
   }
 
@@ -74,6 +79,11 @@ export const LenderStableCoinRow: React.FC<Props> = (props: Props) => {
                       {formatBigNumber(availableAmount, props.token.decimals) + " " + currency}
                   </Typography>
               </Grid>
+              <Grid item>
+                    <Typography variant="subtitle1" color="textSecondary">
+                        {tokenSupplyRate.toLocaleString(undefined, { minimumFractionDigits: 2 }) + "%"}
+                    </Typography>
+                </Grid>
           </Grid>
       </TableCell>
       <TableCell>

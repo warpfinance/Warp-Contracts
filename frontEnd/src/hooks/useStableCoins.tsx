@@ -6,7 +6,6 @@ import { getTokensByNetwork, knownTokens } from '../util/networks'
 import { getImageUrl, Token } from '../util/token'
 
 import { ConnectedWeb3Context } from './connectedWeb3'
-import { useContracts } from './useContracts'
 
 const logger = getLogger('Hooks::useStableCoins');
 
@@ -31,6 +30,8 @@ export const useStableCoinTokens = (context: ConnectedWeb3Context) => {
               image,
               image2
             }
+
+            token.isLP = false;
 
             return token;
           }),
