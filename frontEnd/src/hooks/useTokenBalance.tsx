@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { ERC20Service } from '../services/erc20'
 import { StableCoinWarpVaultService } from '../services/stableCoinWarpVault'
 import { WarpControlService } from '../services/warpControl'
+import { WarpLPVaultService } from '../services/warpLPVault'
 import { getContractAddress } from '../util/networks'
 import { Token } from '../util/token'
 
@@ -33,6 +34,8 @@ export const useTokenBalance = (token: Token, context: ConnectedWeb3Context) => 
 
       if (token.isLP) {
         const vaultAddress = await control.getLPVault(token.address);
+        const lpVault = new WarpLPVaultService(provider, account, vaultAddress);
+        setVaultBalance(await lpVault.collateralBalance(account));
       } else {
         const vaultAddress = await control.getStableCoinVault(token.address);
         const scVault = new StableCoinWarpVaultService(provider, account, vaultAddress);
