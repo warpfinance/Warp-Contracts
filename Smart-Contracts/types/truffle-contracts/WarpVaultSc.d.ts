@@ -37,11 +37,6 @@ export interface WarpVaultScInstance extends Truffle.ContractInstance {
     txDetails?: Truffle.TransactionDetails
   ): Promise<[BN, BN]>;
 
-  accountLent(
-    arg0: string,
-    txDetails?: Truffle.TransactionDetails
-  ): Promise<BN>;
-
   accrualBlockNumber(txDetails?: Truffle.TransactionDetails): Promise<BN>;
 
   borrowIndex(txDetails?: Truffle.TransactionDetails): Promise<BN>;
@@ -56,6 +51,11 @@ export interface WarpVaultScInstance extends Truffle.ContractInstance {
     txDetails?: Truffle.TransactionDetails
   ): Promise<boolean>;
 
+  historicalReward(
+    arg0: string,
+    txDetails?: Truffle.TransactionDetails
+  ): Promise<BN>;
+
   liquidationIncentiveMantissa(
     txDetails?: Truffle.TransactionDetails
   ): Promise<BN>;
@@ -64,6 +64,11 @@ export interface WarpVaultScInstance extends Truffle.ContractInstance {
    * Returns the address of the current owner.
    */
   owner(txDetails?: Truffle.TransactionDetails): Promise<string>;
+
+  principalBalance(
+    arg0: string,
+    txDetails?: Truffle.TransactionDetails
+  ): Promise<BN>;
 
   /**
    * Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner.     * NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.
@@ -160,16 +165,6 @@ export interface WarpVaultScInstance extends Truffle.ContractInstance {
   supplyRatePerBlock(txDetails?: Truffle.TransactionDetails): Promise<BN>;
 
   /**
-   * getSupplyAPY roughly calculates the current APY for supplying using an average of 6500 blocks per day*
-   */
-  getSupplyAPY(txDetails?: Truffle.TransactionDetails): Promise<BN>;
-
-  /**
-   * getSupplyAPY roughly calculates the current APY for borrowing using an average of 6500 blocks per day*
-   */
-  getBorrowAPY(txDetails?: Truffle.TransactionDetails): Promise<BN>;
-
-  /**
    * Returns the current total borrows plus accrued interest
    */
   totalBorrowsCurrent: {
@@ -250,11 +245,21 @@ export interface WarpVaultScInstance extends Truffle.ContractInstance {
     ): Promise<number>;
   };
 
+  viewAccountBalance(
+    _account: string,
+    txDetails?: Truffle.TransactionDetails
+  ): Promise<BN>;
+
+  viewHistoricalReward(
+    _account: string,
+    txDetails?: Truffle.TransactionDetails
+  ): Promise<BN>;
+
   /**
    * Sender borrows stablecoin assets from the protocol to their own address
    * @param _borrowAmount The amount of the underlying asset to borrow
    */
-  borrow: {
+  _borrow: {
     (
       _borrowAmount: number | BN | string,
       _borrower: string,
@@ -300,29 +305,36 @@ export interface WarpVaultScInstance extends Truffle.ContractInstance {
     ): Promise<number>;
   };
 
-  repayLiquidatedLoan: {
+  /**
+   * this function uses the onlyWC modifier which means it can only be called by the Warp Control contract*
+   * repayLiquidatedLoan is a function used by the Warp Control contract to repay a loan on behalf of a liquidator
+   * @param _amount is the amount of StableCoin being repayed
+   * @param _borrower is the address of the borrower who took out the loan
+   * @param _liquidator is the address of the account who is liquidating the loan
+   */
+  _repayLiquidatedLoan: {
     (
-      borrower: string,
-      liquidator: string,
-      amount: number | BN | string,
+      _borrower: string,
+      _liquidator: string,
+      _amount: number | BN | string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<Truffle.TransactionResponse<AllEvents>>;
     call(
-      borrower: string,
-      liquidator: string,
-      amount: number | BN | string,
+      _borrower: string,
+      _liquidator: string,
+      _amount: number | BN | string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<void>;
     sendTransaction(
-      borrower: string,
-      liquidator: string,
-      amount: number | BN | string,
+      _borrower: string,
+      _liquidator: string,
+      _amount: number | BN | string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<string>;
     estimateGas(
-      borrower: string,
-      liquidator: string,
-      amount: number | BN | string,
+      _borrower: string,
+      _liquidator: string,
+      _amount: number | BN | string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<number>;
   };
@@ -336,11 +348,6 @@ export interface WarpVaultScInstance extends Truffle.ContractInstance {
       arg0: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<[BN, BN]>;
-
-    accountLent(
-      arg0: string,
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<BN>;
 
     accrualBlockNumber(txDetails?: Truffle.TransactionDetails): Promise<BN>;
 
@@ -356,6 +363,11 @@ export interface WarpVaultScInstance extends Truffle.ContractInstance {
       txDetails?: Truffle.TransactionDetails
     ): Promise<boolean>;
 
+    historicalReward(
+      arg0: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<BN>;
+
     liquidationIncentiveMantissa(
       txDetails?: Truffle.TransactionDetails
     ): Promise<BN>;
@@ -364,6 +376,11 @@ export interface WarpVaultScInstance extends Truffle.ContractInstance {
      * Returns the address of the current owner.
      */
     owner(txDetails?: Truffle.TransactionDetails): Promise<string>;
+
+    principalBalance(
+      arg0: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<BN>;
 
     /**
      * Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner.     * NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.
@@ -463,16 +480,6 @@ export interface WarpVaultScInstance extends Truffle.ContractInstance {
     supplyRatePerBlock(txDetails?: Truffle.TransactionDetails): Promise<BN>;
 
     /**
-     * getSupplyAPY roughly calculates the current APY for supplying using an average of 6500 blocks per day*
-     */
-    getSupplyAPY(txDetails?: Truffle.TransactionDetails): Promise<BN>;
-
-    /**
-     * getSupplyAPY roughly calculates the current APY for borrowing using an average of 6500 blocks per day*
-     */
-    getBorrowAPY(txDetails?: Truffle.TransactionDetails): Promise<BN>;
-
-    /**
      * Returns the current total borrows plus accrued interest
      */
     totalBorrowsCurrent: {
@@ -553,11 +560,21 @@ export interface WarpVaultScInstance extends Truffle.ContractInstance {
       ): Promise<number>;
     };
 
+    viewAccountBalance(
+      _account: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<BN>;
+
+    viewHistoricalReward(
+      _account: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<BN>;
+
     /**
      * Sender borrows stablecoin assets from the protocol to their own address
      * @param _borrowAmount The amount of the underlying asset to borrow
      */
-    borrow: {
+    _borrow: {
       (
         _borrowAmount: number | BN | string,
         _borrower: string,
@@ -603,29 +620,36 @@ export interface WarpVaultScInstance extends Truffle.ContractInstance {
       ): Promise<number>;
     };
 
-    repayLiquidatedLoan: {
+    /**
+     * this function uses the onlyWC modifier which means it can only be called by the Warp Control contract*
+     * repayLiquidatedLoan is a function used by the Warp Control contract to repay a loan on behalf of a liquidator
+     * @param _amount is the amount of StableCoin being repayed
+     * @param _borrower is the address of the borrower who took out the loan
+     * @param _liquidator is the address of the account who is liquidating the loan
+     */
+    _repayLiquidatedLoan: {
       (
-        borrower: string,
-        liquidator: string,
-        amount: number | BN | string,
+        _borrower: string,
+        _liquidator: string,
+        _amount: number | BN | string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<Truffle.TransactionResponse<AllEvents>>;
       call(
-        borrower: string,
-        liquidator: string,
-        amount: number | BN | string,
+        _borrower: string,
+        _liquidator: string,
+        _amount: number | BN | string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<void>;
       sendTransaction(
-        borrower: string,
-        liquidator: string,
-        amount: number | BN | string,
+        _borrower: string,
+        _liquidator: string,
+        _amount: number | BN | string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<string>;
       estimateGas(
-        borrower: string,
-        liquidator: string,
-        amount: number | BN | string,
+        _borrower: string,
+        _liquidator: string,
+        _amount: number | BN | string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<number>;
     };

@@ -129,33 +129,48 @@ export interface WarpVaultLpInstance extends Truffle.ContractInstance {
    */
   getAssetAdd(txDetails?: Truffle.TransactionDetails): Promise<string>;
 
+  /**
+   * collateralOfAccount is a view function to retreive an accounts collateralized LP amount
+   * @param _account is the address of the account being looked up*
+   */
   collateralOfAccount(
     _account: string,
     txDetails?: Truffle.TransactionDetails
   ): Promise<BN>;
 
-  liquidateAccount: {
+  /**
+   * this function uses the onlyWC modifier meaning that only the Warp Control contract can call it*
+   * _liquidateAccount is a function to liquidate the LP tokens of the input account
+   * @param _account is the address of the account being liquidated
+   * @param _liquidator is the address of the account doing the liquidating who receives the liquidated LP's
+   */
+  _liquidateAccount: {
     (
-      account: string,
-      liquidator: string,
+      _account: string,
+      _liquidator: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<Truffle.TransactionResponse<AllEvents>>;
     call(
-      account: string,
-      liquidator: string,
+      _account: string,
+      _liquidator: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<void>;
     sendTransaction(
-      account: string,
-      liquidator: string,
+      _account: string,
+      _liquidator: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<string>;
     estimateGas(
-      account: string,
-      liquidator: string,
+      _account: string,
+      _liquidator: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<number>;
   };
+
+  valueOfAccountCollateral(
+    _account: string,
+    txDetails?: Truffle.TransactionDetails
+  ): Promise<BN>;
 
   methods: {
     LPtoken(txDetails?: Truffle.TransactionDetails): Promise<string>;
@@ -260,33 +275,48 @@ export interface WarpVaultLpInstance extends Truffle.ContractInstance {
      */
     getAssetAdd(txDetails?: Truffle.TransactionDetails): Promise<string>;
 
+    /**
+     * collateralOfAccount is a view function to retreive an accounts collateralized LP amount
+     * @param _account is the address of the account being looked up*
+     */
     collateralOfAccount(
       _account: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<BN>;
 
-    liquidateAccount: {
+    /**
+     * this function uses the onlyWC modifier meaning that only the Warp Control contract can call it*
+     * _liquidateAccount is a function to liquidate the LP tokens of the input account
+     * @param _account is the address of the account being liquidated
+     * @param _liquidator is the address of the account doing the liquidating who receives the liquidated LP's
+     */
+    _liquidateAccount: {
       (
-        account: string,
-        liquidator: string,
+        _account: string,
+        _liquidator: string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<Truffle.TransactionResponse<AllEvents>>;
       call(
-        account: string,
-        liquidator: string,
+        _account: string,
+        _liquidator: string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<void>;
       sendTransaction(
-        account: string,
-        liquidator: string,
+        _account: string,
+        _liquidator: string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<string>;
       estimateGas(
-        account: string,
-        liquidator: string,
+        _account: string,
+        _liquidator: string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<number>;
     };
+
+    valueOfAccountCollateral(
+      _account: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<BN>;
   };
 
   getPastEvents(event: string): Promise<EventData[]>;

@@ -14,6 +14,12 @@ export interface WarpVaultScFactoryIContract
 type AllEvents = never;
 
 export interface WarpVaultScFactoryIInstance extends Truffle.ContractInstance {
+  /**
+   * createNewWarpVaultSC is used to create new WarpVaultSC contract instances
+   * @param _InterestRate is the address of the InterestRateModel contract created for this Warp Vault
+   * @param _StableCoin is the address of the stablecoin contract this WarpVault will manage
+   * @param _initialExchangeRate is the exchange rate mantissa used to determine the initial exchange rate of stablecoin to warp stablecoin*
+   */
   createNewWarpVaultSC: {
     (
       _InterestRate: string,
@@ -42,6 +48,12 @@ export interface WarpVaultScFactoryIInstance extends Truffle.ContractInstance {
   };
 
   methods: {
+    /**
+     * createNewWarpVaultSC is used to create new WarpVaultSC contract instances
+     * @param _InterestRate is the address of the InterestRateModel contract created for this Warp Vault
+     * @param _StableCoin is the address of the stablecoin contract this WarpVault will manage
+     * @param _initialExchangeRate is the exchange rate mantissa used to determine the initial exchange rate of stablecoin to warp stablecoin*
+     */
     createNewWarpVaultSC: {
       (
         _InterestRate: string,

@@ -17,7 +17,7 @@ contract WrappedBitcoin is  Ownable, ERC20 {
          "WrappedBitcoin",
          "WBTC"
        ){
-         _Mint(msg.sender,1000000000000000000000000000);
+         _Mint(msg.sender,10000000000000000000000000000);
      }
 
      function _Mint(address _to, uint _amount) public onlyOwner {

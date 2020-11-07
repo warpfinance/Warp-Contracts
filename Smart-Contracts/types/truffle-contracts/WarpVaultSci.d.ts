@@ -13,53 +13,9 @@ type AllEvents = never;
 
 export interface WarpVaultSciInstance extends Truffle.ContractInstance {
   /**
-   * setUp is called after the creation of a WarpVault to set up its Interest Rate Model and its initial exchange rate
-   * @param _baseRatePerYear The approximate target base APR, as a mantissa (scaled by 1e18)
-   * @param _jumpMultiplierPerYear The multiplierPerBlock after hitting a specified utilization point
-   * @param _multiplierPerYear The rate of increase in interest rate wrt utilization (scaled by 1e18)
-   * @param _optimal The utilization point at which the jump multiplier is applied(Refered to as the Kink in the InterestRateModel)*
+   * Accrue interest to updated borrowIndex and then calculate account's borrow balance using the updated borrowIndex
+   * @param account The address whose balance should be calculated after updating borrowIndex
    */
-  setUp: {
-    (
-      _baseRatePerYear: number | BN | string,
-      _multiplierPerYear: number | BN | string,
-      _jumpMultiplierPerYear: number | BN | string,
-      _optimal: number | BN | string,
-      _initialExchangeRate: number | BN | string,
-      _oracle: string,
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<Truffle.TransactionResponse<AllEvents>>;
-    call(
-      _baseRatePerYear: number | BN | string,
-      _multiplierPerYear: number | BN | string,
-      _jumpMultiplierPerYear: number | BN | string,
-      _optimal: number | BN | string,
-      _initialExchangeRate: number | BN | string,
-      _oracle: string,
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<void>;
-    sendTransaction(
-      _baseRatePerYear: number | BN | string,
-      _multiplierPerYear: number | BN | string,
-      _jumpMultiplierPerYear: number | BN | string,
-      _optimal: number | BN | string,
-      _initialExchangeRate: number | BN | string,
-      _oracle: string,
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<string>;
-    estimateGas(
-      _baseRatePerYear: number | BN | string,
-      _multiplierPerYear: number | BN | string,
-      _jumpMultiplierPerYear: number | BN | string,
-      _optimal: number | BN | string,
-      _initialExchangeRate: number | BN | string,
-      _oracle: string,
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<number>;
-  };
-
-  getAssetAdd(txDetails?: Truffle.TransactionDetails): Promise<string>;
-
   borrowBalanceCurrent: {
     (account: string, txDetails?: Truffle.TransactionDetails): Promise<
       Truffle.TransactionResponse<AllEvents>
@@ -75,11 +31,18 @@ export interface WarpVaultSciInstance extends Truffle.ContractInstance {
     ): Promise<number>;
   };
 
+  /**
+   * returns last calculated account's borrow balance using the prior borrowIndex
+   * @param account The address whose balance should be calculated after updating borrowIndex
+   */
   borrowBalancePrior(
     account: string,
     txDetails?: Truffle.TransactionDetails
   ): Promise<BN>;
 
+  /**
+   * Accrue interest then return the up-to-date exchange rate
+   */
   exchangeRateCurrent: {
     (txDetails?: Truffle.TransactionDetails): Promise<
       Truffle.TransactionResponse<AllEvents>
@@ -89,7 +52,12 @@ export interface WarpVaultSciInstance extends Truffle.ContractInstance {
     estimateGas(txDetails?: Truffle.TransactionDetails): Promise<number>;
   };
 
-  borrow: {
+  /**
+   * Sender borrows stablecoin assets from the protocol to their own address
+   * @param _borrowAmount The amount of the underlying asset to borrow
+   * @param _borrower The borrower
+   */
+  _borrow: {
     (
       _borrowAmount: number | BN | string,
       _borrower: string,
@@ -112,82 +80,45 @@ export interface WarpVaultSciInstance extends Truffle.ContractInstance {
     ): Promise<number>;
   };
 
-  repayLiquidatedLoan: {
+  /**
+   * this function uses the onlyWC modifier which means it can only be called by the Warp Control contract*
+   * repayLiquidatedLoan is a function used by the Warp Control contract to repay a loan on behalf of a liquidator
+   * @param _amount is the amount of StableCoin being repayed
+   * @param _borrower is the address of the borrower who took out the loan
+   * @param _liquidator is the address of the account who is liquidating the loan
+   */
+  _repayLiquidatedLoan: {
     (
-      borrower: string,
-      liquidator: string,
-      amount: number | BN | string,
+      _borrower: string,
+      _liquidator: string,
+      _amount: number | BN | string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<Truffle.TransactionResponse<AllEvents>>;
     call(
-      borrower: string,
-      liquidator: string,
-      amount: number | BN | string,
+      _borrower: string,
+      _liquidator: string,
+      _amount: number | BN | string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<void>;
     sendTransaction(
-      borrower: string,
-      liquidator: string,
-      amount: number | BN | string,
+      _borrower: string,
+      _liquidator: string,
+      _amount: number | BN | string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<string>;
     estimateGas(
-      borrower: string,
-      liquidator: string,
-      amount: number | BN | string,
+      _borrower: string,
+      _liquidator: string,
+      _amount: number | BN | string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<number>;
   };
 
   methods: {
     /**
-     * setUp is called after the creation of a WarpVault to set up its Interest Rate Model and its initial exchange rate
-     * @param _baseRatePerYear The approximate target base APR, as a mantissa (scaled by 1e18)
-     * @param _jumpMultiplierPerYear The multiplierPerBlock after hitting a specified utilization point
-     * @param _multiplierPerYear The rate of increase in interest rate wrt utilization (scaled by 1e18)
-     * @param _optimal The utilization point at which the jump multiplier is applied(Refered to as the Kink in the InterestRateModel)*
+     * Accrue interest to updated borrowIndex and then calculate account's borrow balance using the updated borrowIndex
+     * @param account The address whose balance should be calculated after updating borrowIndex
      */
-    setUp: {
-      (
-        _baseRatePerYear: number | BN | string,
-        _multiplierPerYear: number | BN | string,
-        _jumpMultiplierPerYear: number | BN | string,
-        _optimal: number | BN | string,
-        _initialExchangeRate: number | BN | string,
-        _oracle: string,
-        txDetails?: Truffle.TransactionDetails
-      ): Promise<Truffle.TransactionResponse<AllEvents>>;
-      call(
-        _baseRatePerYear: number | BN | string,
-        _multiplierPerYear: number | BN | string,
-        _jumpMultiplierPerYear: number | BN | string,
-        _optimal: number | BN | string,
-        _initialExchangeRate: number | BN | string,
-        _oracle: string,
-        txDetails?: Truffle.TransactionDetails
-      ): Promise<void>;
-      sendTransaction(
-        _baseRatePerYear: number | BN | string,
-        _multiplierPerYear: number | BN | string,
-        _jumpMultiplierPerYear: number | BN | string,
-        _optimal: number | BN | string,
-        _initialExchangeRate: number | BN | string,
-        _oracle: string,
-        txDetails?: Truffle.TransactionDetails
-      ): Promise<string>;
-      estimateGas(
-        _baseRatePerYear: number | BN | string,
-        _multiplierPerYear: number | BN | string,
-        _jumpMultiplierPerYear: number | BN | string,
-        _optimal: number | BN | string,
-        _initialExchangeRate: number | BN | string,
-        _oracle: string,
-        txDetails?: Truffle.TransactionDetails
-      ): Promise<number>;
-    };
-
-    getAssetAdd(txDetails?: Truffle.TransactionDetails): Promise<string>;
-
     borrowBalanceCurrent: {
       (account: string, txDetails?: Truffle.TransactionDetails): Promise<
         Truffle.TransactionResponse<AllEvents>
@@ -206,11 +137,18 @@ export interface WarpVaultSciInstance extends Truffle.ContractInstance {
       ): Promise<number>;
     };
 
+    /**
+     * returns last calculated account's borrow balance using the prior borrowIndex
+     * @param account The address whose balance should be calculated after updating borrowIndex
+     */
     borrowBalancePrior(
       account: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<BN>;
 
+    /**
+     * Accrue interest then return the up-to-date exchange rate
+     */
     exchangeRateCurrent: {
       (txDetails?: Truffle.TransactionDetails): Promise<
         Truffle.TransactionResponse<AllEvents>
@@ -220,7 +158,12 @@ export interface WarpVaultSciInstance extends Truffle.ContractInstance {
       estimateGas(txDetails?: Truffle.TransactionDetails): Promise<number>;
     };
 
-    borrow: {
+    /**
+     * Sender borrows stablecoin assets from the protocol to their own address
+     * @param _borrowAmount The amount of the underlying asset to borrow
+     * @param _borrower The borrower
+     */
+    _borrow: {
       (
         _borrowAmount: number | BN | string,
         _borrower: string,
@@ -243,29 +186,36 @@ export interface WarpVaultSciInstance extends Truffle.ContractInstance {
       ): Promise<number>;
     };
 
-    repayLiquidatedLoan: {
+    /**
+     * this function uses the onlyWC modifier which means it can only be called by the Warp Control contract*
+     * repayLiquidatedLoan is a function used by the Warp Control contract to repay a loan on behalf of a liquidator
+     * @param _amount is the amount of StableCoin being repayed
+     * @param _borrower is the address of the borrower who took out the loan
+     * @param _liquidator is the address of the account who is liquidating the loan
+     */
+    _repayLiquidatedLoan: {
       (
-        borrower: string,
-        liquidator: string,
-        amount: number | BN | string,
+        _borrower: string,
+        _liquidator: string,
+        _amount: number | BN | string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<Truffle.TransactionResponse<AllEvents>>;
       call(
-        borrower: string,
-        liquidator: string,
-        amount: number | BN | string,
+        _borrower: string,
+        _liquidator: string,
+        _amount: number | BN | string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<void>;
       sendTransaction(
-        borrower: string,
-        liquidator: string,
-        amount: number | BN | string,
+        _borrower: string,
+        _liquidator: string,
+        _amount: number | BN | string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<string>;
       estimateGas(
-        borrower: string,
-        liquidator: string,
-        amount: number | BN | string,
+        _borrower: string,
+        _liquidator: string,
+        _amount: number | BN | string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<number>;
     };

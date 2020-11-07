@@ -5,19 +5,19 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 ////////////////////////////////////////////////////////////////////////////////////////////
-/// @title WrappedEthereum
+/// @title USDT
 /// @author Christopher Dixon
 ////////////////////////////////////////////////////////////////////////////////////////////
 /**
-@notice the WrappedEthereum contract is used to simulate an ERC20 with uniswap on kovan
+@notice the USDT contract is used to simulate an ERC20 with uniswap on kovan
 **/
-contract WrappedEthereum is  Ownable, ERC20 {
+contract USDT is  Ownable, ERC20 {
 
      constructor() public ERC20(
-         "WrappedEthereum",
-         "WETH"
+         "USDT",
+         "USDT"
        ){
-         _Mint(msg.sender,1000000000000000000000000000);
+         _Mint(msg.sender,10000000000000000000000000000);
      }
 
      function _Mint(address _to, uint _amount) public onlyOwner {
