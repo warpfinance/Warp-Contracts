@@ -212,6 +212,7 @@ export const getTokensByNetwork = (networkId: number, lp?: boolean): Token[] => 
           image,
           image2,
           address,
+          isLP: lp
         }
       }
       return null

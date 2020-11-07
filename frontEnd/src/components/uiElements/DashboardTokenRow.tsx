@@ -7,6 +7,8 @@ import { AvatarGroup } from "@material-ui/lab";
 import { BigNumber } from "ethers";
 import { formatBigNumber } from "../../util/tools";
 import { CustomButton } from "..";
+import { useTokenInterest } from "../../hooks/useTokenInterest";
+import { useWarpControl } from "../../hooks/useWarpControl";
 
 interface Props {
   token: Token
@@ -19,8 +21,9 @@ export const DashboardTableRow: React.FC<Props> = (props: Props) => {
 
   const context = useConnectedWeb3Context();
   const {walletBalance, vaultBalance} = useTokenBalance(props.token, context);
+  const {control} = useWarpControl(context);
+  const {tokenBorrowRate, tokenSupplyRate} = useTokenInterest(control, props.token, context);
   const uniVersion = props.token.lpType;
-  const apy = 0;
 
   const [availableAmount, setAvailableAmount] = React.useState(BigNumber.from(0));
 
@@ -61,11 +64,15 @@ export const DashboardTableRow: React.FC<Props> = (props: Props) => {
                           {props.token.symbol}
                       </Typography>
                   </Grid>
-                  <Grid item>
-                      <Typography variant="subtitle1" color="textSecondary">
-                          {apy.toLocaleString(undefined, { minimumFractionDigits: 2 }) + "%"}
-                      </Typography>
-                  </Grid>
+                  {
+                    (props.type === "lending") ? (
+                    <Grid item>
+                        <Typography variant="subtitle1" color="textSecondary">
+                            {tokenSupplyRate.toLocaleString(undefined, { minimumFractionDigits: 2 }) + "%"}
+                        </Typography>
+                    </Grid>
+                    ) : null
+                  }
               </Grid>
           </Grid>
       </TableCell>

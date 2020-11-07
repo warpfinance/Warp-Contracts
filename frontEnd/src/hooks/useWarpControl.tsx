@@ -3,7 +3,7 @@ import { WarpControlService } from '../services/warpControl';
 import { getContractAddress } from '../util/networks';
 import { ConnectedWeb3Context } from './connectedWeb3'
 
-export const useContracts = (context: ConnectedWeb3Context) => {
+export const useWarpControl = (context: ConnectedWeb3Context) => {
   const { account, library: provider, networkId } = context
 
   const controlAddress = getContractAddress(networkId, 'warpControl');

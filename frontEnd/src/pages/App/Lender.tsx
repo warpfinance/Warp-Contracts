@@ -5,11 +5,15 @@ import { Avatar, Grid } from "@material-ui/core";
 import { BigNumber, utils } from "ethers";
 
 import { Token } from "../../util/token";
-import { formatBigNumber } from "../../util/tools";
+import { formatBigNumber, parseBigNumber } from "../../util/tools";
 import { useConnectedWeb3Context } from "../../hooks/connectedWeb3";
 import { useStableCoinTokens } from "../../hooks/useStableCoins";
 import { useState } from "react";
 import { useTotalWalletBalance } from "../../hooks/useTotalWalletBalance";
+import { ERC20Service } from "../../services/erc20";
+import { useWarpControl } from "../../hooks/useWarpControl";
+import { useForceUpdate } from "../../hooks/useForceUpdate";
+import { StableCoinWarpVaultService } from "../../services/stableCoinWarpVault";
 
 // TO-DO: Web3 integration
 const authAction = "lend"
@@ -24,6 +28,7 @@ export const Lender: React.FC<Props> = (props: Props) => {
     const tokens = useStableCoinTokens(context);
 
     const walletBalance = useTotalWalletBalance(context);
+    const {control} = useWarpControl(context);
 
     const data = {
         stableCoinDeposit: 0.00,
@@ -129,23 +134,54 @@ export const Lender: React.FC<Props> = (props: Props) => {
         }
     };
 
-    const onAuth = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-        setAuthorizationModalOpen(false);
-        // TO-DO: Web3 integration
-    }
-
-    const onLend = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-        setLendModalOpen(false);
-        // TO-DO: Web3 integration
-        const lendAuthorization = false;
-        if (lendAuthorization === false) {
-            setAuthorizationModalOpen(true);
+    const onAuth = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+        if (!lendToken) {
+            return;
         }
+
+        const erc20 = new ERC20Service(context.library, context.account, lendToken.address);
+        const targetVault = await control.getStableCoinVault(lendToken.address);
+        await erc20.approveUnlimited(targetVault);
+
+        setAuthorizationModalOpen(false);
+        setLendModalOpen(true);
     }
 
-    const onWithdraw = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+    const onLend = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+        if (!lendToken || !context.account) {
+            return;
+        }
+
+        const erc20 = new ERC20Service(context.library, context.account, lendToken.address);
+        const targetVault = await control.getStableCoinVault(lendToken.address);
+        const enabledAmount = await erc20.allowance(context.account, targetVault);
+
+        const needsAuth = lendAmountValue.gt(enabledAmount);
+
+        if (needsAuth) {
+            setAuthorizationModalOpen(true);
+            return;
+        }
+
+        const scVault = new StableCoinWarpVaultService(context.library, context.account, targetVault);
+        await scVault.lendToVault(lendAmountValue);
+
+        setLendModalOpen(false);
+    }
+
+    const onWithdraw = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+        if (!withdrawToken || !context.account) {
+            return;
+        }
+
+        const erc20 = new ERC20Service(context.library, context.account, withdrawToken.address);
+        const targetVault = await control.getStableCoinVault(withdrawToken.address);
+        const scVault = new StableCoinWarpVaultService(context.library, context.account, targetVault);
+
+        await scVault.withdraw(withdrawAmountValue);
+        
+
         setWithdrawModalOpen(false);
-        // TO-DO: Web3 integration
     }
 
     return (
