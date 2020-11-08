@@ -15,6 +15,8 @@ import { useWarpControl } from "../../hooks/useWarpControl";
 import { useForceUpdate } from "../../hooks/useForceUpdate";
 import { StableCoinWarpVaultService } from "../../services/stableCoinWarpVault";
 import { useTotalLentAmount } from "../../hooks/useTotalLentAmount";
+import { useUSDCToken } from "../../hooks/useUSDC";
+import { useCombinedHistoricalReward } from "../../hooks/useCombinedHistoricalReward";
 
 // TO-DO: Web3 integration
 const authAction = "lend"
@@ -30,11 +32,13 @@ export const Lender: React.FC<Props> = (props: Props) => {
 
     const walletBalance = useTotalWalletBalance(context);
     const {control} = useWarpControl(context);
-    const totalLentAmount = useTotalLentAmount(context, control);
+    const usdcToken = useUSDCToken(context);
+    const totalLentAmount = useTotalLentAmount(context, control, usdcToken);
+    const totalReward = useCombinedHistoricalReward(context, control, tokens, usdcToken);
 
     const data = {
         stableCoinDeposit: totalLentAmount,
-        stableCoinReward: 4545,
+        stableCoinReward: totalReward,
         walletBalance
     }
 

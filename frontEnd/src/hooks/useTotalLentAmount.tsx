@@ -17,10 +17,9 @@ import { parseBigNumber } from '../util/tools'
 
 const logger = getLogger('Hooks::useTotalLentAmount')
 
-export const useTotalLentAmount = (context: ConnectedWeb3Context, control: WarpControlService) => {
+export const useTotalLentAmount = (context: ConnectedWeb3Context, control: WarpControlService, usdc: Maybe<Token>) => {
   const tokens = getTokensByNetwork(context.networkId, false)
   const [lentAmount, setLentAmount] = useState<number>(0);
-  const usdc = useUSDCToken(context);
 
   useEffect(() => {
     let isSubscribed = true;
@@ -61,7 +60,7 @@ export const useTotalLentAmount = (context: ConnectedWeb3Context, control: WarpC
     return () => {
       isSubscribed = false;
     }
-  }, [context.library, context.networkId, control])
+  }, [context.library, context.networkId, control, usdc])
 
   return lentAmount
 }

@@ -12,6 +12,7 @@ const contractABI = [
   'function redeem(uint256 _amount) public',
   'function borrowBalancePrior(address account) public view returns (uint256)',
   'function repayBorrow(uint256 repayAmount) public',
+  'function viewHistoricalReward(address _account) public view returns (uint256)'
 ]
 
 const logger = getLogger('Services::StableCoinVault')
@@ -76,6 +77,10 @@ export class StableCoinWarpVaultService {
     logger.log("repay: " + tx.hash);
 
     return this.provider.waitForTransaction(tx.hash);
+  }
+
+  getHistoricalReward = async (account: string): Promise<BigNumber> => {
+    return await this.contract.viewHistoricalReward(account);
   }
 
 }
