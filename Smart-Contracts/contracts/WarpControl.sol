@@ -142,23 +142,24 @@ contract WarpControl is Ownable, Exponential {
     @notice Figures out how much of a given LP token an account is allowed to withdraw
      */
     function getMaxWithdrawAllowed(address account, address lpToken) public returns (uint256) {
+      //gets how much a user has borrowed against in USDC
         uint256 borrowedTotal = getTotalBorrowedValue(account);
+      //gets the total USDC value of a users availible collateral
         uint256 collateralValue = getTotalAvailableCollateralValue(account);
-        uint256 requiredCollateral = calcCollateralRequired(borrowedTotal);
-        uint256 leftoverCollateral = collateralValue.sub(requiredCollateral);
+      //determines usable collateral value
+        uint256 usableCollateral = collateralValue.sub(borrowedTotal);
+      //get current price of one LP token
         uint256 lpValue = Oracle.getUnderlyingPrice(lpToken);
-
-        return leftoverCollateral.div(lpValue);
+      //return one lp value multiplied by their usable collateral for total LPs that are usable(or can be withdrawn)
+        return usableCollateral.mul(lpValue);
     }
 
     function viewMaxWithdrawAllowed(address account, address lpToken) public view returns (uint256) {
         uint256 borrowedTotal = viewTotalBorrowedValue(account);
         uint256 collateralValue = viewTotalAvailableCollateralValue(account);
-        uint256 requiredCollateral = calcCollateralRequired(borrowedTotal);
-        uint256 leftoverCollateral = collateralValue.sub(requiredCollateral);
+        uint256 usableCollateral = collateralValue.sub(borrowedTotal);
         uint256 lpValue = Oracle.viewUnderlyingPrice(lpToken);
-
-        return leftoverCollateral.div(lpValue);
+        return usableCollateral.mul(lpValue);
     }
 
     function getTotalAvailableCollateralValue(address _account)
@@ -177,7 +178,7 @@ contract WarpControl is Ownable, Exponential {
             address asset = vault.getAssetAdd();
             //retrieve USD price of this asset
             uint256 assetPrice = Oracle.getUnderlyingPrice(asset);
-            
+
             uint256 accountCollateral = vault.collateralOfAccount(_account);
             //emit DebugValues(accountCollateral, assetPrice);
 
@@ -205,7 +206,7 @@ contract WarpControl is Ownable, Exponential {
             address asset = vault.getAssetAdd();
             //retrieve USD price of this asset
             uint256 assetPrice = Oracle.viewUnderlyingPrice(asset);
-            
+
             uint256 accountCollateral = vault.collateralOfAccount(_account);
 
             //multiply the amount of collateral by the asset price and return it
@@ -272,10 +273,8 @@ contract WarpControl is Ownable, Exponential {
         view
         returns (uint256)
     {
-        // We must do this math in terms of a single USDC
-        uint256 oneUSDC = Oracle.OneUSDC();
         //divide the collaterals value by 3 to get 1/3rd of its value
-        uint256 thirdCollatVal = _collateralValue.div(oneUSDC.mul(3));
+        uint256 thirdCollatVal = _collateralValue.div(3);
         //add this 1/3rd value to itself to get 2/3rds of the original value
         return thirdCollatVal.add(thirdCollatVal);
     }
