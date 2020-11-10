@@ -395,10 +395,10 @@ contract WarpVaultSC is Ownable, Exponential {
         } else {
             historicalReward[msg.sender] = historicalReward[msg.sender].add(vars.redeemAmount);
         }
-        
+
         // Take away Warp Tokens and exchange for StableCoin
         wStableCoin.burn(msg.sender, _amount);
-        stablecoin.transfer(msg.sender, _amount);
+        stablecoin.transfer(msg.sender, vars.redeemAmount);
     }
 
     function viewAccountBalance(address _account) public view returns (uint256) {
