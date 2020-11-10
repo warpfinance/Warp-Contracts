@@ -366,32 +366,22 @@ contract WarpVaultSC is Ownable, Exponential {
 
         RedeemLocalVars memory vars;
 
-        vars.currentWarpBalance = wStableCoin.balanceOf(msg.sender);
-        require(_amount < vars.currentWarpBalance, "Cannot redeem more Warp-SC than is in your account.");
-
         vars.exchangeRateMantissa = exchangeRateCurrent();
 
-        if (_amount > 0) {
             (vars.mathErr, vars.redeemAmount) = mulScalarTruncate(
                 Exp({mantissa: vars.exchangeRateMantissa}),
                 _amount
             );
-        } else {
-            // Withdraw everything if withdraw amount is zero
-            vars.redeemAmount = vars.currentWarpBalance;
-        }
 
-
-
-        (vars.mathErr, vars.currentCoinBalance) = mulScalarTruncate(
-            Exp({mantissa: vars.exchangeRateMantissa}),
-            vars.currentWarpBalance
-        );
 
         require(stablecoin.balanceOf(address(this)) >= vars.redeemAmount, "Not enough stablecoin in vault.");
 
 
 
+        (vars.mathErr, vars.currentCoinBalance) = mulScalarTruncate(
+          Exp({mantissa: vars.exchangeRateMantissa}),
+          vars.currentWarpBalance
+        );
         uint256 currentStableCoinReward = 0;
         if (vars.currentCoinBalance > principalBalance[msg.sender]) {
             currentStableCoinReward = vars.currentCoinBalance.sub(principalBalance[msg.sender]);
@@ -405,9 +395,10 @@ contract WarpVaultSC is Ownable, Exponential {
         } else {
             historicalReward[msg.sender] = historicalReward[msg.sender].add(vars.redeemAmount);
         }
+        
         // Take away Warp Tokens and exchange for StableCoin
         wStableCoin.burn(msg.sender, _amount);
-        stablecoin.transfer(msg.sender, vars.redeemAmount);
+        stablecoin.transfer(msg.sender, _amount);
     }
 
     function viewAccountBalance(address _account) public view returns (uint256) {

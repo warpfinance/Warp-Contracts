@@ -58,6 +58,7 @@ contract UniswapLPOracleInstance is Ownable {
                 reserve0 != 0 && reserve1 != 0,
                 "ExampleOracleSimple: NO_RESERVES"
             ); // ensure that there's liquidity in the pair
+            update();
         }
     }
 
