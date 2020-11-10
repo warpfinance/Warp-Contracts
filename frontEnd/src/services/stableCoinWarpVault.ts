@@ -59,8 +59,10 @@ export class StableCoinWarpVaultService {
   
   withdraw = async (amount: BigNumber): Promise<void> => {
     const rate = await this.contract.exchangeRatePrior();
+    logger.log("Attempting to withdraw " + formatBigNumber(rate, 18) + " stable coins.");
     logger.log("Exchange Rate: " + formatBigNumber(rate, 18));
     const warpTokenAmount = amount.div(rate);
+    logger.log("Withdrawing " + formatBigNumber(warpTokenAmount, 18) + " Warp Stable Coins");
     const transactionObject = await this.contract.redeem(warpTokenAmount);
 
     logger.log("redeem: " + transactionObject.hash);
