@@ -29,6 +29,8 @@ contract WarpVaultLP is Ownable {
 
     mapping(address => uint256) public collateralizedLP;
 
+    event CollateralProvided(address _account, uint _amount);
+    event CollateralWithdraw(address _account, uint amount);
     /**
      * @dev Throws if called by any account other than a warp control
      */
@@ -66,6 +68,7 @@ contract WarpVaultLP is Ownable {
         collateralizedLP[msg.sender] = collateralizedLP[msg.sender].add(
             _amount
         );
+        emit CollateralProvided(msg.sender, _amount);
     }
 
     /**
@@ -89,6 +92,7 @@ contract WarpVaultLP is Ownable {
         );
         //transfer them their token
         LPtoken.transfer(msg.sender, _amount);
+        emit CollateralWithdraw(msg.sender, _amount);
     }
 
     /**

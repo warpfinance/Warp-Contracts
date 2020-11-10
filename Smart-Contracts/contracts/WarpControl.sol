@@ -27,6 +27,7 @@ contract WarpControl is Ownable, Exponential {
     UniswapLPOracleFactoryI public Oracle; //oracle factory contract interface
     WarpVaultLPFactoryI public WVLPF;
     WarpVaultSCFactoryI public WVSCF;
+    address public warpTeam;
 
     address[] public lpVaults;
     address[] public scVaults;
@@ -37,8 +38,15 @@ contract WarpControl is Ownable, Exponential {
     mapping(address => bool) public isVault;
 
     mapping(address => uint256) nonCompliant;
+
+    event NewLPVault(address _newVault);
+    event NewSCVault(address _newVault, address _interestRateModel);
+    event NewBorrow(address _borrower, address _StableCoin, uint _amountBorrowed);
+    event NotCompliant(address _account, uint _time);
+    event Liquidation(address _account, address liquidator);
+    event complianceReset(address _account, uint _time);
     /**
-     * @dev Throws if called by any account other than a warp vault
+      @dev Throws if called by any account other than a warp vault
      */
     modifier onlyVault() {
         require(isVault[msg.sender] == true);
@@ -56,12 +64,14 @@ contract WarpControl is Ownable, Exponential {
     constructor(
         address _oracle,
         address _WVLPF,
-        address _WVSCF
+        address _WVSCF,
+        address _warpTeam
     ) public {
         //instantiate the contracts
         Oracle = UniswapLPOracleFactoryI(_oracle);
         WVLPF = WarpVaultLPFactoryI(_WVLPF);
         WVSCF = WarpVaultSCFactoryI(_WVSCF);
+        warpTeam = _warpTeam;
     }
 
     function viewNumLPVaults() external view returns(uint256) {
@@ -95,6 +105,7 @@ contract WarpControl is Ownable, Exponential {
         lpVaults.push(_WarpVault);
         //set Warp vault address as an approved vault
         isVault[_WarpVault] = true;
+        emit NewLPVault(_WarpVault);
     }
 
     /**
@@ -128,6 +139,7 @@ contract WarpControl is Ownable, Exponential {
         address _WarpVault = WVSCF.createNewWarpVaultSC(
             IR,
             _StableCoin,
+            warpTeam,
             _initialExchangeRate
         );
         //track the warp vault sc instance by the address of the stablecoin it represents
@@ -136,6 +148,7 @@ contract WarpControl is Ownable, Exponential {
         scVaults.push(_WarpVault);
         //set Warp vault address as an approved vault
         isVault[_WarpVault] = true;
+        emit NewSCVault(_WarpVault, IR);
     }
 
     /**
@@ -270,7 +283,7 @@ contract WarpControl is Ownable, Exponential {
     **/
     function calcBorrowLimit(uint256 _collateralValue)
         public
-        view
+        pure
         returns (uint256)
     {
         //divide the collaterals value by 3 to get 1/3rd of its value
@@ -321,6 +334,7 @@ contract WarpControl is Ownable, Exponential {
         WarpVaultSCI WV = WarpVaultSCI(instanceSCTracker[_StableCoin]);
         //call _borrow function on the stablecoin warp vault
         WV._borrow(_amount, msg.sender);
+        emit NewBorrow(msg.sender, _StableCoin, _amount);
     }
 
     /**
@@ -328,9 +342,30 @@ contract WarpControl is Ownable, Exponential {
       @param _borrower is the address of the non compliant borrower
       **/
     function markAccountNonCompliant(address _borrower) public {
-        //needs to check for account compliance
+      //retreive the number of LP vaults in the warp platform
+        uint256 numSCVaults = scVaults.length;
+        //initialize the borrowedAmount variable
+        uint256 borrowedAmount = 0;
+        //initialize the stable coin balances array
+        uint256[] memory scBalances = new uint256[](numSCVaults);
+        for (uint256 i = 0; i < numSCVaults; ++i) {
+            //instantiate the vault at the current  position in the array
+            WarpVaultSCI scVault = WarpVaultSCI(scVaults[i]);
+            //retreive the borrowers borrow balance from this vault and add it to the scBalances array
+            scBalances[i] = scVault.borrowBalanceCurrent(_borrower);
+            //add the borrowed amount to the total borrowed balance
+            borrowedAmount = borrowedAmount.add(scBalances[i]);
+        }
+        //retreve the USDC borrow limit for the borrower
+        uint256 borrowLimit = getBorrowLimit(_borrower);
+        //check if the borrow is less than the borrowed amount
+        if (borrowLimit <= borrowedAmount) {
+          //require the borrower isnt already non compliant
         require(nonCompliant[_borrower] == 0);
+        //record the time of non compliance
         nonCompliant[_borrower] = now;
+        emit NotCompliant(_borrower, now);
+      }
     }
 
     /**
@@ -381,9 +416,11 @@ contract WarpControl is Ownable, Exponential {
                 WarpVaultLPI lpVault = WarpVaultLPI(lpVaults[i]);
                 //call liquidateAccount function on that LP vault
                 lpVault._liquidateAccount(_borrower, msg.sender);
+                emit Liquidation(_borrower, msg.sender);
             }
         }
         //no matter what the compliance tracker for the borrowers account is reset
         nonCompliant[_borrower] = 0;
+        emit complianceReset(_borrower, now);
     }
 }

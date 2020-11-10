@@ -31,8 +31,9 @@ contract WarpVaultSC is Ownable, Exponential {
     uint256 public totalBorrows;
     uint256 public totalReserves;
     uint256 internal constant borrowRateMaxMantissa = 0.0005e16;
-    uint256 internal constant reserveFactorMaxMantissa = 1e18;
-    uint256 public liquidationIncentiveMantissa = 1.5e18; // 1.5
+    uint256 public percent = 5;
+    uint256 public divisor = 10000;
+    address public warpTeam;
 
     ERC20 public stablecoin;
     WarpWrapperToken public wStableCoin;
@@ -44,6 +45,11 @@ contract WarpVaultSC is Ownable, Exponential {
     mapping(address => uint256) public historicalReward;
     mapping(address => address) public collateralAddressTracker;
     mapping(address => bool) public collateralLocked;
+
+    event InterestAccrued(uint accrualBlockNumber, uint borrowIndex, uint totalBorrows, uint totalReserves);
+    event StableCoinLent(address _lender, uint _amountLent, uint _amountOfWarpMinted);
+    event StableCoinWithdraw(address _lender, uint _amountWithdrawn, uint _amountOfWarpBurnt);
+    event LoanRepayed(address _borrower, uint _repayAmount, uint remainingPrinciple, uint remainingInterest);
 
     /**
     @notice struct for borrow balance information
@@ -65,12 +71,16 @@ contract WarpVaultSC is Ownable, Exponential {
 
     /**
     @notice constructor sets up token names and symbols for the WarpWrapperToken
-
+    @param _InterestRate is the address of the Interest Rate Model this vault will be using
+    @param _StableCoin is the address of the stablecoin this vault will manage
+    @param _warpTeam is the address of the Warp Team used for fees
+    @param _initialExchangeRate is the initial exchange rate mantissa used to determine how a Warp wrapper token will be distributed when stablecoin is received
     **/
     constructor(
         address _InterestRate,
         address _StableCoin,
         address _warpControl,
+        address _warpTeam,
         uint256 _initialExchangeRate
     ) public {
         WC = WarpControlI(_warpControl);
@@ -79,6 +89,7 @@ contract WarpVaultSC is Ownable, Exponential {
         accrualBlockNumber = getBlockNumber();
         borrowIndex = mantissaOne;
         initialExchangeRateMantissa = _initialExchangeRate; //sets the initialExchangeRateMantissa
+        warpTeam = _warpTeam;
         wStableCoin = new WarpWrapperToken(
             address(stablecoin),
             stablecoin.name(),
@@ -91,6 +102,15 @@ contract WarpVaultSC is Ownable, Exponential {
     **/
     function getCashPrior() internal view returns (uint256) {
         return stablecoin.balanceOf(address(this));
+    }
+
+    /**
+    @notice calculateFee is used to calculate the fee earned by the Warp Platform
+    @param _payedAmount is a uint representing the full amount of stablecoin earned as interest
+    **/
+    function calculateFee(uint256 _payedAmount) public view returns(uint) {
+      uint256 fee = _payedAmount.mul(percent).div(divisor);
+      return fee;
     }
 
     /**
@@ -157,6 +177,7 @@ contract WarpVaultSC is Ownable, Exponential {
         borrowIndex = borrowIndexNew;
         totalBorrows = totalBorrowsNew;
         totalReserves = totalReservesNew;
+        emit InterestAccrued(accrualBlockNumber, borrowIndex, totalBorrows, totalReserves);
     }
 
     /**
@@ -348,57 +369,68 @@ contract WarpVaultSC is Ownable, Exponential {
         principalBalance[msg.sender] = principalBalance[msg.sender] + _amount;
         //mint appropriate Warp DAI
         wStableCoin.mint(msg.sender, vars.mintTokens);
+        emit StableCoinLent(msg.sender, _amount, vars.mintTokens);
     }
 
     struct RedeemLocalVars {
         MathError mathErr;
         uint256 exchangeRateMantissa;
-        uint256 redeemAmount;
+        uint256 burnTokens;
         uint256 currentWarpBalance;
         uint256 currentCoinBalance;
+        uint256 principalRedeemed;
     }
 
     /**
     @notice redeem allows a user to redeem their Warp Wrapper Token for the appropriate amount of underlying stablecoin asset
-    @param _amount is the amount of Warp Wrapper token being exchanged
+    @param _amount is the amount of StableCoin the user wishes to exchange
     **/
     function redeem(uint256 _amount) public {
 
         RedeemLocalVars memory vars;
-
+        //retreive the users current Warp Wrapper balance
+        vars.currentCoinBalance = wStableCoin.balanceOf(msg.sender);
+        //retreive current exchange rate
         vars.exchangeRateMantissa = exchangeRateCurrent();
 
-            (vars.mathErr, vars.redeemAmount) = mulScalarTruncate(
-                Exp({mantissa: vars.exchangeRateMantissa}),
-                _amount
-            );
-
-
-        require(stablecoin.balanceOf(address(this)) >= vars.redeemAmount, "Not enough stablecoin in vault.");
-
-
-
+          //We get the current exchange rate and calculate the number of WarpWrapperToken to be burned:
+          //burnTokens = _amount / exchangeRate
+          (vars.mathErr, vars.burnTokens) = divScalarByExpTruncate(
+              _amount,
+              Exp({mantissa: vars.exchangeRateMantissa})
+          );
+          //require the vault has enough stablecoin
+        require(stablecoin.balanceOf(address(this)) >= _amount, "Not enough stablecoin in vault.");
+        //calculate the users current stablecoin balance
         (vars.mathErr, vars.currentCoinBalance) = mulScalarTruncate(
           Exp({mantissa: vars.exchangeRateMantissa}),
           vars.currentWarpBalance
         );
+
+        //calculate and record balances for historical tracking
         uint256 currentStableCoinReward = 0;
         if (vars.currentCoinBalance > principalBalance[msg.sender]) {
             currentStableCoinReward = vars.currentCoinBalance.sub(principalBalance[msg.sender]);
         }
+        vars.principalRedeemed = _amount.sub(currentStableCoinReward);
 
-        if (vars.redeemAmount >= currentStableCoinReward) {
+        if (_amount >= currentStableCoinReward) {
             historicalReward[msg.sender] = historicalReward[msg.sender].add(currentStableCoinReward);
-            uint256 principalRedeemed = vars.redeemAmount.sub(currentStableCoinReward);
-            require(principalRedeemed <= principalBalance[msg.sender], "Error calculating reward.");
-            principalBalance[msg.sender] = principalBalance[msg.sender].sub(principalRedeemed);
+            require(vars.principalRedeemed <= principalBalance[msg.sender], "Error calculating reward.");
+            principalBalance[msg.sender] = principalBalance[msg.sender].sub(vars.principalRedeemed);
         } else {
-            historicalReward[msg.sender] = historicalReward[msg.sender].add(vars.redeemAmount);
+            historicalReward[msg.sender] = historicalReward[msg.sender].add(_amount);
         }
-
-        // Take away Warp Tokens and exchange for StableCoin
-        wStableCoin.burn(msg.sender, _amount);
-        stablecoin.transfer(msg.sender, vars.redeemAmount);
+        //calculate the fee on the principle received
+        uint fee = calculateFee(vars.principalRedeemed);
+        //subtract the fee from the amount of stablecoins being redeemed
+        uint feeAdjusted = _amount.sub(fee);
+        //transfer fee amount to Warp team
+        stablecoin.transfer(warpTeam, fee);
+        // Burn away Warp Tokens and exchange for StableCoin
+        wStableCoin.burn(msg.sender, vars.burnTokens);
+        stablecoin.transfer(msg.sender, feeAdjusted);
+        emit StableCoinLent(msg.sender, feeAdjusted, vars.burnTokens);
     }
 
     function viewAccountBalance(address _account) public view returns (uint256) {
@@ -483,32 +515,35 @@ contract WarpVaultSC is Ownable, Exponential {
         uint256 accountBorrowsNew;
         uint256 totalBorrowsNew;
         uint256 totalOwed;
-        uint256 lockedCollateral;
+        uint256 borrowPrinciple;
+        uint256 interestPayed;
     }
 
     /**
     @notice Sender repays their own borrow
-    @param repayAmount The amount to repay
+    @param _repayAmount The amount to repay
     */
-    function repayBorrow(uint256 repayAmount) public {
-        accrueInterest();
-
+    function repayBorrow(uint256 _repayAmount) public {
         //create local vars storage
         RepayBorrowLocalVars memory vars;
 
-
-        //We remember the original borrowerIndex for verification purposes
-        vars.borrowerIndex = accountBorrows[msg.sender].interestIndex;
         //We fetch the amount the borrower owes, with accumulated interest
-        vars.accountBorrows = borrowBalancePrior(msg.sender);
+        vars.accountBorrows = borrowBalanceCurrent(msg.sender);
+        //require the borrower cant pay more than they owe
+        require(_repayAmount <= vars.accountBorrows, "You are trying to pay back more than you owe");
+        //We remember the original borrowerPrinciple for verification purposes
+        vars.borrowPrinciple = accountBorrows[msg.sender].principal;
+          //We remember the original borrowerIndex for verification purposes
+        vars.borrowerIndex = accountBorrows[msg.sender].interestIndex;
         //If repayAmount == 0, repayAmount = accountBorrows
-        if (repayAmount == 0) {
+        if (_repayAmount == 0) {
             vars.repayAmount = vars.accountBorrows;
         } else {
-            vars.repayAmount = repayAmount;
+            vars.repayAmount = _repayAmount;
         }
 
         require(stablecoin.balanceOf(msg.sender) >= vars.repayAmount, "Not enough stablecoin to repay");
+        //transfer the stablecoin from the borrower
         stablecoin.transferFrom(msg.sender, address(this), vars.repayAmount);
 
         //We calculate the new borrower and total borrow balances
@@ -522,13 +557,33 @@ contract WarpVaultSC is Ownable, Exponential {
             totalBorrows,
             vars.repayAmount
         );
+        //if the borrowers principle is larger than the repayed amount
+        if(accountBorrows[msg.sender].principal >= _repayAmount) {
+          //calculate remaining principle and write it to storage
+          accountBorrows[msg.sender].principal = vars.accountBorrowsNew;
+          //write new borrow Index into storage
+          accountBorrows[msg.sender].interestIndex = vars.borrowerIndex;
+        } else { // the principal is smaller than the amount payed
+          //calculate the amount of interest that will be payed off
+          vars.interestPayed = vars.accountBorrowsNew.sub(accountBorrows[msg.sender].principal);
+          //write principal into storage as zero since its payed off
+          accountBorrows[msg.sender].principal = 0;
+          //calculate remaining interest amount and write it into storage
+          accountBorrows[msg.sender].interestIndex = accountBorrows[msg.sender].interestIndex.sub(vars.interestPayed);
+        }
         /* We write the previously calculated values into storage */
-        accountBorrows[msg.sender].principal = vars.accountBorrowsNew;
-        accountBorrows[msg.sender].interestIndex = borrowIndex;
         totalBorrows = vars.totalBorrowsNew;
         vars.totalOwed = accountBorrows[msg.sender].principal.add(
             accountBorrows[msg.sender].interestIndex
         );
+
+        //calculate the fee on the principle received
+        uint fee = calculateFee(vars.interestPayed);
+        //subtract the fee from the amount of stablecoins being redeemed
+        uint feeAdjusted = _repayAmount.sub(fee);
+        //transfer fee amount to Warp team
+        stablecoin.transfer(warpTeam, fee);
+        emit LoanRepayed(msg.sender, feeAdjusted, accountBorrows[msg.sender].principal, accountBorrows[msg.sender].interestIndex);
     }
 
     /**
