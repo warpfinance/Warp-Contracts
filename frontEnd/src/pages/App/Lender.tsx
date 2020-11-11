@@ -18,20 +18,15 @@ import { useTotalWalletBalance } from "../../hooks/useTotalWalletBalance";
 import { useUSDCToken } from "../../hooks/useUSDC";
 import { useWarpControl } from "../../hooks/useWarpControl";
 
-// TO-DO: Web3 integration
-const authAction = "lend"
-
-
 interface Props {
 }
-
 
 export const Lender: React.FC<Props> = (props: Props) => {
     const context = useConnectedWeb3Context();
     const tokens = useStableCoinTokens(context);
 
     const walletBalance = useTotalWalletBalance(context);
-    const {control} = useWarpControl(context);
+    const { control } = useWarpControl(context);
     const usdcToken = useUSDCToken(context);
     const totalLentAmount = useTotalLentAmount(context, control, usdcToken);
     const totalReward = useCombinedHistoricalReward(context, control, tokens, usdcToken);
@@ -42,6 +37,7 @@ export const Lender: React.FC<Props> = (props: Props) => {
         walletBalance
     }
 
+    const [action, setAction] = useState("lend");
     const [authorizationModalOpen, setAuthorizationModalOpen] = useState(false);
 
     const [lendToken, setLendToken] = React.useState<Maybe<Token>>(null);
@@ -158,6 +154,7 @@ export const Lender: React.FC<Props> = (props: Props) => {
             return;
         }
 
+        setAction("lend");
         const erc20 = new ERC20Service(context.library, context.account, lendToken.address);
         const targetVault = await control.getStableCoinVault(lendToken.address);
         const enabledAmount = await erc20.allowance(context.account, targetVault);
@@ -180,12 +177,13 @@ export const Lender: React.FC<Props> = (props: Props) => {
             return;
         }
 
+        setAction("withdraw");
         const erc20 = new ERC20Service(context.library, context.account, withdrawToken.address);
         const targetVault = await control.getStableCoinVault(withdrawToken.address);
         const scVault = new StableCoinWarpVaultService(context.library, context.account, targetVault);
 
         await scVault.withdraw(withdrawAmountValue);
-        
+
 
         setWithdrawModalOpen(false);
     }
@@ -267,13 +265,13 @@ export const Lender: React.FC<Props> = (props: Props) => {
                 handleClose={handleWithdrawClose}
                 open={withdrawModalOpen} />
             <AuthorizationModal
-                action={authAction}
+                action={action}
                 handleClose={handleAuthClose}
                 onButtonClick={onAuth}
                 open={authorizationModalOpen}
             />
-            <TransactionModal 
-                action="Withdraw"
+            <TransactionModal
+                action={action}
                 open={true}
             />
         </React.Fragment>

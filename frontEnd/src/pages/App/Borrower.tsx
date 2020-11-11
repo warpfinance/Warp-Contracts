@@ -1,24 +1,24 @@
 import * as React from "react";
 
-import { AmountModal, AuthorizationModal, BigModal, BorrowerTable, Header, InformationCard, RowModal } from "../../components";
+import { AmountModal, AuthorizationModal, BigModal, BorrowerTable, Header, InformationCard, RowModal, TransactionModal } from "../../components";
 import { Avatar, Grid } from "@material-ui/core";
+import { BigNumber, utils } from "ethers";
 
 import { AvatarGroup } from "@material-ui/lab";
-import { useState } from "react";
-import { useConnectedWeb3Context } from "../../hooks/connectedWeb3";
-import { useStableCoinTokens } from "../../hooks/useStableCoins";
-import { useLPTokens } from "../../hooks/useLPTokens";
-import { Token } from "../../util/token";
-import { useUSDCToken } from "../../hooks/useUSDC";
-import { BigNumber, utils } from "ethers";
-import { useWarpControl } from "../../hooks/useWarpControl";
-import { parseBigNumber } from "../../util/tools";
 import { ERC20Service } from "../../services/erc20";
-import { WarpLPVaultService } from "../../services/warpLPVault";
-import { useBorrowLimit } from "../../hooks/useBorrowLimit";
-import { getLogger } from "../../util/logger";
-import { useCombinedBorrowRate } from "../../hooks/useCombinedBorrowRate";
 import { StableCoinWarpVaultService } from "../../services/stableCoinWarpVault";
+import { Token } from "../../util/token";
+import { WarpLPVaultService } from "../../services/warpLPVault";
+import { getLogger } from "../../util/logger";
+import { parseBigNumber } from "../../util/tools";
+import { useBorrowLimit } from "../../hooks/useBorrowLimit";
+import { useCombinedBorrowRate } from "../../hooks/useCombinedBorrowRate";
+import { useConnectedWeb3Context } from "../../hooks/connectedWeb3";
+import { useLPTokens } from "../../hooks/useLPTokens";
+import { useStableCoinTokens } from "../../hooks/useStableCoins";
+import { useState } from "react";
+import { useUSDCToken } from "../../hooks/useUSDC";
+import { useWarpControl } from "../../hooks/useWarpControl";
 
 interface Props {
 
@@ -33,8 +33,8 @@ export const Borrower: React.FC<Props> = (props: Props) => {
     const stableCoins = useStableCoinTokens(context);
     const lpTokens = useLPTokens(context);
     const usdcToken = useUSDCToken(context);
-    const {control} = useWarpControl(context);
-    const {totalBorrowedAmount, borrowLimit} = useBorrowLimit(context, control);
+    const { control } = useWarpControl(context);
+    const { totalBorrowedAmount, borrowLimit } = useBorrowLimit(context, control);
     const combinedBorrowRate = useCombinedBorrowRate(context, control, stableCoins);
 
     const data = {
@@ -49,7 +49,7 @@ export const Borrower: React.FC<Props> = (props: Props) => {
         data.borrowPercentage = (data.borrowLimitUsed / data.borrowLimit) * 100;
     }
 
-    const [authAction, setAuthAction] = useState("borrow");
+    const [action, setAction] = useState("borrow");
     const [authorizationModalOpen, setAuthorizationModalOpen] = useState(false);
 
     const [borrowAmountCurrency, setBorrowAmountCurrency] = React.useState("DAI");
@@ -72,7 +72,7 @@ export const Borrower: React.FC<Props> = (props: Props) => {
     const [withdrawModalOpen, setWithdrawModalOpen] = useState(false);
 
     const [currentToken, setCurrentToken] = React.useState<Token>({} as Token);
-    const [tokenToUSDCRate, setTokenToUSDCRate] = React.useState(0); 
+    const [tokenToUSDCRate, setTokenToUSDCRate] = React.useState(0);
     const [walletAmount, setWalletAmount] = React.useState(0);
     const [vaultAmount, setVaultAmount] = React.useState(0);
 
@@ -244,6 +244,7 @@ export const Borrower: React.FC<Props> = (props: Props) => {
         if (!context.account) {
             return;
         }
+        setAction("provide");
 
         const erc20 = new ERC20Service(context.library, context.account, currentToken.address);
         const targetVault = await control.getLPVault(currentToken.address);
@@ -252,7 +253,6 @@ export const Borrower: React.FC<Props> = (props: Props) => {
 
         if (needsAuth) {
             setAuthorizationModalOpen(true);
-            setAuthAction("provide");
             return;
         }
 
@@ -276,7 +276,7 @@ export const Borrower: React.FC<Props> = (props: Props) => {
 
         if (needsAuth) {
             setAuthorizationModalOpen(true);
-            setAuthAction("repay");
+            setAction("repay");
             return;
         }
 
@@ -397,10 +397,17 @@ export const Borrower: React.FC<Props> = (props: Props) => {
                 open={repayModalOpen}
             />
             <AuthorizationModal
-                action={authAction}
+                action={action}
                 handleClose={handleAuthClose}
                 onButtonClick={onAuth}
                 open={authorizationModalOpen}
+            />
+            <TransactionModal
+                action={action}
+                poolIconSrcPrimary={currentToken.image || ""}
+                poolIconSrcSecondary={currentToken.image2 || ""}
+                pool={currentToken.symbol}
+                open={true}
             />
         </React.Fragment>
     );
