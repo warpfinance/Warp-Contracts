@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { Avatar, Button, LinkProps } from "@material-ui/core";
+import { Avatar, Button } from "@material-ui/core";
 
 import { Link } from 'react-router-dom';
 import { makeStyles } from "@material-ui/core";

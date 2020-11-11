@@ -1,8 +1,9 @@
 import * as React from "react";
 
-import { Avatar, Card, CardContent, Checkbox, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Grid, Typography } from "@material-ui/core";
+import { Avatar, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Grid, Typography } from "@material-ui/core";
 
 import { AvatarGroup } from "@material-ui/lab";
+import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
 import { CustomButton } from "../buttons/CustomButton";
 import { makeStyles } from "@material-ui/core";
 
@@ -68,7 +69,7 @@ export const TransactionModal: React.FC<Props> = (props: Props) => {
         "Confirm the transaction in your wallet";
 
     const spinner = props.confirmed === true ?
-        null :
+        <CheckCircleOutlineIcon fontSize="large" color="secondary"/> :
         <CircularProgress color="secondary" />;
 
     return (

@@ -58,8 +58,8 @@ export const Lender: React.FC<Props> = (props: Props) => {
 
     // TO-DO: Web3 integration
     const [transaction, setTransaction] = useState("0x716af84c2de1026e87ec2d32df563a6e7e43b261227eb10358ba3d8dd372eceb");
-    const [transactionConfirmed, setTransactionConfirmed] = useState(true);
-    const [transactionModalOpen, setTransactionModalOpen] = useState(true);
+    const [transactionConfirmed, setTransactionConfirmed] = useState(false);
+    const [transactionModalOpen, setTransactionModalOpen] = useState(false);
 
     React.useEffect(() => {
         if (!lendAmountValue.eq(BigNumber.from(0)) && lendAmountCurrency !== "") {
