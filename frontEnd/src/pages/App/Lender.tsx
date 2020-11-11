@@ -1,22 +1,22 @@
 import * as React from "react";
 
-import { AuthorizationModal, Header, InformationCard, LenderTable, SimpleModal } from "../../components";
+import { AuthorizationModal, Header, InformationCard, LenderTable, SimpleModal, TransactionModal } from "../../components";
 import { Avatar, Grid } from "@material-ui/core";
 import { BigNumber, utils } from "ethers";
-
-import { Token } from "../../util/token";
 import { formatBigNumber, parseBigNumber } from "../../util/tools";
+
+import { ERC20Service } from "../../services/erc20";
+import { StableCoinWarpVaultService } from "../../services/stableCoinWarpVault";
+import { Token } from "../../util/token";
+import { useCombinedHistoricalReward } from "../../hooks/useCombinedHistoricalReward";
 import { useConnectedWeb3Context } from "../../hooks/connectedWeb3";
+import { useForceUpdate } from "../../hooks/useForceUpdate";
 import { useStableCoinTokens } from "../../hooks/useStableCoins";
 import { useState } from "react";
-import { useTotalWalletBalance } from "../../hooks/useTotalWalletBalance";
-import { ERC20Service } from "../../services/erc20";
-import { useWarpControl } from "../../hooks/useWarpControl";
-import { useForceUpdate } from "../../hooks/useForceUpdate";
-import { StableCoinWarpVaultService } from "../../services/stableCoinWarpVault";
 import { useTotalLentAmount } from "../../hooks/useTotalLentAmount";
+import { useTotalWalletBalance } from "../../hooks/useTotalWalletBalance";
 import { useUSDCToken } from "../../hooks/useUSDC";
-import { useCombinedHistoricalReward } from "../../hooks/useCombinedHistoricalReward";
+import { useWarpControl } from "../../hooks/useWarpControl";
 
 // TO-DO: Web3 integration
 const authAction = "lend"
@@ -271,6 +271,10 @@ export const Lender: React.FC<Props> = (props: Props) => {
                 handleClose={handleAuthClose}
                 onButtonClick={onAuth}
                 open={authorizationModalOpen}
+            />
+            <TransactionModal 
+                action="Withdraw"
+                open={true}
             />
         </React.Fragment>
     );

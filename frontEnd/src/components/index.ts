@@ -14,3 +14,4 @@ export * from "./modals/BigModal";
 export * from "./modals/RowModal";
 export * from "./modals/AmountModal";
 export * from "./modals/AuthorizationModal";
+export * from "./modals/TransactionModal";
