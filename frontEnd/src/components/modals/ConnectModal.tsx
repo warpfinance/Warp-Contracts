@@ -12,7 +12,10 @@ const useStyles = makeStyles(theme => ({
     },
     clickableCard:
     {
-        cursor: "pointer"
+        cursor: "pointer",
+        "&:hover": {
+            backgroundColor: "#808080"
+        }
     },
     link: {
         textDecoration: "none",

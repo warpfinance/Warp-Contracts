@@ -1,37 +1,31 @@
 import * as React from "react";
 
-import { AuthorizationModal, Header, InformationCard, LenderTable, SimpleModal } from "../../components";
-import { Avatar, Grid } from "@material-ui/core";
+import { AuthorizationModal, Header, InformationCard, LenderTable, SimpleModal, TransactionModal } from "../../components";
 import { BigNumber, utils } from "ethers";
 
+import { ERC20Service } from "../../services/erc20";
+import { Grid } from "@material-ui/core";
+import { StableCoinWarpVaultService } from "../../services/stableCoinWarpVault";
 import { Token } from "../../util/token";
-import { formatBigNumber, parseBigNumber } from "../../util/tools";
+import { formatBigNumber } from "../../util/tools";
+import { useCombinedHistoricalReward } from "../../hooks/useCombinedHistoricalReward";
 import { useConnectedWeb3Context } from "../../hooks/connectedWeb3";
 import { useStableCoinTokens } from "../../hooks/useStableCoins";
 import { useState } from "react";
-import { useTotalWalletBalance } from "../../hooks/useTotalWalletBalance";
-import { ERC20Service } from "../../services/erc20";
-import { useWarpControl } from "../../hooks/useWarpControl";
-import { useForceUpdate } from "../../hooks/useForceUpdate";
-import { StableCoinWarpVaultService } from "../../services/stableCoinWarpVault";
 import { useTotalLentAmount } from "../../hooks/useTotalLentAmount";
+import { useTotalWalletBalance } from "../../hooks/useTotalWalletBalance";
 import { useUSDCToken } from "../../hooks/useUSDC";
-import { useCombinedHistoricalReward } from "../../hooks/useCombinedHistoricalReward";
-
-// TO-DO: Web3 integration
-const authAction = "lend"
-
+import { useWarpControl } from "../../hooks/useWarpControl";
 
 interface Props {
 }
-
 
 export const Lender: React.FC<Props> = (props: Props) => {
     const context = useConnectedWeb3Context();
     const tokens = useStableCoinTokens(context);
 
     const walletBalance = useTotalWalletBalance(context);
-    const {control} = useWarpControl(context);
+    const { control } = useWarpControl(context);
     const usdcToken = useUSDCToken(context);
     const totalLentAmount = useTotalLentAmount(context, control, usdcToken);
     const totalReward = useCombinedHistoricalReward(context, control, tokens, usdcToken);
@@ -42,6 +36,7 @@ export const Lender: React.FC<Props> = (props: Props) => {
         walletBalance
     }
 
+    const [action, setAction] = useState("lend");
     const [authorizationModalOpen, setAuthorizationModalOpen] = useState(false);
 
     const [lendToken, setLendToken] = React.useState<Maybe<Token>>(null);
@@ -61,6 +56,11 @@ export const Lender: React.FC<Props> = (props: Props) => {
     const [lendError, setLendError] = useState(false);
     const [withdrawError, setWithdrawError] = useState(false);
 
+    // TO-DO: Web3 integration
+    const [transaction, setTransaction] = useState("0x716af84c2de1026e87ec2d32df563a6e7e43b261227eb10358ba3d8dd372eceb");
+    const [transactionConfirmed, setTransactionConfirmed] = useState(false);
+    const [transactionModalOpen, setTransactionModalOpen] = useState(false);
+
     React.useEffect(() => {
         if (!lendAmountValue.eq(BigNumber.from(0)) && lendAmountCurrency !== "") {
             setLendError(isError(lendAmountValue, lendAmountCurrency, tokens, lendMaxAmount));
@@ -77,6 +77,10 @@ export const Lender: React.FC<Props> = (props: Props) => {
 
     const handleLendClose = (event: {}, reason: "backdropClick" | "escapeKeyDown") => {
         setLendModalOpen(false);
+    }
+
+    const handleTransactClose = (event: {}, reason: "backdropClick" | "escapeKeyDown") => {
+        setTransactionModalOpen(false);
     }
 
     const handleWithdrawClose = (event: {}, reason: "backdropClick" | "escapeKeyDown") => {
@@ -158,6 +162,7 @@ export const Lender: React.FC<Props> = (props: Props) => {
             return;
         }
 
+        setAction("lend");
         const erc20 = new ERC20Service(context.library, context.account, lendToken.address);
         const targetVault = await control.getStableCoinVault(lendToken.address);
         const enabledAmount = await erc20.allowance(context.account, targetVault);
@@ -180,12 +185,13 @@ export const Lender: React.FC<Props> = (props: Props) => {
             return;
         }
 
+        setAction("withdraw");
         const erc20 = new ERC20Service(context.library, context.account, withdrawToken.address);
         const targetVault = await control.getStableCoinVault(withdrawToken.address);
         const scVault = new StableCoinWarpVaultService(context.library, context.account, targetVault);
 
         await scVault.withdraw(withdrawAmountValue);
-        
+
 
         setWithdrawModalOpen(false);
     }
@@ -267,10 +273,17 @@ export const Lender: React.FC<Props> = (props: Props) => {
                 handleClose={handleWithdrawClose}
                 open={withdrawModalOpen} />
             <AuthorizationModal
-                action={authAction}
+                action={action}
                 handleClose={handleAuthClose}
                 onButtonClick={onAuth}
                 open={authorizationModalOpen}
+            />
+            <TransactionModal
+                action={action}
+                confirmed={transactionConfirmed}
+                handleClose={handleTransactClose}
+                open={transactionModalOpen}
+                txHash={transaction || ""}
             />
         </React.Fragment>
     );
