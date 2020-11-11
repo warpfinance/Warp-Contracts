@@ -1,11 +1,10 @@
 import * as React from "react";
 
 import { AmountModal, AuthorizationModal, BigModal, BorrowerTable, Header, InformationCard, RowModal, TransactionModal } from "../../components";
-import { Avatar, Grid } from "@material-ui/core";
 import { BigNumber, utils } from "ethers";
 
-import { AvatarGroup } from "@material-ui/lab";
 import { ERC20Service } from "../../services/erc20";
+import { Grid } from "@material-ui/core";
 import { StableCoinWarpVaultService } from "../../services/stableCoinWarpVault";
 import { Token } from "../../util/token";
 import { WarpLPVaultService } from "../../services/warpLPVault";
@@ -21,10 +20,7 @@ import { useUSDCToken } from "../../hooks/useUSDC";
 import { useWarpControl } from "../../hooks/useWarpControl";
 
 interface Props {
-
 }
-
-// TO-DO: Web3 integration
 
 const logger = getLogger("Page::Borrower");
 
@@ -76,6 +72,11 @@ export const Borrower: React.FC<Props> = (props: Props) => {
     const [walletAmount, setWalletAmount] = React.useState(0);
     const [vaultAmount, setVaultAmount] = React.useState(0);
 
+    // TO-DO: Web3 integration
+    const [transaction, setTransaction] = useState("0x716af84c2de1026e87ec2d32df563a6e7e43b261227eb10358ba3d8dd372eceb");
+    const [transactionConfirmed, setTransactionConfirmed] = useState(true);
+    const [transactionModalOpen, setTransactionModalOpen] = useState(true);
+
     React.useEffect(() => {
         if (borrowAmountValue !== 0) {
             setBorrowError(isBorrowError(borrowAmountValue, currentToken));
@@ -117,6 +118,10 @@ export const Borrower: React.FC<Props> = (props: Props) => {
 
     const handleRepayClose = (event: {}, reason: "backdropClick" | "escapeKeyDown") => {
         setRepayModalOpen(false);
+    }
+
+    const handleTransactClose = (event: {}, reason: "backdropClick" | "escapeKeyDown") => {
+        setTransactionModalOpen(false);
     }
 
     const handleWithdrawClose = (event: {}, reason: "backdropClick" | "escapeKeyDown") => {
@@ -404,10 +409,13 @@ export const Borrower: React.FC<Props> = (props: Props) => {
             />
             <TransactionModal
                 action={action}
+                confirmed={transactionConfirmed}
+                handleClose={handleTransactClose}
                 poolIconSrcPrimary={currentToken.image || ""}
                 poolIconSrcSecondary={currentToken.image2 || ""}
                 pool={currentToken.symbol}
-                open={true}
+                open={transactionModalOpen}
+                txHash={transaction || ""}
             />
         </React.Fragment>
     );

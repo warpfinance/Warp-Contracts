@@ -1,16 +1,15 @@
 import * as React from "react";
 
 import { AuthorizationModal, Header, InformationCard, LenderTable, SimpleModal, TransactionModal } from "../../components";
-import { Avatar, Grid } from "@material-ui/core";
 import { BigNumber, utils } from "ethers";
-import { formatBigNumber, parseBigNumber } from "../../util/tools";
 
 import { ERC20Service } from "../../services/erc20";
+import { Grid } from "@material-ui/core";
 import { StableCoinWarpVaultService } from "../../services/stableCoinWarpVault";
 import { Token } from "../../util/token";
+import { formatBigNumber } from "../../util/tools";
 import { useCombinedHistoricalReward } from "../../hooks/useCombinedHistoricalReward";
 import { useConnectedWeb3Context } from "../../hooks/connectedWeb3";
-import { useForceUpdate } from "../../hooks/useForceUpdate";
 import { useStableCoinTokens } from "../../hooks/useStableCoins";
 import { useState } from "react";
 import { useTotalLentAmount } from "../../hooks/useTotalLentAmount";
@@ -57,6 +56,11 @@ export const Lender: React.FC<Props> = (props: Props) => {
     const [lendError, setLendError] = useState(false);
     const [withdrawError, setWithdrawError] = useState(false);
 
+    // TO-DO: Web3 integration
+    const [transaction, setTransaction] = useState("0x716af84c2de1026e87ec2d32df563a6e7e43b261227eb10358ba3d8dd372eceb");
+    const [transactionConfirmed, setTransactionConfirmed] = useState(true);
+    const [transactionModalOpen, setTransactionModalOpen] = useState(true);
+
     React.useEffect(() => {
         if (!lendAmountValue.eq(BigNumber.from(0)) && lendAmountCurrency !== "") {
             setLendError(isError(lendAmountValue, lendAmountCurrency, tokens, lendMaxAmount));
@@ -73,6 +77,10 @@ export const Lender: React.FC<Props> = (props: Props) => {
 
     const handleLendClose = (event: {}, reason: "backdropClick" | "escapeKeyDown") => {
         setLendModalOpen(false);
+    }
+
+    const handleTransactClose = (event: {}, reason: "backdropClick" | "escapeKeyDown") => {
+        setTransactionModalOpen(false);
     }
 
     const handleWithdrawClose = (event: {}, reason: "backdropClick" | "escapeKeyDown") => {
@@ -272,7 +280,10 @@ export const Lender: React.FC<Props> = (props: Props) => {
             />
             <TransactionModal
                 action={action}
-                open={true}
+                confirmed={transactionConfirmed}
+                handleClose={handleTransactClose}
+                open={transactionModalOpen}
+                txHash={transaction || ""}
             />
         </React.Fragment>
     );
