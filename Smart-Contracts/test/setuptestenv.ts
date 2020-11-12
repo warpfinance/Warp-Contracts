@@ -196,7 +196,8 @@ contract("Setup Test Env", function(accounts) {
     const warpControl = await WarpControl.new(
       oracleFactory.address,
       lpFactory.address,
-      scFactory.address
+      scFactory.address,
+      accounts[0]
     );
     // goodbye children, remember me...
     await oracleFactory.transferOwnership(warpControl.address);
