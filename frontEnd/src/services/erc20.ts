@@ -4,8 +4,9 @@ import { providers, BigNumber } from 'ethers'
 import { getLogger } from '../util/logger'
 import { isAddress, isContract } from '../util/tools'
 import { Token } from '../util/token'
+import { createTransactionInfo, TransactionInfo } from '../util/types'
 
-declare type TransactionReceipt = providers.TransactionReceipt;
+
 
 const logger = getLogger('Services::Erc20')
 
@@ -56,23 +57,25 @@ export class ERC20Service {
   /**
    * Approve `spender` to transfer `amount` tokens on behalf of the connected user.
    */
-  approve = async (spender: string, amount: BigNumber): Promise<TransactionReceipt> => {
+  approve = async (spender: string, amount: BigNumber): Promise<TransactionInfo> => {
     const transactionObject = await this.contract.approve(spender, amount, {
       value: '0x0',
     })
     logger.log(`Approve transaction hash: ${transactionObject.hash}`)
-    return this.provider.waitForTransaction(transactionObject.hash)
+
+    return createTransactionInfo(this.provider, transactionObject);
   }
 
   /**
    * Approve `spender` to transfer an "unlimited" amount of tokens on behalf of the connected user.
    */
-  approveUnlimited = async (spender: string): Promise<TransactionReceipt> => {
+  approveUnlimited = async (spender: string): Promise<TransactionInfo> => {
     const transactionObject = await this.contract.approve(spender, ethers.constants.MaxUint256, {
       value: '0x0',
     })
     logger.log(`Approve unlimited transaction hash: ${transactionObject.hash}`)
-    return this.provider.waitForTransaction(transactionObject.hash)
+    
+    return createTransactionInfo(this.provider, transactionObject);
   }
 
   balanceOf = async (owner: string): Promise<BigNumber> => {

@@ -2,6 +2,7 @@ import { BigNumber, Contract, ethers, Wallet } from "ethers";
 import { format } from "path";
 import { getLogger } from "../util/logger";
 import { formatBigNumber } from "../util/tools";
+import { createTransactionInfo, TransactionInfo } from "../util/types";
 
 const contractABI = [
   'function borrowRatePerBlock() public view returns (uint256)',
@@ -40,13 +41,13 @@ export class StableCoinWarpVaultService {
     return await this.contract.borrowRatePerBlock();
   }
 
-  lendToVault = async (amount: BigNumber): Promise<void> => {
+  lendToVault = async (amount: BigNumber): Promise<TransactionInfo> => {
 
     const transactionObject = await this.contract.lendToWarpVault(amount);
 
     logger.log("lendToWarpVault: " + transactionObject.hash);
     
-    return this.provider.waitForTransaction(transactionObject.hash);
+    return createTransactionInfo(this.provider, transactionObject);
   }
 
   getBalance = async (account: string): Promise<BigNumber> => {
@@ -57,28 +58,24 @@ export class StableCoinWarpVaultService {
   //   return await this.contract.exchangeRatePrior();
   // }
   
-  withdraw = async (amount: BigNumber): Promise<void> => {
-    const rate = await this.contract.exchangeRatePrior();
-    logger.log("Attempting to withdraw " + formatBigNumber(rate, 18) + " stable coins.");
-    logger.log("Exchange Rate: " + formatBigNumber(rate, 18));
-    const warpTokenAmount = amount.div(rate);
-    logger.log("Withdrawing " + formatBigNumber(warpTokenAmount, 18) + " Warp Stable Coins");
-    const transactionObject = await this.contract.redeem(warpTokenAmount);
+  withdraw = async (amount: BigNumber): Promise<TransactionInfo> => {
+
+    const transactionObject = await this.contract.redeem(amount);
 
     logger.log("redeem: " + transactionObject.hash);
     
-    return this.provider.waitForTransaction(transactionObject.hash);
+    return createTransactionInfo(this.provider, transactionObject);
   }
 
   borrowedAmount = async (account: string): Promise<BigNumber> => {
     return await this.contract.borrowBalancePrior(account);
   }
 
-  repay = async (amount: BigNumber): Promise<void> => {
+  repay = async (amount: BigNumber): Promise<TransactionInfo> => {
     const tx = await this.contract.repayBorrow(amount);
     logger.log("repay: " + tx.hash);
 
-    return this.provider.waitForTransaction(tx.hash);
+    return createTransactionInfo(this.provider, tx);
   }
 
   getHistoricalReward = async (account: string): Promise<BigNumber> => {

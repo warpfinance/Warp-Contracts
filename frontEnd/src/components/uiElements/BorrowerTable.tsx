@@ -6,6 +6,7 @@ import { CustomButton } from "../../components"
 import { Token } from "../../util/token";
 import { BorrowerTableLoanRow } from "./BorrowerTableLoanRow";
 import { BorrowerTableCollateralRow } from "./BorrowerTableCollateralRow";
+import { RefreshToken } from "../../hooks/useRefreshToken";
 
 interface Props {
     tokens: Token[],
@@ -13,6 +14,7 @@ interface Props {
     onLeftButtonClick: any,
     onRightButtonClick: any,
     type: "collateral" | "borrow"
+    refreshToken: RefreshToken
 }
 
 export const BorrowerTable: React.FC<Props> = (props: Props) => {
@@ -61,6 +63,7 @@ export const BorrowerTable: React.FC<Props> = (props: Props) => {
                                         token={token}
                                         onLeftButtonClick={props.onLeftButtonClick}
                                         onRightButtonClick={props.onRightButtonClick}
+                                        refreshToken={props.refreshToken}
                                      />
                                 )
                             } else {
@@ -70,6 +73,7 @@ export const BorrowerTable: React.FC<Props> = (props: Props) => {
                                         usdc={props.usdc}
                                         onLeftButtonClick={props.onLeftButtonClick}
                                         onRightButtonClick={props.onRightButtonClick}
+                                        refreshToken={props.refreshToken}
                                     />
                                 )
                             }

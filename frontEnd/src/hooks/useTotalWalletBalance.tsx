@@ -9,10 +9,11 @@ import { getImageUrl, Token } from '../util/token'
 import { ConnectedWeb3Context } from './connectedWeb3'
 
 import { utils } from 'ethers'
+import { RefreshToken } from './useRefreshToken'
 
 const logger = getLogger('Hooks::useTotalWalletBalance')
 
-export const useTotalWalletBalance = (context: ConnectedWeb3Context) => {
+export const useTotalWalletBalance = (context: ConnectedWeb3Context, refreshToken?: RefreshToken) => {
   const tokens = getTokensByNetwork(context.networkId, false)
   const [walletBalance, setWalletBalance] = useState<string>("0")
 
@@ -41,7 +42,7 @@ export const useTotalWalletBalance = (context: ConnectedWeb3Context) => {
     }
 
     fetchTotalWalletBalance()
-  }, [context.library, context.networkId])
+  }, [context.library, context.networkId, refreshToken])
 
   return walletBalance
 }

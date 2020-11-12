@@ -10,12 +10,14 @@ import { formatBigNumber, parseBigNumber } from "../../util/tools";
 import { useTokenValue } from "../../hooks/useTokenValue";
 import { useWarpControl } from "../../hooks/useWarpControl";
 import { BigNumber } from "ethers";
+import { RefreshToken } from "../../hooks/useRefreshToken";
 
 interface Props {
   token: Token,
   usdc: Maybe<Token>,
   onLeftButtonClick: any,
   onRightButtonClick: any,
+  refreshToken: RefreshToken
 }
 
 
@@ -27,7 +29,7 @@ export const BorrowerTableCollateralRow: React.FC<Props> = (props: Props) => {
     </AvatarGroup>
 
     const context = useConnectedWeb3Context();
-    const {walletBalance, vaultBalance} = useTokenBalance(props.token, context);
+    const {walletBalance, vaultBalance} = useTokenBalance(props.token, context, props.refreshToken);
     const {control} = useWarpControl(context);
     const {tokenValueInUSDC} = useTokenValue(control, props.token, context);
 

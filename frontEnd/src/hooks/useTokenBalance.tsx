@@ -9,8 +9,9 @@ import { Token } from '../util/token'
 
 
 import { ConnectedWeb3Context } from './connectedWeb3'
+import { RefreshToken } from './useRefreshToken'
 
-export const useTokenBalance = (token: Token, context: ConnectedWeb3Context) => {
+export const useTokenBalance = (token: Token, context: ConnectedWeb3Context, refreshToken?: RefreshToken) => {
   const { account, library: provider, networkId } = context
 
   const control = new WarpControlService(provider, account, getContractAddress(networkId, 'warpControl'));
@@ -50,7 +51,7 @@ export const useTokenBalance = (token: Token, context: ConnectedWeb3Context) => 
     return () => {
       isSubscribed = false;
     }
-  }, [account, provider, token])
+  }, [account, provider, token, refreshToken])
 
   return {walletBalance, vaultBalance}
 }

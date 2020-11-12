@@ -1,5 +1,6 @@
 import { BigNumber, Contract, ethers, Wallet } from "ethers";
 import { getLogger } from "../util/logger";
+import { createTransactionInfo, TransactionInfo } from "../util/types";
 import { OracleFactoryService } from "./oracleFactory";
 
 const warpControlABI:string [] = [
@@ -68,12 +69,12 @@ export class WarpControlService {
     return this.contract.viewMaxWithdrawAllowed(account, lpToken);
   }
 
-  borrowStableCoin = async (stableCoin: string, amount: BigNumber): Promise<void> => {
+  borrowStableCoin = async (stableCoin: string, amount: BigNumber): Promise<TransactionInfo> => {
     const tx = await this.contract.borrowSC(stableCoin, amount);
 
     logger.log("borrowSC: " + tx.hash);
     
-    return this.provider.waitForTransaction(tx.hash);
+    return createTransactionInfo(this.provider, tx);
   }
 
   oracle = async (): Promise<string> => {

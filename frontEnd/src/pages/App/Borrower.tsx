@@ -9,7 +9,7 @@ import { StableCoinWarpVaultService } from "../../services/stableCoinWarpVault";
 import { Token } from "../../util/token";
 import { WarpLPVaultService } from "../../services/warpLPVault";
 import { getLogger } from "../../util/logger";
-import { parseBigNumber } from "../../util/tools";
+import { formatBigNumber, parseBigNumber } from "../../util/tools";
 import { useBorrowLimit } from "../../hooks/useBorrowLimit";
 import { useCombinedBorrowRate } from "../../hooks/useCombinedBorrowRate";
 import { useConnectedWeb3Context } from "../../hooks/connectedWeb3";
@@ -18,6 +18,8 @@ import { useStableCoinTokens } from "../../hooks/useStableCoins";
 import { useState } from "react";
 import { useUSDCToken } from "../../hooks/useUSDC";
 import { useWarpControl } from "../../hooks/useWarpControl";
+import { useRefreshToken } from "../../hooks/useRefreshToken";
+import { TransactionInfo } from "../../util/types";
 
 interface Props {
 }
@@ -26,17 +28,18 @@ const logger = getLogger("Page::Borrower");
 
 export const Borrower: React.FC<Props> = (props: Props) => {
     const context = useConnectedWeb3Context();
+    const {refreshToken, refresh} = useRefreshToken();
     const stableCoins = useStableCoinTokens(context);
     const lpTokens = useLPTokens(context);
     const usdcToken = useUSDCToken(context);
     const { control } = useWarpControl(context);
-    const { totalBorrowedAmount, borrowLimit } = useBorrowLimit(context, control);
-    const combinedBorrowRate = useCombinedBorrowRate(context, control, stableCoins);
+    const { totalBorrowedAmount, borrowLimit } = useBorrowLimit(context, control, refreshToken);
+    const combinedBorrowRate = useCombinedBorrowRate(context, control, stableCoins, refreshToken);
 
     const data = {
         collateral: parseBigNumber(borrowLimit, usdcToken?.decimals),
         borrowPercentage: 0,
-        interestRate: combinedBorrowRate,
+        interestRate: combinedBorrowRate ? combinedBorrowRate : 0,
         borrowLimit: parseBigNumber(borrowLimit, usdcToken?.decimals),
         borrowLimitUsed: parseBigNumber(totalBorrowedAmount, usdcToken?.decimals),
     }
@@ -73,7 +76,7 @@ export const Borrower: React.FC<Props> = (props: Props) => {
     const [vaultAmount, setVaultAmount] = React.useState(0);
 
     // TO-DO: Web3 integration
-    const [transaction, setTransaction] = useState("0x716af84c2de1026e87ec2d32df563a6e7e43b261227eb10358ba3d8dd372eceb");
+    const [transactionHash, setTransactionHash] = useState("0x716af84c2de1026e87ec2d32df563a6e7e43b261227eb10358ba3d8dd372eceb");
     const [transactionConfirmed, setTransactionConfirmed] = useState(false);
     const [transactionModalOpen, setTransactionModalOpen] = useState(false);
 
@@ -226,12 +229,25 @@ export const Borrower: React.FC<Props> = (props: Props) => {
         await getLPToUSDCRatio(token);
     }
 
+    const handleTransaction = async (tx: Promise<TransactionInfo>) =>{
+        setTransactionConfirmed(false);
+        setTransactionModalOpen(true);
+        const info = await tx;
+        setTransactionConfirmed(true);
+        setTransactionHash(info.hash);
+
+        await info.finished;
+        setTransactionModalOpen(false);
+    }
+
     const onAuth = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
         const erc20 = new ERC20Service(context.library, context.account, currentToken.address);
         const targetVault = await control.getLPVault(currentToken.address);
-        await erc20.approveUnlimited(targetVault);
-
+        const tx = erc20.approveUnlimited(targetVault);
         setAuthorizationModalOpen(false);
+
+        await handleTransaction(tx);
+        refresh();
     }
 
     const onBorrow = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
@@ -240,9 +256,12 @@ export const Borrower: React.FC<Props> = (props: Props) => {
         const numCoins = borrowAmountValue * priceMultiplier;
 
         const amount = utils.parseUnits(numCoins.toString(), currentToken.decimals);
-        await control.borrowStableCoin(currentToken.address, amount);
+        const tx = control.borrowStableCoin(currentToken.address, amount);
 
         setBorrowModalOpen(false);
+
+        await handleTransaction(tx);
+        refresh();
     }
 
     const onProvide = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
@@ -264,9 +283,12 @@ export const Borrower: React.FC<Props> = (props: Props) => {
         const lpVault = new WarpLPVaultService(context.library, context.account, targetVault);
         const amount = utils.parseUnits(provideLpValue.toString(), currentToken.decimals);
 
-        await lpVault.provideCollateral(amount);
+        const tx = lpVault.provideCollateral(amount);
 
         setProvideModalOpen(false);
+
+        await handleTransaction(tx);
+        refresh();
     }
 
     const onRepay = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
@@ -288,9 +310,12 @@ export const Borrower: React.FC<Props> = (props: Props) => {
         const scVault = new StableCoinWarpVaultService(context.library, context.account, targetVault);
         const amount = utils.parseUnits(repayAmountValue.toString(), currentToken.decimals);
 
-        await scVault.repay(amount);
+        const tx = scVault.repay(amount);
 
         setRepayModalOpen(false);
+
+        await handleTransaction(tx);
+        refresh();
     }
 
     const onWithdraw = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
@@ -298,12 +323,16 @@ export const Borrower: React.FC<Props> = (props: Props) => {
         const lpVault = new WarpLPVaultService(context.library, context.account, targetVault);
         const amount = utils.parseUnits(withdrawLpValue.toString(), currentToken.decimals);
 
-        await lpVault.withdrawCollateral(amount);
+        const tx = lpVault.withdrawCollateral(amount);
 
         setWithdrawModalOpen(false);
+
+        await handleTransaction(tx);
+        refresh();
     }
 
     return (
+        
         <React.Fragment>
             <Grid
                 container
@@ -343,6 +372,7 @@ export const Borrower: React.FC<Props> = (props: Props) => {
                             usdc={usdcToken}
                             onLeftButtonClick={onProvideClick}
                             onRightButtonClick={onWithdrawClick}
+                            refreshToken={refreshToken}
                             type="collateral" />
                     </Grid>
                     <Grid item sm>
@@ -351,6 +381,7 @@ export const Borrower: React.FC<Props> = (props: Props) => {
                             tokens={stableCoins}
                             onLeftButtonClick={onRepayClick}
                             onRightButtonClick={onBorrowClick}
+                            refreshToken={refreshToken}
                             type="borrow" />
                     </Grid>
                 </Grid>
@@ -415,7 +446,7 @@ export const Borrower: React.FC<Props> = (props: Props) => {
                 poolIconSrcSecondary={currentToken.image2 || ""}
                 pool={currentToken.symbol}
                 open={transactionModalOpen}
-                txHash={transaction || ""}
+                txHash={transactionHash || ""}
             />
         </React.Fragment>
     );

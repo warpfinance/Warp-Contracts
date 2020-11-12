@@ -16,18 +16,21 @@ import { useTotalLentAmount } from "../../hooks/useTotalLentAmount";
 import { useTotalWalletBalance } from "../../hooks/useTotalWalletBalance";
 import { useUSDCToken } from "../../hooks/useUSDC";
 import { useWarpControl } from "../../hooks/useWarpControl";
+import { TransactionInfo } from "../../util/types";
+import { useRefreshToken } from "../../hooks/useRefreshToken";
 
 interface Props {
 }
 
 export const Lender: React.FC<Props> = (props: Props) => {
     const context = useConnectedWeb3Context();
+    const {refreshToken, refresh} = useRefreshToken();
     const tokens = useStableCoinTokens(context);
 
-    const walletBalance = useTotalWalletBalance(context);
+    const walletBalance = useTotalWalletBalance(context, refreshToken);
     const { control } = useWarpControl(context);
     const usdcToken = useUSDCToken(context);
-    const totalLentAmount = useTotalLentAmount(context, control, usdcToken);
+    const totalLentAmount = useTotalLentAmount(context, control, usdcToken, refreshToken);
     const totalReward = useCombinedHistoricalReward(context, control, tokens, usdcToken);
 
     const data = {
@@ -57,7 +60,7 @@ export const Lender: React.FC<Props> = (props: Props) => {
     const [withdrawError, setWithdrawError] = useState(false);
 
     // TO-DO: Web3 integration
-    const [transaction, setTransaction] = useState("0x716af84c2de1026e87ec2d32df563a6e7e43b261227eb10358ba3d8dd372eceb");
+    const [transactionHash, setTransactionHash] = useState("0x716af84c2de1026e87ec2d32df563a6e7e43b261227eb10358ba3d8dd372eceb");
     const [transactionConfirmed, setTransactionConfirmed] = useState(false);
     const [transactionModalOpen, setTransactionModalOpen] = useState(false);
 
@@ -144,6 +147,18 @@ export const Lender: React.FC<Props> = (props: Props) => {
         }
     };
 
+    const handleTransaction = async (tx: Promise<TransactionInfo>) =>{
+        setTransactionConfirmed(false);
+        setTransactionModalOpen(true);
+        const info = await tx;
+        setTransactionConfirmed(true);
+        setTransactionHash(info.hash);
+
+        
+        await info.finished;
+        setTransactionModalOpen(false);
+    }
+
     const onAuth = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
         if (!lendToken) {
             return;
@@ -151,9 +166,11 @@ export const Lender: React.FC<Props> = (props: Props) => {
 
         const erc20 = new ERC20Service(context.library, context.account, lendToken.address);
         const targetVault = await control.getStableCoinVault(lendToken.address);
-        await erc20.approveUnlimited(targetVault);
 
+        const tx = erc20.approveUnlimited(targetVault);
         setAuthorizationModalOpen(false);
+        await handleTransaction(tx);
+        
         setLendModalOpen(true);
     }
 
@@ -175,9 +192,13 @@ export const Lender: React.FC<Props> = (props: Props) => {
         }
 
         const scVault = new StableCoinWarpVaultService(context.library, context.account, targetVault);
-        await scVault.lendToVault(lendAmountValue);
+
+        const tx = scVault.lendToVault(lendAmountValue);
 
         setLendModalOpen(false);
+        
+        await handleTransaction(tx);
+        refresh();
     }
 
     const onWithdraw = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
@@ -190,10 +211,12 @@ export const Lender: React.FC<Props> = (props: Props) => {
         const targetVault = await control.getStableCoinVault(withdrawToken.address);
         const scVault = new StableCoinWarpVaultService(context.library, context.account, targetVault);
 
-        await scVault.withdraw(withdrawAmountValue);
-
+        const tx = scVault.withdraw(withdrawAmountValue);
 
         setWithdrawModalOpen(false);
+        
+        await handleTransaction(tx);
+        refresh();
     }
 
     return (
@@ -240,6 +263,7 @@ export const Lender: React.FC<Props> = (props: Props) => {
                             onButtonClick={onLendClick}
                             onChange={onLendAmountChange}
                             onFocus={onLendFocus}
+                            refreshToken={refreshToken}
                             type="lend" />
                     </Grid>
                     <Grid item sm>
@@ -252,6 +276,7 @@ export const Lender: React.FC<Props> = (props: Props) => {
                             onButtonClick={onWithdrawClick}
                             onChange={onWithdrawAmountChange}
                             onFocus={onWithdrawFocus}
+                            refreshToken={refreshToken}
                             type="withdraw" />
                     </Grid>
                 </Grid>
@@ -283,7 +308,7 @@ export const Lender: React.FC<Props> = (props: Props) => {
                 confirmed={transactionConfirmed}
                 handleClose={handleTransactClose}
                 open={transactionModalOpen}
-                txHash={transaction || ""}
+                txHash={transactionHash || ""}
             />
         </React.Fragment>
     );
