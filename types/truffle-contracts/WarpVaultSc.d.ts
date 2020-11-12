@@ -10,9 +10,38 @@ export interface WarpVaultScContract
     _InterestRate: string,
     _StableCoin: string,
     _warpControl: string,
+    _warpTeam: string,
     _initialExchangeRate: number | BN | string,
     meta?: Truffle.TransactionDetails
   ): Promise<WarpVaultScInstance>;
+}
+
+export interface InterestAccrued {
+  name: "InterestAccrued";
+  args: {
+    accrualBlockNumber: BN;
+    borrowIndex: BN;
+    totalBorrows: BN;
+    totalReserves: BN;
+    0: BN;
+    1: BN;
+    2: BN;
+    3: BN;
+  };
+}
+
+export interface LoanRepayed {
+  name: "LoanRepayed";
+  args: {
+    _borrower: string;
+    _repayAmount: BN;
+    remainingPrinciple: BN;
+    remainingInterest: BN;
+    0: string;
+    1: BN;
+    2: BN;
+    3: BN;
+  };
 }
 
 export interface OwnershipTransferred {
@@ -25,7 +54,36 @@ export interface OwnershipTransferred {
   };
 }
 
-type AllEvents = OwnershipTransferred;
+export interface StableCoinLent {
+  name: "StableCoinLent";
+  args: {
+    _lender: string;
+    _amountLent: BN;
+    _amountOfWarpMinted: BN;
+    0: string;
+    1: BN;
+    2: BN;
+  };
+}
+
+export interface StableCoinWithdraw {
+  name: "StableCoinWithdraw";
+  args: {
+    _lender: string;
+    _amountWithdrawn: BN;
+    _amountOfWarpBurnt: BN;
+    0: string;
+    1: BN;
+    2: BN;
+  };
+}
+
+type AllEvents =
+  | InterestAccrued
+  | LoanRepayed
+  | OwnershipTransferred
+  | StableCoinLent
+  | StableCoinWithdraw;
 
 export interface WarpVaultScInstance extends Truffle.ContractInstance {
   InterestRate(txDetails?: Truffle.TransactionDetails): Promise<string>;
@@ -51,12 +109,10 @@ export interface WarpVaultScInstance extends Truffle.ContractInstance {
     txDetails?: Truffle.TransactionDetails
   ): Promise<boolean>;
 
+  divisor(txDetails?: Truffle.TransactionDetails): Promise<BN>;
+
   historicalReward(
     arg0: string,
-    txDetails?: Truffle.TransactionDetails
-  ): Promise<BN>;
-
-  liquidationIncentiveMantissa(
     txDetails?: Truffle.TransactionDetails
   ): Promise<BN>;
 
@@ -64,6 +120,8 @@ export interface WarpVaultScInstance extends Truffle.ContractInstance {
    * Returns the address of the current owner.
    */
   owner(txDetails?: Truffle.TransactionDetails): Promise<string>;
+
+  percent(txDetails?: Truffle.TransactionDetails): Promise<BN>;
 
   principalBalance(
     arg0: string,
@@ -112,6 +170,17 @@ export interface WarpVaultScInstance extends Truffle.ContractInstance {
   };
 
   wStableCoin(txDetails?: Truffle.TransactionDetails): Promise<string>;
+
+  warpTeam(txDetails?: Truffle.TransactionDetails): Promise<string>;
+
+  /**
+   * calculateFee is used to calculate the fee earned by the Warp Platform
+   * @param _payedAmount is a uint representing the full amount of stablecoin earned as interest*
+   */
+  calculateFee(
+    _payedAmount: number | BN | string,
+    txDetails?: Truffle.TransactionDetails
+  ): Promise<BN>;
 
   /**
    * This calculates interest accrued from the last checkpointed block up to the current block and writes new checkpoint to storage.*
@@ -224,7 +293,7 @@ export interface WarpVaultScInstance extends Truffle.ContractInstance {
 
   /**
    * redeem allows a user to redeem their Warp Wrapper Token for the appropriate amount of underlying stablecoin asset
-   * @param _amount is the amount of Warp Wrapper token being exchanged*
+   * @param _amount is the amount of StableCoin the user wishes to exchange*
    */
   redeem: {
     (
@@ -284,23 +353,23 @@ export interface WarpVaultScInstance extends Truffle.ContractInstance {
 
   /**
    * Sender repays their own borrow
-   * @param repayAmount The amount to repay
+   * @param _repayAmount The amount to repay
    */
   repayBorrow: {
     (
-      repayAmount: number | BN | string,
+      _repayAmount: number | BN | string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<Truffle.TransactionResponse<AllEvents>>;
     call(
-      repayAmount: number | BN | string,
+      _repayAmount: number | BN | string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<void>;
     sendTransaction(
-      repayAmount: number | BN | string,
+      _repayAmount: number | BN | string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<string>;
     estimateGas(
-      repayAmount: number | BN | string,
+      _repayAmount: number | BN | string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<number>;
   };
@@ -363,12 +432,10 @@ export interface WarpVaultScInstance extends Truffle.ContractInstance {
       txDetails?: Truffle.TransactionDetails
     ): Promise<boolean>;
 
+    divisor(txDetails?: Truffle.TransactionDetails): Promise<BN>;
+
     historicalReward(
       arg0: string,
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<BN>;
-
-    liquidationIncentiveMantissa(
       txDetails?: Truffle.TransactionDetails
     ): Promise<BN>;
 
@@ -376,6 +443,8 @@ export interface WarpVaultScInstance extends Truffle.ContractInstance {
      * Returns the address of the current owner.
      */
     owner(txDetails?: Truffle.TransactionDetails): Promise<string>;
+
+    percent(txDetails?: Truffle.TransactionDetails): Promise<BN>;
 
     principalBalance(
       arg0: string,
@@ -424,6 +493,17 @@ export interface WarpVaultScInstance extends Truffle.ContractInstance {
     };
 
     wStableCoin(txDetails?: Truffle.TransactionDetails): Promise<string>;
+
+    warpTeam(txDetails?: Truffle.TransactionDetails): Promise<string>;
+
+    /**
+     * calculateFee is used to calculate the fee earned by the Warp Platform
+     * @param _payedAmount is a uint representing the full amount of stablecoin earned as interest*
+     */
+    calculateFee(
+      _payedAmount: number | BN | string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<BN>;
 
     /**
      * This calculates interest accrued from the last checkpointed block up to the current block and writes new checkpoint to storage.*
@@ -539,7 +619,7 @@ export interface WarpVaultScInstance extends Truffle.ContractInstance {
 
     /**
      * redeem allows a user to redeem their Warp Wrapper Token for the appropriate amount of underlying stablecoin asset
-     * @param _amount is the amount of Warp Wrapper token being exchanged*
+     * @param _amount is the amount of StableCoin the user wishes to exchange*
      */
     redeem: {
       (
@@ -599,23 +679,23 @@ export interface WarpVaultScInstance extends Truffle.ContractInstance {
 
     /**
      * Sender repays their own borrow
-     * @param repayAmount The amount to repay
+     * @param _repayAmount The amount to repay
      */
     repayBorrow: {
       (
-        repayAmount: number | BN | string,
+        _repayAmount: number | BN | string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<Truffle.TransactionResponse<AllEvents>>;
       call(
-        repayAmount: number | BN | string,
+        _repayAmount: number | BN | string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<void>;
       sendTransaction(
-        repayAmount: number | BN | string,
+        _repayAmount: number | BN | string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<string>;
       estimateGas(
-        repayAmount: number | BN | string,
+        _repayAmount: number | BN | string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<number>;
     };
