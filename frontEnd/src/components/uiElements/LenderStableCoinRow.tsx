@@ -29,6 +29,9 @@ export const LenderStableCoinRow: React.FC<Props> = (props: Props) => {
   const icon = <Avatar alt={props.token.image} src={props.token.image} />;
   const currency = props.token.symbol;
 
+  
+  const [enteredValue, setEnteredValue] = React.useState("");
+
   const [availableAmount, setAvailableAmount] = React.useState(BigNumber.from(0));
 
   const context = useConnectedWeb3Context();
@@ -48,7 +51,12 @@ export const LenderStableCoinRow: React.FC<Props> = (props: Props) => {
     setAvailableAmount(available);
   }, [walletBalance, vaultBalance]);
 
+  React.useEffect(() => {
+    setEnteredValue("");
+  }, [props.refreshToken])
+
   const onChangeWrapped = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+    setEnteredValue(event.target.value);
     props.onChange(event, availableAmount, props.token);
   }
 
@@ -97,6 +105,7 @@ export const LenderStableCoinRow: React.FC<Props> = (props: Props) => {
           >
               <Amount
                   adornment={currency}
+                  value={enteredValue}
                   focusedAmountId={props.focusedAmountId}
                   error={props.error}
                   id={currency}
