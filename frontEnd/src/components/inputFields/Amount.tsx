@@ -26,11 +26,13 @@ interface Props {
     onFocus?: (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void,
     onChange?: (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void,
     text?: string,
+    value?: any,
 }
 
 export const Amount: React.FC<Props> = (props: Props) => {
     const classes = useStyles();
     let maxWidth = "150px";
+    const value = props.value ? props.value : null;
 
     if (props.fullWidth === true) {
         maxWidth = "";
@@ -57,5 +59,6 @@ export const Amount: React.FC<Props> = (props: Props) => {
             }}
             type="number"
             variant="outlined"
+            value={value}
         />);
 }
