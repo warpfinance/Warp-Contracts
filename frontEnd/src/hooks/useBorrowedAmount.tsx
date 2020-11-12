@@ -4,7 +4,6 @@ import { StableCoinWarpVaultService } from "../services/stableCoinWarpVault";
 import { WarpControlService } from "../services/warpControl";
 import { getLogger } from "../util/logger";
 import { Token } from "../util/token";
-import { parseBigNumber } from "../util/tools";
 import { ConnectedWeb3Context } from "./connectedWeb3";
 import { RefreshToken } from "./useRefreshToken";
 

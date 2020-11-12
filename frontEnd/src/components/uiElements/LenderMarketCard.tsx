@@ -2,15 +2,27 @@ import * as React from "react";
 
 import { Card, CardContent, Grid, Typography } from "@material-ui/core";
 
+import { useConnectedWeb3Context } from "../../hooks/connectedWeb3";
+import { useStableCoinTokens } from "../../hooks/useStableCoins";
+import { useWarpControl } from "../../hooks/useWarpControl";
+import { useUSDCToken } from "../../hooks/useUSDC";
+import { useVaultMetrics } from "../../hooks/useVaultMetrics";
 
 
 interface Props {
 }
 
 export const LenderMarketCard: React.FC<Props> = (props: Props) => {
+    const context = useConnectedWeb3Context();
+    const stableCoins = useStableCoinTokens(context);
+    const { control } = useWarpControl(context);
+    const usdcToken = useUSDCToken(context);
+
+    const {borrowedAmount, amountInVault} = useVaultMetrics(context, control, stableCoins, usdcToken);
+
     // waiting on smart contracts
     const data = {
-        totalMarket: 2556448.70,
+        totalMarket: amountInVault,
     }
     
     return (

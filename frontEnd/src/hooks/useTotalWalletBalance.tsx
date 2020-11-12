@@ -10,10 +10,12 @@ import { ConnectedWeb3Context } from './connectedWeb3'
 
 import { utils } from 'ethers'
 import { RefreshToken } from './useRefreshToken'
+import { parseBigNumber } from '../util/tools'
+import { WarpControlService } from '../services/warpControl'
 
 const logger = getLogger('Hooks::useTotalWalletBalance')
 
-export const useTotalWalletBalance = (context: ConnectedWeb3Context, refreshToken?: RefreshToken) => {
+export const useTotalWalletBalance = (context: ConnectedWeb3Context, control: WarpControlService, usdc: Maybe<Token>, refreshToken?: RefreshToken) => {
   const tokens = getTokensByNetwork(context.networkId, false)
   const [walletBalance, setWalletBalance] = useState<string>("0")
 
@@ -24,18 +26,17 @@ export const useTotalWalletBalance = (context: ConnectedWeb3Context, refreshToke
         return;
       }
 
-      let amount = BigNumber.from(0);
+      let amount = 0;
       for (const token of tokens) {
         const tokenService = new ERC20Service(context.library, context.account, token.address);
 
-        const tokenBalance = await tokenService.balanceOf(context.account);
+        
         const tokenInfo = await tokenService.getProfileSummary();
+        const tokenBalance = parseBigNumber(await tokenService.balanceOf(context.account), tokenInfo.decimals);
 
-        // @TODO: Need to an actual conversion
-        const divisor = BigNumber.from(10).pow(BigNumber.from(tokenInfo.decimals));
-        const inDollars = tokenBalance.div(divisor);
+        const usdcPriceOfToken = parseBigNumber(await control.getStableCoinPrice(token.address), usdc?.decimals);
 
-        amount = amount.add(inDollars);
+        amount += tokenBalance * usdcPriceOfToken;
       }
 
       setWalletBalance(amount.toString());

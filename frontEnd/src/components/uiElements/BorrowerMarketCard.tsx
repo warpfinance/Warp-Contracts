@@ -1,15 +1,28 @@
 import * as React from "react";
 
 import { Card, CardContent, Grid, Typography } from "@material-ui/core";
+import { useConnectedWeb3Context } from "../../hooks/connectedWeb3";
+import { useStableCoinTokens } from "../../hooks/useStableCoins";
+import { useWarpControl } from "../../hooks/useWarpControl";
+import { useUSDCToken } from "../../hooks/useUSDC";
+import { useVaultMetrics } from "../../hooks/useVaultMetrics";
 
 interface Props {
 }
 
 export const BorrowerMarketCard: React.FC<Props> = (props: Props) => {
+    const context = useConnectedWeb3Context();
+    const stableCoins = useStableCoinTokens(context);
+    const { control } = useWarpControl(context);
+    const usdcToken = useUSDCToken(context);
+
+    const {borrowedAmount, amountInVault} = useVaultMetrics(context, control, stableCoins, usdcToken);
+    
     // waiting on contracts
     const data = {
-        totalMarket: 1253253.47,
+        totalMarket: borrowedAmount,
     }
+
     return (
         <Card>
             <CardContent>
@@ -27,7 +40,7 @@ export const BorrowerMarketCard: React.FC<Props> = (props: Props) => {
                         alignItems="flex-start"
                     >
                         <Typography variant="subtitle1" color="textSecondary">
-                            Total Borrower market
+                            Current Borrowed Amount
                                 </Typography>
                         <Typography variant="h4">
                             {"$" + data.totalMarket.toLocaleString(undefined, { minimumFractionDigits: 2 })}

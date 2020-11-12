@@ -26,10 +26,11 @@ export const Lender: React.FC<Props> = (props: Props) => {
     const context = useConnectedWeb3Context();
     const {refreshToken, refresh} = useRefreshToken();
     const tokens = useStableCoinTokens(context);
-
-    const walletBalance = useTotalWalletBalance(context, refreshToken);
     const { control } = useWarpControl(context);
     const usdcToken = useUSDCToken(context);
+
+    const walletBalance = useTotalWalletBalance(context, control, usdcToken, refreshToken);
+    
     const totalLentAmount = useTotalLentAmount(context, control, usdcToken, refreshToken);
     const totalReward = useCombinedHistoricalReward(context, control, tokens, usdcToken);
 
@@ -207,7 +208,6 @@ export const Lender: React.FC<Props> = (props: Props) => {
         }
 
         setAction("withdraw");
-        const erc20 = new ERC20Service(context.library, context.account, withdrawToken.address);
         const targetVault = await control.getStableCoinVault(withdrawToken.address);
         const scVault = new StableCoinWarpVaultService(context.library, context.account, targetVault);
 

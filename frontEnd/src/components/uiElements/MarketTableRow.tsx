@@ -5,6 +5,8 @@ import { Token } from "../../util/token";
 import * as React from 'react';
 
 import { Avatar, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@material-ui/core";
+import { useSingleVaultMetrics } from "../../hooks/useSingleVaultMetrics";
+import { useUSDCToken } from "../../hooks/useUSDC";
 
 interface Props {
   type: "borrower" | "lender",
@@ -15,10 +17,12 @@ interface Props {
 export const MarketTableRow: React.FC<Props> = (props: Props) => {
   const context = useConnectedWeb3Context();
   const {control} = useWarpControl(context);
+  const usdcToken = useUSDCToken(context);
   const {tokenBorrowRate, tokenSupplyRate} = useTokenInterest(control, props.token, context);
+  const {borrowedAmount, amountInVault} = useSingleVaultMetrics(context, control, props.token, usdcToken);
   
   // waiting on smart contracts
-  const totalAmount = 0;
+  const totalAmount = props.type === "lender" ? amountInVault : borrowedAmount;
 
   const apy = props.type === "lender" ? tokenSupplyRate : tokenBorrowRate;
 
