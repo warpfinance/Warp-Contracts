@@ -212,12 +212,6 @@ contract("Setup Test Env", function(accounts) {
       "ETH-BTC-LP"
     );
     await warpControl.createNewLPVault(
-      ethCPair.address,
-      wethToken.address,
-      usdcToken.address,
-      "ETH-BTC-LP"
-    );
-    await warpControl.createNewLPVault(
       ethTPair.address,
       wethToken.address,
       usdtToken.address,
@@ -228,6 +222,12 @@ contract("Setup Test Env", function(accounts) {
       wethToken.address,
       daiToken.address,
       "ETH-DAI-LP"
+    );
+    await warpControl.createNewLPVault(
+      ethCPair.address,
+      wethToken.address,
+      usdcToken.address,
+      "ETH-USDC-LP"
     );
 
     // Create Stable Coin Vaults
@@ -260,6 +260,7 @@ contract("Setup Test Env", function(accounts) {
 
     await oracleFactory.getUnderlyingPrice(ethTPair.address);
     await oracleFactory.getUnderlyingPrice(ethDaiPair.address);
+    await oracleFactory.getUnderlyingPrice(ethCPair.address);
     await oracleFactory.getUnderlyingPrice(ethBtcPair.address);
 
     await utils.increaseTime(ONE_DAY);
@@ -286,7 +287,7 @@ contract("Setup Test Env", function(accounts) {
       daiInVault.toString()
     );
 
-    const testerAddress = "0x7d4A13FE119C9F36425008a7afCB2737B2bB5C41";
+    const testerAddress = "0x7f3A152F09324f2aee916CE069D3908603449173";
     await daiToken.mint(testerAddress, toWei("10000"));
     await usdcToken.mint(testerAddress, toWei("10000"));
     await usdtToken.mint(testerAddress, toWei("10000"));
@@ -314,12 +315,21 @@ contract("Setup Test Env", function(accounts) {
       conversionRates.eth.btc,
       1000
     );
+    await giveLPTokens(
+      testerAddress,
+      ethCPair,
+      wethToken,
+      usdcToken,
+      conversionRates.eth.usdc,
+      1000
+    );
 
     console.log("REACT_APP_LOCALHOST_DAI=" + daiToken.address);
     console.log("REACT_APP_LOCALHOST_USDC=" + usdcToken.address);
     console.log("REACT_APP_LOCALHOST_USDT=" + usdtToken.address);
     console.log("REACT_APP_LOCALHOST_ETH_DAI=" + ethDaiPair.address);
     console.log("REACT_APP_LOCALHOST_ETH_USDT=" + ethTPair.address);
+    console.log("REACT_APP_LOCALHOST_ETH_USDC=" + ethCPair.address);
     console.log("REACT_APP_LOCALHOST_ETH_WBTC=" + ethBtcPair.address);
     console.log("REACT_APP_LOCALHOST_CONTROL=" + warpControl.address);
   });
