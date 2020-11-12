@@ -35,6 +35,7 @@ export const useConnectedWeb3Context = () => {
 export const ConnectedWeb3: React.FC = props => {
   const [networkId, setNetworkId] = useState<number | null>(null)
   const [onLoadConnecting, setOnLoadConnecting] = useState<boolean>(true);
+  const [wasSuccessful, setWasSuccessful] = useState(false);
   const context = useWeb3React()
   const { account, active, error, library } = context
 
@@ -44,35 +45,35 @@ export const ConnectedWeb3: React.FC = props => {
   useEffect(() => {
     let isSubscribed = true;
 
-    console.log(error);
-    console.log(context);
-    console.log(library);
 
     const tryConnect = async () => {
-      const connector = localStorage.getItem('CONNECTOR');
+      // const connector = localStorage.getItem('CONNECTOR');
 
-      if (!active && connector) {
-        if (connector) {
-          try {
-            if (connector as WalletType === WalletType.MetaMask) {
-              await context.activate(connectors.MetaMask, undefined, true);
-            }
-          } catch (e) {
-            console.log(e);
-            localStorage.removeItem('CONNECTOR');
-            await context.activate(connectors.Infura);
-          }
-        }
-      } else {
+      // if (!active && connector) {
+      //   // if (connector) {
+      //   //   try {
+      //   //     if (connector as WalletType === WalletType.MetaMask) {
+      //   //       await context.activate(connectors.MetaMask, undefined, true);
+      //   //     }
+      //   //   } catch (e) {
+      //   //     console.log(e);
+      //   //     localStorage.removeItem('CONNECTOR');
+      //   //     await context.activate(connectors.Infura);
+      //   //   }
+      //   // }
+      // } else 
+      if (!active) {
         console.log("fallback")
         await context.activate(connectors.Infura);
       }
     }
 
-    if (onLoadConnecting) {
-      setOnLoadConnecting(false);
-      tryConnect();
-    }
+    tryConnect();
+
+    // if (onLoadConnecting) {
+    //   setOnLoadConnecting(false);
+    //   tryConnect();
+    // }
 
     const checkIfReady = async () => {
       if (context.chainId !== undefined && isSubscribed) {
