@@ -21,6 +21,7 @@ from the coumpound protocol.
 contract WarpVaultLP is Ownable {
     using SafeMath for uint256;
 
+    uint256 public timeWizard;
     string public lpName;
 
     IERC20 public LPtoken;
@@ -39,15 +40,24 @@ contract WarpVaultLP is Ownable {
         _;
     }
 
+/**
+@dev Throws if a function is called before the time wizard allows it
+**/
+    modifier angryWizard() {
+        require(now > timeWizard);
+        _;
+    }
     /**
     @notice constructor sets up token names and symbols for the WarpWrapperToken
     @param _lp is the address of the lp token a specific Warp vault will represent
     @param _lpName is the name of the lp token
+    @param _timelock is a variable representing the number of seconds the timeWizard will prevent withdraws and borrows from a contracts(one week is 605800 seconds)
     @dev this function instantiates the lp token as a useable object and generates three WarpWrapperToken contracts to represent
         each type of stable coin this vault can hold. this also instantiates each of these contracts as a usable object in this contract giving
         this contract the ability to call their mint and burn functions.
     **/
     constructor(
+        uint256 _timelock,
         address _lp,
         address _WarpControl,
         string memory _lpName
@@ -55,6 +65,7 @@ contract WarpVaultLP is Ownable {
         lpName = _lpName;
         LPtoken = IERC20(_lp);
         WC = WarpControlI(_WarpControl);
+        timeWizard = now.add(_timelock);
     }
 
     /**
@@ -75,7 +86,7 @@ contract WarpVaultLP is Ownable {
     @notice withdrawCollateral allows the user to trade in his WarpLP tokens for hiss underlying LP token collateral
     @param _amount is the amount of LP tokens he wishes to withdraw
     **/
-    function withdrawCollateral(uint256 _amount) public {
+    function withdrawCollateral(uint256 _amount) public angryWizard{
 
         //require the availible value of the LP locked in this contract the user has
         //is greater than or equal to the amount being withdrawn
@@ -123,6 +134,7 @@ contract WarpVaultLP is Ownable {
     function _liquidateAccount(address _account, address _liquidator)
         public
         onlyWC
+        angryWizard
     {
         //transfer the LP tokens to the liquidator
         LPtoken.transfer(_liquidator, collateralizedLP[_account]);

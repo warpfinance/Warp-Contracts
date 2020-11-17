@@ -20,12 +20,14 @@ contract WarpVaultSCFactory is Ownable {
 @param _StableCoin is the address of the stablecoin contract this WarpVault will manage
 @param _warpTeam is the address of the Warp Team used for fees
 @param _initialExchangeRate is the exchange rate mantissa used to determine the initial exchange rate of stablecoin to warp stablecoin
+@param _timelock is a variable representing the number of seconds the timeWizard will prevent withdraws and borrows from a contracts(one week is 605800 seconds)
   **/
     function createNewWarpVaultSC(
         address _InterestRate,
         address _StableCoin,
         address _warpTeam,
-        uint256 _initialExchangeRate
+        uint256 _initialExchangeRate,
+        uint256 _timelock
     ) public onlyOwner returns (address) {
         address _WVSC = address(
             new WarpVaultSC(
@@ -33,7 +35,8 @@ contract WarpVaultSCFactory is Ownable {
                 _StableCoin,
                 msg.sender,
                 _warpTeam,
-                _initialExchangeRate
+                _initialExchangeRate,
+                _timelock
             )
         );
 

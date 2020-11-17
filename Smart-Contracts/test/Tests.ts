@@ -20,6 +20,7 @@ const ERC20 = artifacts.require("ERC20");
 const TestToken = artifacts.require("TesterToken");
 
 const ONE_DAY = 1000 * 86400;
+const ONE_YEAR = 365 * ONE_DAY;
 
 const getEvent = async (txResult, eventName) => {
   let res = undefined;
@@ -65,8 +66,8 @@ const giveLPTokens = async (
   await lpToken.mint(account);
 };
 
-contract("Setup Test Env", function(accounts) {
-  it("Demo", async () => {
+contract("Tests", function(accounts) {
+  it("Tests", async () => {
     const wbtcToken = await TestToken.new("WBTC", "WBTC");
     const daiToken = await TestToken.new("DAI", "DAI");
     const usdtToken = await TestToken.new("USDT", "USDT");
@@ -206,28 +207,24 @@ contract("Setup Test Env", function(accounts) {
 
     // Create LP Vaults
     await warpControl.createNewLPVault(
-      0,
       ethBtcPair.address,
       wethToken.address,
       wbtcToken.address,
       "ETH-BTC-LP"
     );
     await warpControl.createNewLPVault(
-      0,
       ethCPair.address,
       wethToken.address,
       usdcToken.address,
       "ETH-BTC-LP"
     );
     await warpControl.createNewLPVault(
-      0,
       ethTPair.address,
       wethToken.address,
       usdtToken.address,
       "ETH-USDT-LP"
     );
     await warpControl.createNewLPVault(
-      0,
       ethDaiPair.address,
       wethToken.address,
       daiToken.address,
@@ -236,7 +233,6 @@ contract("Setup Test Env", function(accounts) {
 
     // Create Stable Coin Vaults
     await warpControl.createNewSCVault(
-      0,
       "1000000000000000000",
       "2000000000000000000",
       "2000000000000000000",
@@ -245,7 +241,6 @@ contract("Setup Test Env", function(accounts) {
       daiToken.address
     );
     await warpControl.createNewSCVault(
-      0,
       "1000000000000000000",
       "2000000000000000000",
       "2000000000000000000",
@@ -254,7 +249,6 @@ contract("Setup Test Env", function(accounts) {
       usdtToken.address
     );
     await warpControl.createNewSCVault(
-      0,
       "1000000000000000000",
       "2000000000000000000",
       "2000000000000000000",
@@ -280,9 +274,11 @@ contract("Setup Test Env", function(accounts) {
     const ethUsdcInVault = 10;
     const ethUsdtInVault = 10;
     const ethDaiInVault = 10;
+    console.log("Using crypto-magic to inflate the US Dollar");
     await daiToken.mint(user1, toWei(daiInVault.toString()));
     await usdcToken.mint(user1, toWei(usdcInVault.toString()));
     await usdtToken.mint(user1, toWei(usdtInVault.toString()));
+
     //pull in warp SC Vaults for use
     const daiWarpVault = await WarpVaultSC.at(
       await warpControl.instanceSCTracker(daiToken.address)
@@ -297,6 +293,7 @@ contract("Setup Test Env", function(accounts) {
     );
     //approve and lend stablecoins to each vault
     ///dai
+    console.log("Approve and lend stablecoins");
     await daiToken.approve(daiWarpVault.address, toWei("1000000000000"), {
       from: user1
     });
@@ -304,6 +301,7 @@ contract("Setup Test Env", function(accounts) {
     await daiWarpVault.lendToWarpVault(toWei(daiInVault.toString()), {
       from: user1
     });
+    console.log("1000000 DAI lent to the Warp Protocol!");
     ///usdc
     await usdcToken.approve(usdcWarpVault.address, toWei("1000000000000"), {
       from: user1
@@ -312,6 +310,7 @@ contract("Setup Test Env", function(accounts) {
     await usdcWarpVault.lendToWarpVault(toWei(usdcInVault.toString()), {
       from: user1
     });
+    console.log("1000000 USDC lent to the Warp Protocol!");
     ///usdt
     await usdtToken.approve(usdtWarpVault.address, toWei("1000000000000"), {
       from: user1
@@ -320,8 +319,10 @@ contract("Setup Test Env", function(accounts) {
     await usdtWarpVault.lendToWarpVault(toWei(usdtInVault.toString()), {
       from: user1
     });
+    console.log("1000000 USDT lent to the Warp Protocol!");
     //pull in warp wrapper token for each and check for a 1:1 ratio with amount lent
     //dai
+
     const daiWarpWrapperToken = await WarpWrapperToken.at(
       await daiWarpVault.wStableCoin()
     );
@@ -378,6 +379,7 @@ contract("Setup Test Env", function(accounts) {
     );
     //pull in LP vaults and lock up collateral in each
     //ETH-BTC pair
+    console.log("Locking up LP tokens");
     const ethBTCWarpVault = await WarpVaultLP.at(
       await warpControl.instanceLPTracker(ethBtcPair.address)
     );
@@ -388,6 +390,7 @@ contract("Setup Test Env", function(accounts) {
     await ethBTCWarpVault.provideCollateral(toWei(ethBTCInVault.toString()), {
       from: user1
     });
+    console.log("10 ETH-BTC LP tokens locked up in Warp");
     //ETH-USDC pair
     const ethUsdcWarpVault = await WarpVaultLP.at(
       await warpControl.instanceLPTracker(ethCPair.address)
@@ -399,6 +402,7 @@ contract("Setup Test Env", function(accounts) {
     await ethUsdcWarpVault.provideCollateral(toWei(ethUsdcInVault.toString()), {
       from: user1
     });
+    console.log("10 ETH-USDC LP tokens locked up in Warp");
     //ETH-USDT pair
     const ethUsdtWarpVault = await WarpVaultLP.at(
       await warpControl.instanceLPTracker(ethTPair.address)
@@ -410,6 +414,7 @@ contract("Setup Test Env", function(accounts) {
     await ethUsdtWarpVault.provideCollateral(toWei(ethUsdtInVault.toString()), {
       from: user1
     });
+    console.log("10 ETH-USDT LP tokens locked up in Warp");
     //ETH-DAI pair
     const ethDaiWarpVault = await WarpVaultLP.at(
       await warpControl.instanceLPTracker(ethDaiPair.address)
@@ -422,42 +427,45 @@ contract("Setup Test Env", function(accounts) {
     await ethDaiWarpVault.provideCollateral(toWei(ethDaiInVault.toString()), {
       from: user1
     });
+    console.log("10 ETH-DAI LP tokens locked up in Warp");
 
-    const testerAddress = "0x7d4A13FE119C9F36425008a7afCB2737B2bB5C41";
-    await daiToken.mint(testerAddress, toWei("10000"));
-    await usdcToken.mint(testerAddress, toWei("10000"));
-    await usdtToken.mint(testerAddress, toWei("10000"));
-    await giveLPTokens(
-      testerAddress,
-      ethDaiPair,
-      wethToken,
-      daiToken,
-      conversionRates.eth.dai,
-      1000
+    //test borrowing of 1000 DAI
+    daiBalBefore = fromWei(await daiToken.balanceOf(user1));
+    console.log(
+      "the users DAI balance BEFORE borrowing DAI is: " + daiBalBefore
     );
-    await giveLPTokens(
-      testerAddress,
-      ethTPair,
-      wethToken,
-      usdtToken,
-      conversionRates.eth.usdt,
-      1000
+    await warpControl.borrowSC(daiToken.address, toWei("1000"), {
+      from: user1
+    });
+    const daiBalAfterBorrow = fromWei(await daiToken.balanceOf(user1));
+    console.log(
+      "the users DAI balance AFTER borrowing DAI is: " + daiBalAfterBorrow
     );
-    await giveLPTokens(
-      testerAddress,
-      ethBtcPair,
-      wethToken,
-      wbtcToken,
-      conversionRates.eth.btc,
-      1000
+    expect(fromWei(await daiToken.balanceOf(user1))).equals("1000");
+    //lets time travel into the world of tomorrow!!!
+    await utils.increaseTime(ONE_YEAR);
+    //work REALLY hard and make more DAI
+    await daiToken.mint(user1, toWei(daiInVault.toString()));
+    const daiBalAfterYear = fromWei(await daiToken.balanceOf(user1));
+    console.log(
+      "the users DAI balance after a Year is " +
+        daiBalAfterYear +
+        " before repaying the loan"
     );
+    //repay the loan cause i wanna unlock my collateral
+    await daiWarpVault.repayBorrow(0, {
+      from: user1
+    });
+    const daiBalAfterRepay = fromWei(await daiToken.balanceOf(user1));
+    console.log(
+      "the users DAI balance after repaying the loan: " + daiBalAfterRepay
+    );
+    const totalPayed = daiBalAfterYear - daiBalAfterRepay;
+    const interest = totalPayed - 1000;
+    console.log("the total amount payed after a year was: " + totalPayed);
+    console.log("the interest amount payed after a year was: " + interest);
+    console.log("borrowing tests complete");
 
-    console.log("REACT_APP_LOCALHOST_DAI=" + daiToken.address);
-    console.log("REACT_APP_LOCALHOST_USDC=" + usdcToken.address);
-    console.log("REACT_APP_LOCALHOST_USDT=" + usdtToken.address);
-    console.log("REACT_APP_LOCALHOST_ETH_DAI=" + ethDaiPair.address);
-    console.log("REACT_APP_LOCALHOST_ETH_USDT=" + ethTPair.address);
-    console.log("REACT_APP_LOCALHOST_ETH_WBTC=" + ethBtcPair.address);
-    console.log("REACT_APP_LOCALHOST_CONTROL=" + warpControl.address);
+    //
   });
 });

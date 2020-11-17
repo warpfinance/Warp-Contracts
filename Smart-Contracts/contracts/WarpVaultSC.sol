@@ -31,8 +31,10 @@ contract WarpVaultSC is Ownable, Exponential {
     uint256 public totalBorrows;
     uint256 public totalReserves;
     uint256 internal constant borrowRateMaxMantissa = 0.0005e16;
-    uint256 public percent = 5;
+    uint256 public percentA = 50;
+    uint256 public percentB = 1500;
     uint256 public divisor = 10000;
+    uint256 public timeWizard;
     address public warpTeam;
 
     ERC20 public stablecoin;
@@ -62,12 +64,20 @@ contract WarpVaultSC is Ownable, Exponential {
     }
 
     /**
-     * @dev Throws if called by any account other than a warp control
-     */
+    @dev Throws if called by any account other than a warp control
+    **/
     modifier onlyWC() {
         require(msg.sender == address(WC));
         _;
     }
+
+    /**
+    @dev Throws if a function is called before the time wizard allows it
+    **/
+        modifier angryWizard() {
+            require(now > timeWizard);
+            _;
+        }
 
     /**
     @notice constructor sets up token names and symbols for the WarpWrapperToken
@@ -75,13 +85,15 @@ contract WarpVaultSC is Ownable, Exponential {
     @param _StableCoin is the address of the stablecoin this vault will manage
     @param _warpTeam is the address of the Warp Team used for fees
     @param _initialExchangeRate is the initial exchange rate mantissa used to determine how a Warp wrapper token will be distributed when stablecoin is received
+    @param _timelock is a variable representing the number of seconds the timeWizard will prevent withdraws and borrows from a contracts(one week is 605800 seconds)
     **/
     constructor(
         address _InterestRate,
         address _StableCoin,
         address _warpControl,
         address _warpTeam,
-        uint256 _initialExchangeRate
+        uint256 _initialExchangeRate,
+        uint256 _timelock
     ) public {
         WC = WarpControlI(_warpControl);
         stablecoin = ERC20(_StableCoin);
@@ -90,6 +102,7 @@ contract WarpVaultSC is Ownable, Exponential {
         borrowIndex = mantissaOne;
         initialExchangeRateMantissa = _initialExchangeRate; //sets the initialExchangeRateMantissa
         warpTeam = _warpTeam;
+        timeWizard = now.add(_timelock);
         wStableCoin = new WarpWrapperToken(
             address(stablecoin),
             stablecoin.name(),
@@ -107,10 +120,16 @@ contract WarpVaultSC is Ownable, Exponential {
     /**
     @notice calculateFee is used to calculate the fee earned by the Warp Platform
     @param _payedAmount is a uint representing the full amount of stablecoin earned as interest
+    @param _isLiquidation is a bool representing whether of not a fee is being calculated for a liquidation
     **/
-    function calculateFee(uint256 _payedAmount) public view returns(uint) {
-      uint256 fee = _payedAmount.mul(percent).div(divisor);
-      return fee;
+    function calculateFee(uint256 _payedAmount, bool _isLiquidation) public view returns(uint) {
+      if(_isLiquidation) {
+        uint256 fee = _payedAmount.mul(percentB).div(divisor);
+        return fee;
+      } else {
+        uint256 fee = _payedAmount.mul(percentA).div(divisor);
+        return fee;
+      }
     }
 
     /**
@@ -385,7 +404,7 @@ contract WarpVaultSC is Ownable, Exponential {
     @notice redeem allows a user to redeem their Warp Wrapper Token for the appropriate amount of underlying stablecoin asset
     @param _amount is the amount of StableCoin the user wishes to exchange
     **/
-    function redeem(uint256 _amount) public {
+    function redeem(uint256 _amount) public angryWizard {
 
         RedeemLocalVars memory vars;
         //retreive the users current Warp Wrapper balance
@@ -422,7 +441,7 @@ contract WarpVaultSC is Ownable, Exponential {
             historicalReward[msg.sender] = historicalReward[msg.sender].add(_amount);
         }
         //calculate the fee on the principle received
-        uint fee = calculateFee(vars.principalRedeemed);
+        uint fee = calculateFee(vars.principalRedeemed, false);
         //subtract the fee from the amount of stablecoins being redeemed
         uint feeAdjusted = _amount.sub(fee);
         //transfer fee amount to Warp team
@@ -481,7 +500,7 @@ contract WarpVaultSC is Ownable, Exponential {
     @notice Sender borrows stablecoin assets from the protocol to their own address
     @param _borrowAmount The amount of the underlying asset to borrow
     */
-    function _borrow(uint256 _borrowAmount, address _borrower) external onlyWC {
+    function _borrow(uint256 _borrowAmount, address _borrower) external onlyWC angryWizard{
         //create local vars storage
         BorrowLocalVars memory vars;
 
@@ -523,7 +542,7 @@ contract WarpVaultSC is Ownable, Exponential {
     @notice Sender repays their own borrow
     @param _repayAmount The amount to repay
     */
-    function repayBorrow(uint256 _repayAmount) public {
+    function repayBorrow(uint256 _repayAmount) public angryWizard{
         //create local vars storage
         RepayBorrowLocalVars memory vars;
 
@@ -578,7 +597,7 @@ contract WarpVaultSC is Ownable, Exponential {
         );
 
         //calculate the fee on the principle received
-        uint fee = calculateFee(vars.interestPayed);
+        uint fee = calculateFee(vars.interestPayed, false);
         //subtract the fee from the amount of stablecoins being redeemed
         uint feeAdjusted = _repayAmount.sub(fee);
         //transfer fee amount to Warp team
@@ -597,10 +616,16 @@ contract WarpVaultSC is Ownable, Exponential {
         address _borrower,
         address _liquidator,
         uint256 _amount
-    ) public onlyWC {
+    ) public onlyWC angryWizard{
         //transfer the owed amount of stablecoin from the borrower to this contract
         stablecoin.transferFrom(_liquidator, address(this), _amount);
-        // Clear the borrowers loan
+          //calculate the fee on the principle received
+          uint fee = calculateFee(_amount, true);
+          //subtract the fee from the amount of stablecoins being redeemed
+          uint feeAdjusted = _amount.sub(fee);
+          //transfer fee amount to Warp team
+          stablecoin.transfer(warpTeam, fee);
+          // Clear the borrowers loan
         accountBorrows[_borrower].principal = 0;
         accountBorrows[_borrower].interestIndex = 0;
         totalBorrows = totalBorrows.sub(_amount);
