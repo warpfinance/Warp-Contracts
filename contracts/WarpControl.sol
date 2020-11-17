@@ -84,12 +84,14 @@ contract WarpControl is Ownable, Exponential {
 
     /**
     @notice createNewLPVault allows the contract owner to create a new WarpVaultLP contract for a specific LP token
+    @param _timelock is a variable representing the number of seconds the timeWizard will prevent withdraws and borrows from a contracts(one week is 605800 seconds)
     @param _lp is the address for the LP token this Warp Vault will manage
     @param _lpAsset1 is the address for the first asset in a pair that the LP token represents(ex: wETH in a wETH-wBTC uniswap pair)
     @param _lpAsset2 is the address for the second asset in a pair that the LP token represents(ex: wBTC in a wETH-wBTC uniswap pair)
     @param _lpName is the name of the LP token (ex:wETH-wBTC)
     **/
     function createNewLPVault(
+        uint256 _timelock,
         address _lp,
         address _lpAsset1,
         address _lpAsset2,
@@ -98,7 +100,7 @@ contract WarpControl is Ownable, Exponential {
         //create new oracles for this LP
         Oracle.createNewOracles(_lpAsset1, _lpAsset2, _lp);
         //create new Warp LP Vault
-        address _WarpVault = WVLPF.createWarpVaultLP(_lp, _lpName);
+        address _WarpVault = WVLPF.createWarpVaultLP(_timelock, _lp, _lpName);
         //track the warp vault lp instance by the address of the LP it represents
         instanceLPTracker[_lp] = _WarpVault;
         //add new LP Vault to the array of all LP vaults
@@ -110,6 +112,7 @@ contract WarpControl is Ownable, Exponential {
 
     /**
     @notice createNewSCVault allows the contract owner to create a new WarpVaultLP contract for a specific LP token
+    @param _timelock is a variable representing the number of seconds the timeWizard will prevent withdraws and borrows from a contracts(one week is 605800 seconds)
     @param _baseRatePerYear is the base rate per year(approx target base APR)
     @param _multiplierPerYear is the multiplier per year(rate of increase in interest w/ utilizastion)
     @param _jumpMultiplierPerYear is the Jump Multiplier Per Year(the multiplier per block after hitting a specific utilizastion point)
@@ -118,6 +121,7 @@ contract WarpControl is Ownable, Exponential {
     @param _StableCoin is the address of the StableCoin this Warp Vault will manage
     **/
     function createNewSCVault(
+        uint256 _timelock,
         uint256 _baseRatePerYear,
         uint256 _multiplierPerYear,
         uint256 _jumpMultiplierPerYear,
@@ -140,7 +144,8 @@ contract WarpControl is Ownable, Exponential {
             IR,
             _StableCoin,
             warpTeam,
-            _initialExchangeRate
+            _initialExchangeRate,
+            _timelock
         );
         //track the warp vault sc instance by the address of the stablecoin it represents
         instanceSCTracker[_StableCoin] = _WarpVault;

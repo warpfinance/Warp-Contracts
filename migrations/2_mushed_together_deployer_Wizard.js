@@ -123,9 +123,6 @@ module.exports = async deployer => {
   console.log("Listed USDC-USDT");
   ////////////////////////////////////////////////////////////////////////////////////////////
   console.log("Listing ETH-wBTC");
-  console.log(WrappedEthereum.address);
-  console.log(WrappedBitcoin.address);
-
   await UNI.createPair(WrappedEthereum.address, WrappedBitcoin.address);
   const ETH_wBTC = await UNI.getPair(
     WrappedEthereum.address,
@@ -184,7 +181,8 @@ module.exports = async deployer => {
     WarpControl,
     UniswapLPOracleFactory.address,
     WarpVaultLPFactory.address,
-    WarpVaultSCFactory.address
+    WarpVaultSCFactory.address,
+    "0x7d4A13FE119C9F36425008a7afCB2737B2bB5C41" //warp team address
   );
   console.log("Warp Speed Controlled");
   UOF = await UniswapLPOracleFactory.deployed();
@@ -211,6 +209,7 @@ module.exports = async deployer => {
   );
   const WETH_DAI_ADD = await UNI.getPair(WrappedEthereum.address, DAI.address);
   await WarpC.createNewLPVault(
+    0,
     WETH_DAI_ADD,
     WrappedEthereum.address,
     DAI.address,
@@ -219,6 +218,7 @@ module.exports = async deployer => {
   console.log("WETH-DAI Vault setup successful");
   console.log("Creating WBTC-WETH Warp Vault");
   await WarpC.createNewLPVault(
+    0,
     WBTC_WETH_ADD,
     WrappedBitcoin.address,
     WrappedEthereum.address,
@@ -228,6 +228,7 @@ module.exports = async deployer => {
   ////////////////////////////////////////////////////////////////////////////////////////////
   console.log("Creating DAI StableCoin Warp Vault");
   await WarpC.createNewSCVault(
+    0,
     "1000000000000000000", //base rate per year(approx target base APR)
     "2000000000000000000", //multiplier per year(rate of increase in interest w/ utilizastion)
     "2000000000000000000", //Jump Multiplier Per Year(the multiplier per block after hitting a specific utilizastion point)
@@ -239,6 +240,7 @@ module.exports = async deployer => {
   /////////////////////////////////////////////////////////////////////////
   console.log("Creating USDC StableCoin Warp Vault");
   await WarpC.createNewSCVault(
+    0,
     "1000000000000000000", //base rate per year(approx target base APR)
     "2000000000000000000", //multiplier per year(rate of increase in interest w/ utilizastion)
     "2000000000000000000", //Jump Multiplier Per Year(the multiplier per block after hitting a specific utilizastion point)
@@ -250,6 +252,7 @@ module.exports = async deployer => {
   /////////////////////////////////////////////////////////////////////////
   console.log("Creating USDT StableCoin Warp Vault");
   await WarpC.createNewSCVault(
+    0,
     "1000000000000000000", //base rate per year(approx target base APR)
     "2000000000000000000", //multiplier per year(rate of increase in interest w/ utilizastion)
     "2000000000000000000", //Jump Multiplier Per Year(the multiplier per block after hitting a specific utilizastion point)
