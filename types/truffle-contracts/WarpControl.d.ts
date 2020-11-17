@@ -10,8 +10,59 @@ export interface WarpControlContract
     _oracle: string,
     _WVLPF: string,
     _WVSCF: string,
+    _warpTeam: string,
     meta?: Truffle.TransactionDetails
   ): Promise<WarpControlInstance>;
+}
+
+export interface Liquidation {
+  name: "Liquidation";
+  args: {
+    _account: string;
+    liquidator: string;
+    0: string;
+    1: string;
+  };
+}
+
+export interface NewBorrow {
+  name: "NewBorrow";
+  args: {
+    _borrower: string;
+    _StableCoin: string;
+    _amountBorrowed: BN;
+    0: string;
+    1: string;
+    2: BN;
+  };
+}
+
+export interface NewLPVault {
+  name: "NewLPVault";
+  args: {
+    _newVault: string;
+    0: string;
+  };
+}
+
+export interface NewSCVault {
+  name: "NewSCVault";
+  args: {
+    _newVault: string;
+    _interestRateModel: string;
+    0: string;
+    1: string;
+  };
+}
+
+export interface NotCompliant {
+  name: "NotCompliant";
+  args: {
+    _account: string;
+    _time: BN;
+    0: string;
+    1: BN;
+  };
 }
 
 export interface OwnershipTransferred {
@@ -24,7 +75,24 @@ export interface OwnershipTransferred {
   };
 }
 
-type AllEvents = OwnershipTransferred;
+export interface complianceReset {
+  name: "complianceReset";
+  args: {
+    _account: string;
+    _time: BN;
+    0: string;
+    1: BN;
+  };
+}
+
+type AllEvents =
+  | Liquidation
+  | NewBorrow
+  | NewLPVault
+  | NewSCVault
+  | NotCompliant
+  | OwnershipTransferred
+  | complianceReset;
 
 export interface WarpControlInstance extends Truffle.ContractInstance {
   Oracle(txDetails?: Truffle.TransactionDetails): Promise<string>;
@@ -100,6 +168,8 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
       txDetails?: Truffle.TransactionDetails
     ): Promise<number>;
   };
+
+  warpTeam(txDetails?: Truffle.TransactionDetails): Promise<string>;
 
   viewNumLPVaults(txDetails?: Truffle.TransactionDetails): Promise<BN>;
 
@@ -283,6 +353,11 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
     txDetails?: Truffle.TransactionDetails
   ): Promise<BN>;
 
+  calcCollateralRequired(
+    _borrowAmount: number | BN | string,
+    txDetails?: Truffle.TransactionDetails
+  ): Promise<BN>;
+
   getBorrowLimit: {
     (_account: string, txDetails?: Truffle.TransactionDetails): Promise<
       Truffle.TransactionResponse<AllEvents>
@@ -449,6 +524,8 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
         txDetails?: Truffle.TransactionDetails
       ): Promise<number>;
     };
+
+    warpTeam(txDetails?: Truffle.TransactionDetails): Promise<string>;
 
     viewNumLPVaults(txDetails?: Truffle.TransactionDetails): Promise<BN>;
 
@@ -635,6 +712,11 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
      */
     calcBorrowLimit(
       _collateralValue: number | BN | string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<BN>;
+
+    calcCollateralRequired(
+      _borrowAmount: number | BN | string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<BN>;
 

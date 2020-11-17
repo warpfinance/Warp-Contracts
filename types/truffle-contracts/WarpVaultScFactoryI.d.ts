@@ -19,29 +19,34 @@ export interface WarpVaultScFactoryIInstance extends Truffle.ContractInstance {
    * @param _InterestRate is the address of the InterestRateModel contract created for this Warp Vault
    * @param _StableCoin is the address of the stablecoin contract this WarpVault will manage
    * @param _initialExchangeRate is the exchange rate mantissa used to determine the initial exchange rate of stablecoin to warp stablecoin*
+   * @param _warpTeam is the address of the Warp Team used for fees
    */
   createNewWarpVaultSC: {
     (
       _InterestRate: string,
       _StableCoin: string,
+      _warpTeam: string,
       _initialExchangeRate: number | BN | string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<Truffle.TransactionResponse<AllEvents>>;
     call(
       _InterestRate: string,
       _StableCoin: string,
+      _warpTeam: string,
       _initialExchangeRate: number | BN | string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<string>;
     sendTransaction(
       _InterestRate: string,
       _StableCoin: string,
+      _warpTeam: string,
       _initialExchangeRate: number | BN | string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<string>;
     estimateGas(
       _InterestRate: string,
       _StableCoin: string,
+      _warpTeam: string,
       _initialExchangeRate: number | BN | string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<number>;
@@ -53,29 +58,34 @@ export interface WarpVaultScFactoryIInstance extends Truffle.ContractInstance {
      * @param _InterestRate is the address of the InterestRateModel contract created for this Warp Vault
      * @param _StableCoin is the address of the stablecoin contract this WarpVault will manage
      * @param _initialExchangeRate is the exchange rate mantissa used to determine the initial exchange rate of stablecoin to warp stablecoin*
+     * @param _warpTeam is the address of the Warp Team used for fees
      */
     createNewWarpVaultSC: {
       (
         _InterestRate: string,
         _StableCoin: string,
+        _warpTeam: string,
         _initialExchangeRate: number | BN | string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<Truffle.TransactionResponse<AllEvents>>;
       call(
         _InterestRate: string,
         _StableCoin: string,
+        _warpTeam: string,
         _initialExchangeRate: number | BN | string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<string>;
       sendTransaction(
         _InterestRate: string,
         _StableCoin: string,
+        _warpTeam: string,
         _initialExchangeRate: number | BN | string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<string>;
       estimateGas(
         _InterestRate: string,
         _StableCoin: string,
+        _warpTeam: string,
         _initialExchangeRate: number | BN | string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<number>;

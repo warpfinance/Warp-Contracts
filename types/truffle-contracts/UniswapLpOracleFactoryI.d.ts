@@ -46,6 +46,8 @@ export interface UniswapLpOracleFactoryIInstance
     ): Promise<number>;
   };
 
+  OneUSDC(txDetails?: Truffle.TransactionDetails): Promise<BN>;
+
   /**
    * getUnderlyingPrice allows for the price retrieval of a MoneyMarketInstances underlying asset
    * @param _MMI is the address of the MoneyMarketInstance whos asset price is being retrieved
@@ -106,6 +108,8 @@ export interface UniswapLpOracleFactoryIInstance
         txDetails?: Truffle.TransactionDetails
       ): Promise<number>;
     };
+
+    OneUSDC(txDetails?: Truffle.TransactionDetails): Promise<BN>;
 
     /**
      * getUnderlyingPrice allows for the price retrieval of a MoneyMarketInstances underlying asset
