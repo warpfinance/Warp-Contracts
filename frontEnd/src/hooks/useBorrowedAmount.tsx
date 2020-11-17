@@ -4,13 +4,13 @@ import { StableCoinWarpVaultService } from "../services/stableCoinWarpVault";
 import { WarpControlService } from "../services/warpControl";
 import { getLogger } from "../util/logger";
 import { Token } from "../util/token";
-import { parseBigNumber } from "../util/tools";
 import { ConnectedWeb3Context } from "./connectedWeb3";
+import { RefreshToken } from "./useRefreshToken";
 
 
 const logger = getLogger('Hooks::useBorrowedAmount');
 
-export const useBorrowedAmount = (context: ConnectedWeb3Context, control: WarpControlService, token: Token) => {
+export const useBorrowedAmount = (context: ConnectedWeb3Context, control: WarpControlService, token: Token, refreshToken?: RefreshToken) => {
   const [borrowedAmount, setBorrowedAmount] = React.useState(BigNumber.from(0));
 
   useEffect(() => {
@@ -36,7 +36,7 @@ export const useBorrowedAmount = (context: ConnectedWeb3Context, control: WarpCo
     return () => {
       isSubscribed = false;
     }
-  }, [context, control])
+  }, [context, control, refreshToken])
 
   return borrowedAmount;
 }

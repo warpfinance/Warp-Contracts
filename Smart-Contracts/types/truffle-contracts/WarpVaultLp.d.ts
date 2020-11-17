@@ -14,6 +14,26 @@ export interface WarpVaultLpContract
   ): Promise<WarpVaultLpInstance>;
 }
 
+export interface CollateralProvided {
+  name: "CollateralProvided";
+  args: {
+    _account: string;
+    _amount: BN;
+    0: string;
+    1: BN;
+  };
+}
+
+export interface CollateralWithdraw {
+  name: "CollateralWithdraw";
+  args: {
+    _account: string;
+    amount: BN;
+    0: string;
+    1: BN;
+  };
+}
+
 export interface OwnershipTransferred {
   name: "OwnershipTransferred";
   args: {
@@ -24,7 +44,7 @@ export interface OwnershipTransferred {
   };
 }
 
-type AllEvents = OwnershipTransferred;
+type AllEvents = CollateralProvided | CollateralWithdraw | OwnershipTransferred;
 
 export interface WarpVaultLpInstance extends Truffle.ContractInstance {
   LPtoken(txDetails?: Truffle.TransactionDetails): Promise<string>;

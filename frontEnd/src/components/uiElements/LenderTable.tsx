@@ -4,6 +4,7 @@ import { Amount, CustomButton } from "../../components"
 import { Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@material-ui/core";
 import { LenderStableCoinRow } from "./LenderStableCoinRow";
 import { BigNumber } from "ethers";
+import { RefreshToken } from "../../hooks/useRefreshToken";
 
 interface Props {
     amountCurrency: string,
@@ -15,7 +16,8 @@ interface Props {
     onBlur: (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>)=> void,
     onChange: any,
     onFocus: (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void,
-    type: "lend" | "withdraw"
+    type: "lend" | "withdraw",
+    refreshToken: RefreshToken
 }
 
 export const LenderTable: React.FC<Props> = (props: Props) => {
@@ -58,6 +60,7 @@ export const LenderTable: React.FC<Props> = (props: Props) => {
                                 onChange={props.onChange}
                                 onFocus={props.onFocus}
                                 type={props.type}
+                                refreshToken={props.refreshToken}
                             />
                         ))}
 

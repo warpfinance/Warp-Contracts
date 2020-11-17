@@ -14,10 +14,11 @@ import { StableCoinWarpVaultService } from '../services/stableCoinWarpVault'
 import { OracleFactoryService } from '../services/oracleFactory'
 import { useUSDCToken } from './useUSDC'
 import { parseBigNumber } from '../util/tools'
+import { RefreshToken } from './useRefreshToken'
 
 const logger = getLogger('Hooks::useTotalLentAmount')
 
-export const useTotalLentAmount = (context: ConnectedWeb3Context, control: WarpControlService, usdc: Maybe<Token>) => {
+export const useTotalLentAmount = (context: ConnectedWeb3Context, control: WarpControlService, usdc: Maybe<Token>, refreshToken?: RefreshToken) => {
   const tokens = getTokensByNetwork(context.networkId, false)
   const [lentAmount, setLentAmount] = useState<number>(0);
 
@@ -33,6 +34,8 @@ export const useTotalLentAmount = (context: ConnectedWeb3Context, control: WarpC
       // const oracleAddress = await control.oracle();
       // const oracle = new OracleFactoryService(context.library, context.account, oracleAddress);
       // const usdc = new ERC20Service(context.library, context.account, await oracle.USDC());
+
+      logger.log("Fetching total lent amount");
 
       let amount = 0;
       for (const token of tokens) {
@@ -60,7 +63,7 @@ export const useTotalLentAmount = (context: ConnectedWeb3Context, control: WarpC
     return () => {
       isSubscribed = false;
     }
-  }, [context.library, context.networkId, control, usdc])
+  }, [context.library, context.networkId, control, usdc, refreshToken])
 
   return lentAmount
 }

@@ -1,5 +1,6 @@
 import { BigNumber, Contract, ethers, Wallet } from "ethers";
 import { getLogger } from "../util/logger";
+import { createTransactionInfo, TransactionInfo } from "../util/types";
 
 const contractABI = [
   'function provideCollateral(uint256 _amount) public',
@@ -23,20 +24,20 @@ export class WarpLPVaultService {
     }
   }
 
-  provideCollateral = async (amount: BigNumber): Promise<void> => {
+  provideCollateral = async (amount: BigNumber): Promise<TransactionInfo> => {
     const tx = await this.contract.provideCollateral(amount);
 
     logger.log("provideCollateral: " + tx.hash);
 
-    return this.provider.waitForTransaction(tx.hash);
+    return createTransactionInfo(this.provider, tx);
   }
 
-  withdrawCollateral = async (amount: BigNumber): Promise<void> => {
+  withdrawCollateral = async (amount: BigNumber): Promise<TransactionInfo> => {
     const tx = await this.contract.withdrawCollateral(amount);
 
     logger.log("withdrawCollateral: " + tx.hash);
 
-    return this.provider.waitForTransaction(tx.hash);
+    return createTransactionInfo(this.provider, tx);
   }
 
   collateralBalance = async (account: string): Promise<BigNumber> => {

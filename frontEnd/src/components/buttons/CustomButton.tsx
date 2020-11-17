@@ -26,6 +26,7 @@ interface Props {
     text: string,
     type: "long" | "short",
     disabled?: boolean,
+    externalHref?: boolean,
     href?: string,
     id?: string,
     iconSrc?: string,
@@ -38,6 +39,7 @@ export const CustomButton: React.FC<Props> = (props: Props) => {
     const classes = useStyles();
 
     let border = "";
+    let externalHref = { pathname: props.href };
     let color: "default" | "secondary" = "default";
     let icon = null;
     let minHeight = "";
@@ -83,7 +85,10 @@ export const CustomButton: React.FC<Props> = (props: Props) => {
     </Button>;
 
     const content = !props.href ? button :
-        <Link className={classes.routerLink} to={props.href}>
+        <Link
+            className={classes.routerLink}
+            target={props.externalHref === true ? "_blank" : ""}
+            to={props.externalHref === true ? externalHref : props.href}>
             {button}
         </Link>;
 

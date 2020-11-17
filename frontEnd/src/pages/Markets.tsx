@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { MarketCard, MarketTable } from "../components";
+import { BorrowerMarketCard, LenderMarketCard, MarketTable } from "../components";
 
 import { Grid } from "@material-ui/core";
 import { Header } from "../components";
@@ -25,10 +25,10 @@ export const Markets: React.FC<Props> = (props: Props) => {
                 alignItems="stretch"
             >
                 <Grid item>
-                    <MarketCard type="lender" />
+                    <LenderMarketCard />
                 </Grid>
                 <Grid item>
-                    <MarketCard type="borrower" />
+                    <BorrowerMarketCard />
                 </Grid>
             </Grid>
             <Grid

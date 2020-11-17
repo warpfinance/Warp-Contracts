@@ -49,7 +49,7 @@ const networks: { [K in NetworkId]: Network } = {
     contracts: {
       warpControl: getEnv("REACT_APP_LOCALHOST_CONTROL"),
     }
-  }
+  },
 }
 
 export const supportedNetworks = networks;
@@ -119,15 +119,16 @@ export const knownTokens: { [name in KnownToken]: KnownTokenData } = {
     order: 5,
     lp: true
   },
-  // "eth-usdc": {
-  //   symbol: 'ETH-USDC',
-  //   decimals: 18,
-  //   addresses: {
-  //     [networkIds.MAINNET]: '0xb4e16d0168e52d35cacd2c6185b44281ec28c9dc'
-  //   },
-  //   order: 6,
-  //   lp: true
-  // },
+  "eth-usdc": {
+    symbol: 'ETH-USDC',
+    decimals: 18,
+    addresses: {
+      [networkIds.MAINNET]: '0xb4e16d0168e52d35cacd2c6185b44281ec28c9dc',
+      [networkIds.LOCALHOST]: getEnv("REACT_APP_LOCALHOST_ETH_USDC")
+    },
+    order: 6,
+    lp: true
+  },
   "eth-wbtc": {
     symbol: 'ETH-wBTC',
     decimals: 18,

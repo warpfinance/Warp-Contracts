@@ -6,11 +6,12 @@ import { getLogger } from "../util/logger";
 import { Token } from "../util/token";
 import { parseBigNumber } from "../util/tools";
 import { ConnectedWeb3Context } from "./connectedWeb3";
+import { RefreshToken } from "./useRefreshToken";
 
 
 const logger = getLogger('Hooks::useCombinedSupplyRate');
 
-export const useCombinedSupplyRate = (context: ConnectedWeb3Context, control: WarpControlService, stableCoins: Token[]) => {
+export const useCombinedSupplyRate = (context: ConnectedWeb3Context, control: WarpControlService, stableCoins: Token[], refreshToken?: RefreshToken) => {
 
     const [totalInterestRate, setTotalInterestRate] = React.useState(0);
 
@@ -63,7 +64,7 @@ export const useCombinedSupplyRate = (context: ConnectedWeb3Context, control: Wa
       }
       
     
-    }, [context.account, context.library, context.networkId, stableCoins, control]);
+    }, [context.account, context.library, context.networkId, stableCoins, control, refreshToken]);
 
     return totalInterestRate;
 }

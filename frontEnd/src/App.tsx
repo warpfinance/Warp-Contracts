@@ -24,6 +24,7 @@ import {
 import { createMuiTheme, makeStyles } from "@material-ui/core/styles";
 import { ConnectedWeb3 } from "./hooks/connectedWeb3";
 import { ethers } from "ethers";
+import { Web3AccountRequired } from "./pages/Web3AccountRequired";
 
 const outerTheme = createMuiTheme({
 	palette: {
@@ -90,24 +91,26 @@ const App: React.FC = () => {
 
 	return (
 		<Web3ReactProvider getLibrary={getLibrary}>
-			<ConnectedWeb3>
 				<Router>
 					<ThemeProvider theme={outerTheme}>
 						<CssBaseline>
 							<div className={classes.root}>
 								<Switch>
 									<Route exact={true} path="/" component={Home} />
-									<Route exact={true} path="/borrower" component={Borrower} />
 									<Route exact={true} path="/connect" component={Connect} />
-									<Route exact={true} path="/dashboard" component={Dashboard} />
-									<Route exact={true} path="/lender" component={Lender} />
-									<Route exact={true} path="/markets" component={Markets} />
+									<Route exact={true} path="/borrower"
+									render={() => <Web3AccountRequired><Borrower /></Web3AccountRequired> } />
+									<Route exact={true} path="/dashboard"
+									render={() => <Web3AccountRequired><Dashboard /></Web3AccountRequired> } />
+									<Route exact={true} path="/lender"
+									render={() => <Web3AccountRequired><Lender /></Web3AccountRequired> } />
+									<Route exact={true} path="/markets"
+									render={() => <ConnectedWeb3><Markets /></ConnectedWeb3> } />
 								</Switch>
 							</div>
 						</CssBaseline>
 					</ThemeProvider>
 				</Router>
-			</ConnectedWeb3>
 		</Web3ReactProvider>
 	)
 }

@@ -4,11 +4,12 @@ import { WarpControlService } from "../services/warpControl";
 import { getLogger } from "../util/logger";
 import { parseBigNumber } from "../util/tools";
 import { ConnectedWeb3Context } from "./connectedWeb3";
+import { RefreshToken } from "./useRefreshToken";
 
 
 const logger = getLogger('Hooks::useBorrowLimit');
 
-export const useBorrowLimit = (context: ConnectedWeb3Context, control: WarpControlService) => {
+export const useBorrowLimit = (context: ConnectedWeb3Context, control: WarpControlService, refreshToken?: RefreshToken) => {
   const [borrowLimit, setBorrowLimit] = React.useState(BigNumber.from(0));
   const [totalBorrowedAmount, setBorrowedAmount] = React.useState(BigNumber.from(0));
 
@@ -34,7 +35,7 @@ export const useBorrowLimit = (context: ConnectedWeb3Context, control: WarpContr
     return () => {
       isSubscribed = false;
     }
-  }, [context, control])
+  }, [context, control, refreshToken])
 
   return {totalBorrowedAmount, borrowLimit};
 }

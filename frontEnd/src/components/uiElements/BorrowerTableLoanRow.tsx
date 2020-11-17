@@ -8,19 +8,21 @@ import { useConnectedWeb3Context } from "../../hooks/connectedWeb3";
 import { useBorrowedAmount } from "../../hooks/useBorrowedAmount";
 import { parseBigNumber } from "../../util/tools";
 import { useTokenBalance } from "../../hooks/useTokenBalance";
+import { RefreshToken } from "../../hooks/useRefreshToken";
 
 interface Props {
   token: Token,
   onLeftButtonClick: any,
   onRightButtonClick: any,
+  refreshToken: RefreshToken
 }
 
 export const BorrowerTableLoanRow: React.FC<Props> = (props: Props) => {
   const icon = <Avatar alt={props.token.image} src={props.token.image} />;
   const context = useConnectedWeb3Context();
   const {control} = useWarpControl(context);
-  const borrowedAmount = useBorrowedAmount(context, control, props.token);
-  const {walletBalance} = useTokenBalance(props.token, context);
+  const borrowedAmount = useBorrowedAmount(context, control, props.token, props.refreshToken);
+  const {walletBalance} = useTokenBalance(props.token, context, props.refreshToken);
 
   const amountDue = parseBigNumber(borrowedAmount, props.token.decimals);
 
