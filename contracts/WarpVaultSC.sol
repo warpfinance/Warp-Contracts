@@ -621,9 +621,7 @@ contract WarpVaultSC is Ownable, Exponential {
         stablecoin.transferFrom(_liquidator, address(this), _amount);
           //calculate the fee on the principle received
           uint fee = calculateFee(_amount, true);
-          //subtract the fee from the amount of stablecoins being redeemed
-          uint feeAdjusted = _amount.sub(fee);
-          //transfer fee amount to Warp team
+        //transfer fee amount to Warp team
           stablecoin.transfer(warpTeam, fee);
           // Clear the borrowers loan
         accountBorrows[_borrower].principal = 0;

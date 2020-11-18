@@ -58,17 +58,16 @@ The following are the step-by- step commands to set up various testing environme
         cd Smart-Contract
 
     Install dependencies:
-        npm install -g ganache-cli truffle
-        npm install
+        yarn
 
 ### Set up enviornment for front end tests:
 
     start a local ganache chain using:
-        ganache cli
+        ganache-cli
 
-    In a seperate terminal run :
+    In a separate terminal run :
 
-    truffle test ./test/setuptextenv.ts
+    truffle test ./test/setuptestenv.ts
 
 This will deploy a local version of uniswap, all Warp contracts AND test tokens for
 USDC, USDT, DAI, Wrapped Bitcoin and Wrapped ETH. it will the list these tokens to Uniswap and provide you with the appropriate LP tokens.

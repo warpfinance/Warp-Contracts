@@ -12,6 +12,7 @@ export interface WarpVaultScContract
     _warpControl: string,
     _warpTeam: string,
     _initialExchangeRate: number | BN | string,
+    _timelock: number | BN | string,
     meta?: Truffle.TransactionDetails
   ): Promise<WarpVaultScInstance>;
 }
@@ -121,7 +122,9 @@ export interface WarpVaultScInstance extends Truffle.ContractInstance {
    */
   owner(txDetails?: Truffle.TransactionDetails): Promise<string>;
 
-  percent(txDetails?: Truffle.TransactionDetails): Promise<BN>;
+  percentA(txDetails?: Truffle.TransactionDetails): Promise<BN>;
+
+  percentB(txDetails?: Truffle.TransactionDetails): Promise<BN>;
 
   principalBalance(
     arg0: string,
@@ -143,6 +146,8 @@ export interface WarpVaultScInstance extends Truffle.ContractInstance {
   reserveFactorMantissa(txDetails?: Truffle.TransactionDetails): Promise<BN>;
 
   stablecoin(txDetails?: Truffle.TransactionDetails): Promise<string>;
+
+  timeWizard(txDetails?: Truffle.TransactionDetails): Promise<BN>;
 
   totalBorrows(txDetails?: Truffle.TransactionDetails): Promise<BN>;
 
@@ -175,10 +180,12 @@ export interface WarpVaultScInstance extends Truffle.ContractInstance {
 
   /**
    * calculateFee is used to calculate the fee earned by the Warp Platform
-   * @param _payedAmount is a uint representing the full amount of stablecoin earned as interest*
+   * @param _isLiquidation is a bool representing whether of not a fee is being calculated for a liquidation*
+   * @param _payedAmount is a uint representing the full amount of stablecoin earned as interest
    */
   calculateFee(
     _payedAmount: number | BN | string,
+    _isLiquidation: boolean,
     txDetails?: Truffle.TransactionDetails
   ): Promise<BN>;
 
@@ -444,7 +451,9 @@ export interface WarpVaultScInstance extends Truffle.ContractInstance {
      */
     owner(txDetails?: Truffle.TransactionDetails): Promise<string>;
 
-    percent(txDetails?: Truffle.TransactionDetails): Promise<BN>;
+    percentA(txDetails?: Truffle.TransactionDetails): Promise<BN>;
+
+    percentB(txDetails?: Truffle.TransactionDetails): Promise<BN>;
 
     principalBalance(
       arg0: string,
@@ -466,6 +475,8 @@ export interface WarpVaultScInstance extends Truffle.ContractInstance {
     reserveFactorMantissa(txDetails?: Truffle.TransactionDetails): Promise<BN>;
 
     stablecoin(txDetails?: Truffle.TransactionDetails): Promise<string>;
+
+    timeWizard(txDetails?: Truffle.TransactionDetails): Promise<BN>;
 
     totalBorrows(txDetails?: Truffle.TransactionDetails): Promise<BN>;
 
@@ -498,10 +509,12 @@ export interface WarpVaultScInstance extends Truffle.ContractInstance {
 
     /**
      * calculateFee is used to calculate the fee earned by the Warp Platform
-     * @param _payedAmount is a uint representing the full amount of stablecoin earned as interest*
+     * @param _isLiquidation is a bool representing whether of not a fee is being calculated for a liquidation*
+     * @param _payedAmount is a uint representing the full amount of stablecoin earned as interest
      */
     calculateFee(
       _payedAmount: number | BN | string,
+      _isLiquidation: boolean,
       txDetails?: Truffle.TransactionDetails
     ): Promise<BN>;
 
