@@ -21,21 +21,25 @@ export interface WarpVaultLpFactoryIInstance extends Truffle.ContractInstance {
    */
   createWarpVaultLP: {
     (
+      _timelock: number | BN | string,
       _lp: string,
       _lpName: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<Truffle.TransactionResponse<AllEvents>>;
     call(
+      _timelock: number | BN | string,
       _lp: string,
       _lpName: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<string>;
     sendTransaction(
+      _timelock: number | BN | string,
       _lp: string,
       _lpName: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<string>;
     estimateGas(
+      _timelock: number | BN | string,
       _lp: string,
       _lpName: string,
       txDetails?: Truffle.TransactionDetails
@@ -50,21 +54,25 @@ export interface WarpVaultLpFactoryIInstance extends Truffle.ContractInstance {
      */
     createWarpVaultLP: {
       (
+        _timelock: number | BN | string,
         _lp: string,
         _lpName: string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<Truffle.TransactionResponse<AllEvents>>;
       call(
+        _timelock: number | BN | string,
         _lp: string,
         _lpName: string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<string>;
       sendTransaction(
+        _timelock: number | BN | string,
         _lp: string,
         _lpName: string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<string>;
       estimateGas(
+        _timelock: number | BN | string,
         _lp: string,
         _lpName: string,
         txDetails?: Truffle.TransactionDetails

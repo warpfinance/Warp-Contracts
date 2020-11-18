@@ -64,7 +64,8 @@ export interface WarpVaultScFactoryInstance extends Truffle.ContractInstance {
    * createNewWarpVaultSC is used to create new WarpVaultSC contract instances
    * @param _InterestRate is the address of the InterestRateModel contract created for this Warp Vault
    * @param _StableCoin is the address of the stablecoin contract this WarpVault will manage
-   * @param _initialExchangeRate is the exchange rate mantissa used to determine the initial exchange rate of stablecoin to warp stablecoin*
+   * @param _initialExchangeRate is the exchange rate mantissa used to determine the initial exchange rate of stablecoin to warp stablecoin
+   * @param _timelock is a variable representing the number of seconds the timeWizard will prevent withdraws and borrows from a contracts(one week is 605800 seconds)*
    * @param _warpTeam is the address of the Warp Team used for fees
    */
   createNewWarpVaultSC: {
@@ -73,6 +74,7 @@ export interface WarpVaultScFactoryInstance extends Truffle.ContractInstance {
       _StableCoin: string,
       _warpTeam: string,
       _initialExchangeRate: number | BN | string,
+      _timelock: number | BN | string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<Truffle.TransactionResponse<AllEvents>>;
     call(
@@ -80,6 +82,7 @@ export interface WarpVaultScFactoryInstance extends Truffle.ContractInstance {
       _StableCoin: string,
       _warpTeam: string,
       _initialExchangeRate: number | BN | string,
+      _timelock: number | BN | string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<string>;
     sendTransaction(
@@ -87,6 +90,7 @@ export interface WarpVaultScFactoryInstance extends Truffle.ContractInstance {
       _StableCoin: string,
       _warpTeam: string,
       _initialExchangeRate: number | BN | string,
+      _timelock: number | BN | string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<string>;
     estimateGas(
@@ -94,6 +98,7 @@ export interface WarpVaultScFactoryInstance extends Truffle.ContractInstance {
       _StableCoin: string,
       _warpTeam: string,
       _initialExchangeRate: number | BN | string,
+      _timelock: number | BN | string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<number>;
   };
@@ -141,7 +146,8 @@ export interface WarpVaultScFactoryInstance extends Truffle.ContractInstance {
      * createNewWarpVaultSC is used to create new WarpVaultSC contract instances
      * @param _InterestRate is the address of the InterestRateModel contract created for this Warp Vault
      * @param _StableCoin is the address of the stablecoin contract this WarpVault will manage
-     * @param _initialExchangeRate is the exchange rate mantissa used to determine the initial exchange rate of stablecoin to warp stablecoin*
+     * @param _initialExchangeRate is the exchange rate mantissa used to determine the initial exchange rate of stablecoin to warp stablecoin
+     * @param _timelock is a variable representing the number of seconds the timeWizard will prevent withdraws and borrows from a contracts(one week is 605800 seconds)*
      * @param _warpTeam is the address of the Warp Team used for fees
      */
     createNewWarpVaultSC: {
@@ -150,6 +156,7 @@ export interface WarpVaultScFactoryInstance extends Truffle.ContractInstance {
         _StableCoin: string,
         _warpTeam: string,
         _initialExchangeRate: number | BN | string,
+        _timelock: number | BN | string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<Truffle.TransactionResponse<AllEvents>>;
       call(
@@ -157,6 +164,7 @@ export interface WarpVaultScFactoryInstance extends Truffle.ContractInstance {
         _StableCoin: string,
         _warpTeam: string,
         _initialExchangeRate: number | BN | string,
+        _timelock: number | BN | string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<string>;
       sendTransaction(
@@ -164,6 +172,7 @@ export interface WarpVaultScFactoryInstance extends Truffle.ContractInstance {
         _StableCoin: string,
         _warpTeam: string,
         _initialExchangeRate: number | BN | string,
+        _timelock: number | BN | string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<string>;
       estimateGas(
@@ -171,6 +180,7 @@ export interface WarpVaultScFactoryInstance extends Truffle.ContractInstance {
         _StableCoin: string,
         _warpTeam: string,
         _initialExchangeRate: number | BN | string,
+        _timelock: number | BN | string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<number>;
     };

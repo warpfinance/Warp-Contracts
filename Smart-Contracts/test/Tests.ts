@@ -207,32 +207,37 @@ contract("Tests", function(accounts) {
 
     // Create LP Vaults
     await warpControl.createNewLPVault(
+      0,
       ethBtcPair.address,
       wethToken.address,
       wbtcToken.address,
       "ETH-BTC-LP"
     );
     await warpControl.createNewLPVault(
-      ethCPair.address,
-      wethToken.address,
-      usdcToken.address,
-      "ETH-BTC-LP"
-    );
-    await warpControl.createNewLPVault(
+      0,
       ethTPair.address,
       wethToken.address,
       usdtToken.address,
       "ETH-USDT-LP"
     );
     await warpControl.createNewLPVault(
+      0,
       ethDaiPair.address,
       wethToken.address,
       daiToken.address,
       "ETH-DAI-LP"
     );
+    await warpControl.createNewLPVault(
+      0,
+      ethCPair.address,
+      wethToken.address,
+      usdcToken.address,
+      "ETH-USDC-LP"
+    );
 
     // Create Stable Coin Vaults
     await warpControl.createNewSCVault(
+      0,
       "1000000000000000000",
       "2000000000000000000",
       "2000000000000000000",
@@ -241,6 +246,7 @@ contract("Tests", function(accounts) {
       daiToken.address
     );
     await warpControl.createNewSCVault(
+      0,
       "1000000000000000000",
       "2000000000000000000",
       "2000000000000000000",
@@ -249,6 +255,7 @@ contract("Tests", function(accounts) {
       usdtToken.address
     );
     await warpControl.createNewSCVault(
+      0,
       "1000000000000000000",
       "2000000000000000000",
       "2000000000000000000",
@@ -256,7 +263,6 @@ contract("Tests", function(accounts) {
       "1000000000000000000",
       usdcToken.address
     );
-
     await utils.increaseTime(ONE_DAY);
 
     await oracleFactory.getUnderlyingPrice(ethTPair.address);
@@ -465,7 +471,5 @@ contract("Tests", function(accounts) {
     console.log("the total amount payed after a year was: " + totalPayed);
     console.log("the interest amount payed after a year was: " + interest);
     console.log("borrowing tests complete");
-
-    //
   });
 });

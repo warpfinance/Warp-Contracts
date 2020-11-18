@@ -197,11 +197,8 @@ contract("Setup Test Env", function(accounts) {
       oracleFactory.address,
       lpFactory.address,
       scFactory.address,
-<<<<<<< HEAD
-      "0x7d4A13FE119C9F36425008a7afCB2737B2bB5C41" //warp team fee address
-=======
+      "0x7d4A13FE119C9F36425008a7afCB2737B2bB5C41", //warp team fee address
       accounts[0]
->>>>>>> 84b425fd82baba721e0b06e9b410e6f7393855c3
     );
     // goodbye children, remember me...
     await oracleFactory.transferOwnership(warpControl.address);
@@ -217,7 +214,6 @@ contract("Setup Test Env", function(accounts) {
       "ETH-BTC-LP"
     );
     await warpControl.createNewLPVault(
-<<<<<<< HEAD
       0,
       ethCPair.address,
       wethToken.address,
@@ -226,8 +222,6 @@ contract("Setup Test Env", function(accounts) {
     );
     await warpControl.createNewLPVault(
       0,
-=======
->>>>>>> 84b425fd82baba721e0b06e9b410e6f7393855c3
       ethTPair.address,
       wethToken.address,
       usdtToken.address,

@@ -64,24 +64,29 @@ export interface WarpVaultLpFactoryInstance extends Truffle.ContractInstance {
    * createWarpVaultLP allows the contract owner to create a new WarpVaultLP contract for a specific LP token
    * @param _lp is the address for the LP token this Warp Vault will manage
    * @param _lpName is the name of the LP token (ex:wETH-wBTC)*
+   * @param _timelock is a variable representing the number of seconds the timeWizard will prevent withdraws and borrows from a contracts(one week is 605800 seconds)
    */
   createWarpVaultLP: {
     (
+      _timelock: number | BN | string,
       _lp: string,
       _lpName: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<Truffle.TransactionResponse<AllEvents>>;
     call(
+      _timelock: number | BN | string,
       _lp: string,
       _lpName: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<string>;
     sendTransaction(
+      _timelock: number | BN | string,
       _lp: string,
       _lpName: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<string>;
     estimateGas(
+      _timelock: number | BN | string,
       _lp: string,
       _lpName: string,
       txDetails?: Truffle.TransactionDetails
@@ -131,24 +136,29 @@ export interface WarpVaultLpFactoryInstance extends Truffle.ContractInstance {
      * createWarpVaultLP allows the contract owner to create a new WarpVaultLP contract for a specific LP token
      * @param _lp is the address for the LP token this Warp Vault will manage
      * @param _lpName is the name of the LP token (ex:wETH-wBTC)*
+     * @param _timelock is a variable representing the number of seconds the timeWizard will prevent withdraws and borrows from a contracts(one week is 605800 seconds)
      */
     createWarpVaultLP: {
       (
+        _timelock: number | BN | string,
         _lp: string,
         _lpName: string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<Truffle.TransactionResponse<AllEvents>>;
       call(
+        _timelock: number | BN | string,
         _lp: string,
         _lpName: string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<string>;
       sendTransaction(
+        _timelock: number | BN | string,
         _lp: string,
         _lpName: string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<string>;
       estimateGas(
+        _timelock: number | BN | string,
         _lp: string,
         _lpName: string,
         txDetails?: Truffle.TransactionDetails

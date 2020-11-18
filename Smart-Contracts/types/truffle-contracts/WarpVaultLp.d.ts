@@ -7,6 +7,7 @@ import { EventData, PastEventOptions } from "web3-eth-contract";
 export interface WarpVaultLpContract
   extends Truffle.Contract<WarpVaultLpInstance> {
   "new"(
+    _timelock: number | BN | string,
     _lp: string,
     _WarpControl: string,
     _lpName: string,
@@ -76,6 +77,8 @@ export interface WarpVaultLpInstance extends Truffle.ContractInstance {
     sendTransaction(txDetails?: Truffle.TransactionDetails): Promise<string>;
     estimateGas(txDetails?: Truffle.TransactionDetails): Promise<number>;
   };
+
+  timeWizard(txDetails?: Truffle.TransactionDetails): Promise<BN>;
 
   /**
    * Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.
@@ -222,6 +225,8 @@ export interface WarpVaultLpInstance extends Truffle.ContractInstance {
       sendTransaction(txDetails?: Truffle.TransactionDetails): Promise<string>;
       estimateGas(txDetails?: Truffle.TransactionDetails): Promise<number>;
     };
+
+    timeWizard(txDetails?: Truffle.TransactionDetails): Promise<BN>;
 
     /**
      * Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.

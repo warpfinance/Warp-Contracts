@@ -181,9 +181,11 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
    * @param _lpAsset1 is the address for the first asset in a pair that the LP token represents(ex: wETH in a wETH-wBTC uniswap pair)
    * @param _lpAsset2 is the address for the second asset in a pair that the LP token represents(ex: wBTC in a wETH-wBTC uniswap pair)
    * @param _lpName is the name of the LP token (ex:wETH-wBTC)*
+   * @param _timelock is a variable representing the number of seconds the timeWizard will prevent withdraws and borrows from a contracts(one week is 605800 seconds)
    */
   createNewLPVault: {
     (
+      _timelock: number | BN | string,
       _lp: string,
       _lpAsset1: string,
       _lpAsset2: string,
@@ -191,6 +193,7 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
       txDetails?: Truffle.TransactionDetails
     ): Promise<Truffle.TransactionResponse<AllEvents>>;
     call(
+      _timelock: number | BN | string,
       _lp: string,
       _lpAsset1: string,
       _lpAsset2: string,
@@ -198,6 +201,7 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
       txDetails?: Truffle.TransactionDetails
     ): Promise<void>;
     sendTransaction(
+      _timelock: number | BN | string,
       _lp: string,
       _lpAsset1: string,
       _lpAsset2: string,
@@ -205,6 +209,7 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
       txDetails?: Truffle.TransactionDetails
     ): Promise<string>;
     estimateGas(
+      _timelock: number | BN | string,
       _lp: string,
       _lpAsset1: string,
       _lpAsset2: string,
@@ -221,9 +226,11 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
    * @param _jumpMultiplierPerYear is the Jump Multiplier Per Year(the multiplier per block after hitting a specific utilizastion point)
    * @param _multiplierPerYear is the multiplier per year(rate of increase in interest w/ utilizastion)
    * @param _optimal is the this is the utilizastion point or "kink" at which the jump multiplier is applied
+   * @param _timelock is a variable representing the number of seconds the timeWizard will prevent withdraws and borrows from a contracts(one week is 605800 seconds)
    */
   createNewSCVault: {
     (
+      _timelock: number | BN | string,
       _baseRatePerYear: number | BN | string,
       _multiplierPerYear: number | BN | string,
       _jumpMultiplierPerYear: number | BN | string,
@@ -233,6 +240,7 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
       txDetails?: Truffle.TransactionDetails
     ): Promise<Truffle.TransactionResponse<AllEvents>>;
     call(
+      _timelock: number | BN | string,
       _baseRatePerYear: number | BN | string,
       _multiplierPerYear: number | BN | string,
       _jumpMultiplierPerYear: number | BN | string,
@@ -242,6 +250,7 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
       txDetails?: Truffle.TransactionDetails
     ): Promise<void>;
     sendTransaction(
+      _timelock: number | BN | string,
       _baseRatePerYear: number | BN | string,
       _multiplierPerYear: number | BN | string,
       _jumpMultiplierPerYear: number | BN | string,
@@ -251,6 +260,7 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
       txDetails?: Truffle.TransactionDetails
     ): Promise<string>;
     estimateGas(
+      _timelock: number | BN | string,
       _baseRatePerYear: number | BN | string,
       _multiplierPerYear: number | BN | string,
       _jumpMultiplierPerYear: number | BN | string,
@@ -537,9 +547,11 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
      * @param _lpAsset1 is the address for the first asset in a pair that the LP token represents(ex: wETH in a wETH-wBTC uniswap pair)
      * @param _lpAsset2 is the address for the second asset in a pair that the LP token represents(ex: wBTC in a wETH-wBTC uniswap pair)
      * @param _lpName is the name of the LP token (ex:wETH-wBTC)*
+     * @param _timelock is a variable representing the number of seconds the timeWizard will prevent withdraws and borrows from a contracts(one week is 605800 seconds)
      */
     createNewLPVault: {
       (
+        _timelock: number | BN | string,
         _lp: string,
         _lpAsset1: string,
         _lpAsset2: string,
@@ -547,6 +559,7 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
         txDetails?: Truffle.TransactionDetails
       ): Promise<Truffle.TransactionResponse<AllEvents>>;
       call(
+        _timelock: number | BN | string,
         _lp: string,
         _lpAsset1: string,
         _lpAsset2: string,
@@ -554,6 +567,7 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
         txDetails?: Truffle.TransactionDetails
       ): Promise<void>;
       sendTransaction(
+        _timelock: number | BN | string,
         _lp: string,
         _lpAsset1: string,
         _lpAsset2: string,
@@ -561,6 +575,7 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
         txDetails?: Truffle.TransactionDetails
       ): Promise<string>;
       estimateGas(
+        _timelock: number | BN | string,
         _lp: string,
         _lpAsset1: string,
         _lpAsset2: string,
@@ -577,9 +592,11 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
      * @param _jumpMultiplierPerYear is the Jump Multiplier Per Year(the multiplier per block after hitting a specific utilizastion point)
      * @param _multiplierPerYear is the multiplier per year(rate of increase in interest w/ utilizastion)
      * @param _optimal is the this is the utilizastion point or "kink" at which the jump multiplier is applied
+     * @param _timelock is a variable representing the number of seconds the timeWizard will prevent withdraws and borrows from a contracts(one week is 605800 seconds)
      */
     createNewSCVault: {
       (
+        _timelock: number | BN | string,
         _baseRatePerYear: number | BN | string,
         _multiplierPerYear: number | BN | string,
         _jumpMultiplierPerYear: number | BN | string,
@@ -589,6 +606,7 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
         txDetails?: Truffle.TransactionDetails
       ): Promise<Truffle.TransactionResponse<AllEvents>>;
       call(
+        _timelock: number | BN | string,
         _baseRatePerYear: number | BN | string,
         _multiplierPerYear: number | BN | string,
         _jumpMultiplierPerYear: number | BN | string,
@@ -598,6 +616,7 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
         txDetails?: Truffle.TransactionDetails
       ): Promise<void>;
       sendTransaction(
+        _timelock: number | BN | string,
         _baseRatePerYear: number | BN | string,
         _multiplierPerYear: number | BN | string,
         _jumpMultiplierPerYear: number | BN | string,
@@ -607,6 +626,7 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
         txDetails?: Truffle.TransactionDetails
       ): Promise<string>;
       estimateGas(
+        _timelock: number | BN | string,
         _baseRatePerYear: number | BN | string,
         _multiplierPerYear: number | BN | string,
         _jumpMultiplierPerYear: number | BN | string,
