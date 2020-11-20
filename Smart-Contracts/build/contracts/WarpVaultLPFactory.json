@@ -31,7 +31,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [],
@@ -1108,6 +1109,32 @@
     "version": "0.6.6+commit.6c089d02.Emscripten.clang"
   },
   "networks": {
+    "42": {
+      "events": {
+        "0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "previousOwner",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "newOwner",
+              "type": "address"
+            }
+          ],
+          "name": "OwnershipTransferred",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0x67798B19966974827Fc35BA4B839E870129abdDA",
+      "transactionHash": "0x2efca3399da89b0e0c6a4342147ba41feaceb0ecd062b63d4d5524776bc2ac56"
+    },
     "1605136900615": {
       "events": {
         "0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0": {
@@ -1135,8 +1162,9 @@
       "transactionHash": "0x504b8ba00cbb69db1a867015eb71b6caccdeee0b36da60ae1ee38b65553a062e"
     }
   },
-  "schemaVersion": "3.3.1",
-  "updatedAt": "2020-11-18T00:40:28.095Z",
+  "schemaVersion": "3.3.2",
+  "updatedAt": "2020-11-20T23:29:54.043Z",
+  "networkType": "ethereum",
   "devdoc": {
     "methods": {
       "createWarpVaultLP(uint256,address,string)": {
