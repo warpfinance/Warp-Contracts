@@ -49,6 +49,7 @@ module.exports = async deployer => {
   await UNI.createPair(USDC.address, WrappedBitcoin.address);
   const USDC_wBTC = await UNI.getPair(USDC.address, WrappedBitcoin.address);
   console.log("USDC-wBTC pair created");
+  console.log(USDC_wBTC);
   await usdc.approve(UNI_R.address, "10000000000000000000000000000");
   await wbtc.approve(UNI_R.address, "10000000000000000000000000000");
   console.log("Transfer Approvals Approved!");
@@ -66,9 +67,10 @@ module.exports = async deployer => {
   console.log("Listed USDC-wBTC");
   ////////////////////////////////////////////////////////////////////////////////////////////
   console.log("Listing USDC-wETH");
-  //  await UNI.createPair(USDC.address, WrappedEthereum.address);
+  await UNI.createPair(USDC.address, WrappedEthereum.address);
   const USDC_wETH = await UNI.getPair(USDC.address, WrappedEthereum.address);
   console.log("USDC-wETH pair created");
+  console.log(USDC_wETH);
   await usdc.approve(UNI_R.address, "10000000000000000000000000000");
   await weth.approve(UNI_R.address, "10000000000000000000000000000");
   console.log("Transfer Approvals Approved!");
@@ -88,6 +90,7 @@ module.exports = async deployer => {
   await UNI.createPair(USDC.address, DAI.address);
   const USDC_DAI = await UNI.getPair(USDC.address, DAI.address);
   console.log("USDC-DAI pair created");
+  console.log(USDC_DAI);
   await usdc.approve(UNI_R.address, "10000000000000000000000000000");
   await dai.approve(UNI_R.address, "10000000000000000000000000000");
   console.log("Transfer Approvals Approved!");
@@ -107,6 +110,7 @@ module.exports = async deployer => {
   await UNI.createPair(USDC.address, USDT.address);
   const USDC_USDT = await UNI.getPair(USDC.address, USDT.address);
   console.log("USDC-USDT pair created");
+  console.log(USDC_USDT);
   await usdc.approve(UNI_R.address, "10000000000000000000000000000");
   await usdt.approve(UNI_R.address, "10000000000000000000000000000");
   console.log("Transfer Approvals Approved!");
@@ -229,10 +233,10 @@ module.exports = async deployer => {
   console.log("Creating DAI StableCoin Warp Vault");
   await WarpC.createNewSCVault(
     0,
-    "1000000000000000000", //base rate per year(approx target base APR)
-    "2000000000000000000", //multiplier per year(rate of increase in interest w/ utilizastion)
-    "2000000000000000000", //Jump Multiplier Per Year(the multiplier per block after hitting a specific utilizastion point)
-    4204800, //optimal(this is the utilizastion point or "kink" at which the jump multiplier is applied)
+    "20000000000000000", //base rate per year(approx target base APR)
+    "22222222222200000", //multiplier per year(rate of increase in interest w/ utilizastion)
+    "40", //Jump Multiplier Per Year(the multiplier per block after hitting a specific utilizastion point)
+    "900000000000000000", //optimal(this is the utilizastion point or "kink" at which the jump multiplier is applied)
     "1000000000000000000", //intitial exchange rate(the rate at which the initial exchange of asset/ART is set)
     DAI.address
   );
@@ -241,10 +245,10 @@ module.exports = async deployer => {
   console.log("Creating USDC StableCoin Warp Vault");
   await WarpC.createNewSCVault(
     0,
-    "1000000000000000000", //base rate per year(approx target base APR)
-    "2000000000000000000", //multiplier per year(rate of increase in interest w/ utilizastion)
-    "2000000000000000000", //Jump Multiplier Per Year(the multiplier per block after hitting a specific utilizastion point)
-    4204800, //optimal(this is the utilizastion point or "kink" at which the jump multiplier is applied)
+    "20000000000000000", //base rate per year(approx target base APR)
+    "22222222222200000", //multiplier per year(rate of increase in interest w/ utilizastion)
+    "40", //Jump Multiplier Per Year(the multiplier per block after hitting a specific utilizastion point)
+    "900000000000000000", //optimal(this is the utilizastion point or "kink" at which the jump multiplier is applied)
     "1000000000000000000", //intitial exchange rate(the rate at which the initial exchange of asset/ART is set)
     USDC.address
   );
@@ -253,10 +257,10 @@ module.exports = async deployer => {
   console.log("Creating USDT StableCoin Warp Vault");
   await WarpC.createNewSCVault(
     0,
-    "1000000000000000000", //base rate per year(approx target base APR)
-    "2000000000000000000", //multiplier per year(rate of increase in interest w/ utilizastion)
-    "2000000000000000000", //Jump Multiplier Per Year(the multiplier per block after hitting a specific utilizastion point)
-    4204800, //optimal(this is the utilizastion point or "kink" at which the jump multiplier is applied)
+    "20000000000000000", //base rate per year(approx target base APR)
+    "22222222222200000", //multiplier per year(rate of increase in interest w/ utilizastion)
+    "40", //Jump Multiplier Per Year(the multiplier per block after hitting a specific utilizastion point)
+    "900000000000000000", //optimal(this is the utilizastion point or "kink" at which the jump multiplier is applied)
     "1000000000000000000", //intitial exchange rate(the rate at which the initial exchange of asset/ART is set)
     USDT.address
   );
