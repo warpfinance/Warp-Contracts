@@ -156,11 +156,16 @@ export const Header: React.FC<Props> = (props: Props) => {
         >
             <Grid
                 item
-                sm={(!props.home) ? 8 : 1}
+                sm={(!props.home) ? 7 : 1}
             >
                 <RouterLink to={"/"}>
                     <img className={classes.logo} src={"warp logo.svg"} alt={"Warp"}></img>
                 </RouterLink>
+            </Grid>
+            <Grid
+                item
+            >
+                <CustomButton text={"Create team referral link"} type={"short"} />
             </Grid>
             {getHeaderContent(isConnected || false)}
         </Grid>
