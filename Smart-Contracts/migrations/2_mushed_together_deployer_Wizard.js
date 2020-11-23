@@ -49,7 +49,6 @@ module.exports = async deployer => {
   await UNI.createPair(USDC.address, WrappedBitcoin.address);
   const USDC_wBTC = await UNI.getPair(USDC.address, WrappedBitcoin.address);
   console.log("USDC-wBTC pair created");
-  console.log(USDC_wBTC);
   await usdc.approve(UNI_R.address, "10000000000000000000000000000");
   await wbtc.approve(UNI_R.address, "10000000000000000000000000000");
   console.log("Transfer Approvals Approved!");
@@ -90,7 +89,6 @@ module.exports = async deployer => {
   await UNI.createPair(USDC.address, DAI.address);
   const USDC_DAI = await UNI.getPair(USDC.address, DAI.address);
   console.log("USDC-DAI pair created");
-  console.log(USDC_DAI);
   await usdc.approve(UNI_R.address, "10000000000000000000000000000");
   await dai.approve(UNI_R.address, "10000000000000000000000000000");
   console.log("Transfer Approvals Approved!");
@@ -110,7 +108,6 @@ module.exports = async deployer => {
   await UNI.createPair(USDC.address, USDT.address);
   const USDC_USDT = await UNI.getPair(USDC.address, USDT.address);
   console.log("USDC-USDT pair created");
-  console.log(USDC_USDT);
   await usdc.approve(UNI_R.address, "10000000000000000000000000000");
   await usdt.approve(UNI_R.address, "10000000000000000000000000000");
   console.log("Transfer Approvals Approved!");
@@ -133,6 +130,8 @@ module.exports = async deployer => {
     WrappedBitcoin.address
   );
   console.log("ETH-wBTC pair created");
+  console.log(ETH_wBTC);
+
   await weth.approve(UNI_R.address, "10000000000000000000000000000");
   await wbtc.approve(UNI_R.address, "10000000000000000000000000000");
   console.log("Transfer Approvals Approved!");
@@ -148,10 +147,32 @@ module.exports = async deployer => {
   );
   console.log("Listed ETH-wBTC");
   ////////////////////////////////////////////////////////////////////////////////////////////
+  console.log("Listing ETH-USDT");
+  await UNI.createPair(WrappedEthereum.address, USDT.address);
+  const ETH_USDT = await UNI.getPair(WrappedEthereum.address, USDT.address);
+  console.log("ETH-USDT pair created");
+  console.log(ETH_USDT);
+
+  await weth.approve(UNI_R.address, "10000000000000000000000000000");
+  await dai.approve(UNI_R.address, "10000000000000000000000000000");
+  console.log("Transfer Approvals Approved!");
+  await UNI_R.addLiquidity(
+    weth.address,
+    usdt.address,
+    "35000000000000000000",
+    "1000000000000000000",
+    "34000000000000000000",
+    "900000000000000000",
+    ETH_USDT,
+    100000000000000
+  );
+  console.log("Listed ETH-DAI");
+  ////////////////////////////////////////////////////////////////////////////////////////////
   console.log("Listing ETH-DAI");
   await UNI.createPair(WrappedEthereum.address, DAI.address);
   const ETH_DAI = await UNI.getPair(WrappedEthereum.address, DAI.address);
   console.log("ETH-DAI pair created");
+  console.log(ETH_DAI);
   await weth.approve(UNI_R.address, "10000000000000000000000000000");
   await dai.approve(UNI_R.address, "10000000000000000000000000000");
   console.log("Transfer Approvals Approved!");
@@ -207,11 +228,20 @@ module.exports = async deployer => {
   ////////////////////////////////////////////////////////////////////////////////////////////
   console.log("Creating WETH-DAI Warp Vault");
   const WarpC = await WarpControl.deployed();
+  const WETH_DAI_ADD = await UNI.getPair(WrappedEthereum.address, DAI.address);
   const WBTC_WETH_ADD = await UNI.getPair(
     WrappedEthereum.address,
     WrappedBitcoin.address
   );
-  const WETH_DAI_ADD = await UNI.getPair(WrappedEthereum.address, DAI.address);
+  const WETH_USDT_ADD = await UNI.getPair(
+    WrappedEthereum.address,
+    USDT.address
+  );
+  const WETH_USDC_ADD = await UNI.getPair(
+    WrappedEthereum.address,
+    USDC.address
+  );
+  ///////////////////////////pairs retrieved///////////
   await WarpC.createNewLPVault(
     0,
     WETH_DAI_ADD,
@@ -229,6 +259,24 @@ module.exports = async deployer => {
     "WBTC-WETH"
   );
   console.log("WBTC-WETH Vault setup successful");
+  console.log("Creating USDT-WETH Warp Vault");
+  await WarpC.createNewLPVault(
+    0,
+    WETH_USDT_ADD,
+    USDT.address,
+    WrappedEthereum.address,
+    "USDT-WETH"
+  );
+  console.log("USDT-WETH Vault setup successful");
+  console.log("Creating USDC-WETH Warp Vault");
+  await WarpC.createNewLPVault(
+    0,
+    WETH_USDC_ADD,
+    USDC.address,
+    WrappedEthereum.address,
+    "USDC-WETH"
+  );
+  console.log("USDC-WETH Vault setup successful");
   ////////////////////////////////////////////////////////////////////////////////////////////
   console.log("Creating DAI StableCoin Warp Vault");
   await WarpC.createNewSCVault(
