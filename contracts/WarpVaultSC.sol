@@ -45,8 +45,6 @@ contract WarpVaultSC is Ownable, Exponential {
     mapping(address => BorrowSnapshot) public accountBorrows;
     mapping(address => uint256) public principalBalance;
     mapping(address => uint256) public historicalReward;
-    mapping(address => address) public collateralAddressTracker;
-    mapping(address => bool) public collateralLocked;
 
     event InterestAccrued(uint accrualBlockNumber, uint borrowIndex, uint totalBorrows, uint totalReserves);
     event StableCoinLent(address _lender, uint _amountLent, uint _amountOfWarpMinted);
@@ -463,7 +461,7 @@ contract WarpVaultSC is Ownable, Exponential {
             accountBalance
         );
 
-        return accountBalance;
+        return balance;
     }
 
     function viewHistoricalReward(address _account) public view returns (uint256) {

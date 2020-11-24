@@ -25,7 +25,6 @@ contract WarpVaultLP is Ownable {
     string public lpName;
 
     IERC20 public LPtoken;
-    WarpWrapperToken public WLP;
     WarpControlI public WC;
 
     mapping(address => uint256) public collateralizedLP;
@@ -74,7 +73,7 @@ contract WarpVaultLP is Ownable {
     **/
     function provideCollateral(uint256 _amount) public {
         require(LPtoken.allowance(msg.sender, address(this)) >= _amount, "Vault must have enough allowance.");
-        require(LPtoken.balanceOf(msg.sender) > _amount, "Must have enough LP to provide");
+        require(LPtoken.balanceOf(msg.sender) >= _amount, "Must have enough LP to provide");
         LPtoken.transferFrom(msg.sender, address(this), _amount);
         collateralizedLP[msg.sender] = collateralizedLP[msg.sender].add(
             _amount
