@@ -13,18 +13,19 @@ import {
 	BrowserRouter as Router,
 	Switch,
 } from "react-router-dom";
-import { ThemeProvider } from "@material-ui/styles";
+import { createMuiTheme, makeStyles } from "@material-ui/core/styles";
 
-import { Web3ReactProvider } from '@web3-react/core'
-
+import { BorrowerCountdownContext } from "./hooks/borrowerCountdown";
+import { ConnectedWeb3 } from "./hooks/connectedWeb3";
 // prettier-ignore
 import {
 	CssBaseline,
 } from "@material-ui/core";
-import { createMuiTheme, makeStyles } from "@material-ui/core/styles";
-import { ConnectedWeb3 } from "./hooks/connectedWeb3";
-import { ethers } from "ethers";
+import { ThemeProvider } from "@material-ui/styles";
 import { Web3AccountRequired } from "./pages/Web3AccountRequired";
+import { Web3ReactProvider } from '@web3-react/core'
+import { ethers } from "ethers";
+import { useState } from "react";
 
 const outerTheme = createMuiTheme({
 	palette: {
@@ -48,7 +49,7 @@ const outerTheme = createMuiTheme({
 		MuiCard: {
 			root: {
 				borderRadius: "25px",
-				boxShadow : "0 40px 80px -20px rgba(0, 0, 0, 0.25);",
+				boxShadow: "0 40px 80px -20px rgba(0, 0, 0, 0.25);",
 				margin: "15px",
 			}
 		},
@@ -89,28 +90,49 @@ function getLibrary(provider?: any, connector?: any): any {
 const App: React.FC = () => {
 	const classes = useStyles();
 
+	var maxDate = 8640000000000000;
+	var countDownDate = new Date(process.env.REACT_APP_BORROWING_ENABLED_DATETIME || maxDate).getTime();
+
+	const [countdown, setCountdown] = useState(true);
+	const [countdownText, setCountdownText] = useState("");
+	setInterval(function () {
+		var now = new Date().getTime();
+		var distance = countDownDate - now;
+		var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+		var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+		var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+		var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+		setCountdownText(days + "d " + hours + "h "
+			+ minutes + "m " + seconds + "s ");
+		if (distance < 0) {
+			setCountdown(false);
+		}
+	}, 1000);
+
 	return (
 		<Web3ReactProvider getLibrary={getLibrary}>
-				<Router>
-					<ThemeProvider theme={outerTheme}>
+			<Router>
+				<ThemeProvider theme={outerTheme}>
+					<BorrowerCountdownContext.Provider value={{ countdown: countdown, countdownText: countdownText }} >
 						<CssBaseline>
 							<div className={classes.root}>
 								<Switch>
 									<Route exact={true} path="/" component={Home} />
 									<Route exact={true} path="/connect" component={Connect} />
 									<Route exact={true} path="/borrower"
-									render={() => <Web3AccountRequired><Borrower /></Web3AccountRequired> } />
+										render={() => <Web3AccountRequired><Borrower /></Web3AccountRequired>} />
 									<Route exact={true} path="/dashboard"
-									render={() => <Web3AccountRequired><Dashboard /></Web3AccountRequired> } />
+										render={() => <Web3AccountRequired><Dashboard /></Web3AccountRequired>} />
 									<Route exact={true} path="/lender"
-									render={() => <Web3AccountRequired><Lender /></Web3AccountRequired> } />
+										render={() => <Web3AccountRequired><Lender /></Web3AccountRequired>} />
 									<Route exact={true} path="/markets"
-									render={() => <ConnectedWeb3><Markets /></ConnectedWeb3> } />
+										render={() => <ConnectedWeb3><Markets /></ConnectedWeb3>} />
 								</Switch>
 							</div>
 						</CssBaseline>
-					</ThemeProvider>
-				</Router>
+					</BorrowerCountdownContext.Provider>
+				</ThemeProvider>
+			</Router>
 		</Web3ReactProvider>
 	)
 }

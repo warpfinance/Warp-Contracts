@@ -3,6 +3,7 @@ import * as React from "react";
 import { CustomButton, NftModal, NftReferralModal } from "../../components"
 import { Grid, Link, Typography } from "@material-ui/core";
 
+import { BorrowerCountdownContext } from "../../hooks/borrowerCountdown";
 import { Link as RouterLink } from 'react-router-dom';
 import { makeStyles } from "@material-ui/core/styles";
 import { useState } from "react";
@@ -38,25 +39,6 @@ export const Header: React.FC<Props> = (props: Props) => {
         }
         return input;
     };
-
-    var maxDate = 8640000000000000;
-    var countDownDate = new Date(process.env.REACT_APP_BORROWING_ENABLED_DATETIME || maxDate).getTime();
-
-    const [countdown, setCountdown] = useState(true);
-    const [countdownText, setCountdownText] = useState("");
-    setInterval(function () {
-        var now = new Date().getTime();
-        var distance = countDownDate - now;
-        var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-        var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-        var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-        setCountdownText(days + "d " + hours + "h "
-            + minutes + "m " + seconds + "s ");
-        if (distance < 0) {
-            setCountdown(false);
-        }
-    }, 1000);
 
     const [address, setAddress] = useState("");
     const [addressError, setAddressError] = useState(true);
@@ -126,20 +108,23 @@ export const Header: React.FC<Props> = (props: Props) => {
                 <React.Fragment>
                     {connected === true ?
                         <React.Fragment>
-                            {countdown === true ?
-                                <Grid
-                                    item
-                                >
-                                    <Typography color="textSecondary">
-                                        Warp borrowing starts in
+                            <BorrowerCountdownContext.Consumer>
+                                {value =>
+                                    value.countdown === true ?
+                                        <Grid
+                                            item
+                                        >
+                                            <Typography color="textSecondary">
+                                                Warp borrowing starts in
                                     </Typography>
-                                    <Typography>
-                                        {countdownText}
-                                    </Typography>
-                                </Grid>
-                                :
-                                null
-                            }
+                                            <Typography>
+                                                {value.countdownText}
+                                            </Typography>
+                                        </Grid>
+                                        :
+                                        null
+                                }
+                            </BorrowerCountdownContext.Consumer>
                             <Grid
                                 item
                             >
