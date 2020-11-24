@@ -45,26 +45,6 @@ module.exports = async deployer => {
   const wbtc = await WrappedBitcoin.deployed();
   const weth = await WrappedEthereum.deployed();
   ////////////////////////////////////////////////////////////////////////////////////////////
-  console.log("Listing USDC-wBTC");
-  await UNI.createPair(USDC.address, WrappedBitcoin.address);
-  const USDC_wBTC = await UNI.getPair(USDC.address, WrappedBitcoin.address);
-  console.log("USDC-wBTC pair created");
-  await usdc.approve(UNI_R.address, "10000000000000000000000000000");
-  await wbtc.approve(UNI_R.address, "10000000000000000000000000000");
-  console.log("Transfer Approvals Approved!");
-  await UNI_R.addLiquidity(
-    usdc.address,
-    wbtc.address,
-    "1400000000000000000000", //$14,000 USDC
-    "1000000000000000000", // 1 BTC
-    "1300000000000000000000", // $13,000 USDC
-    "900000000000000000", //0.9 BTC
-    USDC_wBTC,
-    100000000000000
-  );
-  console.log("Liquidity is now Liquid!");
-  console.log("Listed USDC-wBTC");
-  ////////////////////////////////////////////////////////////////////////////////////////////
   console.log("Listing USDC-wETH");
   await UNI.createPair(USDC.address, WrappedEthereum.address);
   const USDC_wETH = await UNI.getPair(USDC.address, WrappedEthereum.address);
@@ -80,10 +60,30 @@ module.exports = async deployer => {
     "1000000000000000000", // 1 ETH
     "300000000000000", //$300 USDC
     "900000000000000", // 0.9 ETH
-    USDC_wETH,
+    "0x7f3A152F09324f2aee916CE069D3908603449173",
     100000000000000
   );
   console.log("Listed USDC-wETH");
+  ////////////////////////////////////////////////////////////////////////////////////////////
+  console.log("Listing USDC-wBTC");
+  await UNI.createPair(USDC.address, WrappedBitcoin.address);
+  const USDC_wBTC = await UNI.getPair(USDC.address, WrappedBitcoin.address);
+  console.log("USDC-wBTC pair created");
+  await usdc.approve(UNI_R.address, "10000000000000000000000000000");
+  await wbtc.approve(UNI_R.address, "10000000000000000000000000000");
+  console.log("Transfer Approvals Approved!");
+  await UNI_R.addLiquidity(
+    usdc.address,
+    wbtc.address,
+    "1400000000000000000000", //$14,000 USDC
+    "1000000000000000000", // 1 BTC
+    "1300000000000000000000", // $13,000 USDC
+    "900000000000000000", //0.9 BTC
+    "0x7f3A152F09324f2aee916CE069D3908603449173",
+    100000000000000
+  );
+  console.log("Liquidity is now Liquid!");
+  console.log("Listed USDC-wBTC");
   ////////////////////////////////////////////////////////////////////////////////////////////
   console.log("Listing USDC-DAI");
   await UNI.createPair(USDC.address, DAI.address);
@@ -99,7 +99,7 @@ module.exports = async deployer => {
     "1000000000000000000",
     "900000000000000000",
     "900000000000000001",
-    USDC_DAI,
+    "0x7f3A152F09324f2aee916CE069D3908603449173",
     100000000000000
   );
   console.log("Listed USDC-DAI");
@@ -118,7 +118,7 @@ module.exports = async deployer => {
     "1000000000000000000",
     "900000000000000000",
     "900000000000000001",
-    USDC_USDT,
+    "0x7f3A152F09324f2aee916CE069D3908603449173",
     100000000000000
   );
   console.log("Listed USDC-USDT");
@@ -142,7 +142,7 @@ module.exports = async deployer => {
     "1000000000000000000",
     "34000000000000000000",
     "900000000000000000",
-    ETH_wBTC,
+    "0x7f3A152F09324f2aee916CE069D3908603449173",
     100000000000000
   );
   console.log("Listed ETH-wBTC");
@@ -163,7 +163,7 @@ module.exports = async deployer => {
     "1000000000000000000",
     "34000000000000000000",
     "900000000000000000",
-    ETH_USDT,
+    "0x7f3A152F09324f2aee916CE069D3908603449173",
     100000000000000
   );
   console.log("Listed ETH-DAI");
@@ -183,7 +183,7 @@ module.exports = async deployer => {
     "1000000000000000000",
     "34000000000000000000",
     "900000000000000000",
-    ETH_DAI,
+    "0x7f3A152F09324f2aee916CE069D3908603449173",
     100000000000000
   );
   console.log("Listed ETH-DAI");
