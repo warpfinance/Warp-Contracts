@@ -39,6 +39,25 @@ export const Header: React.FC<Props> = (props: Props) => {
         return input;
     };
 
+    var maxDate = 8640000000000000;
+    var countDownDate = new Date(process.env.REACT_APP_BORROWING_ENABLED_DATETIME || maxDate).getTime();
+
+    const [countdown, setCountdown] = useState(true);
+    const [countdownText, setCountdownText] = useState("");
+    setInterval(function () {
+        var now = new Date().getTime();
+        var distance = countDownDate - now;
+        var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+        setCountdownText(days + "d " + hours + "h "
+            + minutes + "m " + seconds + "s ");
+        if (distance < 0) {
+            setCountdown(false);
+        }
+    }, 1000);
+
     const [address, setAddress] = useState("");
     const [addressError, setAddressError] = useState(true);
     const [link, setLink] = useState("");
@@ -107,16 +126,20 @@ export const Header: React.FC<Props> = (props: Props) => {
                 <React.Fragment>
                     {connected === true ?
                         <React.Fragment>
-                            <Grid
-                                item
-                            >
-                                <Typography color="textSecondary">
-                                    Warp borrowing starts in
-                                </Typography>
-                                <Typography>
-                                    4d 24h 56s
-                                </Typography>
-                            </Grid>
+                            {countdown === true ?
+                                <Grid
+                                    item
+                                >
+                                    <Typography color="textSecondary">
+                                        Warp borrowing starts in
+                                    </Typography>
+                                    <Typography>
+                                        {countdownText}
+                                    </Typography>
+                                </Grid>
+                                :
+                                null
+                            }
                             <Grid
                                 item
                             >
