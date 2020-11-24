@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { Amount, CustomButton } from "../../components";
+import { Amount, CustomButton, Text } from "../../components";
 import { Avatar, Card, CardContent, Dialog, DialogContent, DialogTitle, FormControl, Grid, MenuItem, Select, Typography } from "@material-ui/core";
 
 import { makeStyles } from "@material-ui/core";
@@ -46,6 +46,8 @@ interface Props {
     onButtonClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void,
     onChange: (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void,
     open: boolean,
+    onReferralCodeChange: (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void,
+    referralCodeError: boolean,
 }
 
 export const BigModal: React.FC<Props> = (props: Props) => {
@@ -222,8 +224,9 @@ export const BigModal: React.FC<Props> = (props: Props) => {
                                 </Card>
                             </Grid>
                         </Grid>
+                        <Text error={props.referralCodeError} fullWidth={true} onChange={props.onReferralCodeChange} text="Referral code" />
                         <CustomButton
-                            disabled={props.error}
+                            disabled={props.error || props.referralCodeError}
                             onClick={props.onButtonClick}
                             text={props.action.charAt(0).toUpperCase() + props.action.slice(1)}
                             type="short" />

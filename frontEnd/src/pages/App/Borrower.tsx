@@ -443,7 +443,10 @@ export const Borrower: React.FC<Props> = (props: Props) => {
                 handleSelect={handleBorrowCurrencySelect}
                 onButtonClick={onBorrow}
                 onChange={onBorrowAmountChange}
-                open={borrowModalOpen} />
+                open={borrowModalOpen}
+                onReferralCodeChange={onReferralCodeChange}
+                referralCodeError={referralCodeError}
+            />
             <AmountModal
                 action={"Repay " + currentToken.symbol}
                 amount={repayAmountValue}

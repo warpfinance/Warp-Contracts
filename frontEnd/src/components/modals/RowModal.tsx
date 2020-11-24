@@ -25,12 +25,12 @@ interface Props {
     lp: number,
     onButtonClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void,
     onChange: (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void,
-    onReferralCodeChange: (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void,
     open: boolean,
     poolIconSrcPrimary: string,
     poolIconSrcSecondary: string,
-    referralCodeError: boolean,
     token: Token,
+    onReferralCodeChange?: (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void,
+    referralCodeError?: boolean,
 }
 
 export const RowModal: React.FC<Props> = (props: Props) => {
@@ -92,7 +92,11 @@ export const RowModal: React.FC<Props> = (props: Props) => {
                                 </Grid>
                             </CardContent>
                         </Card>
-                        <Text error={props.referralCodeError} fullWidth={true} onChange={props.onReferralCodeChange} text="Referral code" />
+                        {props.action.toLowerCase() === "provide collateral" ?
+                            <Text error={props.referralCodeError} fullWidth={true} onChange={props.onReferralCodeChange} text="Referral code" />
+                            :
+                            null
+                        }
                         <CustomButton
                             disabled={props.lp <= 0 || props.error === true || props.referralCodeError === true}
                             onClick={props.onButtonClick}
