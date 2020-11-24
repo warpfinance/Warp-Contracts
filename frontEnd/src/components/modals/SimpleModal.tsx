@@ -1,8 +1,8 @@
 import * as React from "react";
 
 import { Avatar, Card, CardContent, Checkbox, Dialog, DialogContent, DialogTitle, Grid, Typography } from "@material-ui/core";
+import { CustomButton, Text } from "../../components";
 
-import { CustomButton } from "../buttons/CustomButton";
 import { makeStyles } from "@material-ui/core";
 
 const useStyles = makeStyles(theme => ({
@@ -24,6 +24,8 @@ interface Props {
     handleClose: (event: {}, reason: "backdropClick" | "escapeKeyDown") => void,
     onButtonClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void,
     open: boolean,
+    onReferralCodeChange?: (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void,
+    referralCodeError?: boolean,
 }
 
 export const SimpleModal: React.FC<Props> = (props: Props) => {
@@ -82,11 +84,16 @@ export const SimpleModal: React.FC<Props> = (props: Props) => {
                                 </Grid>
                             </CardContent>
                         </Card>
-                        <CustomButton 
-                        disabled={checked !== true} 
-                        onClick={props.onButtonClick} 
-                        text={props.action.charAt(0).toUpperCase() + props.action.slice(1)} 
-                        type="short" />
+                        {props.action.toLowerCase() === "lend" ?
+                            <Text error={props.referralCodeError} fullWidth={true} onChange={props.onReferralCodeChange} text="Referral code" />
+                            :
+                            null
+                        }
+                        <CustomButton
+                            disabled={checked !== true || props.referralCodeError === true}
+                            onClick={props.onButtonClick}
+                            text={props.action.charAt(0).toUpperCase() + props.action.slice(1)}
+                            type="short" />
                     </Grid>
                 </Grid>
             </DialogContent>

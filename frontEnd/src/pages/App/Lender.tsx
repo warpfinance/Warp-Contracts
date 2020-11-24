@@ -7,30 +7,30 @@ import { ERC20Service } from "../../services/erc20";
 import { Grid } from "@material-ui/core";
 import { StableCoinWarpVaultService } from "../../services/stableCoinWarpVault";
 import { Token } from "../../util/token";
+import { TransactionInfo } from "../../util/types";
 import { formatBigNumber } from "../../util/tools";
 import { useCombinedHistoricalReward } from "../../hooks/useCombinedHistoricalReward";
 import { useConnectedWeb3Context } from "../../hooks/connectedWeb3";
+import { useRefreshToken } from "../../hooks/useRefreshToken";
 import { useStableCoinTokens } from "../../hooks/useStableCoins";
 import { useState } from "react";
 import { useTotalLentAmount } from "../../hooks/useTotalLentAmount";
 import { useTotalWalletBalance } from "../../hooks/useTotalWalletBalance";
 import { useUSDCToken } from "../../hooks/useUSDC";
 import { useWarpControl } from "../../hooks/useWarpControl";
-import { TransactionInfo } from "../../util/types";
-import { useRefreshToken } from "../../hooks/useRefreshToken";
 
 interface Props {
 }
 
 export const Lender: React.FC<Props> = (props: Props) => {
     const context = useConnectedWeb3Context();
-    const {refreshToken, refresh} = useRefreshToken();
+    const { refreshToken, refresh } = useRefreshToken();
     const tokens = useStableCoinTokens(context);
     const { control } = useWarpControl(context);
     const usdcToken = useUSDCToken(context);
 
     const walletBalance = useTotalWalletBalance(context, control, usdcToken, refreshToken);
-    
+
     const totalLentAmount = useTotalLentAmount(context, control, usdcToken, refreshToken);
     const totalReward = useCombinedHistoricalReward(context, control, tokens, usdcToken);
 
@@ -43,17 +43,20 @@ export const Lender: React.FC<Props> = (props: Props) => {
     const [action, setAction] = useState("lend");
     const [authorizationModalOpen, setAuthorizationModalOpen] = useState(false);
 
-    const [lendToken, setLendToken] = React.useState<Maybe<Token>>(null);
-    const [lendAmountCurrency, setLendAmountCurrency] = React.useState("");
-    const [lendAmountValue, setLendAmountValue] = React.useState(BigNumber.from(0));
-    const [lendFocusedAmountId, setLendFocusedAmountId] = React.useState("");
-    const [lendMaxAmount, setLendMaxAmount] = React.useState(BigNumber.from(0));
+    const [lendToken, setLendToken] = useState<Maybe<Token>>(null);
+    const [lendAmountCurrency, setLendAmountCurrency] = useState("");
+    const [lendAmountValue, setLendAmountValue] = useState(BigNumber.from(0));
+    const [lendFocusedAmountId, setLendFocusedAmountId] = useState("");
+    const [lendMaxAmount, setLendMaxAmount] = useState(BigNumber.from(0));
 
-    const [withdrawToken, setWithdrawToken] = React.useState<Maybe<Token>>(null);
-    const [withdrawAmountCurrency, setWithdrawAmountCurrency] = React.useState("");
-    const [withdrawAmountValue, setWithdrawAmountValue] = React.useState(BigNumber.from(0));
-    const [withdrawFocusedAmountId, setWithdrawFocusedAmountId] = React.useState("");
-    const [withdrawMaxAmount, setWithdrawMaxAmount] = React.useState(BigNumber.from(0));
+    const [referralCode, setReferralCode] = useState("");
+    const [referralCodeError, setReferralCodeError] = useState(false);
+
+    const [withdrawToken, setWithdrawToken] = useState<Maybe<Token>>(null);
+    const [withdrawAmountCurrency, setWithdrawAmountCurrency] = useState("");
+    const [withdrawAmountValue, setWithdrawAmountValue] = useState(BigNumber.from(0));
+    const [withdrawFocusedAmountId, setWithdrawFocusedAmountId] = useState("");
+    const [withdrawMaxAmount, setWithdrawMaxAmount] = useState(BigNumber.from(0));
 
     const [lendModalOpen, setLendModalOpen] = useState(false);
     const [withdrawModalOpen, setWithdrawModalOpen] = useState(false);
@@ -72,7 +75,14 @@ export const Lender: React.FC<Props> = (props: Props) => {
         if (!withdrawAmountValue.eq(BigNumber.from(0)) && withdrawAmountCurrency !== "") {
             setWithdrawError(isError(withdrawAmountValue, withdrawAmountCurrency, tokens, withdrawMaxAmount));
         }
-    }, [lendAmountValue, lendAmountCurrency, withdrawAmountValue, withdrawAmountCurrency]
+        // TO-DO: Web3 validation of referral code
+        if (referralCode === "badReferralCode") {
+            setReferralCodeError(true);
+        }
+        else {
+            setReferralCodeError(false);
+        }
+    }, [lendAmountValue, lendAmountCurrency, referralCode, withdrawAmountValue, withdrawAmountCurrency]
     );
 
     const handleAuthClose = (event: {}, reason: "backdropClick" | "escapeKeyDown") => {
@@ -128,6 +138,10 @@ export const Lender: React.FC<Props> = (props: Props) => {
         }
     };
 
+    const onReferralCodeChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+        setReferralCode(event.target.value);
+    };
+
     const onWithdrawAmountChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>, maxAmount: BigNumber, token: Token) => {
         setWithdrawFocusedAmountId(event.target.id)
         setWithdrawAmountCurrency(event.target.id);
@@ -148,14 +162,14 @@ export const Lender: React.FC<Props> = (props: Props) => {
         }
     };
 
-    const handleTransaction = async (tx: Promise<TransactionInfo>) =>{
+    const handleTransaction = async (tx: Promise<TransactionInfo>) => {
         setTransactionConfirmed(false);
         setTransactionModalOpen(true);
         const info = await tx;
         setTransactionConfirmed(true);
         setTransactionHash(info.hash);
 
-        
+
         await info.finished;
         setTransactionModalOpen(false);
     }
@@ -171,11 +185,13 @@ export const Lender: React.FC<Props> = (props: Props) => {
         const tx = erc20.approveUnlimited(targetVault);
         setAuthorizationModalOpen(false);
         await handleTransaction(tx);
-        
+
         setLendModalOpen(true);
     }
 
     const onLend = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+        // TO-DO: Web3 handling of referral code
+
         if (!lendToken || !context.account) {
             return;
         }
@@ -197,7 +213,7 @@ export const Lender: React.FC<Props> = (props: Props) => {
         const tx = scVault.lendToVault(lendAmountValue);
 
         setLendModalOpen(false);
-        
+
         await handleTransaction(tx);
         refresh();
     }
@@ -214,7 +230,7 @@ export const Lender: React.FC<Props> = (props: Props) => {
         const tx = scVault.withdraw(withdrawAmountValue);
 
         setWithdrawModalOpen(false);
-        
+
         await handleTransaction(tx);
         refresh();
     }
@@ -285,10 +301,13 @@ export const Lender: React.FC<Props> = (props: Props) => {
                 action="Lend"
                 amount={lendToken ? formatBigNumber(lendAmountValue, lendToken.decimals) : '0'}
                 currency={lendAmountCurrency}
+                handleClose={handleLendClose}
                 iconSrc={`${lendAmountCurrency.toLowerCase()}.png`}
                 onButtonClick={onLend}
-                handleClose={handleLendClose}
-                open={lendModalOpen} />
+                open={lendModalOpen}
+                onReferralCodeChange={onReferralCodeChange}
+                referralCodeError={referralCodeError}
+            />
             <SimpleModal
                 action="Withdraw"
                 amount={withdrawToken ? formatBigNumber(withdrawAmountValue, withdrawToken.decimals) : '0'}
