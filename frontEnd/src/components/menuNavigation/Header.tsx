@@ -106,11 +106,23 @@ export const Header: React.FC<Props> = (props: Props) => {
             return (
                 <React.Fragment>
                     {connected === true ?
-                        <Grid
-                            item
-                        >
-                            <CustomButton text={"Create team referral link"} onClick={() => setNftModalOpen(true)} type={"short"} />
-                        </Grid>
+                        <React.Fragment>
+                            <Grid
+                                item
+                            >
+                                <Typography color="textSecondary">
+                                    Warp borrowing starts in
+                                </Typography>
+                                <Typography>
+                                    4d 24h 56s
+                                </Typography>
+                            </Grid>
+                            <Grid
+                                item
+                            >
+                                <CustomButton text={"Create team referral link"} onClick={() => setNftModalOpen(true)} type={"short"} />
+                            </Grid>
+                        </React.Fragment>
                         :
                         null
                     }
@@ -191,11 +203,9 @@ export const Header: React.FC<Props> = (props: Props) => {
                     <Grid
                         item
                     >
-                        <Typography>
-                            <Typography className={classes.link} color="textSecondary">
-                                Docs
+                        <Typography className={classes.link} color="textSecondary">
+                            Docs
                             </Typography>
-                        </Typography>
                     </Grid>
                     <Grid
                         item
@@ -236,7 +246,7 @@ export const Header: React.FC<Props> = (props: Props) => {
             >
                 <Grid
                     item
-                    sm={(!props.home) ? 6 : 1}
+                    sm={(!props.home) ? 5 : 1}
                 >
                     <RouterLink to={"/"}>
                         <img className={classes.logo} src={"warp logo.svg"} alt={"Warp"}></img>
