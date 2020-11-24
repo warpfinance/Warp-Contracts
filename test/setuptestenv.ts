@@ -1,6 +1,8 @@
 const truffleAssert = require("truffle-assertions");
 const w3 = require("web3");
 const utils = require("./utils.js");
+const BigNumber = require("bignumber.js");
+BigNumber.config({ EXPONENTIAL_AT: 1e+9 })
 
 const toWei = w3.utils.toWei;
 const fromWei = w3.utils.fromWei;
@@ -42,8 +44,11 @@ const getCreatedPair = async txResult => {
 
 //await usdcToken.mint(usdcBTCPair.address, conversionRates.usdc.btc * minimumLiquidity);
 const giveTokens = async (token, account, amount) => {
-  const inWei = toWei(amount.toString());
-  await token.mint(account, inWei);
+  const numDecimals = parseInt((await token.decimals()).toString());
+  const oneUnit = (new BigNumber(10)).pow(numDecimals);
+  const realAmount = (new BigNumber(amount)).times(oneUnit);
+  //console.log(amount, numDecimals, realAmount.toString());
+  await token.mint(account, realAmount.toString());
 };
 
 //await giveTokens(usdcToken, usdcBTCPair.address, conversionRates.usdc.btc * minimumLiquidity)
@@ -70,7 +75,9 @@ contract("Setup Test Env", function(accounts) {
     const wbtcToken = await TestToken.new("WBTC", "WBTC");
     const daiToken = await TestToken.new("DAI", "DAI");
     const usdtToken = await TestToken.new("USDT", "USDT");
+    usdtToken.setDecimals(6);
     const usdcToken = await TestToken.new("USDC", "USDC");
+    usdcToken.setDecimals(6);
     const wethToken = await TestToken.new("WETH", "WETH");
 
     // Give root some tokens to get things started
@@ -244,28 +251,28 @@ contract("Setup Test Env", function(accounts) {
     // Create Stable Coin Vaults
     await warpControl.createNewSCVault(
       0,
-      "1000000000000000000",
-      "2000000000000000000",
-      "2000000000000000000",
-      4204800,
+      "20000000000000000",
+      "22222222222200000",
+      "40",
+      "900000000000000000",
       "1000000000000000000",
       daiToken.address
     );
     await warpControl.createNewSCVault(
       0,
-      "1000000000000000000",
-      "2000000000000000000",
-      "2000000000000000000",
-      4204800,
+      "20000000000000000",
+      "22222222222200000",
+      "40",
+      "900000000000000000",
       "1000000000000000000",
       usdtToken.address
     );
     await warpControl.createNewSCVault(
       0,
-      "1000000000000000000",
-      "2000000000000000000",
-      "2000000000000000000",
-      4204800,
+      "20000000000000000",
+      "22222222222200000",
+      "40",
+      "900000000000000000",
       "1000000000000000000",
       usdcToken.address
     );
@@ -280,9 +287,28 @@ contract("Setup Test Env", function(accounts) {
     await utils.increaseTime(ONE_DAY);
 
     const testerAddress = "0x7f3A152F09324f2aee916CE069D3908603449173";
-    await daiToken.mint(testerAddress, toWei("10000"));
-    await usdcToken.mint(testerAddress, toWei("10000"));
-    await usdtToken.mint(testerAddress, toWei("10000"));
+
+    {
+      const numDecimals = parseInt((await daiToken.decimals()).toString());
+      const oneUnit = (new BigNumber(10)).pow(numDecimals);
+      const realAmount = (new BigNumber("10000")).times(oneUnit);
+      await daiToken.mint(testerAddress, realAmount.toString());
+    }
+
+    {
+      const numDecimals = parseInt((await usdcToken.decimals()).toString());
+      const oneUnit = (new BigNumber(10)).pow(numDecimals);
+      const realAmount = (new BigNumber("10000")).times(oneUnit);
+      await usdcToken.mint(testerAddress, realAmount.toString());
+    }
+
+    {
+      const numDecimals = parseInt((await usdtToken.decimals()).toString());
+      const oneUnit = (new BigNumber(10)).pow(numDecimals);
+      const realAmount = (new BigNumber("10000")).times(oneUnit);
+      await usdtToken.mint(testerAddress, realAmount.toString());
+    }
+    
     await giveLPTokens(
       testerAddress,
       ethDaiPair,
