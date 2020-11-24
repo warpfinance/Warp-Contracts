@@ -1,6 +1,8 @@
 const truffleAssert = require("truffle-assertions");
 const w3 = require("web3");
 const utils = require("./utils.js");
+const BigNumber = require("bignumber.js");
+BigNumber.config({ EXPONENTIAL_AT: 1e+9 })
 
 const toWei = w3.utils.toWei;
 const fromWei = w3.utils.fromWei;
@@ -42,8 +44,11 @@ const getCreatedPair = async txResult => {
 
 //await usdcToken.mint(usdcBTCPair.address, conversionRates.usdc.btc * minimumLiquidity);
 const giveTokens = async (token, account, amount) => {
-  const inWei = toWei(amount.toString());
-  await token.mint(account, inWei);
+  const numDecimals = parseInt((await token.decimals()).toString());
+  const oneUnit = (new BigNumber(10)).pow(numDecimals);
+  const realAmount = (new BigNumber(amount)).times(oneUnit);
+  //console.log(amount, numDecimals, realAmount.toString());
+  await token.mint(account, realAmount.toString());
 };
 
 //await giveTokens(usdcToken, usdcBTCPair.address, conversionRates.usdc.btc * minimumLiquidity)
@@ -70,7 +75,9 @@ contract("Setup Test Env", function(accounts) {
     const wbtcToken = await TestToken.new("WBTC", "WBTC");
     const daiToken = await TestToken.new("DAI", "DAI");
     const usdtToken = await TestToken.new("USDT", "USDT");
+    usdtToken.setDecimals(6);
     const usdcToken = await TestToken.new("USDC", "USDC");
+    usdcToken.setDecimals(6);
     const wethToken = await TestToken.new("WETH", "WETH");
 
     // Give root some tokens to get things started
@@ -197,7 +204,6 @@ contract("Setup Test Env", function(accounts) {
       oracleFactory.address,
       lpFactory.address,
       scFactory.address,
-      "0x7d4A13FE119C9F36425008a7afCB2737B2bB5C41", //warp team fee address
       accounts[0]
     );
     // goodbye children, remember me...
@@ -235,6 +241,7 @@ contract("Setup Test Env", function(accounts) {
       "ETH-DAI-LP"
     );
     await warpControl.createNewLPVault(
+      0,
       ethCPair.address,
       wethToken.address,
       usdcToken.address,
@@ -244,28 +251,28 @@ contract("Setup Test Env", function(accounts) {
     // Create Stable Coin Vaults
     await warpControl.createNewSCVault(
       0,
-      "1000000000000000000",
-      "2000000000000000000",
-      "2000000000000000000",
-      4204800,
+      "20000000000000000",
+      "22222222222200000",
+      "40",
+      "900000000000000000",
       "1000000000000000000",
       daiToken.address
     );
     await warpControl.createNewSCVault(
       0,
-      "1000000000000000000",
-      "2000000000000000000",
-      "2000000000000000000",
-      4204800,
+      "20000000000000000",
+      "22222222222200000",
+      "40",
+      "900000000000000000",
       "1000000000000000000",
       usdtToken.address
     );
     await warpControl.createNewSCVault(
       0,
-      "1000000000000000000",
-      "2000000000000000000",
-      "2000000000000000000",
-      4204800,
+      "20000000000000000",
+      "22222222222200000",
+      "40",
+      "900000000000000000",
       "1000000000000000000",
       usdcToken.address
     );
@@ -279,166 +286,29 @@ contract("Setup Test Env", function(accounts) {
 
     await utils.increaseTime(ONE_DAY);
 
-    // Test lending to vault
-    const user1 = accounts[1];
-    const daiInVault = 1000000;
-    const usdcInVault = 1000000;
-    const usdtInVault = 1000000;
-    const ethBTCInVault = 10;
-    const ethUsdcInVault = 10;
-    const ethUsdtInVault = 10;
-    const ethDaiInVault = 10;
-    await daiToken.mint(user1, toWei(daiInVault.toString()));
-    await usdcToken.mint(user1, toWei(usdcInVault.toString()));
-    await usdtToken.mint(user1, toWei(usdtInVault.toString()));
-    //pull in warp SC Vaults for use
-    const daiWarpVault = await WarpVaultSC.at(
-      await warpControl.instanceSCTracker(daiToken.address)
-    );
-
-    const usdcWarpVault = await WarpVaultSC.at(
-      await warpControl.instanceSCTracker(usdcToken.address)
-    );
-
-    const usdtWarpVault = await WarpVaultSC.at(
-      await warpControl.instanceSCTracker(usdtToken.address)
-    );
-    //approve and lend stablecoins to each vault
-    ///dai
-    await daiToken.approve(daiWarpVault.address, toWei("1000000000000"), {
-      from: user1
-    });
-
-    await daiWarpVault.lendToWarpVault(toWei(daiInVault.toString()), {
-      from: user1
-    });
-    ///usdc
-    await usdcToken.approve(usdcWarpVault.address, toWei("1000000000000"), {
-      from: user1
-    });
-
-    await usdcWarpVault.lendToWarpVault(toWei(usdcInVault.toString()), {
-      from: user1
-    });
-    ///usdt
-    await usdtToken.approve(usdtWarpVault.address, toWei("1000000000000"), {
-      from: user1
-    });
-
-    await usdtWarpVault.lendToWarpVault(toWei(usdtInVault.toString()), {
-      from: user1
-    });
-    //pull in warp wrapper token for each and check for a 1:1 ratio with amount lent
-    //dai
-    const daiWarpWrapperToken = await WarpWrapperToken.at(
-      await daiWarpVault.wStableCoin()
-    );
-    expect(fromWei(await daiWarpWrapperToken.balanceOf(user1))).equals(
-      daiInVault.toString()
-    );
-
-<<<<<<< HEAD
-    const usdcWarpWrapperToken = await WarpWrapperToken.at(
-      await usdcWarpVault.wStableCoin()
-    );
-    expect(fromWei(await usdcWarpWrapperToken.balanceOf(user1))).equals(
-      usdcInVault.toString()
-    );
-
-    const usdtWarpWrapperToken = await WarpWrapperToken.at(
-      await usdtWarpVault.wStableCoin()
-    );
-    expect(fromWei(await usdtWarpWrapperToken.balanceOf(user1))).equals(
-      usdtInVault.toString()
-    );
-    //get LP tokens for each pair for user 1
-    await giveLPTokens(
-      user1,
-      ethDaiPair,
-      wethToken,
-      daiToken,
-      conversionRates.eth.dai,
-      1000
-    );
-    await giveLPTokens(
-      user1,
-      ethTPair,
-      wethToken,
-      usdtToken,
-      conversionRates.eth.usdt,
-      1000
-    );
-    await giveLPTokens(
-      user1,
-      ethBtcPair,
-      wethToken,
-      wbtcToken,
-      conversionRates.eth.btc,
-      1000
-    );
-
-    await giveLPTokens(
-      user1,
-      ethCPair,
-      wethToken,
-      usdcToken,
-      conversionRates.eth.usdc,
-      1000
-    );
-    //pull in LP vaults and lock up collateral in each
-    //ETH-BTC pair
-    const ethBTCWarpVault = await WarpVaultLP.at(
-      await warpControl.instanceLPTracker(ethBtcPair.address)
-    );
-    await ethBtcPair.approve(ethBTCWarpVault.address, toWei("1000000000000"), {
-      from: user1
-    });
-
-    await ethBTCWarpVault.provideCollateral(toWei(ethBTCInVault.toString()), {
-      from: user1
-    });
-    //ETH-USDC pair
-    const ethUsdcWarpVault = await WarpVaultLP.at(
-      await warpControl.instanceLPTracker(ethCPair.address)
-    );
-    await ethCPair.approve(ethUsdcWarpVault.address, toWei("1000000000000"), {
-      from: user1
-    });
-
-    await ethUsdcWarpVault.provideCollateral(toWei(ethUsdcInVault.toString()), {
-      from: user1
-    });
-    //ETH-USDT pair
-    const ethUsdtWarpVault = await WarpVaultLP.at(
-      await warpControl.instanceLPTracker(ethTPair.address)
-    );
-    await ethTPair.approve(ethUsdtWarpVault.address, toWei("1000000000000"), {
-      from: user1
-    });
-
-    await ethUsdtWarpVault.provideCollateral(toWei(ethUsdtInVault.toString()), {
-      from: user1
-    });
-    //ETH-DAI pair
-    const ethDaiWarpVault = await WarpVaultLP.at(
-      await warpControl.instanceLPTracker(ethDaiPair.address)
-    );
-
-    await ethDaiPair.approve(ethDaiWarpVault.address, toWei("1000000000000"), {
-      from: user1
-    });
-
-    await ethDaiWarpVault.provideCollateral(toWei(ethDaiInVault.toString()), {
-      from: user1
-    });
-
-    const testerAddress = "0x7d4A13FE119C9F36425008a7afCB2737B2bB5C41";
-=======
     const testerAddress = "0x7f3A152F09324f2aee916CE069D3908603449173";
->>>>>>> 84b425fd82baba721e0b06e9b410e6f7393855c3
-    await daiToken.mint(testerAddress, toWei("10000"));
-    await usdcToken.mint(testerAddress, toWei("10000"));
-    await usdtToken.mint(testerAddress, toWei("10000"));
+
+    {
+      const numDecimals = parseInt((await daiToken.decimals()).toString());
+      const oneUnit = (new BigNumber(10)).pow(numDecimals);
+      const realAmount = (new BigNumber("10000")).times(oneUnit);
+      await daiToken.mint(testerAddress, realAmount.toString());
+    }
+
+    {
+      const numDecimals = parseInt((await usdcToken.decimals()).toString());
+      const oneUnit = (new BigNumber(10)).pow(numDecimals);
+      const realAmount = (new BigNumber("10000")).times(oneUnit);
+      await usdcToken.mint(testerAddress, realAmount.toString());
+    }
+
+    {
+      const numDecimals = parseInt((await usdtToken.decimals()).toString());
+      const oneUnit = (new BigNumber(10)).pow(numDecimals);
+      const realAmount = (new BigNumber("10000")).times(oneUnit);
+      await usdtToken.mint(testerAddress, realAmount.toString());
+    }
+    
     await giveLPTokens(
       testerAddress,
       ethDaiPair,
