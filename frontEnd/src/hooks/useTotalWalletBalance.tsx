@@ -43,7 +43,7 @@ export const useTotalWalletBalance = (context: ConnectedWeb3Context, control: Wa
     }
 
     fetchTotalWalletBalance()
-  }, [context.library, context.networkId, refreshToken])
+  }, [context.library, context.networkId, refreshToken, usdc])
 
   return walletBalance
 }
