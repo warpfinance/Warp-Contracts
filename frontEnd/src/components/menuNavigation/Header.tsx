@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { CustomButton, NftModal } from "../../components"
+import { CustomButton, NftModal, NftReferralModal } from "../../components"
 import { Grid, Link, Typography } from "@material-ui/core";
 
 import { Link as RouterLink } from 'react-router-dom';
@@ -41,7 +41,9 @@ export const Header: React.FC<Props> = (props: Props) => {
 
     const [address, setAddress] = useState("");
     const [addressError, setAddressError] = useState(true);
-    const [modalOpen, setModalOpen] = useState(false);
+    const [link, setLink] = useState("");
+    const [nftModalOpen, setNftModalOpen] = useState(false);
+    const [nftReferralModalOpen, setNftReferralModalOpen] = useState(false);
     const [teamName, setTeamName] = useState("");
     const [teamNameError, setTeamNameError] = useState(true);
 
@@ -55,7 +57,7 @@ export const Header: React.FC<Props> = (props: Props) => {
             setAddressError(false);
         }
         else {
-            setTeamNameError(true);
+            setAddressError(true);
         }
         // TO-DO: Validate team name for web3
         if (teamName !== "") {
@@ -67,10 +69,16 @@ export const Header: React.FC<Props> = (props: Props) => {
     }, [address, teamName]
     );
 
-    const handleModalClose = (event: {}, reason: "backdropClick" | "escapeKeyDown") => {
+    const handleNftModalClose = (event: {}, reason: "backdropClick" | "escapeKeyDown") => {
         setAddress("");
         setTeamName("")
-        setModalOpen(false);
+        setNftModalOpen(false);
+    }
+
+    const handleNftReferralModalClose = (event: {}, reason: "backdropClick" | "escapeKeyDown") => {
+        setAddress("");
+        setTeamName("")
+        setNftReferralModalOpen(false);
     }
 
     const onAddressChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
@@ -78,13 +86,11 @@ export const Header: React.FC<Props> = (props: Props) => {
     }
 
     const onModalButtonClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-        setModalOpen(false);
-        // TO-DO: Open confirmation window
+        setNftModalOpen(false);
+        setNftReferralModalOpen(true);
 
         // TO-DO: Implement create team referral link web3 action
-
-        setAddress("");
-        setTeamName("");
+        setLink("xXfa23562vHhSC523%Vs");
     }
 
     const onTeamNameChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
@@ -99,6 +105,15 @@ export const Header: React.FC<Props> = (props: Props) => {
         if (!props.home) {
             return (
                 <React.Fragment>
+                    {connected === true ?
+                        <Grid
+                            item
+                        >
+                            <CustomButton text={"Create team referral link"} onClick={() => setNftModalOpen(true)} type={"short"} />
+                        </Grid>
+                        :
+                        null
+                    }
                     <Grid
                         item
                         sm
@@ -197,12 +212,18 @@ export const Header: React.FC<Props> = (props: Props) => {
         <React.Fragment>
             <NftModal
                 addressError={addressError}
-                handleClose={handleModalClose}
+                handleClose={handleNftModalClose}
                 onAddressChange={onAddressChange}
                 onButtonClick={onModalButtonClick}
                 onTeamNameChange={onTeamNameChange}
-                open={modalOpen}
+                open={nftModalOpen}
                 teamNameError={teamNameError}
+            />
+            <NftReferralModal
+                handleClose={handleNftReferralModalClose}
+                link={link}
+                open={nftReferralModalOpen}
+                teamName={teamName}
             />
             <Grid
                 item
@@ -215,16 +236,11 @@ export const Header: React.FC<Props> = (props: Props) => {
             >
                 <Grid
                     item
-                    sm={(!props.home) ? 7 : 1}
+                    sm={(!props.home) ? 6 : 1}
                 >
                     <RouterLink to={"/"}>
                         <img className={classes.logo} src={"warp logo.svg"} alt={"Warp"}></img>
                     </RouterLink>
-                </Grid>
-                <Grid
-                    item
-                >
-                    <CustomButton text={"Create team referral link"} onClick={() => setModalOpen(true)} type={"short"} />
                 </Grid>
                 {getHeaderContent(isConnected || false)}
             </Grid>
