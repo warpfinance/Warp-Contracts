@@ -1,12 +1,11 @@
 import * as React from "react";
 
+import { Amount, CustomButton, Text } from "../../components";
 import { Avatar, Card, CardContent, Dialog, DialogContent, DialogTitle, Grid, Typography } from "@material-ui/core";
 
-import { Amount } from "../inputFields/Amount";
 import { AvatarGroup } from "@material-ui/lab";
-import { CustomButton } from "../buttons/CustomButton";
-import { makeStyles } from "@material-ui/core";
 import { Token } from "../../util/token";
+import { makeStyles } from "@material-ui/core";
 
 const useStyles = makeStyles(theme => ({
     dialog: {
@@ -27,9 +26,11 @@ interface Props {
     onButtonClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void,
     onChange: (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void,
     open: boolean,
-    token: Token,
     poolIconSrcPrimary: string,
     poolIconSrcSecondary: string,
+    token: Token,
+    onReferralCodeChange?: (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void,
+    referralCodeError?: boolean,
 }
 
 export const RowModal: React.FC<Props> = (props: Props) => {
@@ -86,13 +87,18 @@ export const RowModal: React.FC<Props> = (props: Props) => {
                                     alignItems="center"
                                 >
                                     <Typography variant="subtitle1">
-                                        {props.lp.toLocaleString(undefined, {maximumFractionDigits: 6}) + " LP"}
+                                        {props.lp.toLocaleString(undefined, { maximumFractionDigits: 6 }) + " LP"}
                                     </Typography>
                                 </Grid>
                             </CardContent>
                         </Card>
+                        {props.action.toLowerCase() === "provide collateral" ?
+                            <Text error={props.referralCodeError} fullWidth={true} onChange={props.onReferralCodeChange} text="Referral code" />
+                            :
+                            null
+                        }
                         <CustomButton
-                            disabled={props.lp <= 0 || props.error === true}
+                            disabled={props.lp <= 0 || props.error === true || props.referralCodeError === true}
                             onClick={props.onButtonClick}
                             text={props.action.split(" ")[0]}
                             type="short" />

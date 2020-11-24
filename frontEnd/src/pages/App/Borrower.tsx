@@ -7,19 +7,19 @@ import { ERC20Service } from "../../services/erc20";
 import { Grid } from "@material-ui/core";
 import { StableCoinWarpVaultService } from "../../services/stableCoinWarpVault";
 import { Token } from "../../util/token";
+import { TransactionInfo } from "../../util/types";
 import { WarpLPVaultService } from "../../services/warpLPVault";
 import { getLogger } from "../../util/logger";
-import { formatBigNumber, parseBigNumber } from "../../util/tools";
+import { parseBigNumber } from "../../util/tools";
 import { useBorrowLimit } from "../../hooks/useBorrowLimit";
 import { useCombinedBorrowRate } from "../../hooks/useCombinedBorrowRate";
 import { useConnectedWeb3Context } from "../../hooks/connectedWeb3";
 import { useLPTokens } from "../../hooks/useLPTokens";
+import { useRefreshToken } from "../../hooks/useRefreshToken";
 import { useStableCoinTokens } from "../../hooks/useStableCoins";
 import { useState } from "react";
 import { useUSDCToken } from "../../hooks/useUSDC";
 import { useWarpControl } from "../../hooks/useWarpControl";
-import { useRefreshToken } from "../../hooks/useRefreshToken";
-import { TransactionInfo } from "../../util/types";
 
 interface Props {
 }
@@ -28,7 +28,7 @@ const logger = getLogger("Page::Borrower");
 
 export const Borrower: React.FC<Props> = (props: Props) => {
     const context = useConnectedWeb3Context();
-    const {refreshToken, refresh} = useRefreshToken();
+    const { refreshToken, refresh } = useRefreshToken();
     const stableCoins = useStableCoinTokens(context);
     const lpTokens = useLPTokens(context);
     const usdcToken = useUSDCToken(context);
@@ -51,29 +51,32 @@ export const Borrower: React.FC<Props> = (props: Props) => {
     const [action, setAction] = useState("borrow");
     const [authorizationModalOpen, setAuthorizationModalOpen] = useState(false);
 
-    const [borrowAmountCurrency, setBorrowAmountCurrency] = React.useState("DAI");
-    const [borrowAmountValue, setBorrowAmountValue] = React.useState(0);
+    const [borrowAmountCurrency, setBorrowAmountCurrency] = useState("DAI");
+    const [borrowAmountValue, setBorrowAmountValue] = useState(0);
     const [borrowError, setBorrowError] = useState(false);
     const [borrowModalOpen, setBorrowModalOpen] = useState(false);
 
-    const [provideAmountValue, setProvideAmountValue] = React.useState(0);
+    const [provideAmountValue, setProvideAmountValue] = useState(0);
     const [provideError, setProvideError] = useState(false);
-    const [provideLpValue, setProvideLpValue] = React.useState(0);
+    const [provideLpValue, setProvideLpValue] = useState(0);
     const [provideModalOpen, setProvideModalOpen] = useState(false);
 
-    const [repayAmountValue, setRepayAmountValue] = React.useState(0);
+    const [referralCode, setReferralCode] = useState("");
+    const [referralCodeError, setReferralCodeError] = useState(false);
+
+    const [repayAmountValue, setRepayAmountValue] = useState(0);
     const [repayError, setRepayError] = useState(false);
     const [repayModalOpen, setRepayModalOpen] = useState(false);
 
-    const [withdrawAmountValue, setWithdrawAmountValue] = React.useState(0);
+    const [withdrawAmountValue, setWithdrawAmountValue] = useState(0);
     const [withdrawError, setWithdrawError] = useState(false);
-    const [withdrawLpValue, setWithdrawLpValue] = React.useState(0);
+    const [withdrawLpValue, setWithdrawLpValue] = useState(0);
     const [withdrawModalOpen, setWithdrawModalOpen] = useState(false);
 
-    const [currentToken, setCurrentToken] = React.useState<Token>({} as Token);
-    const [tokenToUSDCRate, setTokenToUSDCRate] = React.useState(0);
-    const [walletAmount, setWalletAmount] = React.useState(0);
-    const [vaultAmount, setVaultAmount] = React.useState(0);
+    const [currentToken, setCurrentToken] = useState<Token>({} as Token);
+    const [tokenToUSDCRate, setTokenToUSDCRate] = useState(0);
+    const [walletAmount, setWalletAmount] = useState(0);
+    const [vaultAmount, setVaultAmount] = useState(0);
 
     // TO-DO: Web3 integration
     const [transactionHash, setTransactionHash] = useState("0x716af84c2de1026e87ec2d32df563a6e7e43b261227eb10358ba3d8dd372eceb");
@@ -93,9 +96,19 @@ export const Borrower: React.FC<Props> = (props: Props) => {
         if (withdrawLpValue !== 0) {
             setWithdrawError(isWithdrawError(withdrawLpValue, currentToken));
         }
-    }, [borrowAmountValue, borrowAmountCurrency,
-        provideLpValue, currentToken,
+        // TO-DO: Web3 validation of referral code
+        if (referralCode === "badReferralCode") {
+            setReferralCodeError(true);
+        }
+        else {
+            setReferralCodeError(false);
+        }
+    }, [borrowAmountValue,
+        borrowAmountCurrency,
+        provideLpValue,
+        currentToken,
         repayAmountValue,
+        referralCode,
         withdrawLpValue,
         tokenToUSDCRate]
     );
@@ -191,6 +204,10 @@ export const Borrower: React.FC<Props> = (props: Props) => {
         setRepayAmountValue(Number(event.target.value));
     };
 
+    const onReferralCodeChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+        setReferralCode(event.target.value);
+    };
+
     const onWithdrawAmountChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
         const usdAmount = Number(event.target.value);
         const lpAmount = usdAmount / tokenToUSDCRate;
@@ -229,7 +246,7 @@ export const Borrower: React.FC<Props> = (props: Props) => {
         await getLPToUSDCRatio(token);
     }
 
-    const handleTransaction = async (tx: Promise<TransactionInfo>) =>{
+    const handleTransaction = async (tx: Promise<TransactionInfo>) => {
         setTransactionConfirmed(false);
         setTransactionModalOpen(true);
         const info = await tx;
@@ -251,6 +268,8 @@ export const Borrower: React.FC<Props> = (props: Props) => {
     }
 
     const onBorrow = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+        // TO-DO: Web3 handling of referral code
+
         const coinPrice = await control.getStableCoinPrice(currentToken.address);
         const priceMultiplier = parseBigNumber(coinPrice, usdcToken?.decimals);
         const numCoins = borrowAmountValue * priceMultiplier;
@@ -332,7 +351,7 @@ export const Borrower: React.FC<Props> = (props: Props) => {
     }
 
     return (
-        
+
         <React.Fragment>
             <Grid
                 container
@@ -394,8 +413,10 @@ export const Borrower: React.FC<Props> = (props: Props) => {
                 onButtonClick={onWithdraw}
                 onChange={onWithdrawAmountChange}
                 open={withdrawModalOpen}
+                onReferralCodeChange={onReferralCodeChange}
                 poolIconSrcPrimary={currentToken.image || ""}
                 poolIconSrcSecondary={currentToken.image2 || ""}
+                referralCodeError={referralCodeError}
                 token={currentToken}
             />
             <RowModal
@@ -406,8 +427,10 @@ export const Borrower: React.FC<Props> = (props: Props) => {
                 onButtonClick={onProvide}
                 onChange={onProvideAmountChange}
                 open={provideModalOpen}
+                onReferralCodeChange={onReferralCodeChange}
                 poolIconSrcPrimary={currentToken.image || ""}
                 poolIconSrcSecondary={currentToken.image2 || ""}
+                referralCodeError={referralCodeError}
                 token={currentToken}
             />
             <BigModal
@@ -420,7 +443,10 @@ export const Borrower: React.FC<Props> = (props: Props) => {
                 handleSelect={handleBorrowCurrencySelect}
                 onButtonClick={onBorrow}
                 onChange={onBorrowAmountChange}
-                open={borrowModalOpen} />
+                open={borrowModalOpen}
+                onReferralCodeChange={onReferralCodeChange}
+                referralCodeError={referralCodeError}
+            />
             <AmountModal
                 action={"Repay " + currentToken.symbol}
                 amount={repayAmountValue}
