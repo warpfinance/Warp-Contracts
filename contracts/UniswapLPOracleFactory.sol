@@ -48,7 +48,11 @@ contract UniswapLPOracleFactory is Ownable {
     }
 
     function OneUSDC() public view returns (uint256) {
-        ExtendedIERC20 token = ExtendedIERC20(usdc_add);
+        return OneToken(usdc_add);
+    }
+
+    function OneToken(address token) public pure returns (uint8) {
+        ExtendedIERC20 token = ExtendedIERC20(token);
         return uint256(10) ** uint256(token.decimals());
     }
 
@@ -103,8 +107,12 @@ contract UniswapLPOracleFactory is Ownable {
             oracleAdds[1]
         );
         // instantiates both ase usable oracle instances
-        uint256 priceAsset1 = oracle1.consult();
-        uint256 priceAsset2 = oracle2.consult();
+        uint256 priceAsset1 = oracle1.consult(
+            instanceTracker[oracleAdds[0]],
+            OneToken(instanceTracker[oracleAdds[0]]));
+        uint256 priceAsset2 = oracle2.consult(
+            instanceTracker[oracleAdds[1]],
+            OneToken(instanceTracker[oracleAdds[1]]));
         //retreives the USDC price of one of each asset
         IERC20 lpToken = IERC20(_lpToken);
         //instantiates the LP token as an ERC20 token
@@ -145,8 +153,12 @@ contract UniswapLPOracleFactory is Ownable {
             oracleAdds[1]
         );
         // instantiates both ase usable oracle instances
-        uint256 priceAsset1 = oracle1.viewPrice();
-        uint256 priceAsset2 = oracle2.viewPrice();
+         uint256 priceAsset1 = oracle1.viewPrice(
+            instanceTracker[oracleAdds[0]],
+            OneToken(instanceTracker[oracleAdds[0]]));
+        uint256 priceAsset2 = oracle2.viewPrice(
+            instanceTracker[oracleAdds[1]],
+            OneToken(instanceTracker[oracleAdds[1]]));
         //retreives the USDC price of one of each asset
         IERC20 lpToken = IERC20(_lpToken);
         //instantiates the LP token as an ERC20 token
@@ -177,6 +189,6 @@ contract UniswapLPOracleFactory is Ownable {
         UniswapLPOracleInstance oracle = UniswapLPOracleInstance(
             tokenToUSDC[_token]
         );
-        return oracle.viewPrice();
+        return oracle.viewPrice(_token, OneToken(_token));
     }
 }

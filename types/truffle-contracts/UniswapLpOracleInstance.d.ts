@@ -114,6 +114,12 @@ export interface UniswapLpOracleInstanceInstance
    */
   viewPrice(txDetails?: Truffle.TransactionDetails): Promise<BN>;
 
+  viewPriceNew(
+    token: string,
+    amount: number | BN | string,
+    txDetails?: Truffle.TransactionDetails
+  ): Promise<BN>;
+
   methods: {
     PERIOD(txDetails?: Truffle.TransactionDetails): Promise<BN>;
 
@@ -200,6 +206,12 @@ export interface UniswapLpOracleInstanceInstance
      * viewPrice is a view function that retreives the current price without having to run the update function
      */
     viewPrice(txDetails?: Truffle.TransactionDetails): Promise<BN>;
+
+    viewPriceNew(
+      token: string,
+      amount: number | BN | string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<BN>;
   };
 
   getPastEvents(event: string): Promise<EventData[]>;
