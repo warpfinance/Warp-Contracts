@@ -2,7 +2,6 @@
 /* tslint:disable */
 
 import { BaseJumpRateModelV2Contract } from "./BaseJumpRateModelV2";
-import { ContractContract } from "./Contract";
 import { DaiContract } from "./Dai";
 import { Erc20Contract } from "./Erc20";
 import { ExtendedIerc20Contract } from "./ExtendedIerc20";
@@ -20,9 +19,6 @@ import { TesterTokenContract } from "./TesterToken";
 import { UniswapLpOracleFactoryContract } from "./UniswapLpOracleFactory";
 import { UniswapLpOracleFactoryIContract } from "./UniswapLpOracleFactoryI";
 import { UniswapLpOracleInstanceContract } from "./UniswapLpOracleInstance";
-import { UniswapOracleFactoryContract } from "./UniswapOracleFactory";
-import { UniswapOracleFactoryIContract } from "./UniswapOracleFactoryI";
-import { UniswapOracleInstanceContract } from "./UniswapOracleInstance";
 import { UniswapV2FactoryContract } from "./UniswapV2Factory";
 import { UniswapV2PairContract } from "./UniswapV2Pair";
 import { UniswapV2Router02Contract } from "./UniswapV2Router02";
@@ -30,8 +26,6 @@ import { UsdcContract } from "./Usdc";
 import { UsdtContract } from "./Usdt";
 import { WarpControlContract } from "./WarpControl";
 import { WarpControlIContract } from "./WarpControlI";
-import { WarpVaultContract } from "./WarpVault";
-import { WarpVaultIContract } from "./WarpVaultI";
 import { WarpVaultLpContract } from "./WarpVaultLp";
 import { WarpVaultLpFactoryContract } from "./WarpVaultLpFactory";
 import { WarpVaultLpFactoryIContract } from "./WarpVaultLpFactoryI";
@@ -48,7 +42,6 @@ declare global {
   namespace Truffle {
     interface Artifacts {
       require(name: "BaseJumpRateModelV2"): BaseJumpRateModelV2Contract;
-      require(name: "Contract"): ContractContract;
       require(name: "DAI"): DaiContract;
       require(name: "ERC20"): Erc20Contract;
       require(name: "ExtendedIERC20"): ExtendedIerc20Contract;
@@ -66,9 +59,6 @@ declare global {
       require(name: "UniswapLPOracleFactory"): UniswapLpOracleFactoryContract;
       require(name: "UniswapLPOracleFactoryI"): UniswapLpOracleFactoryIContract;
       require(name: "UniswapLPOracleInstance"): UniswapLpOracleInstanceContract;
-      require(name: "UniswapOracleFactory"): UniswapOracleFactoryContract;
-      require(name: "UniswapOracleFactoryI"): UniswapOracleFactoryIContract;
-      require(name: "UniswapOracleInstance"): UniswapOracleInstanceContract;
       require(name: "UniswapV2Factory"): UniswapV2FactoryContract;
       require(name: "UniswapV2Pair"): UniswapV2PairContract;
       require(name: "UniswapV2Router02"): UniswapV2Router02Contract;
@@ -76,8 +66,6 @@ declare global {
       require(name: "USDT"): UsdtContract;
       require(name: "WarpControl"): WarpControlContract;
       require(name: "WarpControlI"): WarpControlIContract;
-      require(name: "WarpVault"): WarpVaultContract;
-      require(name: "WarpVaultI"): WarpVaultIContract;
       require(name: "WarpVaultLP"): WarpVaultLpContract;
       require(name: "WarpVaultLPFactory"): WarpVaultLpFactoryContract;
       require(name: "WarpVaultLPFactoryI"): WarpVaultLpFactoryIContract;
@@ -97,7 +85,6 @@ export {
   BaseJumpRateModelV2Contract,
   BaseJumpRateModelV2Instance
 } from "./BaseJumpRateModelV2";
-export { ContractContract, ContractInstance } from "./Contract";
 export { DaiContract, DaiInstance } from "./Dai";
 export { Erc20Contract, Erc20Instance } from "./Erc20";
 export {
@@ -146,18 +133,6 @@ export {
   UniswapLpOracleInstanceInstance
 } from "./UniswapLpOracleInstance";
 export {
-  UniswapOracleFactoryContract,
-  UniswapOracleFactoryInstance
-} from "./UniswapOracleFactory";
-export {
-  UniswapOracleFactoryIContract,
-  UniswapOracleFactoryIInstance
-} from "./UniswapOracleFactoryI";
-export {
-  UniswapOracleInstanceContract,
-  UniswapOracleInstanceInstance
-} from "./UniswapOracleInstance";
-export {
   UniswapV2FactoryContract,
   UniswapV2FactoryInstance
 } from "./UniswapV2Factory";
@@ -170,8 +145,6 @@ export { UsdcContract, UsdcInstance } from "./Usdc";
 export { UsdtContract, UsdtInstance } from "./Usdt";
 export { WarpControlContract, WarpControlInstance } from "./WarpControl";
 export { WarpControlIContract, WarpControlIInstance } from "./WarpControlI";
-export { WarpVaultContract, WarpVaultInstance } from "./WarpVault";
-export { WarpVaultIContract, WarpVaultIInstance } from "./WarpVaultI";
 export { WarpVaultLpContract, WarpVaultLpInstance } from "./WarpVaultLp";
 export {
   WarpVaultLpFactoryContract,

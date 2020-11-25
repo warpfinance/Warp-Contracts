@@ -52,8 +52,8 @@ contract UniswapLPOracleFactory is Ownable {
     }
 
     function OneToken(address token) public view returns (uint256) {
-        ExtendedIERC20 token = ExtendedIERC20(token);
-        return uint256(10) ** uint256(token.decimals());
+        ExtendedIERC20 ercToken = ExtendedIERC20(token);
+        return uint256(10) ** uint256(ercToken.decimals());
     }
 
     /**
