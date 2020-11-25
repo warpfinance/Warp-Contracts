@@ -29,18 +29,21 @@ import { useState } from "react";
 
 const outerTheme = createMuiTheme({
 	palette: {
+		background: {
+			default: "#292929"
+		},
 		secondary: {
-			main: '#62d066',
+			main: "#62d066",
 			contrastText: "#fff",
 		},
 		error: {
-			main: '#ff6666',
+			main: "#ff6666",
 		},
 		text: {
 			primary: "#FFFFFF",
 			secondary: "#a9a9a9"
 		},
-		type: 'dark',
+		type: "dark",
 	},
 	typography: {
 		fontFamily: '"MuseoModerno"',
@@ -69,14 +72,14 @@ const outerTheme = createMuiTheme({
 const useStyles = makeStyles(theme => ({
 	root: {
 		fontWeight: 500,
-		fontStretch: 'normal',
-		fontStyle: 'normal',
-		lineHeight: 'normal',
-		letterSpacing: '0.5px',
-		textAlign: 'left',
-		marginTop: '50px',
-		marginRight: '100px',
-		marginLeft: '100px',
+		fontStretch: "normal",
+		fontStyle: "normal",
+		lineHeight: "normal",
+		letterSpacing: "0.5px",
+		textAlign: "left",
+		marginTop: "50px",
+		marginRight: "100px",
+		marginLeft: "100px",
 	},
 }));
 
