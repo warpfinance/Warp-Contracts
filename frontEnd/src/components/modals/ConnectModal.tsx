@@ -65,11 +65,11 @@ export const ConnectModal: React.FC<Props> = (props: Props) => {
                                     spacing={1}
                                 >
                                     <Grid item>
-                                        <Avatar alt="coinbase-wallet.svg" src="coinbase-wallet.svg" />
+                                        <Avatar alt="walletconnect-wallet.svg" src="walletconnect-wallet.svg" />
                                     </Grid>
                                     <Grid item>
                                         <Typography variant="subtitle1">
-                                            Coinbase Wallet
+                                            WalletConnect
                                         </Typography>
                                     </Grid>
                                 </Grid>
