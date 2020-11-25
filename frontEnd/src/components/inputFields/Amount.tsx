@@ -31,7 +31,7 @@ interface Props {
 
 export const Amount: React.FC<Props> = (props: Props) => {
     const classes = useStyles();
-    let maxWidth = "150px";
+    let maxWidth = "160px";
     const value = props.value !== undefined ? props.value : null;
 
     if (props.fullWidth === true) {

@@ -12,7 +12,7 @@ npm install -g @zeplin/cli
 npm install -g @zeplin/cli-connect-react-plugin
 ```
 
-## Quickstart
+## Deploy
 
 Update deploy branch with just frontEnd directory
 ```bash
@@ -21,4 +21,4 @@ git checkout deploy
 git push
 ```
 
-Deploy on Heroku to [here](https://warpfinance-warp.herokuapp.com)
+Deploys on Heroku to [here](https://warpfinance-warp.herokuapp.com)

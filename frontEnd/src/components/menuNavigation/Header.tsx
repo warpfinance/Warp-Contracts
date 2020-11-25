@@ -3,6 +3,7 @@ import * as React from "react";
 import { CustomButton, NftModal, NftReferralModal } from "../../components"
 import { Grid, Link, Typography } from "@material-ui/core";
 
+import { BorrowerCountdownContext } from "../../hooks/borrowerCountdown";
 import { Link as RouterLink } from 'react-router-dom';
 import { makeStyles } from "@material-ui/core/styles";
 import { useState } from "react";
@@ -106,11 +107,30 @@ export const Header: React.FC<Props> = (props: Props) => {
             return (
                 <React.Fragment>
                     {connected === true ?
-                        <Grid
-                            item
-                        >
-                            <CustomButton text={"Create team referral link"} onClick={() => setNftModalOpen(true)} type={"short"} />
-                        </Grid>
+                        <React.Fragment>
+                            <BorrowerCountdownContext.Consumer>
+                                {value =>
+                                    value.countdown === true ?
+                                        <Grid
+                                            item
+                                        >
+                                            <Typography color="textSecondary">
+                                                Warp borrowing starts in
+                                    </Typography>
+                                            <Typography>
+                                                {value.countdownText}
+                                            </Typography>
+                                        </Grid>
+                                        :
+                                        null
+                                }
+                            </BorrowerCountdownContext.Consumer>
+                            <Grid
+                                item
+                            >
+                                <CustomButton text={"Create team referral link"} onClick={() => setNftModalOpen(true)} type={"short"} />
+                            </Grid>
+                        </React.Fragment>
                         :
                         null
                     }
@@ -191,11 +211,9 @@ export const Header: React.FC<Props> = (props: Props) => {
                     <Grid
                         item
                     >
-                        <Typography>
-                            <Typography className={classes.link} color="textSecondary">
-                                Docs
+                        <Typography className={classes.link} color="textSecondary">
+                            Docs
                             </Typography>
-                        </Typography>
                     </Grid>
                     <Grid
                         item
@@ -236,7 +254,7 @@ export const Header: React.FC<Props> = (props: Props) => {
             >
                 <Grid
                     item
-                    sm={(!props.home) ? 6 : 1}
+                    sm={(!props.home) ? 5 : 1}
                 >
                     <RouterLink to={"/"}>
                         <img className={classes.logo} src={"warp logo.svg"} alt={"Warp"}></img>
