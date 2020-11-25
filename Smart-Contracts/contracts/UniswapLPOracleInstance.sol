@@ -95,12 +95,13 @@ contract UniswapLPOracleInstance is Ownable {
 @notice consult returns the price of a token in USDC
 @return price is the price of one asset in USDC(example 1WETH in USDC)
 **/
-    function consult() external returns (uint256 price) {
-        if (token0 != token1) {
-            update();
-            price = price0Average.mul(1 ether).decode144();
+    function consult(address token, uint amount) external returns (uint256 price) {
+        if (token == token0) {
+            update()
+            price = price0Average.mul(amount).decode144();
         } else {
-            price = price0Average.mul(1 ether).decode144();
+            require(token == token1, "INVALID_TOKEN");
+            price = price1Average.mul(amount).decode144();
         }
     }
 
@@ -108,7 +109,12 @@ contract UniswapLPOracleInstance is Ownable {
 @notice viewPrice is a view function that retreives the current price without having to run the update function
 @return price is the price of one asset in USDC(example 1WETH in USDC)
 **/
-    function viewPrice() external view returns (uint256 price) {
-        price = price0Average.mul(1 ether).decode144();
+    function viewPrice(address token, uint amount) external view returns (uint256 price) {
+        if (token == token0) {
+            price = price0Average.mul(amount).decode144();
+        } else {
+            require(token == token1, "INVALID_TOKEN");
+            price = price1Average.mul(amount).decode144();
+        }
     }
 }

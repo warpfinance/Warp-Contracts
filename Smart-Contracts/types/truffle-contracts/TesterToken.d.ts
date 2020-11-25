@@ -259,6 +259,25 @@ export interface TesterTokenInstance extends Truffle.ContractInstance {
     ): Promise<number>;
   };
 
+  setDecimals: {
+    (
+      decimals: number | BN | string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<Truffle.TransactionResponse<AllEvents>>;
+    call(
+      decimals: number | BN | string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<void>;
+    sendTransaction(
+      decimals: number | BN | string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<string>;
+    estimateGas(
+      decimals: number | BN | string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<number>;
+  };
+
   mint: {
     (
       _to: string,
@@ -511,6 +530,25 @@ export interface TesterTokenInstance extends Truffle.ContractInstance {
       ): Promise<string>;
       estimateGas(
         newOwner: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<number>;
+    };
+
+    setDecimals: {
+      (
+        decimals: number | BN | string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<Truffle.TransactionResponse<AllEvents>>;
+      call(
+        decimals: number | BN | string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<void>;
+      sendTransaction(
+        decimals: number | BN | string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<string>;
+      estimateGas(
+        decimals: number | BN | string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<number>;
     };
