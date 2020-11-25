@@ -65,6 +65,26 @@ export const ConnectModal: React.FC<Props> = (props: Props) => {
                                     spacing={1}
                                 >
                                     <Grid item>
+                                        <Avatar alt="coinbase-wallet.svg" src="coinbase-wallet.svg" />
+                                    </Grid>
+                                    <Grid item>
+                                        <Typography variant="subtitle1">
+                                            Coinbase Wallet
+                                        </Typography>
+                                    </Grid>
+                                </Grid>
+                            </CardContent>
+                        </Card>
+                        <Card className={classes.clickableCard} onClick={() => props.connectToWallet(WalletType.WalletConnect)}>
+                            <CardContent>
+                                <Grid
+                                    container
+                                    direction="row"
+                                    justify="flex-start"
+                                    alignItems="center"
+                                    spacing={1}
+                                >
+                                    <Grid item>
                                         <Avatar alt="walletconnect-wallet.svg" src="walletconnect-wallet.svg" />
                                     </Grid>
                                     <Grid item>
