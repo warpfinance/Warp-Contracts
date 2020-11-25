@@ -272,18 +272,22 @@ export interface WarpVaultScInstance extends Truffle.ContractInstance {
   lendToWarpVault: {
     (
       _amount: number | BN | string,
+      _refferalCode: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<Truffle.TransactionResponse<AllEvents>>;
     call(
       _amount: number | BN | string,
+      _refferalCode: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<void>;
     sendTransaction(
       _amount: number | BN | string,
+      _refferalCode: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<string>;
     estimateGas(
       _amount: number | BN | string,
+      _refferalCode: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<number>;
   };
@@ -594,18 +598,22 @@ export interface WarpVaultScInstance extends Truffle.ContractInstance {
     lendToWarpVault: {
       (
         _amount: number | BN | string,
+        _refferalCode: string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<Truffle.TransactionResponse<AllEvents>>;
       call(
         _amount: number | BN | string,
+        _refferalCode: string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<void>;
       sendTransaction(
         _amount: number | BN | string,
+        _refferalCode: string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<string>;
       estimateGas(
         _amount: number | BN | string,
+        _refferalCode: string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<number>;
     };

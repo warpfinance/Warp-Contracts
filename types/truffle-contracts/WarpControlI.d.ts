@@ -40,6 +40,34 @@ export interface WarpControlIInstance extends Truffle.ContractInstance {
     txDetails?: Truffle.TransactionDetails
   ): Promise<BN>;
 
+  addMemberToGroup: {
+    (
+      _refferalCode: string,
+      _member: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<Truffle.TransactionResponse<AllEvents>>;
+    call(
+      _refferalCode: string,
+      _member: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<void>;
+    sendTransaction(
+      _refferalCode: string,
+      _member: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<string>;
+    estimateGas(
+      _refferalCode: string,
+      _member: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<number>;
+  };
+
+  checkIfGroupMember(
+    _account: string,
+    txDetails?: Truffle.TransactionDetails
+  ): Promise<boolean>;
+
   methods: {
     getMaxWithdrawAllowed: {
       (
@@ -68,6 +96,34 @@ export interface WarpControlIInstance extends Truffle.ContractInstance {
       lpToken: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<BN>;
+
+    addMemberToGroup: {
+      (
+        _refferalCode: string,
+        _member: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<Truffle.TransactionResponse<AllEvents>>;
+      call(
+        _refferalCode: string,
+        _member: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<void>;
+      sendTransaction(
+        _refferalCode: string,
+        _member: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<string>;
+      estimateGas(
+        _refferalCode: string,
+        _member: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<number>;
+    };
+
+    checkIfGroupMember(
+      _account: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<boolean>;
   };
 
   getPastEvents(event: string): Promise<EventData[]>;

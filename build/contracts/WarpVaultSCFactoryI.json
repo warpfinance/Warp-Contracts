@@ -53,14 +53,14 @@
     "absolutePath": "/E/dOrg/warp/Smart-Contracts/contracts/interfaces/WarpVaultSCFactoryI.sol",
     "exportedSymbols": {
       "WarpVaultSCFactoryI": [
-        6108
+        6332
       ]
     },
-    "id": 6109,
+    "id": 6333,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 6090,
+        "id": 6314,
         "literals": [
           "solidity",
           "^",
@@ -76,15 +76,15 @@
         "contractDependencies": [],
         "contractKind": "contract",
         "documentation": {
-          "id": 6091,
+          "id": 6315,
           "nodeType": "StructuredDocumentation",
           "src": "278:224:25",
           "text": "The WarpVaultSCFactoryI contract is used by the Warp Control contract to interface with the WarpVaultSCFactory contract\nThis contract uses the OpenZeppelin contract Library to inherit functions from\nOwnable.sol*"
         },
         "fullyImplemented": false,
-        "id": 6108,
+        "id": 6332,
         "linearizedBaseContracts": [
-          6108
+          6332
         ],
         "name": "WarpVaultSCFactoryI",
         "nodeType": "ContractDefinition",
@@ -92,13 +92,13 @@
           {
             "body": null,
             "documentation": {
-              "id": 6092,
+              "id": 6316,
               "nodeType": "StructuredDocumentation",
               "src": "551:657:25",
               "text": "@notice createNewWarpVaultSC is used to create new WarpVaultSC contract instances\n@param _InterestRate is the address of the InterestRateModel contract created for this Warp Vault\n@param _StableCoin is the address of the stablecoin contract this WarpVault will manage\n@param _warpTeam is the address of the Warp Team used for fees\n@param _initialExchangeRate is the exchange rate mantissa used to determine the initial exchange rate of stablecoin to warp stablecoin\n@param _timelock is a variable representing the number of seconds the timeWizard will prevent withdraws and borrows from a contracts(one week is 605800 seconds)*"
             },
             "functionSelector": "cee04a56",
-            "id": 6107,
+            "id": 6331,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
@@ -106,17 +106,17 @@
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
-              "id": 6103,
+              "id": 6327,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6094,
+                  "id": 6318,
                   "mutability": "mutable",
                   "name": "_InterestRate",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 6107,
+                  "scope": 6331,
                   "src": "1254:21:25",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -125,7 +125,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 6093,
+                    "id": 6317,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "1254:7:25",
@@ -140,12 +140,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 6096,
+                  "id": 6320,
                   "mutability": "mutable",
                   "name": "_StableCoin",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 6107,
+                  "scope": 6331,
                   "src": "1286:19:25",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -154,7 +154,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 6095,
+                    "id": 6319,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "1286:7:25",
@@ -169,12 +169,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 6098,
+                  "id": 6322,
                   "mutability": "mutable",
                   "name": "_warpTeam",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 6107,
+                  "scope": 6331,
                   "src": "1316:17:25",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -183,7 +183,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 6097,
+                    "id": 6321,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "1316:7:25",
@@ -198,12 +198,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 6100,
+                  "id": 6324,
                   "mutability": "mutable",
                   "name": "_initialExchangeRate",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 6107,
+                  "scope": 6331,
                   "src": "1344:28:25",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -212,7 +212,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 6099,
+                    "id": 6323,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "1344:7:25",
@@ -226,12 +226,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 6102,
+                  "id": 6326,
                   "mutability": "mutable",
                   "name": "_timelock",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 6107,
+                  "scope": 6331,
                   "src": "1383:17:25",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -240,7 +240,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 6101,
+                    "id": 6325,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "1383:7:25",
@@ -256,17 +256,17 @@
               "src": "1243:164:25"
             },
             "returnParameters": {
-              "id": 6106,
+              "id": 6330,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6105,
+                  "id": 6329,
                   "mutability": "mutable",
                   "name": "",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 6107,
+                  "scope": 6331,
                   "src": "1432:7:25",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -275,7 +275,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 6104,
+                    "id": 6328,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "1432:7:25",
@@ -291,14 +291,14 @@
               ],
               "src": "1431:9:25"
             },
-            "scope": 6108,
+            "scope": 6332,
             "src": "1214:227:25",
             "stateMutability": "nonpayable",
             "virtual": true,
             "visibility": "public"
           }
         ],
-        "scope": 6109,
+        "scope": 6333,
         "src": "506:938:25"
       }
     ],
@@ -308,14 +308,14 @@
     "absolutePath": "/E/dOrg/warp/Smart-Contracts/contracts/interfaces/WarpVaultSCFactoryI.sol",
     "exportedSymbols": {
       "WarpVaultSCFactoryI": [
-        6108
+        6332
       ]
     },
-    "id": 6109,
+    "id": 6333,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 6090,
+        "id": 6314,
         "literals": [
           "solidity",
           "^",
@@ -331,15 +331,15 @@
         "contractDependencies": [],
         "contractKind": "contract",
         "documentation": {
-          "id": 6091,
+          "id": 6315,
           "nodeType": "StructuredDocumentation",
           "src": "278:224:25",
           "text": "The WarpVaultSCFactoryI contract is used by the Warp Control contract to interface with the WarpVaultSCFactory contract\nThis contract uses the OpenZeppelin contract Library to inherit functions from\nOwnable.sol*"
         },
         "fullyImplemented": false,
-        "id": 6108,
+        "id": 6332,
         "linearizedBaseContracts": [
-          6108
+          6332
         ],
         "name": "WarpVaultSCFactoryI",
         "nodeType": "ContractDefinition",
@@ -347,13 +347,13 @@
           {
             "body": null,
             "documentation": {
-              "id": 6092,
+              "id": 6316,
               "nodeType": "StructuredDocumentation",
               "src": "551:657:25",
               "text": "@notice createNewWarpVaultSC is used to create new WarpVaultSC contract instances\n@param _InterestRate is the address of the InterestRateModel contract created for this Warp Vault\n@param _StableCoin is the address of the stablecoin contract this WarpVault will manage\n@param _warpTeam is the address of the Warp Team used for fees\n@param _initialExchangeRate is the exchange rate mantissa used to determine the initial exchange rate of stablecoin to warp stablecoin\n@param _timelock is a variable representing the number of seconds the timeWizard will prevent withdraws and borrows from a contracts(one week is 605800 seconds)*"
             },
             "functionSelector": "cee04a56",
-            "id": 6107,
+            "id": 6331,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
@@ -361,17 +361,17 @@
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
-              "id": 6103,
+              "id": 6327,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6094,
+                  "id": 6318,
                   "mutability": "mutable",
                   "name": "_InterestRate",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 6107,
+                  "scope": 6331,
                   "src": "1254:21:25",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -380,7 +380,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 6093,
+                    "id": 6317,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "1254:7:25",
@@ -395,12 +395,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 6096,
+                  "id": 6320,
                   "mutability": "mutable",
                   "name": "_StableCoin",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 6107,
+                  "scope": 6331,
                   "src": "1286:19:25",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -409,7 +409,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 6095,
+                    "id": 6319,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "1286:7:25",
@@ -424,12 +424,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 6098,
+                  "id": 6322,
                   "mutability": "mutable",
                   "name": "_warpTeam",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 6107,
+                  "scope": 6331,
                   "src": "1316:17:25",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -438,7 +438,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 6097,
+                    "id": 6321,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "1316:7:25",
@@ -453,12 +453,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 6100,
+                  "id": 6324,
                   "mutability": "mutable",
                   "name": "_initialExchangeRate",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 6107,
+                  "scope": 6331,
                   "src": "1344:28:25",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -467,7 +467,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 6099,
+                    "id": 6323,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "1344:7:25",
@@ -481,12 +481,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 6102,
+                  "id": 6326,
                   "mutability": "mutable",
                   "name": "_timelock",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 6107,
+                  "scope": 6331,
                   "src": "1383:17:25",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -495,7 +495,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 6101,
+                    "id": 6325,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "1383:7:25",
@@ -511,17 +511,17 @@
               "src": "1243:164:25"
             },
             "returnParameters": {
-              "id": 6106,
+              "id": 6330,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6105,
+                  "id": 6329,
                   "mutability": "mutable",
                   "name": "",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 6107,
+                  "scope": 6331,
                   "src": "1432:7:25",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -530,7 +530,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 6104,
+                    "id": 6328,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "1432:7:25",
@@ -546,14 +546,14 @@
               ],
               "src": "1431:9:25"
             },
-            "scope": 6108,
+            "scope": 6332,
             "src": "1214:227:25",
             "stateMutability": "nonpayable",
             "virtual": true,
             "visibility": "public"
           }
         ],
-        "scope": 6109,
+        "scope": 6333,
         "src": "506:938:25"
       }
     ],
@@ -565,7 +565,7 @@
   },
   "networks": {},
   "schemaVersion": "3.3.1",
-  "updatedAt": "2020-11-25T20:43:09.300Z",
+  "updatedAt": "2020-11-25T21:09:11.793Z",
   "devdoc": {
     "methods": {
       "createNewWarpVaultSC(address,address,address,uint256,uint256)": {

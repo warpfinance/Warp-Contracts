@@ -101,20 +101,32 @@ export interface UniswapLpOracleInstanceInstance
    * consult returns the price of a token in USDC
    */
   consult: {
-    (txDetails?: Truffle.TransactionDetails): Promise<
-      Truffle.TransactionResponse<AllEvents>
-    >;
-    call(txDetails?: Truffle.TransactionDetails): Promise<BN>;
-    sendTransaction(txDetails?: Truffle.TransactionDetails): Promise<string>;
-    estimateGas(txDetails?: Truffle.TransactionDetails): Promise<number>;
+    (
+      token: string,
+      amount: number | BN | string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<Truffle.TransactionResponse<AllEvents>>;
+    call(
+      token: string,
+      amount: number | BN | string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<BN>;
+    sendTransaction(
+      token: string,
+      amount: number | BN | string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<string>;
+    estimateGas(
+      token: string,
+      amount: number | BN | string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<number>;
   };
 
   /**
    * viewPrice is a view function that retreives the current price without having to run the update function
    */
-  viewPrice(txDetails?: Truffle.TransactionDetails): Promise<BN>;
-
-  viewPriceNew(
+  viewPrice(
     token: string,
     amount: number | BN | string,
     txDetails?: Truffle.TransactionDetails
@@ -194,20 +206,32 @@ export interface UniswapLpOracleInstanceInstance
      * consult returns the price of a token in USDC
      */
     consult: {
-      (txDetails?: Truffle.TransactionDetails): Promise<
-        Truffle.TransactionResponse<AllEvents>
-      >;
-      call(txDetails?: Truffle.TransactionDetails): Promise<BN>;
-      sendTransaction(txDetails?: Truffle.TransactionDetails): Promise<string>;
-      estimateGas(txDetails?: Truffle.TransactionDetails): Promise<number>;
+      (
+        token: string,
+        amount: number | BN | string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<Truffle.TransactionResponse<AllEvents>>;
+      call(
+        token: string,
+        amount: number | BN | string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<BN>;
+      sendTransaction(
+        token: string,
+        amount: number | BN | string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<string>;
+      estimateGas(
+        token: string,
+        amount: number | BN | string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<number>;
     };
 
     /**
      * viewPrice is a view function that retreives the current price without having to run the update function
      */
-    viewPrice(txDetails?: Truffle.TransactionDetails): Promise<BN>;
-
-    viewPriceNew(
+    viewPrice(
       token: string,
       amount: number | BN | string,
       txDetails?: Truffle.TransactionDetails
