@@ -160,6 +160,7 @@ contract UniswapLPOracleFactory is Ownable {
         //retreives the reserves of each  asset in the liquidity pool
         uint256 reserveAUSDCprice = reserveA.mul(priceAsset1);
         uint256 reserveBUSDCprice = reserveB.mul(priceAsset2);
+
         //get USDC value for each reserve
         uint256 totalUSDCpriceOfPool = reserveAUSDCprice.add(reserveBUSDCprice);
         //add values together to get total USDC of the pool

@@ -100,16 +100,6 @@ export interface WarpVaultScInstance extends Truffle.ContractInstance {
 
   borrowIndex(txDetails?: Truffle.TransactionDetails): Promise<BN>;
 
-  collateralAddressTracker(
-    arg0: string,
-    txDetails?: Truffle.TransactionDetails
-  ): Promise<string>;
-
-  collateralLocked(
-    arg0: string,
-    txDetails?: Truffle.TransactionDetails
-  ): Promise<boolean>;
-
   divisor(txDetails?: Truffle.TransactionDetails): Promise<BN>;
 
   historicalReward(
@@ -428,16 +418,6 @@ export interface WarpVaultScInstance extends Truffle.ContractInstance {
     accrualBlockNumber(txDetails?: Truffle.TransactionDetails): Promise<BN>;
 
     borrowIndex(txDetails?: Truffle.TransactionDetails): Promise<BN>;
-
-    collateralAddressTracker(
-      arg0: string,
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<string>;
-
-    collateralLocked(
-      arg0: string,
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<boolean>;
 
     divisor(txDetails?: Truffle.TransactionDetails): Promise<BN>;
 

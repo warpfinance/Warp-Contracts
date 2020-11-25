@@ -52,8 +52,6 @@ export interface WarpVaultLpInstance extends Truffle.ContractInstance {
 
   WC(txDetails?: Truffle.TransactionDetails): Promise<string>;
 
-  WLP(txDetails?: Truffle.TransactionDetails): Promise<string>;
-
   collateralizedLP(
     arg0: string,
     txDetails?: Truffle.TransactionDetails
@@ -199,8 +197,6 @@ export interface WarpVaultLpInstance extends Truffle.ContractInstance {
     LPtoken(txDetails?: Truffle.TransactionDetails): Promise<string>;
 
     WC(txDetails?: Truffle.TransactionDetails): Promise<string>;
-
-    WLP(txDetails?: Truffle.TransactionDetails): Promise<string>;
 
     collateralizedLP(
       arg0: string,

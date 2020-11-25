@@ -2,7 +2,7 @@ const truffleAssert = require("truffle-assertions");
 const w3 = require("web3");
 const utils = require("./utils.js");
 const BigNumber = require("bignumber.js");
-BigNumber.config({ EXPONENTIAL_AT: 1e+9 })
+BigNumber.config({ EXPONENTIAL_AT: 1e9 });
 
 const toWei = w3.utils.toWei;
 const fromWei = w3.utils.fromWei;
@@ -45,8 +45,8 @@ const getCreatedPair = async txResult => {
 //await usdcToken.mint(usdcBTCPair.address, conversionRates.usdc.btc * minimumLiquidity);
 const giveTokens = async (token, account, amount) => {
   const numDecimals = parseInt((await token.decimals()).toString());
-  const oneUnit = (new BigNumber(10)).pow(numDecimals);
-  const realAmount = (new BigNumber(amount)).times(oneUnit);
+  const oneUnit = new BigNumber(10).pow(numDecimals);
+  const realAmount = new BigNumber(amount).times(oneUnit);
   //console.log(amount, numDecimals, realAmount.toString());
   await token.mint(account, realAmount.toString());
 };
@@ -286,29 +286,29 @@ contract("Setup Test Env", function(accounts) {
 
     await utils.increaseTime(ONE_DAY);
 
-    const testerAddress = "0x7f3A152F09324f2aee916CE069D3908603449173";
+    const testerAddress = "0x7d4A13FE119C9F36425008a7afCB2737B2bB5C41";
 
     {
       const numDecimals = parseInt((await daiToken.decimals()).toString());
-      const oneUnit = (new BigNumber(10)).pow(numDecimals);
-      const realAmount = (new BigNumber("10000")).times(oneUnit);
+      const oneUnit = new BigNumber(10).pow(numDecimals);
+      const realAmount = new BigNumber("10000").times(oneUnit);
       await daiToken.mint(testerAddress, realAmount.toString());
     }
 
     {
       const numDecimals = parseInt((await usdcToken.decimals()).toString());
-      const oneUnit = (new BigNumber(10)).pow(numDecimals);
-      const realAmount = (new BigNumber("10000")).times(oneUnit);
+      const oneUnit = new BigNumber(10).pow(numDecimals);
+      const realAmount = new BigNumber("10000").times(oneUnit);
       await usdcToken.mint(testerAddress, realAmount.toString());
     }
 
     {
       const numDecimals = parseInt((await usdtToken.decimals()).toString());
-      const oneUnit = (new BigNumber(10)).pow(numDecimals);
-      const realAmount = (new BigNumber("10000")).times(oneUnit);
+      const oneUnit = new BigNumber(10).pow(numDecimals);
+      const realAmount = new BigNumber("10000").times(oneUnit);
       await usdtToken.mint(testerAddress, realAmount.toString());
     }
-    
+
     await giveLPTokens(
       testerAddress,
       ethDaiPair,
@@ -342,6 +342,7 @@ contract("Setup Test Env", function(accounts) {
       1000
     );
 
+    console.log("REACT_APP_LOCALHOST_ULPOF=" + oracleFactory.address);
     console.log("REACT_APP_LOCALHOST_DAI=" + daiToken.address);
     console.log("REACT_APP_LOCALHOST_USDC=" + usdcToken.address);
     console.log("REACT_APP_LOCALHOST_USDT=" + usdtToken.address);
