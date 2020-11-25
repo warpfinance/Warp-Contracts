@@ -81,6 +81,8 @@ export interface UniswapLpOracleFactoryInstance
 
   OneUSDC(txDetails?: Truffle.TransactionDetails): Promise<BN>;
 
+  OneToken(token: string, txDetails?: Truffle.TransactionDetails): Promise<BN>;
+
   /**
    * createNewOracle allows the owner of this contract to deploy deploy two new asset oracle contracts when a new LP token is whitelisted. this contract will link the address of an LP token contract to two seperate oracles that are designed to look up the price of their respective assets in USDC. This will allow us to calculate the price of one at LP token token from the prices of their underlying assets
    * @param _lpToken is the address of the token that this oracle will provide a price feed for*
@@ -200,6 +202,11 @@ export interface UniswapLpOracleFactoryInstance
     USDC(txDetails?: Truffle.TransactionDetails): Promise<string>;
 
     OneUSDC(txDetails?: Truffle.TransactionDetails): Promise<BN>;
+
+    OneToken(
+      token: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<BN>;
 
     /**
      * createNewOracle allows the owner of this contract to deploy deploy two new asset oracle contracts when a new LP token is whitelisted. this contract will link the address of an LP token contract to two seperate oracles that are designed to look up the price of their respective assets in USDC. This will allow us to calculate the price of one at LP token token from the prices of their underlying assets

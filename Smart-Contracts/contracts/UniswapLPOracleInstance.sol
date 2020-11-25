@@ -97,7 +97,7 @@ contract UniswapLPOracleInstance is Ownable {
 **/
     function consult(address token, uint amount) external returns (uint256 price) {
         if (token == token0) {
-            update()
+            update();
             price = price0Average.mul(amount).decode144();
         } else {
             require(token == token1, "INVALID_TOKEN");

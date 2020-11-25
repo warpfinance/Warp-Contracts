@@ -51,7 +51,7 @@ contract UniswapLPOracleFactory is Ownable {
         return OneToken(usdc_add);
     }
 
-    function OneToken(address token) public pure returns (uint8) {
+    function OneToken(address token) public view returns (uint256) {
         ExtendedIERC20 token = ExtendedIERC20(token);
         return uint256(10) ** uint256(token.decimals());
     }
@@ -172,6 +172,7 @@ contract UniswapLPOracleFactory is Ownable {
         //retreives the reserves of each  asset in the liquidity pool
         uint256 reserveAUSDCprice = reserveA.mul(priceAsset1);
         uint256 reserveBUSDCprice = reserveB.mul(priceAsset2);
+
         //get USDC value for each reserve
         uint256 totalUSDCpriceOfPool = reserveAUSDCprice.add(reserveBUSDCprice);
         //add values together to get total USDC of the pool

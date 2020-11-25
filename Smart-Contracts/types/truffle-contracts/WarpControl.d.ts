@@ -101,6 +101,16 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
 
   WVSCF(txDetails?: Truffle.TransactionDetails): Promise<string>;
 
+  existingRefferalCode(
+    arg0: string,
+    txDetails?: Truffle.TransactionDetails
+  ): Promise<boolean>;
+
+  groups(
+    arg0: number | BN | string,
+    txDetails?: Truffle.TransactionDetails
+  ): Promise<string>;
+
   instanceLPTracker(
     arg0: string,
     txDetails?: Truffle.TransactionDetails
@@ -111,10 +121,20 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
     txDetails?: Truffle.TransactionDetails
   ): Promise<string>;
 
+  isGroupMember(
+    arg0: string,
+    txDetails?: Truffle.TransactionDetails
+  ): Promise<boolean>;
+
   isVault(
     arg0: string,
     txDetails?: Truffle.TransactionDetails
   ): Promise<boolean>;
+
+  launchParticipants(
+    arg0: number | BN | string,
+    txDetails?: Truffle.TransactionDetails
+  ): Promise<string>;
 
   lockedLPValue(
     arg0: string,
@@ -130,6 +150,12 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
    * Returns the address of the current owner.
    */
   owner(txDetails?: Truffle.TransactionDetails): Promise<string>;
+
+  refferalCodeTracker(
+    arg0: string,
+    arg1: number | BN | string,
+    txDetails?: Truffle.TransactionDetails
+  ): Promise<string>;
 
   /**
    * Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner.     * NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.
@@ -171,9 +197,28 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
 
   warpTeam(txDetails?: Truffle.TransactionDetails): Promise<string>;
 
+  /**
+   * view functions for front end /////
+   */
   viewNumLPVaults(txDetails?: Truffle.TransactionDetails): Promise<BN>;
 
   viewNumSCVaults(txDetails?: Truffle.TransactionDetails): Promise<BN>;
+
+  viewLaunchParticipants(
+    txDetails?: Truffle.TransactionDetails
+  ): Promise<string[]>;
+
+  viewAllGroups(txDetails?: Truffle.TransactionDetails): Promise<string[]>;
+
+  viewAllMembersOfAGroup(
+    _refferalCode: string,
+    txDetails?: Truffle.TransactionDetails
+  ): Promise<string[]>;
+
+  checkIfGroupMember(
+    _account: string,
+    txDetails?: Truffle.TransactionDetails
+  ): Promise<boolean>;
 
   /**
    * createNewLPVault allows the contract owner to create a new WarpVaultLP contract for a specific LP token
@@ -267,6 +312,29 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
       _optimal: number | BN | string,
       _initialExchangeRate: number | BN | string,
       _StableCoin: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<number>;
+  };
+
+  addMemberToGroup: {
+    (
+      _refferalCode: string,
+      _member: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<Truffle.TransactionResponse<AllEvents>>;
+    call(
+      _refferalCode: string,
+      _member: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<void>;
+    sendTransaction(
+      _refferalCode: string,
+      _member: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<string>;
+    estimateGas(
+      _refferalCode: string,
+      _member: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<number>;
   };
@@ -467,6 +535,16 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
 
     WVSCF(txDetails?: Truffle.TransactionDetails): Promise<string>;
 
+    existingRefferalCode(
+      arg0: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<boolean>;
+
+    groups(
+      arg0: number | BN | string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<string>;
+
     instanceLPTracker(
       arg0: string,
       txDetails?: Truffle.TransactionDetails
@@ -477,10 +555,20 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
       txDetails?: Truffle.TransactionDetails
     ): Promise<string>;
 
+    isGroupMember(
+      arg0: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<boolean>;
+
     isVault(
       arg0: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<boolean>;
+
+    launchParticipants(
+      arg0: number | BN | string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<string>;
 
     lockedLPValue(
       arg0: string,
@@ -496,6 +584,12 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
      * Returns the address of the current owner.
      */
     owner(txDetails?: Truffle.TransactionDetails): Promise<string>;
+
+    refferalCodeTracker(
+      arg0: string,
+      arg1: number | BN | string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<string>;
 
     /**
      * Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner.     * NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.
@@ -537,9 +631,28 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
 
     warpTeam(txDetails?: Truffle.TransactionDetails): Promise<string>;
 
+    /**
+     * view functions for front end /////
+     */
     viewNumLPVaults(txDetails?: Truffle.TransactionDetails): Promise<BN>;
 
     viewNumSCVaults(txDetails?: Truffle.TransactionDetails): Promise<BN>;
+
+    viewLaunchParticipants(
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<string[]>;
+
+    viewAllGroups(txDetails?: Truffle.TransactionDetails): Promise<string[]>;
+
+    viewAllMembersOfAGroup(
+      _refferalCode: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<string[]>;
+
+    checkIfGroupMember(
+      _account: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<boolean>;
 
     /**
      * createNewLPVault allows the contract owner to create a new WarpVaultLP contract for a specific LP token
@@ -633,6 +746,29 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
         _optimal: number | BN | string,
         _initialExchangeRate: number | BN | string,
         _StableCoin: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<number>;
+    };
+
+    addMemberToGroup: {
+      (
+        _refferalCode: string,
+        _member: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<Truffle.TransactionResponse<AllEvents>>;
+      call(
+        _refferalCode: string,
+        _member: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<void>;
+      sendTransaction(
+        _refferalCode: string,
+        _member: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<string>;
+      estimateGas(
+        _refferalCode: string,
+        _member: string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<number>;
     };

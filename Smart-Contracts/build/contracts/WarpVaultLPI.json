@@ -64,14 +64,14 @@
     "absolutePath": "/E/dOrg/warp/Smart-Contracts/contracts/interfaces/WarpVaultLPI.sol",
     "exportedSymbols": {
       "WarpVaultLPI": [
-        6088
+        6312
       ]
     },
-    "id": 6089,
+    "id": 6313,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 6064,
+        "id": 6288,
         "literals": [
           "solidity",
           "^",
@@ -87,15 +87,15 @@
         "contractDependencies": [],
         "contractKind": "contract",
         "documentation": {
-          "id": 6065,
+          "id": 6289,
           "nodeType": "StructuredDocumentation",
           "src": "271:133:24",
           "text": "The WarpVaultLPI contract an abstract contract the WarpControl contract uses to interface\nwith a WarpVaultLP contract.*"
         },
         "fullyImplemented": false,
-        "id": 6088,
+        "id": 6312,
         "linearizedBaseContracts": [
-          6088
+          6312
         ],
         "name": "WarpVaultLPI",
         "nodeType": "ContractDefinition",
@@ -103,13 +103,13 @@
           {
             "body": null,
             "documentation": {
-              "id": 6066,
+              "id": 6290,
               "nodeType": "StructuredDocumentation",
               "src": "446:95:24",
               "text": "@notice getAssetAdd allows for easy retrieval of a WarpVaults LP token Adress*"
             },
             "functionSelector": "4c20ac74",
-            "id": 6071,
+            "id": 6295,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
@@ -117,23 +117,23 @@
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
-              "id": 6067,
+              "id": 6291,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "567:2:24"
             },
             "returnParameters": {
-              "id": 6070,
+              "id": 6294,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6069,
+                  "id": 6293,
                   "mutability": "mutable",
                   "name": "",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 6071,
+                  "scope": 6295,
                   "src": "599:7:24",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -142,7 +142,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 6068,
+                    "id": 6292,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "599:7:24",
@@ -158,7 +158,7 @@
               ],
               "src": "598:9:24"
             },
-            "scope": 6088,
+            "scope": 6312,
             "src": "547:61:24",
             "stateMutability": "view",
             "virtual": true,
@@ -167,13 +167,13 @@
           {
             "body": null,
             "documentation": {
-              "id": 6072,
+              "id": 6296,
               "nodeType": "StructuredDocumentation",
               "src": "616:180:24",
               "text": "@notice collateralOfAccount is a view function to retreive an accounts collateralized LP amount\n@param _account is the address of the account being looked up*"
             },
             "functionSelector": "f919b4bf",
-            "id": 6079,
+            "id": 6303,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
@@ -181,17 +181,17 @@
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
-              "id": 6075,
+              "id": 6299,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6074,
+                  "id": 6298,
                   "mutability": "mutable",
                   "name": "_account",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 6079,
+                  "scope": 6303,
                   "src": "833:16:24",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -200,7 +200,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 6073,
+                    "id": 6297,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "833:7:24",
@@ -217,17 +217,17 @@
               "src": "832:18:24"
             },
             "returnParameters": {
-              "id": 6078,
+              "id": 6302,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6077,
+                  "id": 6301,
                   "mutability": "mutable",
                   "name": "",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 6079,
+                  "scope": 6303,
                   "src": "916:7:24",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -236,7 +236,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 6076,
+                    "id": 6300,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "916:7:24",
@@ -251,7 +251,7 @@
               ],
               "src": "915:9:24"
             },
-            "scope": 6088,
+            "scope": 6312,
             "src": "804:121:24",
             "stateMutability": "view",
             "virtual": true,
@@ -260,13 +260,13 @@
           {
             "body": null,
             "documentation": {
-              "id": 6080,
+              "id": 6304,
               "nodeType": "StructuredDocumentation",
               "src": "933:387:24",
               "text": "@notice _liquidateAccount is a function to liquidate the LP tokens of the input account\n@param _account is the address of the account being liquidated\n@param _liquidator is the address of the account doing the liquidating who receives the liquidated LP's\n@dev this function uses the onlyWC modifier meaning that only the Warp Control contract can call it*"
             },
             "functionSelector": "f4b5e3e4",
-            "id": 6087,
+            "id": 6311,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
@@ -274,17 +274,17 @@
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
-              "id": 6085,
+              "id": 6309,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6082,
+                  "id": 6306,
                   "mutability": "mutable",
                   "name": "_account",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 6087,
+                  "scope": 6311,
                   "src": "1353:16:24",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -293,7 +293,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 6081,
+                    "id": 6305,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "1353:7:24",
@@ -308,12 +308,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 6084,
+                  "id": 6308,
                   "mutability": "mutable",
                   "name": "_liquidator",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 6087,
+                  "scope": 6311,
                   "src": "1371:19:24",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -322,7 +322,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 6083,
+                    "id": 6307,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "1371:7:24",
@@ -339,19 +339,19 @@
               "src": "1352:39:24"
             },
             "returnParameters": {
-              "id": 6086,
+              "id": 6310,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "1424:0:24"
             },
-            "scope": 6088,
+            "scope": 6312,
             "src": "1326:99:24",
             "stateMutability": "nonpayable",
             "virtual": true,
             "visibility": "public"
           }
         ],
-        "scope": 6089,
+        "scope": 6313,
         "src": "408:1020:24"
       }
     ],
@@ -361,14 +361,14 @@
     "absolutePath": "/E/dOrg/warp/Smart-Contracts/contracts/interfaces/WarpVaultLPI.sol",
     "exportedSymbols": {
       "WarpVaultLPI": [
-        6088
+        6312
       ]
     },
-    "id": 6089,
+    "id": 6313,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 6064,
+        "id": 6288,
         "literals": [
           "solidity",
           "^",
@@ -384,15 +384,15 @@
         "contractDependencies": [],
         "contractKind": "contract",
         "documentation": {
-          "id": 6065,
+          "id": 6289,
           "nodeType": "StructuredDocumentation",
           "src": "271:133:24",
           "text": "The WarpVaultLPI contract an abstract contract the WarpControl contract uses to interface\nwith a WarpVaultLP contract.*"
         },
         "fullyImplemented": false,
-        "id": 6088,
+        "id": 6312,
         "linearizedBaseContracts": [
-          6088
+          6312
         ],
         "name": "WarpVaultLPI",
         "nodeType": "ContractDefinition",
@@ -400,13 +400,13 @@
           {
             "body": null,
             "documentation": {
-              "id": 6066,
+              "id": 6290,
               "nodeType": "StructuredDocumentation",
               "src": "446:95:24",
               "text": "@notice getAssetAdd allows for easy retrieval of a WarpVaults LP token Adress*"
             },
             "functionSelector": "4c20ac74",
-            "id": 6071,
+            "id": 6295,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
@@ -414,23 +414,23 @@
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
-              "id": 6067,
+              "id": 6291,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "567:2:24"
             },
             "returnParameters": {
-              "id": 6070,
+              "id": 6294,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6069,
+                  "id": 6293,
                   "mutability": "mutable",
                   "name": "",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 6071,
+                  "scope": 6295,
                   "src": "599:7:24",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -439,7 +439,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 6068,
+                    "id": 6292,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "599:7:24",
@@ -455,7 +455,7 @@
               ],
               "src": "598:9:24"
             },
-            "scope": 6088,
+            "scope": 6312,
             "src": "547:61:24",
             "stateMutability": "view",
             "virtual": true,
@@ -464,13 +464,13 @@
           {
             "body": null,
             "documentation": {
-              "id": 6072,
+              "id": 6296,
               "nodeType": "StructuredDocumentation",
               "src": "616:180:24",
               "text": "@notice collateralOfAccount is a view function to retreive an accounts collateralized LP amount\n@param _account is the address of the account being looked up*"
             },
             "functionSelector": "f919b4bf",
-            "id": 6079,
+            "id": 6303,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
@@ -478,17 +478,17 @@
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
-              "id": 6075,
+              "id": 6299,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6074,
+                  "id": 6298,
                   "mutability": "mutable",
                   "name": "_account",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 6079,
+                  "scope": 6303,
                   "src": "833:16:24",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -497,7 +497,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 6073,
+                    "id": 6297,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "833:7:24",
@@ -514,17 +514,17 @@
               "src": "832:18:24"
             },
             "returnParameters": {
-              "id": 6078,
+              "id": 6302,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6077,
+                  "id": 6301,
                   "mutability": "mutable",
                   "name": "",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 6079,
+                  "scope": 6303,
                   "src": "916:7:24",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -533,7 +533,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 6076,
+                    "id": 6300,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "916:7:24",
@@ -548,7 +548,7 @@
               ],
               "src": "915:9:24"
             },
-            "scope": 6088,
+            "scope": 6312,
             "src": "804:121:24",
             "stateMutability": "view",
             "virtual": true,
@@ -557,13 +557,13 @@
           {
             "body": null,
             "documentation": {
-              "id": 6080,
+              "id": 6304,
               "nodeType": "StructuredDocumentation",
               "src": "933:387:24",
               "text": "@notice _liquidateAccount is a function to liquidate the LP tokens of the input account\n@param _account is the address of the account being liquidated\n@param _liquidator is the address of the account doing the liquidating who receives the liquidated LP's\n@dev this function uses the onlyWC modifier meaning that only the Warp Control contract can call it*"
             },
             "functionSelector": "f4b5e3e4",
-            "id": 6087,
+            "id": 6311,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
@@ -571,17 +571,17 @@
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
-              "id": 6085,
+              "id": 6309,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6082,
+                  "id": 6306,
                   "mutability": "mutable",
                   "name": "_account",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 6087,
+                  "scope": 6311,
                   "src": "1353:16:24",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -590,7 +590,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 6081,
+                    "id": 6305,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "1353:7:24",
@@ -605,12 +605,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 6084,
+                  "id": 6308,
                   "mutability": "mutable",
                   "name": "_liquidator",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 6087,
+                  "scope": 6311,
                   "src": "1371:19:24",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -619,7 +619,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 6083,
+                    "id": 6307,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "1371:7:24",
@@ -636,19 +636,19 @@
               "src": "1352:39:24"
             },
             "returnParameters": {
-              "id": 6086,
+              "id": 6310,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "1424:0:24"
             },
-            "scope": 6088,
+            "scope": 6312,
             "src": "1326:99:24",
             "stateMutability": "nonpayable",
             "virtual": true,
             "visibility": "public"
           }
         ],
-        "scope": 6089,
+        "scope": 6313,
         "src": "408:1020:24"
       }
     ],
@@ -660,7 +660,7 @@
   },
   "networks": {},
   "schemaVersion": "3.3.1",
-  "updatedAt": "2020-11-25T20:43:09.294Z",
+  "updatedAt": "2020-11-25T21:09:11.786Z",
   "devdoc": {
     "methods": {
       "_liquidateAccount(address,address)": {
