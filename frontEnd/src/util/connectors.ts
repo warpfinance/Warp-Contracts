@@ -2,6 +2,7 @@ import { InjectedConnector } from "@web3-react/injected-connector";
 import { NetworkConnector } from "@web3-react/network-connector";
 import { PortisConnector } from "@web3-react/portis-connector";
 import { WalletLinkConnector } from "@web3-react/walletlink-connector";
+import { WalletConnectConnector } from "../deps/walletconnect-connector/dist";
 import { supportedNetworks, supportedNetworkIds } from "./networks";
 
 
@@ -10,9 +11,9 @@ const MetaMask = new InjectedConnector({
 });
 
 const Coinbase = new WalletLinkConnector({
-    url: "warp.exchange",
+    url: "https://mainnet.infura.io/v3/f30a8e726a8c4851bfc92a44a04bc889",//"https://warpfinance-warp.herokuapp.com/",
     appName: "Warp",
-    appLogoUrl: undefined
+    appLogoUrl: undefined //"https://warpfinance-warp.herokuapp.com/warp_ext_logo.jpg"
 })
 
 const portisAppId = "TODO: Get Portis ID";
@@ -32,9 +33,14 @@ const Infura = new NetworkConnector({
     defaultChainId: 1
 });
 
+const WalletConnect = new WalletConnectConnector({
+    rpc: infuraNetworks
+});
+
 export default {
     MetaMask,
     Coinbase,
     Portis,
-    Infura
+    Infura,
+    WalletConnect
 }
