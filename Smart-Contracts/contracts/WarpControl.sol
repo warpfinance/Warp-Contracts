@@ -31,13 +31,17 @@ contract WarpControl is Ownable, Exponential {
 
     address[] public lpVaults;
     address[] public scVaults;
+    address[] public launchParticipants;
+    address[] public groups;
 
     mapping(address => address) public instanceLPTracker; //maps LP token address to the assets WarpVault
     mapping(address => address) public instanceSCTracker;
     mapping(address => uint256) public lockedLPValue;
-    mapping(address => bool) public isVault;
-
     mapping(address => uint256) nonCompliant;
+    mapping(address => bool) public isVault;
+    mapping(address => address[]) public refferalCodeTracker;
+    mapping(address => bool) public existingRefferalCode;
+    mapping(address => bool) public isGroupMember;
 
     event NewLPVault(address _newVault);
     event NewSCVault(address _newVault, address _interestRateModel);
@@ -73,7 +77,7 @@ contract WarpControl is Ownable, Exponential {
         WVSCF = WarpVaultSCFactoryI(_WVSCF);
         warpTeam = _warpTeam;
     }
-
+///view functions for front end /////
     function viewNumLPVaults() external view returns(uint256) {
         return lpVaults.length;
     }
@@ -82,6 +86,21 @@ contract WarpControl is Ownable, Exponential {
         return scVaults.length;
     }
 
+    function viewLaunchParticipants() public view returns(address[] memory) {
+      return launchParticipants;
+    }
+
+    function viewAllGroups() public view returns(address[] memory) {
+      return groups;
+    }
+
+    function viewAllMembersOfAGroup(address _refferalCode) public view returns(address[] memory) {
+      return refferalCodeTracker[_refferalCode];
+    }
+
+    function checkIfGroupMember(address _account) public view returns(bool)  {
+      return isGroupMember[_account];
+    }
     /**
     @notice createNewLPVault allows the contract owner to create a new WarpVaultLP contract for a specific LP token
     @param _timelock is a variable representing the number of seconds the timeWizard will prevent withdraws and borrows from a contracts(one week is 605800 seconds)
@@ -155,6 +174,25 @@ contract WarpControl is Ownable, Exponential {
         isVault[_WarpVault] = true;
         emit NewSCVault(_WarpVault, IR);
     }
+
+    function addMemberToGroup(address _refferalCode, address _member) public onlyVault {
+      //require the member is not in a group
+      require(isGroupMember[_member] == false);
+      //add member to the member array for the input referal code
+      refferalCodeTracker[_refferalCode].push(_member);
+      //mark the member as part of a group so they cant be added to a new group
+      isGroupMember[_member] == true;
+      //add the mebers address to the total participants member array
+      launchParticipants.push(_member);
+      //if the member is using thier own address as a refferal code create a new group with their address as a refferal code
+      if(_refferalCode == _member) {
+        existingRefferalCode[_refferalCode] = true;
+        groups.push(_refferalCode);
+      }
+    }
+
+
+
 
     /**
     @notice Figures out how much of a given LP token an account is allowed to withdraw
