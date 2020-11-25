@@ -63,6 +63,15 @@ export const Connect: React.FC<Props> = (props: Props) => {
                     console.error(e);
                 });
         }
+        if (type === WalletType.WalletConnect) {
+            await context.activate(connectors.WalletConnect)
+                .then((result) => {
+                    Connected();
+                    localStorage.setItem('CONNECTOR', type);
+                }).catch((e) => {
+                    console.error(e);
+                });
+        }
     }
 
     const handleClose = (event: {}, reason: "backdropClick" | "escapeKeyDown") => {
