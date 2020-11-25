@@ -34,6 +34,7 @@ const getEvent = async (txResult, eventName) => {
 
 const getCreatedPair = async txResult => {
   const pairAddress = new Promise(resolve => {
+    console.log(txResult);
     truffleAssert.eventEmitted(txResult, "PairCreated", ev => {
       resolve(ev.pair);
     });
@@ -315,7 +316,7 @@ contract("Setup Test Env", function(accounts) {
       wethToken,
       daiToken,
       conversionRates.eth.dai,
-      1000
+      10000
     );
     await giveLPTokens(
       testerAddress,
@@ -323,7 +324,7 @@ contract("Setup Test Env", function(accounts) {
       wethToken,
       usdtToken,
       conversionRates.eth.usdt,
-      1000
+      10000
     );
     await giveLPTokens(
       testerAddress,
@@ -331,7 +332,7 @@ contract("Setup Test Env", function(accounts) {
       wethToken,
       wbtcToken,
       conversionRates.eth.btc,
-      1000
+      10000
     );
     await giveLPTokens(
       testerAddress,
@@ -339,7 +340,7 @@ contract("Setup Test Env", function(accounts) {
       wethToken,
       usdcToken,
       conversionRates.eth.usdc,
-      1000
+      10000
     );
 
     console.log("REACT_APP_LOCALHOST_ULPOF=" + oracleFactory.address);
