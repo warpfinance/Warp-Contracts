@@ -97,7 +97,7 @@ contract UniswapLPOracleInstance is Ownable {
 **/
     function consult(address token, uint amount) external returns (uint256 price) {
         if (token0 == address(0)) {
-            return price0Average.mul(amount).decode144();
+            return amount;
         }
 
         if (token == token0) {
@@ -115,7 +115,7 @@ contract UniswapLPOracleInstance is Ownable {
 **/
     function viewPrice(address token, uint amount) external view returns (uint256 price) {
         if (token0 == address(0)) {
-            return price0Average.mul(amount).decode144();
+            return amount;
         }
 
         if (token == token0) {
