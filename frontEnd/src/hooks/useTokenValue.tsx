@@ -1,10 +1,12 @@
 import { BigNumber } from "ethers";
 import * as React from "react";
 import { WarpControlService } from "../services/warpControl";
+import { getLogger } from "../util/logger";
 import { Token } from "../util/token";
 import { formatBigNumber } from "../util/tools";
 import { ConnectedWeb3Context } from "./connectedWeb3";
 
+const logger = getLogger("Hooks::useTokenValue");
 
 export const useTokenValue = (control: WarpControlService, token: Token, context: ConnectedWeb3Context) => {
   const { account, library: provider } = context
@@ -13,6 +15,8 @@ export const useTokenValue = (control: WarpControlService, token: Token, context
 
   React.useEffect(() => {
     let isSubscribed = true;
+
+    logger.log(`Fetching ${token.symbol} token price`);
 
     const fetchRates = async () => {
       if (!isSubscribed) {
@@ -25,6 +29,8 @@ export const useTokenValue = (control: WarpControlService, token: Token, context
       } else {
         value = await control.getStableCoinPrice(token.address);
       }
+
+      logger.log(`${token.symbol} price is ${value.toString()} (in USDC)`);
 
       setTokenValue(value);
     }

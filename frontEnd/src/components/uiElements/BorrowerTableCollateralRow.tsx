@@ -33,8 +33,6 @@ export const BorrowerTableCollateralRow: React.FC<Props> = (props: Props) => {
     const {control} = useWarpControl(context);
     const {tokenValueInUSDC} = useTokenValue(control, props.token, context);
 
-    console.log(props.token.symbol, tokenValueInUSDC.toString());
-
     const walletAmount = parseBigNumber(walletBalance, props.token.decimals).toLocaleString(undefined, {maximumFractionDigits: 8});
     const providedAmount = parseBigNumber(vaultBalance, props.token.decimals).toLocaleString(undefined, {maximumFractionDigits: 8});
     

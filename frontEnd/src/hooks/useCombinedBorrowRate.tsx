@@ -19,6 +19,7 @@ export const useCombinedBorrowRate = (context: ConnectedWeb3Context, control: Wa
       let isSubscribed = true;
     
       const calculateRate = async() => {
+          logger.log("Calculating total interest rate.");
           if (!context.account || !control) {
               return;
           }

@@ -4,11 +4,16 @@ import { useEffect, useState } from 'react'
 import { ERC20Service } from '../services/erc20'
 import { StableCoinWarpVaultService } from '../services/stableCoinWarpVault'
 import { WarpControlService } from '../services/warpControl'
+import { getLogger } from '../util/logger'
 import { getContractAddress, getTokensByNetwork } from '../util/networks'
 import { getImageUrl, Token } from '../util/token'
 
 
 import { ConnectedWeb3Context } from './connectedWeb3'
+
+
+const logger = getLogger("Page::useUSDC");
+
 
 export const useUSDCToken = (context: ConnectedWeb3Context) => {
   const { account, library: provider, networkId } = context;
@@ -17,6 +22,8 @@ export const useUSDCToken = (context: ConnectedWeb3Context) => {
 
   useEffect(() => {
     let isSubscribed = true
+
+    logger.log("Fetching USDC coin");
 
     const allTokens = getTokensByNetwork(networkId, false);
     const targetToken = allTokens.find((t: Token) => {

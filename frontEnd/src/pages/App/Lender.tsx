@@ -37,7 +37,7 @@ export const Lender: React.FC<Props> = (props: Props) => {
     const data = {
         stableCoinDeposit: totalLentAmount,
         stableCoinReward: totalReward,
-        walletBalance
+        walletBalance: walletBalance.toLocaleString(undefined, {maximumFractionDigits: 2})
     }
 
     const [action, setAction] = useState("lend");
@@ -70,7 +70,7 @@ export const Lender: React.FC<Props> = (props: Props) => {
 
     React.useEffect(() => {
         if (!lendAmountValue.eq(BigNumber.from(0)) && lendAmountCurrency !== "") {
-            setLendError(isError(lendAmountValue, lendAmountCurrency, tokens, lendMaxAmount));
+            setLendError(isError(lendAmountValue, lendAmountCurrency, tokens,  lendMaxAmount));
         }
         if (!withdrawAmountValue.eq(BigNumber.from(0)) && withdrawAmountCurrency !== "") {
             setWithdrawError(isError(withdrawAmountValue, withdrawAmountCurrency, tokens, withdrawMaxAmount));

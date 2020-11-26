@@ -17,7 +17,7 @@ const logger = getLogger('Hooks::useTotalWalletBalance')
 
 export const useTotalWalletBalance = (context: ConnectedWeb3Context, control: WarpControlService, usdc: Maybe<Token>, refreshToken?: RefreshToken) => {
   const tokens = getTokensByNetwork(context.networkId, false)
-  const [walletBalance, setWalletBalance] = useState<string>("0")
+  const [walletBalance, setWalletBalance] = useState<number>(0)
 
   useEffect(() => {
     const fetchTotalWalletBalance = async () => {
@@ -26,20 +26,34 @@ export const useTotalWalletBalance = (context: ConnectedWeb3Context, control: Wa
         return;
       }
 
+      if (!usdc) {
+        return;
+      }
+
       let amount = 0;
       for (const token of tokens) {
         const tokenService = new ERC20Service(context.library, context.account, token.address);
 
+        const tokenBalanceRaw = await tokenService.balanceOf(context.account);
         
         const tokenInfo = await tokenService.getProfileSummary();
-        const tokenBalance = parseBigNumber(await tokenService.balanceOf(context.account), tokenInfo.decimals);
 
-        const usdcPriceOfToken = parseBigNumber(await control.getStableCoinPrice(token.address), usdc?.decimals);
+        const tokenBalance = parseBigNumber(tokenBalanceRaw, tokenInfo.decimals);
+
+        
+        if (token.symbol === usdc.symbol) {
+          amount += tokenBalance;
+          continue
+        }
+
+        const tokenValueRaw = await control.getStableCoinPrice(token.address);
+
+        const usdcPriceOfToken = parseBigNumber(tokenValueRaw, usdc.decimals);
 
         amount += tokenBalance * usdcPriceOfToken;
       }
 
-      setWalletBalance(amount.toString());
+      setWalletBalance(amount);
     }
 
     fetchTotalWalletBalance()

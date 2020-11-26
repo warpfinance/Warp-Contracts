@@ -1,10 +1,8 @@
 import { useWeb3React } from '@web3-react/core'
-import { NoEthereumProviderError, UserRejectedRequestError } from '@web3-react/injected-connector'
 import { providers } from 'ethers'
-import React, { useEffect, useState } from 'react'
-import { connect } from 'react-redux'
+import React, { useEffect, useMemo, useState } from 'react'
 import connectors from '../util/connectors'
-import { WalletType } from '../util/types'
+import { useWhatChanged } from '@simbathesailor/use-what-changed';
 
 export interface ConnectedWeb3Context {
   account: Maybe<string>
@@ -33,35 +31,16 @@ export const useConnectedWeb3Context = () => {
  * `useConnectedWeb3Context` safely to get web3 stuff without having to null check it.
  */
 export const ConnectedWeb3: React.FC = props => {
-  const [networkId, setNetworkId] = useState<number | null>(null)
-  const [onLoadConnecting, setOnLoadConnecting] = useState<boolean>(true);
-  const [wasSuccessful, setWasSuccessful] = useState(false);
   const context = useWeb3React()
   const { account, active, error, library } = context
 
-  const isNoEthereumProviderError = error instanceof NoEthereumProviderError;
-  const isUserRejectedRequestError = error instanceof UserRejectedRequestError;
-
+  const deps = [library, active, error];
+  useWhatChanged(deps, 'library, active, error')
   useEffect(() => {
     let isSubscribed = true;
 
-
     const tryConnect = async () => {
-      // const connector = localStorage.getItem('CONNECTOR');
-
-      // if (!active && connector) {
-      //   // if (connector) {
-      //   //   try {
-      //   //     if (connector as WalletType === WalletType.MetaMask) {
-      //   //       await context.activate(connectors.MetaMask, undefined, true);
-      //   //     }
-      //   //   } catch (e) {
-      //   //     console.log(e);
-      //   //     localStorage.removeItem('CONNECTOR');
-      //   //     await context.activate(connectors.Infura);
-      //   //   }
-      //   // }
-      // } else 
+      console.log(active);
       if (!active) {
         console.log("fallback")
         await context.activate(connectors.Infura);
@@ -70,35 +49,22 @@ export const ConnectedWeb3: React.FC = props => {
 
     tryConnect();
 
-    // if (onLoadConnecting) {
-    //   setOnLoadConnecting(false);
-    //   tryConnect();
-    // }
-
-    const checkIfReady = async () => {
-      if (context.chainId !== undefined && isSubscribed) {
-          setNetworkId(context.chainId);
-      }
-    }
-
-    if (library) {
-      checkIfReady()
-    }
-
     return () => {
       isSubscribed = false
     }
-  }, [context, library, active, error])
+  }, deps)
 
-  if (!networkId || !library) {
-    return null
-  }
-
-  const value = {
+  const value = useMemo(() => ({
     account: account || null,
     library,
-    networkId,
+    networkId: context.chainId,
     rawWeb3Context: context,
+  }), [
+    account, library
+  ]) as ConnectedWeb3Context;
+
+  if (!context.chainId || !library) {
+    return null
   }
 
   return <ConnectedWeb3Context.Provider value={value}>{props.children}</ConnectedWeb3Context.Provider>

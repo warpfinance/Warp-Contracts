@@ -17,6 +17,7 @@ export const useStableCoinTokens = (context: ConnectedWeb3Context) => {
   useEffect(() => {
     const fetchTokens = async () => {
       try {
+        logger.log("Fetching tokens");
         const tokenAddresses = defaultTokens.map((token: Token) => {
           return token.address
         });

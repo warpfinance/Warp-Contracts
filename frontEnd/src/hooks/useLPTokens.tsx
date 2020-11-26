@@ -17,6 +17,7 @@ export const useLPTokens = (context: ConnectedWeb3Context) => {
   useEffect(() => {
     const fetchTokens = async () => {
       try {
+        logger.log("Fetching lp tokens");
         const tokenAddresses = defaultTokens.map((token: Token) => {
           return {
             address: token.address,
