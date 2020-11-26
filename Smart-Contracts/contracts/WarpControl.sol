@@ -244,7 +244,7 @@ contract WarpControl is Ownable, Exponential {
             totalCollateral = totalCollateral.add(accountAssetsValue);
         }
         //return total USDC value of all collateral
-        return totalCollateral;
+        return totalCollateral.div(1e18);
     }
 
     function viewTotalAvailableCollateralValue(address _account)
@@ -271,7 +271,7 @@ contract WarpControl is Ownable, Exponential {
             totalCollateral = totalCollateral.add(accountAssetsValue);
         }
         //return total USDC value of all collateral
-        return totalCollateral;
+        return totalCollateral.div(1e18);
     }
 
     function viewPriceOfCollateral(address lpToken) public view returns(uint256)
