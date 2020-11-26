@@ -34,7 +34,6 @@ const getEvent = async (txResult, eventName) => {
 
 const getCreatedPair = async txResult => {
   const pairAddress = new Promise(resolve => {
-    console.log(txResult);
     truffleAssert.eventEmitted(txResult, "PairCreated", ev => {
       resolve(ev.pair);
     });
@@ -89,14 +88,14 @@ contract("Setup Test Env", function(accounts) {
     const conversionRates = {
       usdc: {
         btc: 14000,
-        usdt: 1.01,
+        usdt: 1.0,
         dai: 1.0
       },
       eth: {
         btc: 34,
-        usdt: 0.00247,
-        usdc: 0.00247,
-        dai: 0.00247
+        usdt: 0.002,
+        usdc: 0.002,
+        dai: 0.002
       }
     };
 
@@ -114,6 +113,7 @@ contract("Setup Test Env", function(accounts) {
       minimumLiquidity
     );
     await usdcBTCPair.mint(accounts[0]);
+    await usdcBTCPair.sync();
 
     const usdctPair = await getCreatedPair(
       await uniFactory.createPair(usdcToken.address, usdtToken.address)
@@ -126,6 +126,7 @@ contract("Setup Test Env", function(accounts) {
       minimumLiquidity
     );
     await usdctPair.mint(accounts[0]);
+    await usdctPair.sync();
 
     const usdcDaiPair = await getCreatedPair(
       await uniFactory.createPair(usdcToken.address, daiToken.address)
@@ -138,6 +139,7 @@ contract("Setup Test Env", function(accounts) {
       minimumLiquidity
     );
     await usdcDaiPair.mint(accounts[0]);
+    await usdcDaiPair.sync();
 
     /* Warp Support pairs */
     const ethBtcPair = await getCreatedPair(
@@ -151,6 +153,7 @@ contract("Setup Test Env", function(accounts) {
       minimumLiquidity
     );
     await ethBtcPair.mint(accounts[0]);
+    await ethBtcPair.sync();
 
     const ethCPair = await getCreatedPair(
       await uniFactory.createPair(wethToken.address, usdcToken.address)
@@ -279,15 +282,29 @@ contract("Setup Test Env", function(accounts) {
     );
 
     await utils.increaseTime(ONE_DAY);
+    
+    await ethTPair.sync();
+    await ethDaiPair.sync();
+    await ethCPair.sync();
+    await ethBtcPair.sync();
+    
+    await usdcBTCPair.sync();
+    await usdcDaiPair.sync();
+    await usdctPair.sync();
 
-    await oracleFactory.getUnderlyingPrice(ethTPair.address);
-    await oracleFactory.getUnderlyingPrice(ethDaiPair.address);
-    await oracleFactory.getUnderlyingPrice(ethCPair.address);
-    await oracleFactory.getUnderlyingPrice(ethBtcPair.address);
+    await oracleFactory.getUnderlyingPrice(ethTPair.address)
+    await oracleFactory.getUnderlyingPrice(ethDaiPair.address)
+    await oracleFactory.getUnderlyingPrice(ethCPair.address)
+    await oracleFactory.getUnderlyingPrice(ethBtcPair.address)
+
+    console.log("eth-usdt: ", (await oracleFactory.viewUnderlyingPrice(ethTPair.address)).toString());
+    console.log("eth-dai: ", (await oracleFactory.viewUnderlyingPrice(ethDaiPair.address)).toString());
+    console.log("eth-usdc: ", (await oracleFactory.viewUnderlyingPrice(ethCPair.address)).toString());
+    console.log("eth-btc: ", (await oracleFactory.viewUnderlyingPrice(ethBtcPair.address)).toString());
 
     await utils.increaseTime(ONE_DAY);
 
-    const testerAddress = "0x7d4A13FE119C9F36425008a7afCB2737B2bB5C41";
+    const testerAddress = "0x7f3A152F09324f2aee916CE069D3908603449173";
 
     {
       const numDecimals = parseInt((await daiToken.decimals()).toString());
