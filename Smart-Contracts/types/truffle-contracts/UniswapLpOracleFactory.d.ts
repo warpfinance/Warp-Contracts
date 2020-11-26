@@ -28,7 +28,18 @@ type AllEvents = OwnershipTransferred;
 
 export interface UniswapLpOracleFactoryInstance
   extends Truffle.ContractInstance {
+  LPAssetTracker(
+    arg0: string,
+    arg1: number | BN | string,
+    txDetails?: Truffle.TransactionDetails
+  ): Promise<string>;
+
   factory(txDetails?: Truffle.TransactionDetails): Promise<string>;
+
+  instanceTracker(
+    arg0: string,
+    txDetails?: Truffle.TransactionDetails
+  ): Promise<string>;
 
   /**
    * Returns the address of the current owner.
@@ -150,7 +161,18 @@ export interface UniswapLpOracleFactoryInstance
   ): Promise<BN>;
 
   methods: {
+    LPAssetTracker(
+      arg0: string,
+      arg1: number | BN | string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<string>;
+
     factory(txDetails?: Truffle.TransactionDetails): Promise<string>;
+
+    instanceTracker(
+      arg0: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<string>;
 
     /**
      * Returns the address of the current owner.

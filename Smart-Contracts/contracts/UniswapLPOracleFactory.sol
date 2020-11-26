@@ -23,8 +23,8 @@ contract UniswapLPOracleFactory is Ownable {
     address public factory;
     IUniswapV2Router02 public uniswapRouter;
 
-    mapping(address => address[]) LPAssetTracker;
-    mapping(address => address) instanceTracker;
+    mapping(address => address[]) public LPAssetTracker;
+    mapping(address => address) public instanceTracker;
     mapping(address => address) public tokenToUSDC;
 
     /**
@@ -56,6 +56,12 @@ contract UniswapLPOracleFactory is Ownable {
         return uint256(10) ** uint256(ercToken.decimals());
     }
 
+    function sortTokens(address tokenA, address tokenB) internal pure returns (address token0, address token1) {
+        require(tokenA != tokenB, 'IDENTICAL_ADDRESSES');
+        (token0, token1) = tokenA < tokenB ? (tokenA, tokenB) : (tokenB, tokenA);
+        require(token0 != address(0), 'ZERO_ADDRESS');
+    }
+
     /**
   @notice createNewOracle allows the owner of this contract to deploy deploy two new asset oracle contracts
           when a new LP token is whitelisted. this contract will link the address of an LP token contract to
@@ -71,25 +77,28 @@ contract UniswapLPOracleFactory is Ownable {
         address _tokenB,
         address _lpToken
     ) public onlyOwner {
-        address oracle1 = tokenToUSDC[_tokenA];
+
+        (address token0, address token1) = sortTokens(_tokenA, _tokenB);
+
+        address oracle1 = tokenToUSDC[token0];
         if (oracle1 == address(0)) {
             oracle1 = address(
-                new UniswapLPOracleInstance(factory, _tokenA, usdc_add)
+                new UniswapLPOracleInstance(factory, token0, usdc_add)
             );
-            tokenToUSDC[_tokenA] = oracle1;
+            tokenToUSDC[token0] = oracle1;
         }
 
-        address oracle2 = tokenToUSDC[_tokenB];
+        address oracle2 = tokenToUSDC[token1];
         if (oracle2 == address(0)) {
             oracle2 = address(
-                new UniswapLPOracleInstance(factory, _tokenB, usdc_add)
+                new UniswapLPOracleInstance(factory, token1, usdc_add)
             );
-            tokenToUSDC[_tokenB] = oracle2;
+            tokenToUSDC[token1] = oracle2;
         }
 
         LPAssetTracker[_lpToken] = [oracle1, oracle2];
-        instanceTracker[oracle1] = _tokenA;
-        instanceTracker[oracle2] = _tokenB;
+        instanceTracker[oracle1] = token0;
+        instanceTracker[oracle2] = token1;
     }
 
     /**
@@ -106,32 +115,40 @@ contract UniswapLPOracleFactory is Ownable {
         UniswapLPOracleInstance oracle2 = UniswapLPOracleInstance(
             oracleAdds[1]
         );
-        // instantiates both ase usable oracle instances
-        uint256 priceAsset1 = oracle1.consult(
-            instanceTracker[oracleAdds[0]],
-            OneToken(instanceTracker[oracleAdds[0]]));
-        uint256 priceAsset2 = oracle2.consult(
-            instanceTracker[oracleAdds[1]],
-            OneToken(instanceTracker[oracleAdds[1]]));
-        //retreives the USDC price of one of each asset
-        IERC20 lpToken = IERC20(_lpToken);
-        //instantiates the LP token as an ERC20 token
-        uint256 totalSupplyOfLP = lpToken.totalSupply();
-        //retreives the total supply of the LP token
+
         (uint256 reserveA, uint256 reserveB) = UniswapV2Library.getReserves(
             factory,
             instanceTracker[oracleAdds[0]],
             instanceTracker[oracleAdds[1]]
         );
-        //retreives the reserves of each  asset in the liquidity pool
-        uint256 reserveAUSDCprice = reserveA.mul(priceAsset1);
-        uint256 reserveBUSDCprice = reserveB.mul(priceAsset2);
-        //get USDC value for each reserve
-        uint256 totalUSDCpriceOfPool = reserveAUSDCprice.add(reserveBUSDCprice);
-        //add values together to get total USDC of the pool
-        return totalUSDCpriceOfPool / totalSupplyOfLP;
+
+        uint256 priceAsset1 = oracle1.consult(
+            instanceTracker[oracleAdds[0]],
+            reserveA);
+        uint256 priceAsset2 = oracle2.consult(
+            instanceTracker[oracleAdds[1]],
+            reserveB);
+
+        // Get the total supply of the pool
+        IERC20 lpToken = IERC20(_lpToken);
+        uint256 totalSupplyOfLP = lpToken.totalSupply();
+        
+        return _calculatePriceOfLP(totalSupplyOfLP, priceAsset1, priceAsset2, lpToken.decimals());
         //return USDC price of the pool divided by totalSupply of its LPs to get price
         //of one LP
+    }
+
+
+    function _calculatePriceOfLP(uint256 supply, uint256 value0, uint256 value1, uint8 supplyDecimals)
+    internal pure returns (uint256) {
+        uint256 totalValue = value0 + value1;
+        uint16 shiftAmount = supplyDecimals;
+        uint256 valueShifted = totalValue * uint256(10) ** shiftAmount;
+        uint256 supplyShifted = supply * uint256(10);
+        
+        uint256 valuePerSupply = valueShifted / supplyShifted;
+
+        return valuePerSupply;
     }
 
     /**
@@ -153,30 +170,24 @@ contract UniswapLPOracleFactory is Ownable {
             oracleAdds[1]
         );
         // instantiates both ase usable oracle instances
-         uint256 priceAsset1 = oracle1.viewPrice(
-            instanceTracker[oracleAdds[0]],
-            OneToken(instanceTracker[oracleAdds[0]]));
-        uint256 priceAsset2 = oracle2.viewPrice(
-            instanceTracker[oracleAdds[1]],
-            OneToken(instanceTracker[oracleAdds[1]]));
-        //retreives the USDC price of one of each asset
-        IERC20 lpToken = IERC20(_lpToken);
-        //instantiates the LP token as an ERC20 token
-        uint256 totalSupplyOfLP = lpToken.totalSupply();
-        //retreives the total supply of the LP token
         (uint256 reserveA, uint256 reserveB) = UniswapV2Library.getReserves(
             factory,
             instanceTracker[oracleAdds[0]],
             instanceTracker[oracleAdds[1]]
         );
-        //retreives the reserves of each  asset in the liquidity pool
-        uint256 reserveAUSDCprice = reserveA.mul(priceAsset1);
-        uint256 reserveBUSDCprice = reserveB.mul(priceAsset2);
 
-        //get USDC value for each reserve
-        uint256 totalUSDCpriceOfPool = reserveAUSDCprice.add(reserveBUSDCprice);
-        //add values together to get total USDC of the pool
-        return totalUSDCpriceOfPool / totalSupplyOfLP;
+        uint256 priceAsset1 = oracle1.viewPrice(
+            instanceTracker[oracleAdds[0]],
+            reserveA);
+        uint256 priceAsset2 = oracle2.viewPrice(
+            instanceTracker[oracleAdds[1]],
+            reserveB);
+
+        // Get the total supply of the pool
+        IERC20 lpToken = IERC20(_lpToken);
+        uint256 totalSupplyOfLP = lpToken.totalSupply();
+        
+        return _calculatePriceOfLP(totalSupplyOfLP, priceAsset1, priceAsset2, lpToken.decimals());
         //return USDC price of the pool divided by totalSupply of its LPs to get price
         //of one LP
     }

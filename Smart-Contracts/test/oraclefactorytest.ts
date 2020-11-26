@@ -134,26 +134,10 @@ contract("Setup Test Env", function(accounts) {
       wethToken.address
     );
 
-    const testOracleUSDCEth = await UniswapLPOracleInstance.new(uniFactory.address, usdcToken.address, wethToken.address);
-    const testOracleUSDCDai = await UniswapLPOracleInstance.new(uniFactory.address, usdcToken.address, daiToken.address);
-
-
-    await utils.increaseTime(ONE_DAY);
-
-    console.log("token0: " + await testOracleUSDCEth.token0());
-    console.log("usdc: " + usdcToken.address)
-
     await usdcDaiPair.sync();
     await ethCPair.sync();
 
-    await testOracleUSDCDai.update();
-
     await utils.increaseTime(ONE_DAY);
-
-    await testOracleUSDCEth.update();
-    
-    console.log("viewPriceNew=" + await testOracleUSDCEth.viewPrice(wethToken.address, toWei("1")));
-    console.log("viewPriceNew=" + await testOracleUSDCDai.viewPrice(daiToken.address, toWei("1")));
 
     const ethDaiPair = await getCreatedPair(
       await uniFactory.createPair(daiToken.address, wethToken.address)
@@ -166,42 +150,84 @@ contract("Setup Test Env", function(accounts) {
       minimumLiquidity
     );
     await ethDaiPair.mint(accounts[0]);
-    const testOracleEthDaiPair = await UniswapLPOracleInstance.new(uniFactory.address, wethToken.address, daiToken.address);
 
     await utils.increaseTime(ONE_DAY);
     await usdcDaiPair.sync();
-    await testOracleEthDaiPair.update();
     await utils.increaseTime(ONE_DAY);
 
-    console.log("viewPrice weth=" + await testOracleEthDaiPair.viewPrice(wethToken.address, toWei("1")));
-    console.log("viewPrice dai=" + await testOracleEthDaiPair.viewPrice(daiToken.address, toWei("1")));
-    
-
-    return;
-
-
-    const lpFactory = await WarpVaultLPFactory.new();
-    const scFactory = await WarpVaultSCFactory.new();
     const oracleFactory = await UniswapLPOracleFactory.new(
       usdcToken.address,
       uniFactory.address,
       uniRouter.address
     );
 
-    const warpControl = await WarpControl.new(
-      oracleFactory.address,
-      lpFactory.address,
-      scFactory.address,
-      accounts[0]
-    );
-    // goodbye children, remember me...
-    await oracleFactory.transferOwnership(warpControl.address);
-    await lpFactory.transferOwnership(warpControl.address);
-    await scFactory.transferOwnership(warpControl.address);
+    await oracleFactory.createNewOracles(usdcToken.address, wethToken.address, ethCPair.address);
+    await oracleFactory.createNewOracles(usdcToken.address, daiToken.address, usdcDaiPair.address);
+    await oracleFactory.createNewOracles(wethToken.address, daiToken.address, ethDaiPair.address);
+
+    const ethCOracle = await UniswapLPOracleInstance.at(await oracleFactory.tokenToUSDC(wethToken.address));
+    const daiCOracle = await UniswapLPOracleInstance.at(await oracleFactory.tokenToUSDC(daiToken.address));
+    const usdcusdcOracle = await UniswapLPOracleInstance.at(await oracleFactory.tokenToUSDC(usdcToken.address));
+    
+    await utils.increaseTime(ONE_DAY);
+    await ethCOracle.update();
+    await daiCOracle.update();
+    await utils.increaseTime(ONE_DAY);
+
+    let supply = await ethCPair.totalSupply();
+    let reserves = await ethCPair.getReserves();
+    console.log("eth price (6 decimals)", (await ethCOracle.viewPrice(wethToken.address, toWei("1"))).toString());
+    console.log("usdc price (6 decimals)", (await usdcusdcOracle.viewPrice(usdcToken.address, "1000000")).toString())
+    console.log("supply (18 decimals)", supply.toString());
+    console.log("reserves: ", reserves[0].toString(), reserves[1].toString());
+    let price = await oracleFactory.viewUnderlyingPrice(ethCPair.address);
+    console.log("price (6 decimals)", price.toString());
+
+    console.log("-------------------------\n\n")
 
 
 
+    console.log( "-------- manual ---------- \n\n");
+
+    let chosenLP = ethCPair;
+    let oracleAddresses = [await oracleFactory.LPAssetTracker(chosenLP.address, 0),
+      await oracleFactory.LPAssetTracker(chosenLP.address, 1)];
+    let oracle1 = await UniswapLPOracleInstance.at(oracleAddresses[0]);
+    let oracle2 = await UniswapLPOracleInstance.at(oracleAddresses[1]);
+
+    supply = await chosenLP.totalSupply();
+    reserves = await chosenLP.getReserves();
+
+    let price0 = await oracle1.viewPrice(await chosenLP.token0(), reserves[0]);
+    let price1 = await oracle2.viewPrice(await chosenLP.token1(), reserves[1]);
+
+    console.log("price0", price0.toString())
+    console.log("price1", price1.toString());
+    let combinedValue = price0.add(price1);
+    console.log("price0 + price1", combinedValue.toString());
+    console.log("price per LP", (await oracleFactory.viewUnderlyingPrice(chosenLP.address)).toString());
 
 
+    console.log( "-------- manual (eth-dai) ---------- \n\n");
+
+    chosenLP = ethDaiPair;
+    oracleAddresses = [await oracleFactory.LPAssetTracker(chosenLP.address, 0),
+      await oracleFactory.LPAssetTracker(chosenLP.address, 1)];
+    oracle1 = await UniswapLPOracleInstance.at(oracleAddresses[0]);
+    oracle2 = await UniswapLPOracleInstance.at(oracleAddresses[1]);
+
+    supply = await chosenLP.totalSupply();
+    console.log("supply", supply.toString());
+    reserves = await chosenLP.getReserves();
+    console.log("reserves", reserves[0].toString(), reserves[1].toString());
+
+    price0 = await oracle1.viewPrice(await chosenLP.token0(), reserves[0]);
+    price1 = await oracle2.viewPrice(await chosenLP.token1(), reserves[1]);
+
+    console.log("price0", price0.toString())
+    console.log("price1", price1.toString());
+    combinedValue = price0.add(price1);
+    console.log("price0 + price1", combinedValue.toString());
+    console.log("price per LP", (await oracleFactory.viewUnderlyingPrice(chosenLP.address)).toString());
   });
 });
