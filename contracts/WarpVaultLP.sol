@@ -71,13 +71,16 @@ contract WarpVaultLP is Ownable {
     @notice provideCollateral allows a user to collateralize this contracts associated LP token
     @param _amount is the amount of LP being collateralized
     **/
-    function provideCollateral(uint256 _amount) public {
+    function provideCollateral(uint256 _amount, address _refferalCode) public {
         require(LPtoken.allowance(msg.sender, address(this)) >= _amount, "Vault must have enough allowance.");
         require(LPtoken.balanceOf(msg.sender) >= _amount, "Must have enough LP to provide");
         LPtoken.transferFrom(msg.sender, address(this), _amount);
         collateralizedLP[msg.sender] = collateralizedLP[msg.sender].add(
             _amount
         );
+                if(now <= timeWizard) {
+                    WC.addMemberToGroupLP(_refferalCode, msg.sender, address(LPtoken), _amount);
+                }
         emit CollateralProvided(msg.sender, _amount);
     }
 
