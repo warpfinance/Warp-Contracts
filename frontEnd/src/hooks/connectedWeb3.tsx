@@ -1,8 +1,7 @@
 import { useWeb3React } from '@web3-react/core'
 import { providers } from 'ethers'
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import connectors from '../util/connectors'
-import { useWhatChanged } from '@simbathesailor/use-what-changed';
 
 export interface ConnectedWeb3Context {
   account: Maybe<string>
@@ -35,7 +34,6 @@ export const ConnectedWeb3: React.FC = props => {
   const { account, active, error, library } = context
 
   const deps = [library, active, error];
-  useWhatChanged(deps, 'library, active, error')
   useEffect(() => {
     let isSubscribed = true;
 
