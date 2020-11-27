@@ -1,13 +1,13 @@
 import { BigNumber, Contract, ethers, Wallet } from "ethers";
 import { format } from "path";
 import { getLogger } from "../util/logger";
-import { formatBigNumber } from "../util/tools";
+import { formatBigNumber, isAddress, nullAddress } from "../util/tools";
 import { createTransactionInfo, TransactionInfo } from "../util/types";
 
 const contractABI = [
   'function borrowRatePerBlock() public view returns (uint256)',
   'function supplyRatePerBlock() public view returns (uint256)',
-  'function lendToWarpVault(uint256 _amount) public',
+  'function lendToWarpVault(uint256 _amount, address _refferalCode) public',
   'function viewAccountBalance(address _account) public view returns (uint256)',
   'function exchangeRatePrior() public view returns (uint256)',
   'function redeem(uint256 _amount) public',
@@ -31,7 +31,10 @@ export class StableCoinWarpVaultService {
       const signer: Wallet = provider.getSigner()
       this.contract = new ethers.Contract(address, contractABI, provider).connect(signer)
     } else {
-      this.contract = new ethers.Contract(address, contractABI, provider)
+      console.log("non signer");
+      console.log(provider);
+      console.log(provider.getSigner());
+      this.contract = new ethers.Contract(address, contractABI, provider).connect(provider);
     }
   }
 
@@ -43,9 +46,19 @@ export class StableCoinWarpVaultService {
     return await this.contract.borrowRatePerBlock();
   }
 
-  lendToVault = async (amount: BigNumber): Promise<TransactionInfo> => {
+  lendToVault = async (amount: BigNumber, referralCode: Maybe<string>): Promise<TransactionInfo> => {
+    let code = nullAddress;
+    if (referralCode) {
+      if (!isAddress(referralCode)) {
+        const errorMessage = "provideCollateral referral address invalid: " + referralCode
+        logger.error(errorMessage);
+        throw Error(errorMessage);
+      }
 
-    const transactionObject = await this.contract.lendToWarpVault(amount);
+      code = referralCode;
+    }
+
+    const transactionObject = await this.contract.lendToWarpVault(amount, code);
 
     logger.log("lendToWarpVault: " + transactionObject.hash);
     

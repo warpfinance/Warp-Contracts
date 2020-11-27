@@ -10,7 +10,7 @@ import { Token } from "../../util/token";
 import { TransactionInfo } from "../../util/types";
 import { WarpLPVaultService } from "../../services/warpLPVault";
 import { getLogger } from "../../util/logger";
-import { parseBigNumber } from "../../util/tools";
+import { isAddress, parseBigNumber } from "../../util/tools";
 import { useBorrowLimit } from "../../hooks/useBorrowLimit";
 import { useCombinedBorrowRate } from "../../hooks/useCombinedBorrowRate";
 import { useConnectedWeb3Context } from "../../hooks/connectedWeb3";
@@ -96,11 +96,9 @@ export const Borrower: React.FC<Props> = (props: Props) => {
         if (withdrawLpValue !== 0) {
             setWithdrawError(isWithdrawError(withdrawLpValue, currentToken));
         }
-        // TO-DO: Web3 validation of referral code
-        if (referralCode === "badReferralCode") {
+        if (referralCode && !isAddress(referralCode)) {
             setReferralCodeError(true);
-        }
-        else {
+        } else {
             setReferralCodeError(false);
         }
     }, [borrowAmountValue,
@@ -302,7 +300,7 @@ export const Borrower: React.FC<Props> = (props: Props) => {
         const lpVault = new WarpLPVaultService(context.library, context.account, targetVault);
         const amount = utils.parseUnits(provideLpValue.toString(), currentToken.decimals);
 
-        const tx = lpVault.provideCollateral(amount);
+        const tx = lpVault.provideCollateral(amount, referralCode);
 
         setProvideModalOpen(false);
 

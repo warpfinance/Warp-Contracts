@@ -2,10 +2,12 @@ import * as React from "react";
 import { StableCoinWarpVaultService } from "../services/stableCoinWarpVault";
 import { WarpControlService } from "../services/warpControl";
 import { calculateAPYFromRate } from "../util/interest";
+import { getLogger } from "../util/logger";
 import { Token } from "../util/token";
 import { parseBigNumber } from "../util/tools";
 import { ConnectedWeb3Context } from "./connectedWeb3";
 
+const logger = getLogger("Hooks::useTokenInterest");
 
 export const useTokenInterest = (control: WarpControlService, token: Token, context: ConnectedWeb3Context) => {
   const { account, library: provider } = context
@@ -26,18 +28,24 @@ export const useTokenInterest = (control: WarpControlService, token: Token, cont
         return;
       }
 
+      try {
+        const vaultAddress = await control.getStableCoinVault(token.address);
+        const stableCoinVault = new StableCoinWarpVaultService(provider, account, vaultAddress);
 
-      const vaultAddress = await control.getStableCoinVault(token.address);
-      const stableCoinVault = new StableCoinWarpVaultService(provider, account, vaultAddress);
+        const supplyRate = await stableCoinVault.supplyRate();
+        const borrowRate = await stableCoinVault.borrowRate();
+
+        const supplyAPY = calculateAPYFromRate(parseBigNumber(supplyRate));
+        const borrowAPY = calculateAPYFromRate(parseBigNumber(borrowRate));
+
+        setTokenSupplyRate(supplyAPY);
+        setTokenBorrowRate(borrowAPY);
+      } catch (e) {
+        logger.error(e);
+      }
+
+
       
-      const supplyRate = await stableCoinVault.supplyRate();
-      const borrowRate = await stableCoinVault.borrowRate();
-
-      const supplyAPY = calculateAPYFromRate(parseBigNumber(supplyRate));
-      const borrowAPY = calculateAPYFromRate(parseBigNumber(borrowRate));
-
-      setTokenSupplyRate(supplyAPY);
-      setTokenBorrowRate(borrowAPY);
     }
 
     fetchRates();

@@ -1,9 +1,11 @@
 import { BigNumber, Contract, ethers, Wallet } from "ethers";
+import { isAddress } from "ethers/lib/utils";
 import { getLogger } from "../util/logger";
+import { nullAddress } from "../util/tools";
 import { createTransactionInfo, TransactionInfo } from "../util/types";
 
 const contractABI = [
-  'function provideCollateral(uint256 _amount) public',
+  'function provideCollateral(uint256 _amount, address referralCode) public',
   'function withdrawCollateral(uint256 _amount) public',
   'function collateralOfAccount(address _account) public view returns (uint256)'
 ]
@@ -24,8 +26,19 @@ export class WarpLPVaultService {
     }
   }
 
-  provideCollateral = async (amount: BigNumber): Promise<TransactionInfo> => {
-    const tx = await this.contract.provideCollateral(amount);
+  provideCollateral = async (amount: BigNumber, referralCode: Maybe<string>): Promise<TransactionInfo> => {
+    let code = nullAddress;
+    if (referralCode) {
+      if (!isAddress(referralCode)) {
+        const errorMessage = "provideCollateral referral address invalid: " + referralCode
+        logger.error(errorMessage);
+        throw Error(errorMessage);
+      }
+
+      code = referralCode;
+    }
+
+    const tx = await this.contract.provideCollateral(amount, code);
 
     logger.log("provideCollateral: " + tx.hash);
 

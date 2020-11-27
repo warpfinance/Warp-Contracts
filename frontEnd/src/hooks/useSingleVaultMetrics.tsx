@@ -1,11 +1,12 @@
 import React, { useEffect } from "react";
 import { StableCoinWarpVaultService } from "../services/stableCoinWarpVault";
 import { WarpControlService } from "../services/warpControl";
+import { getLogger } from "../util/logger";
 import { Token } from "../util/token";
 import { parseBigNumber } from "../util/tools";
 import { ConnectedWeb3Context } from "./connectedWeb3";
 
-
+const logger = getLogger("Hooks::useSingleVaultMetrics");
 
 export const useSingleVaultMetrics = (context: ConnectedWeb3Context, control: WarpControlService, token: Token, usdc: Maybe<Token>) => {
 
@@ -16,16 +17,20 @@ export const useSingleVaultMetrics = (context: ConnectedWeb3Context, control: Wa
     let isSubscribed = true;
 
     const fetchMetrics = async () => {
+      if (!usdc) {
+        return;
+      }
+
       const targetVault = await control.getStableCoinVault(token.address);
       const vault = new StableCoinWarpVaultService(context.library, context.account, targetVault);
-      const usdcPriceOfToken = parseBigNumber(await control.getStableCoinPrice(token.address), usdc?.decimals);
+      const usdcPriceOfToken = parseBigNumber(await control.getStableCoinPrice(token.address), usdc.decimals);
 
       let tokenSupply = parseBigNumber(await vault.getAmountInVault(), token.decimals);
-      let tokenBorrowed = parseBigNumber(await vault.getTotalAmountBorrowed(), token.decimals);      
-      console.log(token.symbol, tokenSupply, tokenBorrowed, usdcPriceOfToken, usdc?.decimals); 
+      let tokenBorrowed = parseBigNumber(await vault.getTotalAmountBorrowed(), token.decimals);   
+      logger.log(`${token.symbol} supply: ${tokenSupply} borrow: ${tokenBorrowed} usdcPrice: ${usdcPriceOfToken}`)
 
       const inVault = tokenSupply * usdcPriceOfToken;
-      const  borrowed = tokenBorrowed * usdcPriceOfToken;
+      const borrowed = tokenBorrowed * usdcPriceOfToken;
 
       if (isSubscribed) {
         setBorrowedAmount(borrowed);

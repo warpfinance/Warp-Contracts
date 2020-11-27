@@ -7,7 +7,7 @@ export enum WalletType {
     WalletConnect = 'WalletConnect'
 }
 
-declare type TransactionReceipt = providers.TransactionReceipt;
+export type TransactionReceipt = providers.TransactionReceipt;
 
 export interface TransactionInfo {
     finished: Promise<TransactionReceipt>

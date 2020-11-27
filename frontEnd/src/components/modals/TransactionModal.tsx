@@ -6,6 +6,8 @@ import { AvatarGroup } from "@material-ui/lab";
 import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
 import { CustomButton } from "../buttons/CustomButton";
 import { makeStyles } from "@material-ui/core";
+import { useConnectedWeb3Context } from "../../hooks/connectedWeb3";
+import { getEtherscanURL, NetworkId } from "../../util/networks";
 
 const useStyles = makeStyles(theme => ({
     dialog: {
@@ -31,6 +33,7 @@ interface Props {
 
 export const TransactionModal: React.FC<Props> = (props: Props) => {
     const classes = useStyles();
+    const { networkId } = useConnectedWeb3Context();
 
     const title = (props.action === "provide" || props.action === "withdraw") ?
         props.action.charAt(0).toUpperCase() + props.action.slice(1) + " Collateral" :
@@ -56,10 +59,10 @@ export const TransactionModal: React.FC<Props> = (props: Props) => {
         :
         null;
 
-    const dialogActions = props.confirmed === true && props.txHash && process.env.REACT_APP_ETHERSCAN_TRANSACTION_ENDPOINT ?
+    const dialogActions = props.confirmed === true && props.txHash && getEtherscanURL(networkId as NetworkId) ?
         <CustomButton
             externalHref={true}
-            href={process.env.REACT_APP_ETHERSCAN_TRANSACTION_ENDPOINT + props.txHash}
+            href={getEtherscanURL(networkId as NetworkId) + props.txHash}
             text="View on Etherscan"
             type="short" /> :
         null;

@@ -14,6 +14,8 @@ export const isAddress = (address: string): boolean => {
   return true
 }
 
+export const nullAddress = "0x0000000000000000000000000000000000000000";
+
 export const formatBigNumber = (value: BigNumber, decimals: number, precision = 2): string =>
   Number(utils.formatUnits(value, decimals)).toFixed(precision)
 

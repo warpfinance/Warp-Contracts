@@ -8,6 +8,7 @@ import { Link as RouterLink } from 'react-router-dom';
 import { makeStyles } from "@material-ui/core/styles";
 import { useState } from "react";
 import { useWeb3React } from "@web3-react/core";
+import { TransactionInfo, TransactionReceipt } from "../../util/types";
 
 const useStyles = makeStyles(theme => ({
     content: {
@@ -40,8 +41,7 @@ export const Header: React.FC<Props> = (props: Props) => {
         return input;
     };
 
-    const [address, setAddress] = useState("");
-    const [addressError, setAddressError] = useState(true);
+    const [createTeamTx, setCreateTeamTX] = useState<Maybe<TransactionInfo>>(null);
     const [link, setLink] = useState("");
     const [nftModalOpen, setNftModalOpen] = useState(false);
     const [nftReferralModalOpen, setNftReferralModalOpen] = useState(false);
@@ -53,13 +53,6 @@ export const Header: React.FC<Props> = (props: Props) => {
     const isConnected = Boolean(account);
 
     React.useEffect(() => {
-        // TO-DO: Validate address for web3
-        if (address !== "") {
-            setAddressError(false);
-        }
-        else {
-            setAddressError(true);
-        }
         // TO-DO: Validate team name for web3
         if (teamName !== "") {
             setTeamNameError(false);
@@ -67,31 +60,37 @@ export const Header: React.FC<Props> = (props: Props) => {
         else {
             setTeamNameError(true);
         }
-    }, [address, teamName]
+    }, [teamName]
     );
 
     const handleNftModalClose = (event: {}, reason: "backdropClick" | "escapeKeyDown") => {
-        setAddress("");
         setTeamName("")
         setNftModalOpen(false);
     }
 
     const handleNftReferralModalClose = (event: {}, reason: "backdropClick" | "escapeKeyDown") => {
-        setAddress("");
         setTeamName("")
         setNftReferralModalOpen(false);
     }
 
-    const onAddressChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-        setAddress(event.currentTarget.value);
-    }
+    const onTeamCreate = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+        // do TX
+        const p: Promise<TransactionInfo> = new Promise((resolve) => {
+            resolve({
+                finished: new Promise((resolve) => {
+                    console.log("hey")
+                }),
+                hash: "0x"
+            })
+        });
+        setCreateTeamTX(await p);
 
-    const onModalButtonClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+        if (account) {
+            setLink(account);
+        }
+
         setNftModalOpen(false);
         setNftReferralModalOpen(true);
-
-        // TO-DO: Implement create team referral link web3 action
-        setLink("xXfa23562vHhSC523%Vs");
     }
 
     const onTeamNameChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
@@ -128,7 +127,7 @@ export const Header: React.FC<Props> = (props: Props) => {
                             <Grid
                                 item
                             >
-                                <CustomButton text={"Create team referral link"} onClick={() => setNftModalOpen(true)} type={"short"} />
+                                <CustomButton text={"Create team referral code"} onClick={() => setNftModalOpen(true)} type={"short"} />
                             </Grid>
                         </React.Fragment>
                         :
@@ -229,16 +228,15 @@ export const Header: React.FC<Props> = (props: Props) => {
     return (
         <React.Fragment>
             <NftModal
-                addressError={addressError}
                 handleClose={handleNftModalClose}
-                onAddressChange={onAddressChange}
-                onButtonClick={onModalButtonClick}
+                onButtonClick={onTeamCreate}
                 onTeamNameChange={onTeamNameChange}
                 open={nftModalOpen}
                 teamNameError={teamNameError}
             />
             <NftReferralModal
                 handleClose={handleNftReferralModalClose}
+                createTeamTx={createTeamTx}
                 link={link}
                 open={nftReferralModalOpen}
                 teamName={teamName}
