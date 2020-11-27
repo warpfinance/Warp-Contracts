@@ -16,7 +16,7 @@ const Coinbase = new WalletLinkConnector({
     appLogoUrl: undefined //"https://warpfinance-warp.herokuapp.com/warp_ext_logo.jpg"
 })
 
-const portisAppId = "TODO: Get Portis ID";
+const portisAppId = "2062980f-62a8-42cc-94ab-3cd9a2302119";
 
 const Portis = new PortisConnector({
     dAppId: portisAppId,
