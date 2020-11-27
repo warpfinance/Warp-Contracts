@@ -11,6 +11,7 @@ import { useTokenValue } from "../../hooks/useTokenValue";
 import { useWarpControl } from "../../hooks/useWarpControl";
 import { BigNumber } from "ethers";
 import { RefreshToken } from "../../hooks/useRefreshToken";
+import { BorrowerCountdownContext } from "../../hooks/borrowerCountdown";
 
 interface Props {
   token: Token,
@@ -118,20 +119,28 @@ export const BorrowerTableCollateralRow: React.FC<Props> = (props: Props) => {
                 alignItems="flex-start"
                 spacing={1}
             >
-                <Grid item>
-                    <CustomButton
-                        id={"provide" + props.token.symbol}
-                        onClick={wrapMouseEventWithToken(props.onLeftButtonClick)}
-                        text={"Provide"}
-                        type="short" />
-                </Grid>
-                <Grid item>
-                    <CustomButton
-                        id={"withdraw" + props.token.symbol}
-                        onClick={wrapMouseEventWithToken(props.onRightButtonClick)}
-                        text={"Withdraw"}
-                        type="short" />
-                </Grid>
+                <BorrowerCountdownContext.Consumer>
+                    {value =>
+                        <React.Fragment>
+                            <Grid item>
+                                <CustomButton
+                                    id={"provide" + props.token.symbol}
+                                    onClick={wrapMouseEventWithToken(props.onLeftButtonClick)}
+                                    text={"Provide"}
+                                    type="short" />
+                            </Grid>
+                            <Grid item>
+                                <CustomButton
+                                    disabled={value.countdown === true}
+                                    id={"withdraw" + props.token.symbol}
+                                    onClick={wrapMouseEventWithToken(props.onRightButtonClick)}
+                                    text={"Withdraw"}
+                                    type="short" />
+                            </Grid>
+                        </React.Fragment>
+                    }
+                </BorrowerCountdownContext.Consumer>
+                
             </Grid>
         </TableCell>
     </TableRow>);

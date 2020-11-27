@@ -17,9 +17,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 interface Props {
-    addressError?: boolean,
     handleClose: (event: {}, reason: "backdropClick" | "escapeKeyDown") => void,
-    onAddressChange: (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void,
     onButtonClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void,
     onTeamNameChange: (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void,
     open: boolean,
@@ -43,7 +41,7 @@ export const NftModal: React.FC<Props> = (props: Props) => {
                     justify="center"
                     alignItems="center"
                 >
-                    <DialogTitle >Create referral link</DialogTitle>
+                    <DialogTitle >Create referral Code</DialogTitle>
                     <Grid
                         container
                         direction="column"
@@ -51,9 +49,8 @@ export const NftModal: React.FC<Props> = (props: Props) => {
                         alignItems="stretch"
                     >
                         <Text error={props.teamNameError} fullWidth={true} onChange={props.onTeamNameChange} text="Team name" />
-                        <Text error={props.addressError} fullWidth={true} onChange={props.onAddressChange} text="Address" />
                         <CustomButton
-                            disabled={props.addressError || props.teamNameError}
+                            disabled={props.teamNameError}
                             onClick={props.onButtonClick}
                             text={"Register team"}
                             type="short" />

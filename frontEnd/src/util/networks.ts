@@ -1,3 +1,4 @@
+import { NetworkCell } from '@material-ui/icons';
 import { DEFAULT_TOKEN } from './constants'
 import { getImageUrl, Token } from './token'
 
@@ -224,4 +225,12 @@ export const getTokensByNetwork = (networkId: number, lp?: boolean): Token[] => 
       return null
     })
     .filter(isNotNull)
+}
+
+export const getEtherscanURL = (network: NetworkId) => {
+  if (network === networkIds.KOVAN) {
+    return "https://kovan.etherscan.io/"
+  }
+
+  return process.env.REACT_APP_ETHERSCAN_TRANSACTION_ENDPOINT;
 }

@@ -38,7 +38,6 @@ export const ConnectedWeb3: React.FC = props => {
     let isSubscribed = true;
 
     const tryConnect = async () => {
-      console.log(active);
       if (!active) {
         console.log("fallback")
         await context.activate(connectors.Infura);

@@ -18,6 +18,7 @@ import { useTotalLentAmount } from "../../hooks/useTotalLentAmount";
 import { useTotalWalletBalance } from "../../hooks/useTotalWalletBalance";
 import { useUSDCToken } from "../../hooks/useUSDC";
 import { useWarpControl } from "../../hooks/useWarpControl";
+import { isAddress } from "ethers/lib/utils";
 
 interface Props {
 }
@@ -75,11 +76,10 @@ export const Lender: React.FC<Props> = (props: Props) => {
         if (!withdrawAmountValue.eq(BigNumber.from(0)) && withdrawAmountCurrency !== "") {
             setWithdrawError(isError(withdrawAmountValue, withdrawAmountCurrency, tokens, withdrawMaxAmount));
         }
-        // TO-DO: Web3 validation of referral code
-        if (referralCode === "badReferralCode") {
+
+        if (referralCode && !isAddress(referralCode)) {
             setReferralCodeError(true);
-        }
-        else {
+        } else {
             setReferralCodeError(false);
         }
     }, [lendAmountValue, lendAmountCurrency, referralCode, withdrawAmountValue, withdrawAmountCurrency]
@@ -210,7 +210,7 @@ export const Lender: React.FC<Props> = (props: Props) => {
 
         const scVault = new StableCoinWarpVaultService(context.library, context.account, targetVault);
 
-        const tx = scVault.lendToVault(lendAmountValue);
+        const tx = scVault.lendToVault(lendAmountValue, referralCode);
 
         setLendModalOpen(false);
 
