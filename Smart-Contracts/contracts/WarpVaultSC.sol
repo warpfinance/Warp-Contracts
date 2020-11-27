@@ -386,10 +386,7 @@ contract WarpVaultSC is Ownable, Exponential {
 
         principalBalance[msg.sender] = principalBalance[msg.sender] + _amount;
         if(now <= timeWizard) {
-          vars.isMember = WC.checkIfGroupMember(msg.sender);
-          if(vars.isMember == false) {
-            WC.addMemberToGroup(_refferalCode, msg.sender);
-          }
+            WC.addMemberToGroupSC(_refferalCode, msg.sender, _amount);
         }
 
         //mint appropriate Warp DAI
