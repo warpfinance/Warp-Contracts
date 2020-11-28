@@ -40,11 +40,13 @@ contract WarpControl is Ownable, Exponential {
     mapping(address => uint256) nonCompliant;
     mapping(address => bool) public isVault;
     mapping(address => address[]) public refferalCodeTracker;
-    mapping(address => mapping(address => uint)) public tvlForUserByGroup;
+    mapping(address => mapping(address => uint)) public amountForUserByGroup;
     mapping(address => mapping(address => mapping(address => uint))) public lpLockedForUserByGroup;
     mapping(address => string) public refferalCodeToGroupName;
     mapping(address => bool) public isParticipant;
     mapping(address => bool) public existingRefferalCode;
+    mapping(address => mapping(address => bool)) public isInGroup;
+
 
     event NewLPVault(address _newVault);
     event NewSCVault(address _newVault, address _interestRateModel);
@@ -101,11 +103,11 @@ contract WarpControl is Ownable, Exponential {
       return refferalCodeTracker[_refferalCode];
     }
 
-    function viewSCtvlForUserByGroup(address _refferalCode, address _member) public view returns(uint) {
-      return tvlForUserByGroup[_member][_refferalCode];
+    function viewSClockedForUserByGroup(address _refferalCode, address _member) public view returns(uint) {
+      return amountForUserByGroup[_member][_refferalCode];
     }
-    
-    function viewLPtvlForUserByGroup(address _refferalCode, address _member, address _lp) public view returns(uint) {
+
+    function viewLPlockedForUserByGroup(address _refferalCode, address _member, address _lp) public view returns(uint) {
       return lpLockedForUserByGroup[_member][_refferalCode][_lp];
     }
 
@@ -199,8 +201,11 @@ contract WarpControl is Ownable, Exponential {
 
     function addMemberToGroupSC(address _refferalCode, address _member, uint _amount) public onlyVault {
       //add member to the member array for the input referal code
-      refferalCodeTracker[_refferalCode].push(_member);
-      tvlForUserByGroup[_member][_refferalCode] = tvlForUserByGroup[msg.sender][_refferalCode].add(_amount);
+      if(isInGroup[_member][_refferalCode] == false) {
+        refferalCodeTracker[_refferalCode].push(_member);
+        isInGroup[_member][_refferalCode] = false;
+      }
+      amountForUserByGroup[_member][_refferalCode] = amountForUserByGroup[msg.sender][_refferalCode].add(_amount);
       //add the mebers address to the total participants member array
       if(isParticipant[_member] == false) {
         launchParticipants.push(_member);
