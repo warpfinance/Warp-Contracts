@@ -19,7 +19,7 @@
  */
 
 const HDWalletProvider = require("@truffle/hdwallet-provider");
-const infuraKey = "5e079c09b6f74d2b862e028673a08346";
+const infuraKey = "adcd159201374a85bb1092c8ae4a097d";
 const mnemonic =
   "life extend whale clown walnut leopard nut purse frame dwarf ecology inherit";
 
@@ -66,7 +66,7 @@ module.exports = {
       network_id: 3, // Ropsten's id
       gas: 5500000, // Ropsten has a lower block limit than mainnet
       confirmations: 2, // # of confs to wait between deployments. (default: 0)
-      timeoutBlocks: 200 // # of blocks before a deployment times out  (minimum/default: 50)
+      timeoutBlocks: 2000 // # of blocks before a deployment times out  (minimum/default: 50)
       // skipDryRun: true     // Skip dry run before migrations? (default: false for public nets )
     },
     kovan: {
@@ -77,8 +77,8 @@ module.exports = {
         ),
       network_id: 42, // Ropsten's id
       gas: 12487794, // Ropsten has a lower block limit than mainnet
-      confirmations: 1, // # of confs to wait between deployments. (default: 0)
-      timeoutBlocks: 200 // # of blocks before a deployment times out  (minimum/default: 50)
+      confirmations: 4, // # of confs to wait between deployments. (default: 0)
+      timeoutBlocks: 2000 // # of blocks before a deployment times out  (minimum/default: 50)
       // skipDryRun: true     // Skip dry run before migrations? (default: false for public nets )
     }
   },
