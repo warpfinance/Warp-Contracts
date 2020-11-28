@@ -14,7 +14,7 @@ const warpControlABI:string [] = [
   'function viewBorrowLimit(address _account) public view returns (uint256)',
   'function borrowSC(address _StableCoin, uint256 _amount) public',
   'function Oracle() public view returns (address)',
-  'function createTeam(string _name) public'
+  'function createGroup(string memory _groupName) public'
 ]
 
 const logger = getLogger('Services::WarpControlService')
@@ -83,7 +83,7 @@ export class WarpControlService {
   }
 
   createTeam = async (teamName: string): Promise<TransactionInfo> => {
-    const tx = await this.contract.createTeam(teamName);
+    const tx = await this.contract.createGroup(teamName);
 
     logger.log("Create Team Hash: " + tx.hash);
 

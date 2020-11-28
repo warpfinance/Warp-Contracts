@@ -31,10 +31,7 @@ export class StableCoinWarpVaultService {
       const signer: Wallet = provider.getSigner()
       this.contract = new ethers.Contract(address, contractABI, provider).connect(signer)
     } else {
-      console.log("non signer");
-      console.log(provider);
-      console.log(provider.getSigner());
-      this.contract = new ethers.Contract(address, contractABI, provider).connect(provider);
+      this.contract = new ethers.Contract(address, contractABI, provider);
     }
   }
 
