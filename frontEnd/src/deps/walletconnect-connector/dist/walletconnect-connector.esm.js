@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import invariant from 'tiny-invariant';
 
