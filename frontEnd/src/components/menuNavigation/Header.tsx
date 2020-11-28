@@ -9,6 +9,8 @@ import { makeStyles } from "@material-ui/core/styles";
 import { useState } from "react";
 import { useWeb3React } from "@web3-react/core";
 import { TransactionInfo, TransactionReceipt } from "../../util/types";
+import { WarpControlService } from "../../services/warpControl";
+import { getContractAddress } from "../../util/networks";
 
 const useStyles = makeStyles(theme => ({
     content: {
@@ -48,7 +50,8 @@ export const Header: React.FC<Props> = (props: Props) => {
     const [teamName, setTeamName] = useState("");
     const [teamNameError, setTeamNameError] = useState(true);
 
-    const { account } = useWeb3React();
+    const context = useWeb3React();
+    const account = context.account;
     const walletAddress = account ? account : "Connect";
     const isConnected = Boolean(account);
 
@@ -74,16 +77,15 @@ export const Header: React.FC<Props> = (props: Props) => {
     }
 
     const onTeamCreate = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-        // do TX
-        const p: Promise<TransactionInfo> = new Promise((resolve) => {
-            resolve({
-                finished: new Promise((resolve) => {
-                    console.log("hey")
-                }),
-                hash: "0x"
-            })
-        });
-        setCreateTeamTX(await p);
+        if (!context.chainId || !context.account) {
+            console.log("Not connected to web3");
+            return;
+        }
+
+        const controlAddress = getContractAddress(context.chainId, 'warpControl');
+        const control = new WarpControlService(context.library, context.account, controlAddress);
+        const tx = await control.createTeam(teamName);
+        setCreateTeamTX(tx);
 
         if (account) {
             setLink(account);
