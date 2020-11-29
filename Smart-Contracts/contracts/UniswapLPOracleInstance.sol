@@ -24,6 +24,7 @@ contract UniswapLPOracleInstance is Ownable {
     uint256 public price0CumulativeLast;
     uint256 public price1CumulativeLast;
     uint32 public blockTimestampLast;
+    bool public firstRun;
     FixedPoint.uq112x112 public price0Average;
     FixedPoint.uq112x112 public price1Average;
 
@@ -58,7 +59,9 @@ contract UniswapLPOracleInstance is Ownable {
                 reserve0 != 0 && reserve1 != 0,
                 "ExampleOracleSimple: NO_RESERVES"
             ); // ensure that there's liquidity in the pair
+            firstRun = true;
             update();
+            firstRun = false;
         }
     }
 
@@ -75,7 +78,7 @@ contract UniswapLPOracleInstance is Ownable {
         uint32 timeElapsed = blockTimestamp - blockTimestampLast; // overflow is desired
 
         //check if this is the first update
-        if (timeElapsed >= PERIOD) {
+        if (timeElapsed >= PERIOD || firstRun == true) {
             // ensure that at least one full period has passed since the last update
             // cumulative price is in (uq112x112 price * seconds) units so we simply wrap it after division by time elapsed
             price0Average = FixedPoint.uq112x112(

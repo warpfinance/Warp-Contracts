@@ -77,9 +77,9 @@ module.exports = {
         ),
       network_id: 42, // Ropsten's id
       gas: 12487794, // Ropsten has a lower block limit than mainnet
-      confirmations: 4, // # of confs to wait between deployments. (default: 0)
-      timeoutBlocks: 2000 // # of blocks before a deployment times out  (minimum/default: 50)
-      // skipDryRun: true     // Skip dry run before migrations? (default: false for public nets )
+      confirmations: 2, // # of confs to wait between deployments. (default: 0)
+      timeoutBlocks: 200, // # of blocks before a deployment times out  (minimum/default: 50)
+      skipDryRun: true // Skip dry run before migrations? (default: false for public nets )
     }
   },
 
@@ -97,7 +97,7 @@ module.exports = {
         // See the solidity docs for advice about optimization and evmVersion
         optimizer: {
           enabled: true,
-          runs: 1
+          runs: 100
         }
         //  evmVersion: "byzantium"
       }

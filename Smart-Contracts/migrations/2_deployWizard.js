@@ -48,6 +48,8 @@ module.exports = async deployer => {
   console.log("Listing USDC-wETH");
   await UNI.createPair(USDC.address, WrappedEthereum.address);
   const USDC_wETH = await UNI.getPair(USDC.address, WrappedEthereum.address);
+  const pair1 = await UniswapV2Pair.at(USDC_wETH);
+  pair1.sync();
   console.log("USDC-wETH pair created");
   console.log(USDC_wETH);
   await usdc.approve(UNI_R.address, "10000000000000000000000000000");
@@ -68,7 +70,10 @@ module.exports = async deployer => {
   console.log("Listing USDC-wBTC");
   await UNI.createPair(USDC.address, WrappedBitcoin.address);
   const USDC_wBTC = await UNI.getPair(USDC.address, WrappedBitcoin.address);
+  const pair2 = await UniswapV2Pair.at(USDC_wBTC);
+  pair2.sync();
   console.log("USDC-wBTC pair created");
+  console.log(USDC_wBTC);
   await usdc.approve(UNI_R.address, "10000000000000000000000000000");
   await wbtc.approve(UNI_R.address, "10000000000000000000000000000");
   console.log("Transfer Approvals Approved!");
@@ -88,7 +93,10 @@ module.exports = async deployer => {
   console.log("Listing USDC-DAI");
   await UNI.createPair(USDC.address, DAI.address);
   const USDC_DAI = await UNI.getPair(USDC.address, DAI.address);
+  const pair3 = await UniswapV2Pair.at(USDC_DAI);
+  pair3.sync();
   console.log("USDC-DAI pair created");
+  console.log(USDC_DAI);
   await usdc.approve(UNI_R.address, "10000000000000000000000000000");
   await dai.approve(UNI_R.address, "10000000000000000000000000000");
   console.log("Transfer Approvals Approved!");
@@ -107,7 +115,10 @@ module.exports = async deployer => {
   console.log("Listing USDC-USDT");
   await UNI.createPair(USDC.address, USDT.address);
   const USDC_USDT = await UNI.getPair(USDC.address, USDT.address);
+  const pair4 = await UniswapV2Pair.at(USDC_USDT);
+  pair4.sync();
   console.log("USDC-USDT pair created");
+  console.log(USDC_USDT);
   await usdc.approve(UNI_R.address, "10000000000000000000000000000");
   await usdt.approve(UNI_R.address, "10000000000000000000000000000");
   console.log("Transfer Approvals Approved!");
@@ -129,6 +140,8 @@ module.exports = async deployer => {
     WrappedEthereum.address,
     WrappedBitcoin.address
   );
+  const pair5 = await UniswapV2Pair.at(ETH_wBTC);
+  pair5.sync();
   console.log("ETH-wBTC pair created");
   console.log(ETH_wBTC);
 
@@ -138,8 +151,8 @@ module.exports = async deployer => {
   await UNI_R.addLiquidity(
     weth.address,
     wbtc.address,
-    "35000000000000000000",
-    "1000000000000000000",
+    "35000000000000000000", //35 eth
+    "1000000000000000000", //one btc
     "34000000000000000000",
     "900000000000000000",
     "0x7f3A152F09324f2aee916CE069D3908603449173",
@@ -150,6 +163,8 @@ module.exports = async deployer => {
   console.log("Listing ETH-USDT");
   await UNI.createPair(WrappedEthereum.address, USDT.address);
   const ETH_USDT = await UNI.getPair(WrappedEthereum.address, USDT.address);
+  const pair6 = await UniswapV2Pair.at(ETH_USDT);
+  pair6.sync();
   console.log("ETH-USDT pair created");
   console.log(ETH_USDT);
 
@@ -157,10 +172,10 @@ module.exports = async deployer => {
   await dai.approve(UNI_R.address, "10000000000000000000000000000");
   console.log("Transfer Approvals Approved!");
   await UNI_R.addLiquidity(
-    weth.address,
     usdt.address,
-    "35000000000000000000",
-    "1000000000000000000",
+    weth.address,
+    "40000000000000000000", //$400 USDT
+    "1000000000000000000", // 1 ETH
     "34000000000000000000",
     "900000000000000000",
     "0x7f3A152F09324f2aee916CE069D3908603449173",
@@ -171,16 +186,18 @@ module.exports = async deployer => {
   console.log("Listing ETH-DAI");
   await UNI.createPair(WrappedEthereum.address, DAI.address);
   const ETH_DAI = await UNI.getPair(WrappedEthereum.address, DAI.address);
+  const pair7 = await UniswapV2Pair.at(ETH_DAI);
+  pair7.sync();
   console.log("ETH-DAI pair created");
   console.log(ETH_DAI);
   await weth.approve(UNI_R.address, "10000000000000000000000000000");
   await dai.approve(UNI_R.address, "10000000000000000000000000000");
   console.log("Transfer Approvals Approved!");
   await UNI_R.addLiquidity(
-    weth.address,
     dai.address,
-    "35000000000000000000",
-    "1000000000000000000",
+    weth.address,
+    "40000000000000000000", //$400 DAI
+    "1000000000000000000", // 1 ETH
     "34000000000000000000",
     "900000000000000000",
     "0x7f3A152F09324f2aee916CE069D3908603449173",
