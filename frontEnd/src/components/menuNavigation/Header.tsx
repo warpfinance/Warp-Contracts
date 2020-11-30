@@ -2,15 +2,15 @@ import * as React from "react";
 
 import { CustomButton, NftModal, NftReferralModal } from "../../components"
 import { Grid, Link, Typography } from "@material-ui/core";
+import { TransactionInfo, TransactionReceipt } from "../../util/types";
 
 import { BorrowerCountdownContext } from "../../hooks/borrowerCountdown";
 import { Link as RouterLink } from 'react-router-dom';
+import { WarpControlService } from "../../services/warpControl";
+import { getContractAddress } from "../../util/networks";
 import { makeStyles } from "@material-ui/core/styles";
 import { useState } from "react";
 import { useWeb3React } from "@web3-react/core";
-import { TransactionInfo, TransactionReceipt } from "../../util/types";
-import { WarpControlService } from "../../services/warpControl";
-import { getContractAddress } from "../../util/networks";
 
 const useStyles = makeStyles(theme => ({
     content: {
@@ -212,9 +212,11 @@ export const Header: React.FC<Props> = (props: Props) => {
                     <Grid
                         item
                     >
-                        <Typography className={classes.link} color="textSecondary">
-                            Docs
-                            </Typography>
+                        <Typography>
+                            <Link className={classes.link} color="textSecondary" href={process.env.REACT_APP_DOCS_ENDPOINT || ""} underline="none">
+                                Docs
+                            </Link>
+                        </Typography>
                     </Grid>
                     <Grid
                         item
