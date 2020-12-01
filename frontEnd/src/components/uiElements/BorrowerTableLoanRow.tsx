@@ -11,6 +11,7 @@ import { useBorrowedAmount } from "../../hooks/useBorrowedAmount";
 import { useConnectedWeb3Context } from "../../hooks/connectedWeb3";
 import { useTokenBalance } from "../../hooks/useTokenBalance";
 import { useWarpControl } from "../../hooks/useWarpControl";
+import { useTokenInterest } from "../../hooks/useTokenInterest";
 
 interface Props {
     token: Token,
@@ -25,12 +26,12 @@ export const BorrowerTableLoanRow: React.FC<Props> = (props: Props) => {
     const { control } = useWarpControl(context);
     const borrowedAmount = useBorrowedAmount(context, control, props.token, props.refreshToken);
     const { walletBalance } = useTokenBalance(props.token, context, props.refreshToken);
-
+    const { tokenBorrowRate } = useTokenInterest(control, props.token, context);
     const amountDue = parseBigNumber(borrowedAmount, props.token.decimals);
 
     const wrapMouseEventWithToken = (func: any) => {
         return (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-            func(event, props.token, walletBalance);
+            func(event, props.token, walletBalance, borrowedAmount);
         }
     }
 
@@ -63,6 +64,11 @@ export const BorrowerTableLoanRow: React.FC<Props> = (props: Props) => {
                             {amountDue.toLocaleString(undefined, { maximumFractionDigits: 4 }) + " " + props.token.symbol}
                         </Typography>
                     </Grid>
+                    <Grid item>
+                        <Typography variant="subtitle1" color="textSecondary">
+                            {tokenBorrowRate.toLocaleString(undefined, { minimumFractionDigits: 4 }) + "%"}
+                        </Typography>
+                    </Grid>
                 </Grid>
             </TableCell>
             <TableCell>
@@ -78,7 +84,7 @@ export const BorrowerTableLoanRow: React.FC<Props> = (props: Props) => {
                             <React.Fragment>
                                 <Grid item>
                                     <CustomButton
-                                        disabled={value.countdown === true}
+                                        disabled={value.countdown === true || amountDue === 0}
                                         id={"repay" + props.token.symbol}
                                         onClick={wrapMouseEventWithToken(props.onLeftButtonClick)}
                                         text={"Repay"}

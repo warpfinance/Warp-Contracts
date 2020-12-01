@@ -44,8 +44,8 @@ export const Dashboard: React.FC<Props> = (props: Props) => {
     let borrowPercent = 0;
 
     if (usdc) {
-        borrowBalanceUSDC = parseBigNumber(totalBorrowedAmount, usdc?.decimals);
-        borrowLimitUSDC = parseBigNumber(borrowLimit, usdc?.decimals);
+        borrowBalanceUSDC = parseBigNumber(totalBorrowedAmount, usdc.decimals);
+        borrowLimitUSDC = parseBigNumber(borrowLimit, usdc.decimals);
         if (borrowLimitUSDC > borrowBalanceUSDC) {
             borrowPercent = (borrowBalanceUSDC / borrowLimitUSDC) * 100;
         } else {
@@ -85,13 +85,13 @@ export const Dashboard: React.FC<Props> = (props: Props) => {
                 alignItems="stretch"
             >
                 <Grid item>
-                    <InformationCard header="Lending balance" text={`$${data.lendingBalance.toFixed(2)}`} />
+                    <InformationCard header="Lending balance (in USDC)" text={`$${data.lendingBalance.toFixed(2)}`} />
                 </Grid>
                 <Grid item>
                     <InformationCard header="Net APY" text={`${data.netApy.toLocaleString(undefined, {maximumFractionDigits: 2})}%`} />
                 </Grid>
                 <Grid item>
-                    <InformationCard header="Borrow balance" text={`$${data.borrowBalance.toFixed(2)}`} />
+                    <InformationCard header="Borrow balance (in USDC)" text={`$${data.borrowBalance.toFixed(2)}`} />
                 </Grid>
             </Grid>
             <Grid

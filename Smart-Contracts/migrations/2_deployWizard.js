@@ -11,7 +11,29 @@ const WarpVaultSCFactory = artifacts.require("WarpVaultSCFactory");
 const WarpVaultLPFactory = artifacts.require("WarpVaultLPFactory");
 const WarpControl = artifacts.require("WarpControl");
 
-module.exports = async deployer => {
+const BigNumber = require("bignumber.js");
+BigNumber.config({ EXPONENTIAL_AT: 1e9 });
+
+const amountWithDecimals = (amount, decimals) => {
+  const oneUnit = new BigNumber(10).pow(decimals);
+  const realAmount = new BigNumber(amount).times(oneUnit).toString();
+  return realAmount;
+}
+
+const parseBigNumber = (big, decimals) => {
+  if (decimals) {
+    big = new BigNumber(big.toString()).div(new BigNumber('1e'+decimals));
+  } else {
+    big = new BigNumber(big.toString());
+  }
+  const asJSNumber = big.toNumber();
+  return asJSNumber;
+}
+
+module.exports = async (deployer, network) => {
+
+  const ownerAddress = '0x7f3A152F09324f2aee916CE069D3908603449173';
+
   console.log("Initiate the Token Canon...");
   await deployer.deploy(DAI);
   console.log("Deploying the DAI....");
@@ -44,12 +66,16 @@ module.exports = async deployer => {
   const usdt = await USDT.deployed();
   const wbtc = await WrappedBitcoin.deployed();
   const weth = await WrappedEthereum.deployed();
+
+  const usdcDecimals = parseBigNumber(await usdc.decimals());
+  const daiDecimals = parseBigNumber(await dai.decimals());
+  const usdtDecimals = parseBigNumber(await usdt.decimals());
+  const wbtcDecimals = parseBigNumber(await wbtc.decimals());
+  const wethDecimals = parseBigNumber(await weth.decimals());
   ////////////////////////////////////////////////////////////////////////////////////////////
   console.log("Listing USDC-wETH");
   await UNI.createPair(USDC.address, WrappedEthereum.address);
   const USDC_wETH = await UNI.getPair(USDC.address, WrappedEthereum.address);
-  const pair1 = await UniswapV2Pair.at(USDC_wETH);
-  pair1.sync();
   console.log("USDC-wETH pair created");
   console.log(USDC_wETH);
   await usdc.approve(UNI_R.address, "10000000000000000000000000000");
@@ -58,20 +84,20 @@ module.exports = async deployer => {
   await UNI_R.addLiquidity(
     usdc.address,
     weth.address,
-    "40000000000000000000", //$400 USDC
-    "1000000000000000000", // 1 ETH
-    "300000000000000", //$300 USDC
-    "900000000000000", // 0.9 ETH
-    "0x7d4A13FE119C9F36425008a7afCB2737B2bB5C41",
+    amountWithDecimals(400 * 10000, usdcDecimals), //$400 USDC
+    amountWithDecimals(1 * 10000, wethDecimals), // 1 ETH
+    "0", //$300 USDC
+    "0", // 0.9 ETH
+    ownerAddress,
     100000000000000
   );
+  const pair1 = await UniswapV2Pair.at(USDC_wETH);
+  pair1.sync();
   console.log("Listed USDC-wETH");
   ////////////////////////////////////////////////////////////////////////////////////////////
   console.log("Listing USDC-wBTC");
   await UNI.createPair(USDC.address, WrappedBitcoin.address);
   const USDC_wBTC = await UNI.getPair(USDC.address, WrappedBitcoin.address);
-  const pair2 = await UniswapV2Pair.at(USDC_wBTC);
-  pair2.sync();
   console.log("USDC-wBTC pair created");
   console.log(USDC_wBTC);
   await usdc.approve(UNI_R.address, "10000000000000000000000000000");
@@ -80,21 +106,21 @@ module.exports = async deployer => {
   await UNI_R.addLiquidity(
     usdc.address,
     wbtc.address,
-    "1400000000000000000000", //$14,000 USDC
-    "1000000000000000000", // 1 BTC
-    "1300000000000000000000", // $13,000 USDC
-    "900000000000000000", //0.9 BTC
-    "0x7d4A13FE119C9F36425008a7afCB2737B2bB5C41",
+    amountWithDecimals(14000, usdcDecimals), //$14,000 USDC
+    amountWithDecimals(1, wbtcDecimals), // 1 BTC
+    "0", // $13,000 USDC
+    "0", //0.9 BTC
+    ownerAddress,
     100000000000000
   );
+  const pair2 = await UniswapV2Pair.at(USDC_wBTC);
+  pair2.sync();
   console.log("Liquidity is now Liquid!");
   console.log("Listed USDC-wBTC");
   ////////////////////////////////////////////////////////////////////////////////////////////
   console.log("Listing USDC-DAI");
   await UNI.createPair(USDC.address, DAI.address);
   const USDC_DAI = await UNI.getPair(USDC.address, DAI.address);
-  const pair3 = await UniswapV2Pair.at(USDC_DAI);
-  pair3.sync();
   console.log("USDC-DAI pair created");
   console.log(USDC_DAI);
   await usdc.approve(UNI_R.address, "10000000000000000000000000000");
@@ -103,20 +129,20 @@ module.exports = async deployer => {
   await UNI_R.addLiquidity(
     usdc.address,
     dai.address,
-    "1000000000000000001", //1-1 ish
-    "1000000000000000000",
-    "900000000000000000",
-    "900000000000000001",
-    "0x7d4A13FE119C9F36425008a7afCB2737B2bB5C41",
+    amountWithDecimals(100000, usdcDecimals), //1-1 ish
+    amountWithDecimals(100001, daiDecimals),
+    "0",
+    "0",
+    ownerAddress,
     100000000000000
   );
+  const pair3 = await UniswapV2Pair.at(USDC_DAI);
+  pair3.sync();
   console.log("Listed USDC-DAI");
   ////////////////////////////////////////////////////////////////////////////////////////////
   console.log("Listing USDC-USDT");
   await UNI.createPair(USDC.address, USDT.address);
   const USDC_USDT = await UNI.getPair(USDC.address, USDT.address);
-  const pair4 = await UniswapV2Pair.at(USDC_USDT);
-  pair4.sync();
   console.log("USDC-USDT pair created");
   console.log(USDC_USDT);
   await usdc.approve(UNI_R.address, "10000000000000000000000000000");
@@ -125,13 +151,15 @@ module.exports = async deployer => {
   await UNI_R.addLiquidity(
     usdc.address,
     usdt.address,
-    "1000000000000000001", //1-1 ish
-    "1000000000000000000",
-    "900000000000000000",
-    "900000000000000001",
-    "0x7d4A13FE119C9F36425008a7afCB2737B2bB5C41",
+    amountWithDecimals(100000, usdcDecimals), //1-1 ish
+    amountWithDecimals(100000, usdtDecimals),
+    "0",
+    "0",
+    ownerAddress,
     100000000000000
   );
+  const pair4 = await UniswapV2Pair.at(USDC_USDT);
+  pair4.sync();
   console.log("Listed USDC-USDT");
   ////////////////////////////////////////////////////////////////////////////////////////////
   console.log("Listing ETH-wBTC");
@@ -140,8 +168,6 @@ module.exports = async deployer => {
     WrappedEthereum.address,
     WrappedBitcoin.address
   );
-  const pair5 = await UniswapV2Pair.at(ETH_wBTC);
-  pair5.sync();
   console.log("ETH-wBTC pair created");
   console.log(ETH_wBTC);
 
@@ -151,20 +177,20 @@ module.exports = async deployer => {
   await UNI_R.addLiquidity(
     weth.address,
     wbtc.address,
-    "35000000000000000000", //35 eth
-    "1000000000000000000", //one btc
-    "34000000000000000000",
-    "900000000000000000",
-    "0x7d4A13FE119C9F36425008a7afCB2737B2bB5C41",
+    amountWithDecimals(35 * 10000, wethDecimals), //35 eth
+    amountWithDecimals(1 * 10000, wbtcDecimals), //one btc
+    "0",
+    "0",
+    ownerAddress,
     100000000000000
   );
+  const pair5 = await UniswapV2Pair.at(ETH_wBTC);
+  pair5.sync();
   console.log("Listed ETH-wBTC");
   ////////////////////////////////////////////////////////////////////////////////////////////
   console.log("Listing ETH-USDT");
   await UNI.createPair(WrappedEthereum.address, USDT.address);
   const ETH_USDT = await UNI.getPair(WrappedEthereum.address, USDT.address);
-  const pair6 = await UniswapV2Pair.at(ETH_USDT);
-  pair6.sync();
   console.log("ETH-USDT pair created");
   console.log(ETH_USDT);
 
@@ -174,20 +200,20 @@ module.exports = async deployer => {
   await UNI_R.addLiquidity(
     usdt.address,
     weth.address,
-    "40000000000000000000", //$400 USDT
-    "1000000000000000000", // 1 ETH
-    "34000000000000000000",
-    "900000000000000000",
-    "0x7d4A13FE119C9F36425008a7afCB2737B2bB5C41",
+    amountWithDecimals(400* 10000, usdcDecimals), //$400 USDT
+    amountWithDecimals(1* 10000, wethDecimals), // 1 ETH
+    "0",
+    "0",
+    ownerAddress,
     100000000000000
   );
-  console.log("Listed ETH-DAI");
+  const pair6 = await UniswapV2Pair.at(ETH_USDT);
+  pair6.sync();
+  console.log("Listed ETH-USDT");
   ////////////////////////////////////////////////////////////////////////////////////////////
   console.log("Listing ETH-DAI");
   await UNI.createPair(WrappedEthereum.address, DAI.address);
   const ETH_DAI = await UNI.getPair(WrappedEthereum.address, DAI.address);
-  const pair7 = await UniswapV2Pair.at(ETH_DAI);
-  pair7.sync();
   console.log("ETH-DAI pair created");
   console.log(ETH_DAI);
   await weth.approve(UNI_R.address, "10000000000000000000000000000");
@@ -196,13 +222,15 @@ module.exports = async deployer => {
   await UNI_R.addLiquidity(
     dai.address,
     weth.address,
-    "40000000000000000000", //$400 DAI
-    "1000000000000000000", // 1 ETH
-    "34000000000000000000",
-    "900000000000000000",
-    "0x7d4A13FE119C9F36425008a7afCB2737B2bB5C41",
+    amountWithDecimals(400 * 10000, daiDecimals), //$400 DAI
+    amountWithDecimals(1 * 10000, wethDecimals), // 1 ETH
+    "0",
+    "0",
+    ownerAddress,
     100000000000000
   );
+  const pair7 = await UniswapV2Pair.at(ETH_DAI);
+  pair7.sync();
   console.log("Listed ETH-DAI");
   ////////////////////////////////////////////////////////////////////////////////////////////
   await deployer.deploy(
@@ -224,7 +252,7 @@ module.exports = async deployer => {
     UniswapLPOracleFactory.address,
     WarpVaultLPFactory.address,
     WarpVaultSCFactory.address,
-    "0x7d4A13FE119C9F36425008a7afCB2737B2bB5C41" //warp team address
+    ownerAddress //warp team address
   );
   console.log("Warp Speed Controlled");
   UOF = await UniswapLPOracleFactory.deployed();
@@ -258,6 +286,8 @@ module.exports = async deployer => {
     WrappedEthereum.address,
     USDC.address
   );
+
+
   ///////////////////////////pairs retrieved///////////
   await WarpC.createNewLPVault(
     0,

@@ -28,6 +28,8 @@ export const useTokenInterest = (control: WarpControlService, token: Token, cont
         return;
       }
 
+      logger.log(`Fetching token interest rates for ${token.symbol}`)
+
       try {
         const vaultAddress = await control.getStableCoinVault(token.address);
         const stableCoinVault = new StableCoinWarpVaultService(provider, account, vaultAddress);
@@ -37,6 +39,8 @@ export const useTokenInterest = (control: WarpControlService, token: Token, cont
 
         const supplyAPY = calculateAPYFromRate(parseBigNumber(supplyRate));
         const borrowAPY = calculateAPYFromRate(parseBigNumber(borrowRate));
+
+        logger.log(`${token.symbol} APYS: supply=${supplyAPY} borrow=${borrowAPY}`);
 
         setTokenSupplyRate(supplyAPY);
         setTokenBorrowRate(borrowAPY);

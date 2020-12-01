@@ -41,6 +41,8 @@ export const useCombinedBorrowRate = (context: ConnectedWeb3Context, control: Wa
                   rate: calculateAPYFromRate(parseBigNumber(await vault.borrowRate())),
                   amount: parseBigNumber(await vault.borrowedAmount(context.account), token.decimals)
               }
+
+              logger.log(`User is borrowing ${stats.amount} ${token.symbol} at ${stats.rate}`);
     
               borrowStats.push(stats);
           }
@@ -50,11 +52,15 @@ export const useCombinedBorrowRate = (context: ConnectedWeb3Context, control: Wa
           }, 0);
 
           let calculatedRate = 0;
-          for (const stats of borrowStats) {
-            calculatedRate = calculatedRate + (stats.amount / totalBorrowedAmount) * stats.rate;
+          if (totalBorrowedAmount > 0) {
+            for (const stats of borrowStats) {
+                calculatedRate = calculatedRate + (stats.amount / totalBorrowedAmount) * stats.rate;
+              }
           }
+          
 
           if (isSubscribed) {
+              logger.log(`Calculated weighted borrow rate is ${calculatedRate}`)
               setTotalInterestRate(calculatedRate);
           }
       }

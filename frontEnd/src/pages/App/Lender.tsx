@@ -19,9 +19,12 @@ import { useTotalWalletBalance } from "../../hooks/useTotalWalletBalance";
 import { useUSDCToken } from "../../hooks/useUSDC";
 import { useWarpControl } from "../../hooks/useWarpControl";
 import { isAddress } from "ethers/lib/utils";
+import { getLogger } from "../../util/logger";
 
 interface Props {
 }
+
+const logger = getLogger("Pages::Lender");
 
 export const Lender: React.FC<Props> = (props: Props) => {
     const context = useConnectedWeb3Context();
@@ -122,6 +125,7 @@ export const Lender: React.FC<Props> = (props: Props) => {
         setLendAmountCurrency(event.target.id);
         setLendFocusedAmountId(event.target.id);
         setLendAmountValue(utils.parseUnits(event.target.value || "0", token.decimals));
+        logger.log("On lend amount change", lendAmountCurrency, lendFocusedAmountId, event.target.value || "0", token.symbol)
         setLendMaxAmount(maxAmount);
         setLendToken(token);
     };
@@ -163,15 +167,18 @@ export const Lender: React.FC<Props> = (props: Props) => {
     };
 
     const handleTransaction = async (tx: Promise<TransactionInfo>) => {
-        setTransactionConfirmed(false);
-        setTransactionModalOpen(true);
-        const info = await tx;
-        setTransactionConfirmed(true);
-        setTransactionHash(info.hash);
-
-
-        await info.finished;
-        setTransactionModalOpen(false);
+        try {
+            setTransactionConfirmed(false);
+            setTransactionModalOpen(true);
+            const info = await tx;
+            setTransactionConfirmed(true);
+            setTransactionHash(info.hash);
+            await info.finished;
+            setTransactionModalOpen(false);
+        } catch(e) {
+            logger.error(`--------------------------\nTransaction Failed!\n   Reason:\n${e.data?.message}`);
+            throw e;
+        }
     }
 
     const onAuth = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
@@ -190,8 +197,6 @@ export const Lender: React.FC<Props> = (props: Props) => {
     }
 
     const onLend = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-        // TO-DO: Web3 handling of referral code
-
         if (!lendToken || !context.account) {
             return;
         }
@@ -214,6 +219,11 @@ export const Lender: React.FC<Props> = (props: Props) => {
 
         setLendModalOpen(false);
 
+        setWithdrawFocusedAmountId("");
+        setWithdrawAmountValue(BigNumber.from(0));
+        setLendFocusedAmountId("");
+        setLendAmountValue(BigNumber.from(0));
+
         await handleTransaction(tx);
         refresh();
     }
@@ -230,6 +240,11 @@ export const Lender: React.FC<Props> = (props: Props) => {
         const tx = scVault.withdraw(withdrawAmountValue);
 
         setWithdrawModalOpen(false);
+
+        setWithdrawFocusedAmountId("");
+        setWithdrawAmountValue(BigNumber.from(0));
+        setLendFocusedAmountId("");
+        setLendAmountValue(BigNumber.from(0));
 
         await handleTransaction(tx);
         refresh();
@@ -252,13 +267,13 @@ export const Lender: React.FC<Props> = (props: Props) => {
                     alignItems="stretch"
                 >
                     <Grid item>
-                        <InformationCard header="Wallet balance" text={`$${data.walletBalance}`} />
+                        <InformationCard header="Wallet balance (in USDC)" text={`$${data.walletBalance}`} />
                     </Grid>
                     <Grid item>
-                        <InformationCard header="Stable coin reward" text={`$${data.stableCoinReward}`} />
+                        <InformationCard header="Stable coin reward (in USDC)" text={`$${data.stableCoinReward.toLocaleString(undefined, {maximumFractionDigits: 2})}`} />
                     </Grid>
                     <Grid item>
-                        <InformationCard header="Stable coin deposit" text={`$${data.stableCoinDeposit.toFixed(2)}`} />
+                        <InformationCard header="Stable coin deposit (in USDC)" text={`$${data.stableCoinDeposit.toFixed(2)}`} />
                     </Grid>
                 </Grid>
                 <Grid

@@ -30,6 +30,10 @@ export const useTotalLentAmount = (context: ConnectedWeb3Context, control: WarpC
         logger.log("Cannot read wallet balance without a connected wallet.")
         return;
       }
+      if (!usdc) {
+        logger.log("Skipping calculations until usdc is loaded");
+        return;
+      }
 
       // const oracleAddress = await control.oracle();
       // const oracle = new OracleFactoryService(context.library, context.account, oracleAddress);
@@ -44,9 +48,11 @@ export const useTotalLentAmount = (context: ConnectedWeb3Context, control: WarpC
           const vault = new StableCoinWarpVaultService(context.library, context.account, targetVault);
           const tokenService = new ERC20Service(context.library, context.account, token.address);
           const tokenBalance = parseBigNumber(await vault.getBalance(context.account), await tokenService.decimals());
-          const usdcPriceOfToken = parseBigNumber(await control.getStableCoinPrice(token.address), usdc?.decimals);
+          const usdcPriceOfToken = parseBigNumber(await control.getStableCoinPrice(token.address), usdc.decimals);
 
           const tokenBalanceInUSDC = tokenBalance * usdcPriceOfToken;
+
+          logger.log(`User has lent ${tokenBalance} ${token.symbol} at a price of ${usdcPriceOfToken} for a value of ${tokenBalanceInUSDC}`)
           amount = amount + tokenBalanceInUSDC;
         } catch (e) {
           logger.error("Failed to get lent amount for " + token.symbol);
@@ -55,6 +61,7 @@ export const useTotalLentAmount = (context: ConnectedWeb3Context, control: WarpC
       }
 
       if (isSubscribed) {
+        logger.log(`Calculated total lent amount to be ${amount} (in USDC)`);
         setLentAmount(amount);
       }
     }
