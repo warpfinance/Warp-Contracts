@@ -118,8 +118,8 @@ contract WarpVaultSC is Ownable, Exponential {
         );
     }
 
-    function stableCoinAddress() public view returns (address) {
-        return address(stablecoin);
+    function getSCDecimals() public view returns(uint) {
+      return stablecoin.decimals();
     }
 
     /**
