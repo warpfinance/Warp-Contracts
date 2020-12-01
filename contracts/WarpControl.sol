@@ -237,7 +237,7 @@ contract WarpControl is Ownable, Exponential {
       //get current price of one LP token
         uint256 lpValue = Oracle.getUnderlyingPrice(lpToken);
       //return usable collateral value devided by the price of one lp token for maximum withdrawable lps(scale by 1e18)
-        return usableCollateral.mul(1e12).div(lpValue);
+        return usableCollateral.mul(1e18).div(lpValue);
     }
 
     function viewMaxWithdrawAllowed(address account, address lpToken) public view returns (uint256) {
@@ -245,7 +245,7 @@ contract WarpControl is Ownable, Exponential {
         uint256 collateralValue = viewTotalAvailableCollateralValue(account);
         uint256 usableCollateral = collateralValue.sub(borrowedTotal);
         uint256 lpValue = Oracle.viewUnderlyingPrice(lpToken);
-        return usableCollateral.mul(1e12).div(lpValue);
+        return usableCollateral.mul(1e18).div(lpValue);
     }
 
     function getTotalAvailableCollateralValue(address _account)
