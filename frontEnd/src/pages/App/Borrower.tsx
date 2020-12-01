@@ -35,6 +35,7 @@ export const Borrower: React.FC<Props> = (props: Props) => {
     const { control } = useWarpControl(context);
     const { totalBorrowedAmount, borrowLimit } = useBorrowLimit(context, control, refreshToken);
     const combinedBorrowRate = useCombinedBorrowRate(context, control, stableCoins, refreshToken);
+    const [newBorrowLimitUsed, setNewBorrowLimitUsed] = useState(0);
 
     const data = {
         collateral: parseBigNumber(borrowLimit, usdcToken?.decimals),
@@ -42,6 +43,7 @@ export const Borrower: React.FC<Props> = (props: Props) => {
         interestRate: combinedBorrowRate ? combinedBorrowRate : 0,
         borrowLimit: parseBigNumber(borrowLimit, usdcToken?.decimals),
         borrowLimitUsed: parseBigNumber(totalBorrowedAmount, usdcToken?.decimals),
+        newBorrowLimitUsed: newBorrowLimitUsed
     }
 
     if (data.borrowLimit > 0) {
@@ -52,7 +54,7 @@ export const Borrower: React.FC<Props> = (props: Props) => {
     const [authorizationModalOpen, setAuthorizationModalOpen] = useState(false);
 
     const [borrowAmountCurrency, setBorrowAmountCurrency] = useState("DAI");
-    const [borrowAmountValue, setBorrowAmountValue] = useState(0);
+    const [borrowTokenAmount, setBorrowTokenAmount] = useState(0);
     const [borrowError, setBorrowError] = useState(false);
     const [borrowModalOpen, setBorrowModalOpen] = useState(false);
 
@@ -84,8 +86,8 @@ export const Borrower: React.FC<Props> = (props: Props) => {
     const [transactionModalOpen, setTransactionModalOpen] = useState(false);
 
     React.useEffect(() => {
-        if (borrowAmountValue !== 0) {
-            setBorrowError(isBorrowError(borrowAmountValue, currentToken));
+        if (borrowTokenAmount !== 0) {
+            setBorrowError(isBorrowError(borrowTokenAmount, currentToken));
         }
         if (provideLpValue !== 0) {
             setProvideError(isProvideError(provideLpValue, currentToken));
@@ -101,7 +103,7 @@ export const Borrower: React.FC<Props> = (props: Props) => {
         } else {
             setReferralCodeError(false);
         }
-    }, [borrowAmountValue,
+    }, [borrowTokenAmount,
         borrowAmountCurrency,
         provideLpValue,
         currentToken,
@@ -186,8 +188,18 @@ export const Borrower: React.FC<Props> = (props: Props) => {
         setTokenToUSDCRate(ratio);
     }
 
-    const onBorrowAmountChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-        setBorrowAmountValue(Number(event.target.value));
+    const onBorrowAmountChange = async (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+        const numTokens = Number(event.target.value);
+        setBorrowTokenAmount(numTokens);
+
+        const coinPrice = await control.getStableCoinPrice(currentToken.address);
+        const priceMultiplier = parseBigNumber(coinPrice, usdcToken?.decimals);
+        const borrowedAmount = numTokens * priceMultiplier;
+
+        const borrowLimitUsed = parseBigNumber(totalBorrowedAmount, usdcToken?.decimals);
+        const newUsage = borrowedAmount + borrowLimitUsed;
+        setNewBorrowLimitUsed(newUsage);
+        logger.log(`borrow amount changed numtokens=${numTokens} price=${priceMultiplier} current=${borrowLimitUsed} toborrow=${borrowedAmount} newUsed=${newUsage}`);
     };
 
     const onProvideAmountChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
@@ -245,14 +257,20 @@ export const Borrower: React.FC<Props> = (props: Props) => {
     }
 
     const handleTransaction = async (tx: Promise<TransactionInfo>) => {
-        setTransactionConfirmed(false);
-        setTransactionModalOpen(true);
-        const info = await tx;
-        setTransactionConfirmed(true);
-        setTransactionHash(info.hash);
+        try {
+            setTransactionConfirmed(false);
+            setTransactionModalOpen(true);
+            const info = await tx;
+            setTransactionConfirmed(true);
+            setTransactionHash(info.hash);
 
-        await info.finished;
-        setTransactionModalOpen(false);
+            await info.finished;
+            setTransactionModalOpen(false);
+        } catch(e) {
+            logger.error(`--------------------------\nTransaction Failed!\n   Reason:\n${e.data?.message}`);
+            throw e;
+        }
+        
     }
 
     const onAuth = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
@@ -266,13 +284,10 @@ export const Borrower: React.FC<Props> = (props: Props) => {
     }
 
     const onBorrow = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-        // TO-DO: Web3 handling of referral code
+        
 
-        const coinPrice = await control.getStableCoinPrice(currentToken.address);
-        const priceMultiplier = parseBigNumber(coinPrice, usdcToken?.decimals);
-        const numCoins = borrowAmountValue * priceMultiplier;
-
-        const amount = utils.parseUnits(numCoins.toString(), currentToken.decimals);
+        const amount = utils.parseUnits(borrowTokenAmount.toString(), currentToken.decimals);
+        logger.log(`Borrowing ${borrowTokenAmount} ${currentToken.symbol} (${amount} in weth)`)
         const tx = control.borrowStableCoin(currentToken.address, amount);
 
         setBorrowModalOpen(false);
@@ -433,10 +448,10 @@ export const Borrower: React.FC<Props> = (props: Props) => {
             />
             <BigModal
                 action="Borrow"
-                amount={borrowAmountValue}
+                amount={borrowTokenAmount}
                 currency={borrowAmountCurrency}
                 data={data}
-                error={borrowError || borrowAmountValue === 0}
+                error={borrowError || borrowTokenAmount === 0}
                 handleClose={handleBorrowClose}
                 handleSelect={handleBorrowCurrencySelect}
                 onButtonClick={onBorrow}

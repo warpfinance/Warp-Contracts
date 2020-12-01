@@ -53,6 +53,17 @@ interface Props {
 export const BigModal: React.FC<Props> = (props: Props) => {
     const classes = useStyles();
 
+    const [enteredValue, setEnteredValue] = React.useState("");
+
+    const onChangeWrapper = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+        setEnteredValue(event.target.value);
+        props.onChange(event);
+      }
+
+    React.useEffect(() => {
+
+    }, [props.data.newBorrowLimitUsed]);
+
     return (
         <Dialog
             className={classes.dialog}
@@ -82,7 +93,11 @@ export const BigModal: React.FC<Props> = (props: Props) => {
                             spacing={1}
                         >
                             <Grid item>
-                                <Amount adornment="" onChange={props.onChange} error={props.error} />
+                                <Amount
+                                    adornment=""
+                                    onChange={onChangeWrapper}
+                                    value={enteredValue}
+                                    error={props.error} />
                             </Grid>
                             <Grid item>
                                 <Typography variant="subtitle2" color="textSecondary" >
@@ -217,7 +232,12 @@ export const BigModal: React.FC<Props> = (props: Props) => {
                                             alignItems="center"
                                         >
                                             <Typography variant="h6">
-                                                ${props.data.borrowLimitUsed.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                                                {
+                                                    "$" + 
+                                                    props.data.borrowLimitUsed.toLocaleString(undefined, { minimumFractionDigits: 2 }) +
+                                                    " -> $" + 
+                                                    props.data.newBorrowLimitUsed.toLocaleString(undefined, { minimumFractionDigits: 2})
+                                                }
                                             </Typography>
                                         </Grid>
                                     </CardContent>

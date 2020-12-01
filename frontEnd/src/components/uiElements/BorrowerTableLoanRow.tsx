@@ -78,7 +78,7 @@ export const BorrowerTableLoanRow: React.FC<Props> = (props: Props) => {
                             <React.Fragment>
                                 <Grid item>
                                     <CustomButton
-                                        disabled={value.countdown === true}
+                                        disabled={value.countdown === true || amountDue === 0}
                                         id={"repay" + props.token.symbol}
                                         onClick={wrapMouseEventWithToken(props.onLeftButtonClick)}
                                         text={"Repay"}

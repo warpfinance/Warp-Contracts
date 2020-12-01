@@ -19,9 +19,12 @@ import { useTotalWalletBalance } from "../../hooks/useTotalWalletBalance";
 import { useUSDCToken } from "../../hooks/useUSDC";
 import { useWarpControl } from "../../hooks/useWarpControl";
 import { isAddress } from "ethers/lib/utils";
+import { getLogger } from "../../util/logger";
 
 interface Props {
 }
+
+const logger = getLogger("Pages::Lender");
 
 export const Lender: React.FC<Props> = (props: Props) => {
     const context = useConnectedWeb3Context();
@@ -122,6 +125,7 @@ export const Lender: React.FC<Props> = (props: Props) => {
         setLendAmountCurrency(event.target.id);
         setLendFocusedAmountId(event.target.id);
         setLendAmountValue(utils.parseUnits(event.target.value || "0", token.decimals));
+        logger.log("On lend amount change", lendAmountCurrency, lendFocusedAmountId, event.target.value || "0", token.symbol)
         setLendMaxAmount(maxAmount);
         setLendToken(token);
     };
@@ -163,15 +167,18 @@ export const Lender: React.FC<Props> = (props: Props) => {
     };
 
     const handleTransaction = async (tx: Promise<TransactionInfo>) => {
-        setTransactionConfirmed(false);
-        setTransactionModalOpen(true);
-        const info = await tx;
-        setTransactionConfirmed(true);
-        setTransactionHash(info.hash);
-
-
-        await info.finished;
-        setTransactionModalOpen(false);
+        try {
+            setTransactionConfirmed(false);
+            setTransactionModalOpen(true);
+            const info = await tx;
+            setTransactionConfirmed(true);
+            setTransactionHash(info.hash);
+            await info.finished;
+            setTransactionModalOpen(false);
+        } catch(e) {
+            logger.error(`--------------------------\nTransaction Failed!\n   Reason:\n${e.data?.message}`);
+            throw e;
+        }
     }
 
     const onAuth = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
