@@ -18,21 +18,20 @@ const amountWithDecimals = (amount, decimals) => {
   const oneUnit = new BigNumber(10).pow(decimals);
   const realAmount = new BigNumber(amount).times(oneUnit).toString();
   return realAmount;
-}
+};
 
 const parseBigNumber = (big, decimals) => {
   if (decimals) {
-    big = new BigNumber(big.toString()).div(new BigNumber('1e'+decimals));
+    big = new BigNumber(big.toString()).div(new BigNumber("1e" + decimals));
   } else {
     big = new BigNumber(big.toString());
   }
   const asJSNumber = big.toNumber();
   return asJSNumber;
-}
+};
 
 module.exports = async (deployer, network) => {
-
-  const ownerAddress = '0x7f3A152F09324f2aee916CE069D3908603449173';
+  const ownerAddress = "0x7d4A13FE119C9F36425008a7afCB2737B2bB5C41";
 
   console.log("Initiate the Token Canon...");
   await deployer.deploy(DAI);
@@ -200,8 +199,8 @@ module.exports = async (deployer, network) => {
   await UNI_R.addLiquidity(
     usdt.address,
     weth.address,
-    amountWithDecimals(400* 10000, usdcDecimals), //$400 USDT
-    amountWithDecimals(1* 10000, wethDecimals), // 1 ETH
+    amountWithDecimals(400 * 10000, usdcDecimals), //$400 USDT
+    amountWithDecimals(1 * 10000, wethDecimals), // 1 ETH
     "0",
     "0",
     ownerAddress,
@@ -286,7 +285,6 @@ module.exports = async (deployer, network) => {
     WrappedEthereum.address,
     USDC.address
   );
-
 
   ///////////////////////////pairs retrieved///////////
   await WarpC.createNewLPVault(

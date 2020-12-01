@@ -58,4 +58,6 @@ abstract contract WarpVaultSCI {
     ) public virtual;
 
     function setNewInterestModel(address _newModel) public virtual;
+
+    function transferOwnership(address _newOwner) public virtual;
 }

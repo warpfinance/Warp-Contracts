@@ -28,6 +28,7 @@ contract WarpControl is Ownable, Exponential {
     WarpVaultLPFactoryI public WVLPF;
     WarpVaultSCFactoryI public WVSCF;
     address public warpTeam;
+    uint public graceSpace;
 
     address[] public lpVaults;
     address[] public scVaults;
@@ -56,6 +57,14 @@ contract WarpControl is Ownable, Exponential {
      */
     modifier onlyVault() {
         require(isVault[msg.sender] == true);
+        _;
+    }
+
+    /**
+    @dev Throws if a function is called by anyone but the warp team
+    **/
+    modifier onlyWarpT() {
+        require(msg.sender == warpTeam);
         _;
     }
 
@@ -223,7 +232,7 @@ contract WarpControl is Ownable, Exponential {
       //get current price of one LP token
         uint256 lpValue = Oracle.getUnderlyingPrice(lpToken);
       //return usable collateral value devided by the price of one lp token for maximum withdrawable lps(scale by 1e18)
-        return usableCollateral.mul(1e18).div(lpValue);
+        return usableCollateral.mul(1e12).div(lpValue);
     }
 
     function viewMaxWithdrawAllowed(address account, address lpToken) public view returns (uint256) {
@@ -231,7 +240,7 @@ contract WarpControl is Ownable, Exponential {
         uint256 collateralValue = viewTotalAvailableCollateralValue(account);
         uint256 usableCollateral = collateralValue.sub(borrowedTotal);
         uint256 lpValue = Oracle.viewUnderlyingPrice(lpToken);
-        return usableCollateral.mul(1e18).div(lpValue);
+        return usableCollateral.mul(1e12).div(lpValue);
     }
 
     function getTotalAvailableCollateralValue(address _account)
@@ -469,4 +478,27 @@ contract WarpControl is Ownable, Exponential {
       WarpVaultSCI WV = WarpVaultSCI(vault);
       WV.setNewInterestModel(IR);
     }
+
+    function initiateWarpDrive() public onlyWarpT{
+      graceSpace = now.add(172800);
+    }
+
+    function upgradeWarpSpeed(address _newWarpControl) public onlyWarpT {
+      require(now >= graceSpace);
+        uint256 numVaults = lpVaults.length;
+        uint256 numSCVaults = scVaults.length;
+      for (uint256 i = 0; i < numVaults; ++i) {
+          WarpVaultLPI vault = WarpVaultLPI(lpVaults[i]);
+          vault.transferOwnership(_newWarpControl);
+    }
+
+      for (uint256 i = 0; i < numSCVaults; ++i) {
+          //instantiate each LP warp vault
+          WarpVaultSCI WVSC = WarpVaultSCI(scVaults[i]);
+            WVSC.transferOwnership(_newWarpControl);
+        }
+          WVLPF.transferOwnership(_newWarpControl);
+          WVSCF.transferOwnership(_newWarpControl);
+          Oracle.transferOwnership(_newWarpControl);
+  }
 }

@@ -35,4 +35,7 @@ abstract contract WarpVaultLPI {
     function _liquidateAccount(address _account, address _liquidator)
         public
         virtual;
+
+    function transferOwnership(address _newOwner) public virtual;
+
 }
