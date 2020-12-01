@@ -118,6 +118,10 @@ contract WarpVaultSC is Ownable, Exponential {
         );
     }
 
+    function stableCoinAddress() public view returns (address) {
+        return address(stablecoin);
+    }
+
     /**
     @notice getCashPrior is a view funcion that returns the USD balance of all held underlying stablecoin assets
     **/
@@ -129,7 +133,7 @@ contract WarpVaultSC is Ownable, Exponential {
     @notice calculateFee is used to calculate the fee earned by the Warp Platform
     @param _payedAmount is a uint representing the full amount of stablecoin earned as interest
         **/
-    function calculateFee(uint256 _payedAmount) public view returns(uint) {
+    function calculateFee(uint256 _payedAmount) public view returns(uint256) {
         uint256 fee = _payedAmount.mul(percent).div(divisor);
         return fee;
     }
@@ -624,16 +628,17 @@ contract WarpVaultSC is Ownable, Exponential {
         address _liquidator,
         uint256 _amount
     ) public onlyWC angryWizard{
-        //transfer the owed amount of stablecoin from the borrower to this contract
-        stablecoin.transferFrom(_liquidator, address(this), _amount);
-          //calculate the fee on the principle received
-          uint fee = calculateFee(_amount);
+        //calculate the fee on the principle received
+        uint256 fee = calculateFee(_amount);
         //transfer fee amount to Warp team
-          totalReserves = totalReserves.add(fee);
-          // Clear the borrowers loan
+        totalReserves = totalReserves.add(fee);
+        // Clear the borrowers loan
         accountBorrows[_borrower].principal = 0;
         accountBorrows[_borrower].interestIndex = 0;
         totalBorrows = totalBorrows.sub(_amount);
+
+        //transfer the owed amount of stablecoin from the borrower to this contract
+        stablecoin.transferFrom(_liquidator, address(this), _amount);
     }
 
 

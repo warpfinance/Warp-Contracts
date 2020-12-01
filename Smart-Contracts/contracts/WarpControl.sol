@@ -2,7 +2,7 @@ pragma solidity ^0.6.0;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/math/SafeMath.sol";
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "./interfaces/ExtendedIERC20.sol";
 import "./interfaces/WarpVaultSCI.sol";
 import "./interfaces/WarpVaultLPI.sol";
 import "./interfaces/WarpVaultLPFactoryI.sol";
@@ -418,7 +418,7 @@ contract WarpControl is Ownable, Exponential {
         uint256 numSCVaults = scVaults.length;
         //retreive the number of LP vaults in the warp platform
         uint256 numLPVaults = lpVaults.length;
-        //initialize the borrowedAmount variable
+        // This is how much USDC worth of Stablecoin the user has borrowed
         uint256 borrowedAmount = 0;
         //initialize the stable coin balances array
         uint256[] memory scBalances = new uint256[](numSCVaults);
@@ -428,8 +428,15 @@ contract WarpControl is Ownable, Exponential {
             WarpVaultSCI scVault = WarpVaultSCI(scVaults[i]);
             //retreive the borrowers borrow balance from this vault and add it to the scBalances array
             scBalances[i] = scVault.borrowBalanceCurrent(_borrower);
+
+            ExtendedIERC20 scToken = ExtendedIERC20(scVault.stableCoinAddress());
+            uint8 tokenDecimals = scToken.decimals();
+            uint256 priceOfTokenInUSDC = viewPriceOfToken();
+
+            uint256 borrowedAmountInUSDC = (priceOfTokenInUSDC.mul(scBalances[i])).div(uint256(10) ** tokenDecimals);
+
             //add the borrowed amount to the total borrowed balance
-            borrowedAmount = borrowedAmount.add(scBalances[i]);
+            borrowedAmount = borrowedAmount.add(borrowedAmountInUSDC);
         }
         //retreve the USDC borrow limit for the borrower
         uint256 borrowLimit = getBorrowLimit(_borrower);
@@ -449,12 +456,12 @@ contract WarpControl is Ownable, Exponential {
             }
             //loop through each LP vault so the Liquidator gets the LP tokens the borrower had
             for (uint256 i = 0; i < numLPVaults; ++i) {
-                //instantiate the Wapr LP Vault at the current position
+                //instantiate the Warp LP Vault at the current position
                 WarpVaultLPI lpVault = WarpVaultLPI(lpVaults[i]);
                 //call liquidateAccount function on that LP vault
                 lpVault._liquidateAccount(_borrower, msg.sender);
-                emit Liquidation(_borrower, msg.sender);
             }
+            emit Liquidation(_borrower, msg.sender);
         }
     }
 
