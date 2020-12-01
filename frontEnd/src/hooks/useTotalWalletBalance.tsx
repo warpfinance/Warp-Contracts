@@ -40,17 +40,20 @@ export const useTotalWalletBalance = (context: ConnectedWeb3Context, control: Wa
 
         const tokenBalance = parseBigNumber(tokenBalanceRaw, tokenInfo.decimals);
 
-        
         if (token.symbol === usdc.symbol) {
           amount += tokenBalance;
           continue
         }
 
         const tokenValueRaw = await control.getStableCoinPrice(token.address);
-
         const usdcPriceOfToken = parseBigNumber(tokenValueRaw, usdc.decimals);
 
-        amount += tokenBalance * usdcPriceOfToken;
+        const usdcValueOfTokenBalance = tokenBalance * usdcPriceOfToken;
+
+        logger.log(`User has a balance of ${tokenBalanceRaw.toString()} (${tokenBalance}) ${token.symbol} which is worth ${usdcValueOfTokenBalance} USDC`);
+        logger.log(`${token.symbol} -> USDC conversion rate: ${tokenValueRaw.toString()} (${usdcPriceOfToken})`);
+
+        amount += usdcValueOfTokenBalance;
       }
 
       setWalletBalance(amount);

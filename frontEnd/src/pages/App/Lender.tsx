@@ -176,7 +176,11 @@ export const Lender: React.FC<Props> = (props: Props) => {
             await info.finished;
             setTransactionModalOpen(false);
         } catch(e) {
-            logger.error(`--------------------------\nTransaction Failed!\n   Reason:\n${e.data?.message}`);
+            let reason = `${e.message}`;
+            if (e.data) {
+                reason += `\n${e.data.message}`;
+            }
+            logger.error(`\nTransaction Failed!  Reason:\n${reason}`);
             throw e;
         }
     }
