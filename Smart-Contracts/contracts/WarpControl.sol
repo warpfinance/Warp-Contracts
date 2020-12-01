@@ -37,16 +37,13 @@ contract WarpControl is Ownable, Exponential {
     mapping(address => address) public instanceLPTracker; //maps LP token address to the assets WarpVault
     mapping(address => address) public instanceSCTracker;
     mapping(address => uint256) public lockedLPValue;
-    mapping(address => uint256) nonCompliant;
     mapping(address => bool) public isVault;
     mapping(address => address[]) public refferalCodeTracker;
-    mapping(address => mapping(address => uint)) public amountForUserByGroup;
-    mapping(address => mapping(address => mapping(address => uint))) public lpLockedForUserByGroup;
     mapping(address => string) public refferalCodeToGroupName;
     mapping(address => bool) public isParticipant;
     mapping(address => bool) public existingRefferalCode;
-    mapping(address => mapping(address => bool)) public isInGroup;
-
+    mapping(address => bool) public isInGroup;
+    mapping(address => address) public groupsYourIn;
 
     event NewLPVault(address _newVault);
     event NewSCVault(address _newVault, address _interestRateModel);
@@ -103,16 +100,12 @@ contract WarpControl is Ownable, Exponential {
       return refferalCodeTracker[_refferalCode];
     }
 
-    function viewSClockedForUserByGroup(address _refferalCode, address _member) public view returns(uint) {
-      return amountForUserByGroup[_member][_refferalCode];
-    }
-
-    function viewLPlockedForUserByGroup(address _refferalCode, address _member, address _lp) public view returns(uint) {
-      return lpLockedForUserByGroup[_member][_refferalCode][_lp];
-    }
-
     function getGroupName(address _refferalCode) public view returns(string memory) {
       return refferalCodeToGroupName[_refferalCode];
+    }
+
+    function getAccountsGroup(address _account) public view returns(address) {
+      return groupsYourIn[_account];
     }
 
 
@@ -161,6 +154,7 @@ contract WarpControl is Ownable, Exponential {
         uint256 _jumpMultiplierPerYear,
         uint256 _optimal,
         uint256 _initialExchangeRate,
+        uint256 _reserveFactorMantissa,
         address _StableCoin
     ) public onlyOwner {
         //create the interest rate model for this stablecoin
@@ -179,7 +173,8 @@ contract WarpControl is Ownable, Exponential {
             _StableCoin,
             warpTeam,
             _initialExchangeRate,
-            _timelock
+            _timelock,
+            _reserveFactorMantissa
         );
         //track the warp vault sc instance by the address of the stablecoin it represents
         instanceSCTracker[_StableCoin] = _WarpVault;
@@ -199,30 +194,19 @@ contract WarpControl is Ownable, Exponential {
           groups.push(msg.sender);
     }
 
-    function addMemberToGroupSC(address _refferalCode, address _member, uint _amount) public onlyVault {
-      //add member to the member array for the input referal code
-      if(isInGroup[_member][_refferalCode] == false) {
+    function addMemberToGroup(address _refferalCode, address _member) public onlyVault {
+      //Require a member is either not in a group OR has entered their groups refferal code
+      require(isInGroup[_member] == false || groupsYourIn[_member] == _refferalCode, "Cant join more than one group");
         refferalCodeTracker[_refferalCode].push(_member);
-        isInGroup[_member][_refferalCode] = false;
-      }
-      amountForUserByGroup[_member][_refferalCode] = amountForUserByGroup[msg.sender][_refferalCode].add(_amount);
-      //add the mebers address to the total participants member array
+        isInGroup[_member] = true;
+        groupsYourIn[_member] = _refferalCode;
+            //add the mebers address to the total participants member array
       if(isParticipant[_member] == false) {
         launchParticipants.push(_member);
         isParticipant[_member] == true;
       }
     }
 
-    function addMemberToGroupLP(address _refferalCode, address _member, address _lp, uint _amount) public onlyVault {
-      //add member to the member array for the input referal code
-      refferalCodeTracker[_refferalCode].push(_member);
-      lpLockedForUserByGroup[msg.sender][_refferalCode][_lp] = lpLockedForUserByGroup[msg.sender][_refferalCode][_lp].add(_amount);
-      //add the mebers address to the total participants member array
-      if(isParticipant[msg.sender] == false) {
-        launchParticipants.push(_member);
-        isParticipant[msg.sender] == true;
-      }
-    }
 
 
 
@@ -238,8 +222,8 @@ contract WarpControl is Ownable, Exponential {
         uint256 usableCollateral = collateralValue.sub(borrowedTotal);
       //get current price of one LP token
         uint256 lpValue = Oracle.getUnderlyingPrice(lpToken);
-      //return one lp value multiplied by their usable collateral for total LPs that are usable(or can be withdrawn)
-        return usableCollateral.mul(lpValue);
+      //return usable collateral value devided by the price of one lp token for maximum withdrawable lps(scale by 1e18)
+        return usableCollateral.div(lpValue).mul(1e18);
     }
 
     function viewMaxWithdrawAllowed(address account, address lpToken) public view returns (uint256) {
@@ -247,7 +231,7 @@ contract WarpControl is Ownable, Exponential {
         uint256 collateralValue = viewTotalAvailableCollateralValue(account);
         uint256 usableCollateral = collateralValue.sub(borrowedTotal);
         uint256 lpValue = Oracle.viewUnderlyingPrice(lpToken);
-        return usableCollateral.mul(lpValue);
+        return usableCollateral.div(lpValue).mul(1e18);
     }
 
     function getTotalAvailableCollateralValue(address _account)
@@ -412,36 +396,7 @@ contract WarpControl is Ownable, Exponential {
         emit NewBorrow(msg.sender, _StableCoin, _amount);
     }
 
-    /**
-      @notice markAccountNonCompliant is used by a potential liquidator to mark an account as non compliant which starts its 30 minute timer
-      @param _borrower is the address of the non compliant borrower
-      **/
-    function markAccountNonCompliant(address _borrower) public {
-      //retreive the number of LP vaults in the warp platform
-        uint256 numSCVaults = scVaults.length;
-        //initialize the borrowedAmount variable
-        uint256 borrowedAmount = 0;
-        //initialize the stable coin balances array
-        uint256[] memory scBalances = new uint256[](numSCVaults);
-        for (uint256 i = 0; i < numSCVaults; ++i) {
-            //instantiate the vault at the current  position in the array
-            WarpVaultSCI scVault = WarpVaultSCI(scVaults[i]);
-            //retreive the borrowers borrow balance from this vault and add it to the scBalances array
-            scBalances[i] = scVault.borrowBalanceCurrent(_borrower);
-            //add the borrowed amount to the total borrowed balance
-            borrowedAmount = borrowedAmount.add(scBalances[i]);
-        }
-        //retreve the USDC borrow limit for the borrower
-        uint256 borrowLimit = getBorrowLimit(_borrower);
-        //check if the borrow is less than the borrowed amount
-        if (borrowLimit <= borrowedAmount) {
-          //require the borrower isnt already non compliant
-        require(nonCompliant[_borrower] == 0);
-        //record the time of non compliance
-        nonCompliant[_borrower] = now;
-        emit NotCompliant(_borrower, now);
-      }
-    }
+
 
     /**
 @notice liquidateAccount is used to liquidate a non-compliant loan after it has reached its 30 minute grace period
@@ -450,8 +405,6 @@ contract WarpControl is Ownable, Exponential {
     function liquidateAccount(address _borrower) public {
         //require the liquidator is not also the borrower
         require(msg.sender != _borrower);
-        //require is has been a half hour since the loan was first seen to be non-compliant
-        require(now >= nonCompliant[_borrower].add(1800));
         //retreive the number of stablecoin vaults in the warp platform
         uint256 numSCVaults = scVaults.length;
         //retreive the number of LP vaults in the warp platform
@@ -494,8 +447,26 @@ contract WarpControl is Ownable, Exponential {
                 emit Liquidation(_borrower, msg.sender);
             }
         }
-        //no matter what the compliance tracker for the borrowers account is reset
-        nonCompliant[_borrower] = 0;
-        emit complianceReset(_borrower, now);
+    }
+
+    function updateInterestRateModel(
+        address _token,
+        uint256 _baseRatePerYear,
+        uint256 _multiplierPerYear,
+        uint256 _jumpMultiplierPerYear,
+        uint256 _optimal
+      ) public onlyOwner {
+      address IR = address(
+          new JumpRateModelV2(
+              _baseRatePerYear,
+              _multiplierPerYear,
+              _jumpMultiplierPerYear,
+              _optimal,
+              address(this)
+          )
+      );
+      address vault = instanceSCTracker[_token];
+      WarpVaultSCI WV = WarpVaultSCI(vault);
+      WV.setNewInterestModel(IR);
     }
 }

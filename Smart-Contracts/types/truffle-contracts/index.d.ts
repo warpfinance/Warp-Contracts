@@ -2,6 +2,7 @@
 /* tslint:disable */
 
 import { BaseJumpRateModelV2Contract } from "./BaseJumpRateModelV2";
+import { ContractContract } from "./Contract";
 import { DaiContract } from "./Dai";
 import { Erc20Contract } from "./Erc20";
 import { ExtendedIerc20Contract } from "./ExtendedIerc20";
@@ -42,6 +43,7 @@ declare global {
   namespace Truffle {
     interface Artifacts {
       require(name: "BaseJumpRateModelV2"): BaseJumpRateModelV2Contract;
+      require(name: "Contract"): ContractContract;
       require(name: "DAI"): DaiContract;
       require(name: "ERC20"): Erc20Contract;
       require(name: "ExtendedIERC20"): ExtendedIerc20Contract;
@@ -85,6 +87,7 @@ export {
   BaseJumpRateModelV2Contract,
   BaseJumpRateModelV2Instance
 } from "./BaseJumpRateModelV2";
+export { ContractContract, ContractInstance } from "./Contract";
 export { DaiContract, DaiInstance } from "./Dai";
 export { Erc20Contract, Erc20Instance } from "./Erc20";
 export {

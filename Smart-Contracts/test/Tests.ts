@@ -272,7 +272,7 @@ contract("Tests", function(accounts) {
     await utils.increaseTime(ONE_DAY);
 
     // Test lending to vault
-    const user1 = accounts[1];
+    const user1 = accounts[0];
     const daiInVault = 1000000;
     const usdcInVault = 1000000;
     const usdtInVault = 1000000;
@@ -304,7 +304,7 @@ contract("Tests", function(accounts) {
       from: user1
     });
 
-    await daiWarpVault.lendToWarpVault(toWei(daiInVault.toString()), {
+    await daiWarpVault.lendToWarpVault(toWei(daiInVault.toString()), user1, {
       from: user1
     });
     console.log("1000000 DAI lent to the Warp Protocol!");
@@ -313,7 +313,7 @@ contract("Tests", function(accounts) {
       from: user1
     });
 
-    await usdcWarpVault.lendToWarpVault(toWei(usdcInVault.toString()), {
+    await usdcWarpVault.lendToWarpVault(toWei(usdcInVault.toString()), user1, {
       from: user1
     });
     console.log("1000000 USDC lent to the Warp Protocol!");
@@ -322,7 +322,7 @@ contract("Tests", function(accounts) {
       from: user1
     });
 
-    await usdtWarpVault.lendToWarpVault(toWei(usdtInVault.toString()), {
+    await usdtWarpVault.lendToWarpVault(toWei(usdtInVault.toString()), user1, {
       from: user1
     });
     console.log("1000000 USDT lent to the Warp Protocol!");
@@ -393,9 +393,13 @@ contract("Tests", function(accounts) {
       from: user1
     });
 
-    await ethBTCWarpVault.provideCollateral(toWei(ethBTCInVault.toString()), {
-      from: user1
-    });
+    await ethBTCWarpVault.provideCollateral(
+      toWei(ethBTCInVault.toString()),
+      user1,
+      {
+        from: user1
+      }
+    );
     console.log("10 ETH-BTC LP tokens locked up in Warp");
     //ETH-USDC pair
     const ethUsdcWarpVault = await WarpVaultLP.at(
@@ -405,9 +409,13 @@ contract("Tests", function(accounts) {
       from: user1
     });
 
-    await ethUsdcWarpVault.provideCollateral(toWei(ethUsdcInVault.toString()), {
-      from: user1
-    });
+    await ethUsdcWarpVault.provideCollateral(
+      toWei(ethUsdcInVault.toString()),
+      user1,
+      {
+        from: user1
+      }
+    );
     console.log("10 ETH-USDC LP tokens locked up in Warp");
     //ETH-USDT pair
     const ethUsdtWarpVault = await WarpVaultLP.at(
@@ -417,9 +425,13 @@ contract("Tests", function(accounts) {
       from: user1
     });
 
-    await ethUsdtWarpVault.provideCollateral(toWei(ethUsdtInVault.toString()), {
-      from: user1
-    });
+    await ethUsdtWarpVault.provideCollateral(
+      toWei(ethUsdtInVault.toString()),
+      user1,
+      {
+        from: user1
+      }
+    );
     console.log("10 ETH-USDT LP tokens locked up in Warp");
     //ETH-DAI pair
     const ethDaiWarpVault = await WarpVaultLP.at(
@@ -430,15 +442,34 @@ contract("Tests", function(accounts) {
       from: user1
     });
 
-    await ethDaiWarpVault.provideCollateral(toWei(ethDaiInVault.toString()), {
-      from: user1
-    });
+    balLP = fromWei(await ethDaiPair.balanceOf(user1));
+    console.log("the users LP balance before depositing: " + balLP);
+
+    await ethDaiWarpVault.provideCollateral(
+      toWei(ethDaiInVault.toString()),
+      user1,
+      {
+        from: user1
+      }
+    );
     console.log("10 ETH-DAI LP tokens locked up in Warp");
+
+    balLP = fromWei(await ethDaiPair.balanceOf(user1));
+    console.log("the users LP balance after depositing: " + balLP);
 
     //test borrowing of 1000 DAI
     daiBalBefore = fromWei(await daiToken.balanceOf(user1));
     console.log(
       "the users DAI balance BEFORE borrowing DAI is: " + daiBalBefore
+    );
+
+    maxWithdrawVal = await warpControl.viewMaxWithdrawAllowed(
+      user1,
+      ethDaiPair.address
+    );
+
+    console.log(
+      "the users max withdraw allowed value before borrow is " + maxWithdrawVal
     );
     await warpControl.borrowSC(daiToken.address, toWei("1000"), {
       from: user1
@@ -448,6 +479,20 @@ contract("Tests", function(accounts) {
       "the users DAI balance AFTER borrowing DAI is: " + daiBalAfterBorrow
     );
     expect(fromWei(await daiToken.balanceOf(user1))).equals("1000");
+
+    maxWithdrawVal = await warpControl.viewMaxWithdrawAllowed(
+      user1,
+      ethDaiPair.address
+    );
+
+    console.log("the users max withdraw allowed value is " + maxWithdrawVal);
+    await ethDaiWarpVault.withdrawCollateral(toWei(ethDaiInVault.toString()), {
+      from: user1
+    });
+
+    balLP = fromWei(await ethDaiPair.balanceOf(user1));
+    console.log("the users LP balance after withdraw: " + balLP);
+
     //lets time travel into the world of tomorrow!!!
     await utils.increaseTime(ONE_YEAR);
     //work REALLY hard and make more DAI

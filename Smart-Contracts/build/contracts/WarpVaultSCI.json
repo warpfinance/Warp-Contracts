@@ -92,28 +92,41 @@
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_newModel",
+          "type": "address"
+        }
+      ],
+      "name": "setNewInterestModel",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
     }
   ],
-  "metadata": "{\"compiler\":{\"version\":\"0.6.6+commit.6c089d02\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_borrowAmount\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"_borrower\",\"type\":\"address\"}],\"name\":\"_borrow\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_borrower\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"_liquidator\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"_amount\",\"type\":\"uint256\"}],\"name\":\"_repayLiquidatedLoan\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"borrowBalanceCurrent\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"borrowBalancePrior\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"exchangeRateCurrent\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"methods\":{\"_borrow(uint256,address)\":{\"params\":{\"_borrowAmount\":\"The amount of the underlying asset to borrow\",\"_borrower\":\"The borrower\"}},\"_repayLiquidatedLoan(address,address,uint256)\":{\"details\":\"this function uses the onlyWC modifier which means it can only be called by the Warp Control contract*\",\"params\":{\"_amount\":\"is the amount of StableCoin being repayed\",\"_borrower\":\"is the address of the borrower who took out the loan\",\"_liquidator\":\"is the address of the account who is liquidating the loan\"}},\"borrowBalanceCurrent(address)\":{\"params\":{\"account\":\"The address whose balance should be calculated after updating borrowIndex\"},\"returns\":{\"_0\":\"The calculated balance*\"}},\"borrowBalancePrior(address)\":{\"params\":{\"account\":\"The address whose balance should be calculated after updating borrowIndex\"},\"returns\":{\"_0\":\"The calculated balance*\"}}}},\"userdoc\":{\"methods\":{\"_borrow(uint256,address)\":{\"notice\":\"Sender borrows stablecoin assets from the protocol to their own address\"},\"_repayLiquidatedLoan(address,address,uint256)\":{\"notice\":\"repayLiquidatedLoan is a function used by the Warp Control contract to repay a loan on behalf of a liquidator\"},\"borrowBalanceCurrent(address)\":{\"notice\":\"Accrue interest to updated borrowIndex and then calculate account's borrow balance using the updated borrowIndex\"},\"borrowBalancePrior(address)\":{\"notice\":\"returns last calculated account's borrow balance using the prior borrowIndex\"},\"exchangeRateCurrent()\":{\"notice\":\"Accrue interest then return the up-to-date exchange rate\"}},\"notice\":\"The WarpVaultSCI contract an abstract contract the WarpControl contract uses to interface with a WarpVaultSC contract.*\"}},\"settings\":{\"compilationTarget\":{\"/home/stan36/repos/Warp/Smart-Contracts/contracts/interfaces/WarpVaultSCI.sol\":\"WarpVaultSCI\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":1},\"remappings\":[]},\"sources\":{\"/home/stan36/repos/Warp/Smart-Contracts/contracts/interfaces/WarpVaultSCI.sol\":{\"keccak256\":\"0xfdbdec875c21586d2bfcf55cb22fdd050ff518878458f96b054000a2c20dc9e7\",\"urls\":[\"bzz-raw://dbb211dc600f7969b9aa11ba6913574d9edeba2fca6d98f754c98e0bdcf6cbd2\",\"dweb:/ipfs/QmXjnGWHqzihb96UdHNBHpuiussKrhPkXW3tVkXw8KirMv\"]}},\"version\":1}",
+  "metadata": "{\"compiler\":{\"version\":\"0.6.6+commit.6c089d02\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_borrowAmount\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"_borrower\",\"type\":\"address\"}],\"name\":\"_borrow\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_borrower\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"_liquidator\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"_amount\",\"type\":\"uint256\"}],\"name\":\"_repayLiquidatedLoan\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"borrowBalanceCurrent\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"borrowBalancePrior\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"exchangeRateCurrent\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_newModel\",\"type\":\"address\"}],\"name\":\"setNewInterestModel\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"methods\":{\"_borrow(uint256,address)\":{\"params\":{\"_borrowAmount\":\"The amount of the underlying asset to borrow\",\"_borrower\":\"The borrower\"}},\"_repayLiquidatedLoan(address,address,uint256)\":{\"details\":\"this function uses the onlyWC modifier which means it can only be called by the Warp Control contract*\",\"params\":{\"_amount\":\"is the amount of StableCoin being repayed\",\"_borrower\":\"is the address of the borrower who took out the loan\",\"_liquidator\":\"is the address of the account who is liquidating the loan\"}},\"borrowBalanceCurrent(address)\":{\"params\":{\"account\":\"The address whose balance should be calculated after updating borrowIndex\"},\"returns\":{\"_0\":\"The calculated balance*\"}},\"borrowBalancePrior(address)\":{\"params\":{\"account\":\"The address whose balance should be calculated after updating borrowIndex\"},\"returns\":{\"_0\":\"The calculated balance*\"}}}},\"userdoc\":{\"methods\":{\"_borrow(uint256,address)\":{\"notice\":\"Sender borrows stablecoin assets from the protocol to their own address\"},\"_repayLiquidatedLoan(address,address,uint256)\":{\"notice\":\"repayLiquidatedLoan is a function used by the Warp Control contract to repay a loan on behalf of a liquidator\"},\"borrowBalanceCurrent(address)\":{\"notice\":\"Accrue interest to updated borrowIndex and then calculate account's borrow balance using the updated borrowIndex\"},\"borrowBalancePrior(address)\":{\"notice\":\"returns last calculated account's borrow balance using the prior borrowIndex\"},\"exchangeRateCurrent()\":{\"notice\":\"Accrue interest then return the up-to-date exchange rate\"}},\"notice\":\"The WarpVaultSCI contract an abstract contract the WarpControl contract uses to interface with a WarpVaultSC contract.*\"}},\"settings\":{\"compilationTarget\":{\"/home/stan36/repos/Warp/Smart-Contracts/contracts/interfaces/WarpVaultSCI.sol\":\"WarpVaultSCI\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"/home/stan36/repos/Warp/Smart-Contracts/contracts/interfaces/WarpVaultSCI.sol\":{\"keccak256\":\"0x5fe9e32ac98455a8c39d5d0559856f0f2de83217e3dd2f0b22e756ccf1355e78\",\"urls\":[\"bzz-raw://5f9dbdcb9ecefbce33dca016fd3e59eb2ea5c5e4ef9cd0b84c9688c8e75bc451\",\"dweb:/ipfs/QmeAHitWLYnMMjggH3TwieZhgi8nkktpYNJ555x6bbBkEf\"]}},\"version\":1}",
   "bytecode": "0x",
   "deployedBytecode": "0x",
   "immutableReferences": {},
   "sourceMap": "",
   "deployedSourceMap": "",
-  "source": "pragma solidity ^0.6.0;\n\n////////////////////////////////////////////////////////////////////////////////////////////\n/// @title WarpVaultSCI\n/// @author Christopher Dixon\n////////////////////////////////////////////////////////////////////////////////////////////\n/**\nThe WarpVaultSCI contract an abstract contract the WarpControl contract uses to interface\n    with a WarpVaultSC contract.\n**/\n\nabstract contract WarpVaultSCI {\n    /**\n    @notice Accrue interest to updated borrowIndex and then calculate account's borrow balance using the updated borrowIndex\n    @param account The address whose balance should be calculated after updating borrowIndex\n    @return The calculated balance\n    **/\n    function borrowBalanceCurrent(address account)\n        public\n        virtual\n        returns (uint256);\n\n    /**\n    @notice returns last calculated account's borrow balance using the prior borrowIndex\n    @param account The address whose balance should be calculated after updating borrowIndex\n    @return The calculated balance\n    **/\n    function borrowBalancePrior(address account)\n        public\n        view\n        virtual\n        returns (uint256);\n\n    /**\n     @notice Accrue interest then return the up-to-date exchange rate\n     @return Calculated exchange rate scaled by 1e18\n     **/\n    function exchangeRateCurrent() public virtual returns (uint256);\n\n    /**\n    @notice Sender borrows stablecoin assets from the protocol to their own address\n    @param _borrowAmount The amount of the underlying asset to borrow\n    @param _borrower The borrower\n    */\n    function _borrow(uint256 _borrowAmount, address _borrower) external virtual;\n\n    /**\n    @notice repayLiquidatedLoan is a function used by the Warp Control contract to repay a loan on behalf of a liquidator\n    @param _borrower is the address of the borrower who took out the loan\n    @param _liquidator is the address of the account who is liquidating the loan\n    @param _amount is the amount of StableCoin being repayed\n    @dev this function uses the onlyWC modifier which means it can only be called by the Warp Control contract\n    **/\n    function _repayLiquidatedLoan(\n        address _borrower,\n        address _liquidator,\n        uint256 _amount\n    ) public virtual;\n}\n",
+  "source": "pragma solidity ^0.6.0;\n\n////////////////////////////////////////////////////////////////////////////////////////////\n/// @title WarpVaultSCI\n/// @author Christopher Dixon\n////////////////////////////////////////////////////////////////////////////////////////////\n/**\nThe WarpVaultSCI contract an abstract contract the WarpControl contract uses to interface\n    with a WarpVaultSC contract.\n**/\n\nabstract contract WarpVaultSCI {\n    /**\n    @notice Accrue interest to updated borrowIndex and then calculate account's borrow balance using the updated borrowIndex\n    @param account The address whose balance should be calculated after updating borrowIndex\n    @return The calculated balance\n    **/\n    function borrowBalanceCurrent(address account)\n        public\n        virtual\n        returns (uint256);\n\n    /**\n    @notice returns last calculated account's borrow balance using the prior borrowIndex\n    @param account The address whose balance should be calculated after updating borrowIndex\n    @return The calculated balance\n    **/\n    function borrowBalancePrior(address account)\n        public\n        view\n        virtual\n        returns (uint256);\n\n    /**\n     @notice Accrue interest then return the up-to-date exchange rate\n     @return Calculated exchange rate scaled by 1e18\n     **/\n    function exchangeRateCurrent() public virtual returns (uint256);\n\n    /**\n    @notice Sender borrows stablecoin assets from the protocol to their own address\n    @param _borrowAmount The amount of the underlying asset to borrow\n    @param _borrower The borrower\n    */\n    function _borrow(uint256 _borrowAmount, address _borrower) external virtual;\n\n    /**\n    @notice repayLiquidatedLoan is a function used by the Warp Control contract to repay a loan on behalf of a liquidator\n    @param _borrower is the address of the borrower who took out the loan\n    @param _liquidator is the address of the account who is liquidating the loan\n    @param _amount is the amount of StableCoin being repayed\n    @dev this function uses the onlyWC modifier which means it can only be called by the Warp Control contract\n    **/\n    function _repayLiquidatedLoan(\n        address _borrower,\n        address _liquidator,\n        uint256 _amount\n    ) public virtual;\n\n    function setNewInterestModel(address _newModel) public virtual;\n}\n",
   "sourcePath": "/home/stan36/repos/Warp/Smart-Contracts/contracts/interfaces/WarpVaultSCI.sol",
   "ast": {
     "absolutePath": "/home/stan36/repos/Warp/Smart-Contracts/contracts/interfaces/WarpVaultSCI.sol",
     "exportedSymbols": {
       "WarpVaultSCI": [
-        6451
+        6627
       ]
     },
-    "id": 6452,
+    "id": 6628,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 6409,
+        "id": 6580,
         "literals": [
           "solidity",
           "^",
@@ -129,15 +142,15 @@
         "contractDependencies": [],
         "contractKind": "contract",
         "documentation": {
-          "id": 6410,
+          "id": 6581,
           "nodeType": "StructuredDocumentation",
           "src": "265:130:26",
           "text": "The WarpVaultSCI contract an abstract contract the WarpControl contract uses to interface\nwith a WarpVaultSC contract.*"
         },
         "fullyImplemented": false,
-        "id": 6451,
+        "id": 6627,
         "linearizedBaseContracts": [
-          6451
+          6627
         ],
         "name": "WarpVaultSCI",
         "nodeType": "ContractDefinition",
@@ -145,13 +158,13 @@
           {
             "body": null,
             "documentation": {
-              "id": 6411,
+              "id": 6582,
               "nodeType": "StructuredDocumentation",
               "src": "434:264:26",
               "text": "@notice Accrue interest to updated borrowIndex and then calculate account's borrow balance using the updated borrowIndex\n@param account The address whose balance should be calculated after updating borrowIndex\n@return The calculated balance*"
             },
             "functionSelector": "17bfdfbc",
-            "id": 6418,
+            "id": 6589,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
@@ -159,17 +172,17 @@
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
-              "id": 6414,
+              "id": 6585,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6413,
+                  "id": 6584,
                   "mutability": "mutable",
                   "name": "account",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 6418,
+                  "scope": 6589,
                   "src": "733:15:26",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -178,7 +191,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 6412,
+                    "id": 6583,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "733:7:26",
@@ -195,17 +208,17 @@
               "src": "732:17:26"
             },
             "returnParameters": {
-              "id": 6417,
+              "id": 6588,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6416,
+                  "id": 6587,
                   "mutability": "mutable",
                   "name": "",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 6418,
+                  "scope": 6589,
                   "src": "798:7:26",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -214,7 +227,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 6415,
+                    "id": 6586,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "798:7:26",
@@ -229,7 +242,7 @@
               ],
               "src": "797:9:26"
             },
-            "scope": 6451,
+            "scope": 6627,
             "src": "703:104:26",
             "stateMutability": "nonpayable",
             "virtual": true,
@@ -238,13 +251,13 @@
           {
             "body": null,
             "documentation": {
-              "id": 6419,
+              "id": 6590,
               "nodeType": "StructuredDocumentation",
               "src": "813:228:26",
               "text": "@notice returns last calculated account's borrow balance using the prior borrowIndex\n@param account The address whose balance should be calculated after updating borrowIndex\n@return The calculated balance*"
             },
             "functionSelector": "7746efab",
-            "id": 6426,
+            "id": 6597,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
@@ -252,17 +265,17 @@
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
-              "id": 6422,
+              "id": 6593,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6421,
+                  "id": 6592,
                   "mutability": "mutable",
                   "name": "account",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 6426,
+                  "scope": 6597,
                   "src": "1074:15:26",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -271,7 +284,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 6420,
+                    "id": 6591,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "1074:7:26",
@@ -288,17 +301,17 @@
               "src": "1073:17:26"
             },
             "returnParameters": {
-              "id": 6425,
+              "id": 6596,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6424,
+                  "id": 6595,
                   "mutability": "mutable",
                   "name": "",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 6426,
+                  "scope": 6597,
                   "src": "1152:7:26",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -307,7 +320,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 6423,
+                    "id": 6594,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "1152:7:26",
@@ -322,7 +335,7 @@
               ],
               "src": "1151:9:26"
             },
-            "scope": 6451,
+            "scope": 6627,
             "src": "1046:115:26",
             "stateMutability": "view",
             "virtual": true,
@@ -331,13 +344,13 @@
           {
             "body": null,
             "documentation": {
-              "id": 6427,
+              "id": 6598,
               "nodeType": "StructuredDocumentation",
               "src": "1167:135:26",
               "text": "@notice Accrue interest then return the up-to-date exchange rate\n@return Calculated exchange rate scaled by 1e18*"
             },
             "functionSelector": "bd6d894d",
-            "id": 6432,
+            "id": 6603,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
@@ -345,23 +358,23 @@
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
-              "id": 6428,
+              "id": 6599,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "1335:2:26"
             },
             "returnParameters": {
-              "id": 6431,
+              "id": 6602,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6430,
+                  "id": 6601,
                   "mutability": "mutable",
                   "name": "",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 6432,
+                  "scope": 6603,
                   "src": "1362:7:26",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -370,7 +383,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 6429,
+                    "id": 6600,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "1362:7:26",
@@ -385,7 +398,7 @@
               ],
               "src": "1361:9:26"
             },
-            "scope": 6451,
+            "scope": 6627,
             "src": "1307:64:26",
             "stateMutability": "nonpayable",
             "virtual": true,
@@ -394,13 +407,13 @@
           {
             "body": null,
             "documentation": {
-              "id": 6433,
+              "id": 6604,
               "nodeType": "StructuredDocumentation",
               "src": "1377:198:26",
               "text": "@notice Sender borrows stablecoin assets from the protocol to their own address\n@param _borrowAmount The amount of the underlying asset to borrow\n@param _borrower The borrower"
             },
             "functionSelector": "232d46d2",
-            "id": 6440,
+            "id": 6611,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
@@ -408,17 +421,17 @@
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
-              "id": 6438,
+              "id": 6609,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6435,
+                  "id": 6606,
                   "mutability": "mutable",
                   "name": "_borrowAmount",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 6440,
+                  "scope": 6611,
                   "src": "1597:21:26",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -427,7 +440,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 6434,
+                    "id": 6605,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "1597:7:26",
@@ -441,12 +454,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 6437,
+                  "id": 6608,
                   "mutability": "mutable",
                   "name": "_borrower",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 6440,
+                  "scope": 6611,
                   "src": "1620:17:26",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -455,7 +468,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 6436,
+                    "id": 6607,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "1620:7:26",
@@ -472,12 +485,12 @@
               "src": "1596:42:26"
             },
             "returnParameters": {
-              "id": 6439,
+              "id": 6610,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "1655:0:26"
             },
-            "scope": 6451,
+            "scope": 6627,
             "src": "1580:76:26",
             "stateMutability": "nonpayable",
             "virtual": true,
@@ -486,13 +499,13 @@
           {
             "body": null,
             "documentation": {
-              "id": 6441,
+              "id": 6612,
               "nodeType": "StructuredDocumentation",
               "src": "1662:460:26",
               "text": "@notice repayLiquidatedLoan is a function used by the Warp Control contract to repay a loan on behalf of a liquidator\n@param _borrower is the address of the borrower who took out the loan\n@param _liquidator is the address of the account who is liquidating the loan\n@param _amount is the amount of StableCoin being repayed\n@dev this function uses the onlyWC modifier which means it can only be called by the Warp Control contract*"
             },
             "functionSelector": "ab292f9b",
-            "id": 6450,
+            "id": 6621,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
@@ -500,17 +513,17 @@
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
-              "id": 6448,
+              "id": 6619,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6443,
+                  "id": 6614,
                   "mutability": "mutable",
                   "name": "_borrower",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 6450,
+                  "scope": 6621,
                   "src": "2166:17:26",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -519,7 +532,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 6442,
+                    "id": 6613,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "2166:7:26",
@@ -534,12 +547,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 6445,
+                  "id": 6616,
                   "mutability": "mutable",
                   "name": "_liquidator",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 6450,
+                  "scope": 6621,
                   "src": "2193:19:26",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -548,7 +561,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 6444,
+                    "id": 6615,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "2193:7:26",
@@ -563,12 +576,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 6447,
+                  "id": 6618,
                   "mutability": "mutable",
                   "name": "_amount",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 6450,
+                  "scope": 6621,
                   "src": "2222:15:26",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -577,7 +590,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 6446,
+                    "id": 6617,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "2222:7:26",
@@ -593,36 +606,95 @@
               "src": "2156:87:26"
             },
             "returnParameters": {
-              "id": 6449,
+              "id": 6620,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "2258:0:26"
             },
-            "scope": 6451,
+            "scope": 6627,
             "src": "2127:132:26",
+            "stateMutability": "nonpayable",
+            "virtual": true,
+            "visibility": "public"
+          },
+          {
+            "body": null,
+            "documentation": null,
+            "functionSelector": "b1be82f1",
+            "id": 6626,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "setNewInterestModel",
+            "nodeType": "FunctionDefinition",
+            "overrides": null,
+            "parameters": {
+              "id": 6624,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 6623,
+                  "mutability": "mutable",
+                  "name": "_newModel",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 6626,
+                  "src": "2294:17:26",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 6622,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "2294:7:26",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "2293:19:26"
+            },
+            "returnParameters": {
+              "id": 6625,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "2327:0:26"
+            },
+            "scope": 6627,
+            "src": "2265:63:26",
             "stateMutability": "nonpayable",
             "virtual": true,
             "visibility": "public"
           }
         ],
-        "scope": 6452,
-        "src": "397:1864:26"
+        "scope": 6628,
+        "src": "397:1933:26"
       }
     ],
-    "src": "0:2262:26"
+    "src": "0:2331:26"
   },
   "legacyAST": {
     "absolutePath": "/home/stan36/repos/Warp/Smart-Contracts/contracts/interfaces/WarpVaultSCI.sol",
     "exportedSymbols": {
       "WarpVaultSCI": [
-        6451
+        6627
       ]
     },
-    "id": 6452,
+    "id": 6628,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 6409,
+        "id": 6580,
         "literals": [
           "solidity",
           "^",
@@ -638,15 +710,15 @@
         "contractDependencies": [],
         "contractKind": "contract",
         "documentation": {
-          "id": 6410,
+          "id": 6581,
           "nodeType": "StructuredDocumentation",
           "src": "265:130:26",
           "text": "The WarpVaultSCI contract an abstract contract the WarpControl contract uses to interface\nwith a WarpVaultSC contract.*"
         },
         "fullyImplemented": false,
-        "id": 6451,
+        "id": 6627,
         "linearizedBaseContracts": [
-          6451
+          6627
         ],
         "name": "WarpVaultSCI",
         "nodeType": "ContractDefinition",
@@ -654,13 +726,13 @@
           {
             "body": null,
             "documentation": {
-              "id": 6411,
+              "id": 6582,
               "nodeType": "StructuredDocumentation",
               "src": "434:264:26",
               "text": "@notice Accrue interest to updated borrowIndex and then calculate account's borrow balance using the updated borrowIndex\n@param account The address whose balance should be calculated after updating borrowIndex\n@return The calculated balance*"
             },
             "functionSelector": "17bfdfbc",
-            "id": 6418,
+            "id": 6589,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
@@ -668,17 +740,17 @@
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
-              "id": 6414,
+              "id": 6585,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6413,
+                  "id": 6584,
                   "mutability": "mutable",
                   "name": "account",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 6418,
+                  "scope": 6589,
                   "src": "733:15:26",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -687,7 +759,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 6412,
+                    "id": 6583,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "733:7:26",
@@ -704,17 +776,17 @@
               "src": "732:17:26"
             },
             "returnParameters": {
-              "id": 6417,
+              "id": 6588,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6416,
+                  "id": 6587,
                   "mutability": "mutable",
                   "name": "",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 6418,
+                  "scope": 6589,
                   "src": "798:7:26",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -723,7 +795,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 6415,
+                    "id": 6586,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "798:7:26",
@@ -738,7 +810,7 @@
               ],
               "src": "797:9:26"
             },
-            "scope": 6451,
+            "scope": 6627,
             "src": "703:104:26",
             "stateMutability": "nonpayable",
             "virtual": true,
@@ -747,13 +819,13 @@
           {
             "body": null,
             "documentation": {
-              "id": 6419,
+              "id": 6590,
               "nodeType": "StructuredDocumentation",
               "src": "813:228:26",
               "text": "@notice returns last calculated account's borrow balance using the prior borrowIndex\n@param account The address whose balance should be calculated after updating borrowIndex\n@return The calculated balance*"
             },
             "functionSelector": "7746efab",
-            "id": 6426,
+            "id": 6597,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
@@ -761,17 +833,17 @@
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
-              "id": 6422,
+              "id": 6593,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6421,
+                  "id": 6592,
                   "mutability": "mutable",
                   "name": "account",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 6426,
+                  "scope": 6597,
                   "src": "1074:15:26",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -780,7 +852,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 6420,
+                    "id": 6591,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "1074:7:26",
@@ -797,17 +869,17 @@
               "src": "1073:17:26"
             },
             "returnParameters": {
-              "id": 6425,
+              "id": 6596,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6424,
+                  "id": 6595,
                   "mutability": "mutable",
                   "name": "",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 6426,
+                  "scope": 6597,
                   "src": "1152:7:26",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -816,7 +888,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 6423,
+                    "id": 6594,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "1152:7:26",
@@ -831,7 +903,7 @@
               ],
               "src": "1151:9:26"
             },
-            "scope": 6451,
+            "scope": 6627,
             "src": "1046:115:26",
             "stateMutability": "view",
             "virtual": true,
@@ -840,13 +912,13 @@
           {
             "body": null,
             "documentation": {
-              "id": 6427,
+              "id": 6598,
               "nodeType": "StructuredDocumentation",
               "src": "1167:135:26",
               "text": "@notice Accrue interest then return the up-to-date exchange rate\n@return Calculated exchange rate scaled by 1e18*"
             },
             "functionSelector": "bd6d894d",
-            "id": 6432,
+            "id": 6603,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
@@ -854,23 +926,23 @@
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
-              "id": 6428,
+              "id": 6599,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "1335:2:26"
             },
             "returnParameters": {
-              "id": 6431,
+              "id": 6602,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6430,
+                  "id": 6601,
                   "mutability": "mutable",
                   "name": "",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 6432,
+                  "scope": 6603,
                   "src": "1362:7:26",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -879,7 +951,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 6429,
+                    "id": 6600,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "1362:7:26",
@@ -894,7 +966,7 @@
               ],
               "src": "1361:9:26"
             },
-            "scope": 6451,
+            "scope": 6627,
             "src": "1307:64:26",
             "stateMutability": "nonpayable",
             "virtual": true,
@@ -903,13 +975,13 @@
           {
             "body": null,
             "documentation": {
-              "id": 6433,
+              "id": 6604,
               "nodeType": "StructuredDocumentation",
               "src": "1377:198:26",
               "text": "@notice Sender borrows stablecoin assets from the protocol to their own address\n@param _borrowAmount The amount of the underlying asset to borrow\n@param _borrower The borrower"
             },
             "functionSelector": "232d46d2",
-            "id": 6440,
+            "id": 6611,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
@@ -917,17 +989,17 @@
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
-              "id": 6438,
+              "id": 6609,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6435,
+                  "id": 6606,
                   "mutability": "mutable",
                   "name": "_borrowAmount",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 6440,
+                  "scope": 6611,
                   "src": "1597:21:26",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -936,7 +1008,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 6434,
+                    "id": 6605,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "1597:7:26",
@@ -950,12 +1022,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 6437,
+                  "id": 6608,
                   "mutability": "mutable",
                   "name": "_borrower",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 6440,
+                  "scope": 6611,
                   "src": "1620:17:26",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -964,7 +1036,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 6436,
+                    "id": 6607,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "1620:7:26",
@@ -981,12 +1053,12 @@
               "src": "1596:42:26"
             },
             "returnParameters": {
-              "id": 6439,
+              "id": 6610,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "1655:0:26"
             },
-            "scope": 6451,
+            "scope": 6627,
             "src": "1580:76:26",
             "stateMutability": "nonpayable",
             "virtual": true,
@@ -995,13 +1067,13 @@
           {
             "body": null,
             "documentation": {
-              "id": 6441,
+              "id": 6612,
               "nodeType": "StructuredDocumentation",
               "src": "1662:460:26",
               "text": "@notice repayLiquidatedLoan is a function used by the Warp Control contract to repay a loan on behalf of a liquidator\n@param _borrower is the address of the borrower who took out the loan\n@param _liquidator is the address of the account who is liquidating the loan\n@param _amount is the amount of StableCoin being repayed\n@dev this function uses the onlyWC modifier which means it can only be called by the Warp Control contract*"
             },
             "functionSelector": "ab292f9b",
-            "id": 6450,
+            "id": 6621,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
@@ -1009,17 +1081,17 @@
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
-              "id": 6448,
+              "id": 6619,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6443,
+                  "id": 6614,
                   "mutability": "mutable",
                   "name": "_borrower",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 6450,
+                  "scope": 6621,
                   "src": "2166:17:26",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -1028,7 +1100,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 6442,
+                    "id": 6613,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "2166:7:26",
@@ -1043,12 +1115,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 6445,
+                  "id": 6616,
                   "mutability": "mutable",
                   "name": "_liquidator",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 6450,
+                  "scope": 6621,
                   "src": "2193:19:26",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -1057,7 +1129,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 6444,
+                    "id": 6615,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "2193:7:26",
@@ -1072,12 +1144,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 6447,
+                  "id": 6618,
                   "mutability": "mutable",
                   "name": "_amount",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 6450,
+                  "scope": 6621,
                   "src": "2222:15:26",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -1086,7 +1158,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 6446,
+                    "id": 6617,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "2222:7:26",
@@ -1102,23 +1174,82 @@
               "src": "2156:87:26"
             },
             "returnParameters": {
-              "id": 6449,
+              "id": 6620,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "2258:0:26"
             },
-            "scope": 6451,
+            "scope": 6627,
             "src": "2127:132:26",
+            "stateMutability": "nonpayable",
+            "virtual": true,
+            "visibility": "public"
+          },
+          {
+            "body": null,
+            "documentation": null,
+            "functionSelector": "b1be82f1",
+            "id": 6626,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "setNewInterestModel",
+            "nodeType": "FunctionDefinition",
+            "overrides": null,
+            "parameters": {
+              "id": 6624,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 6623,
+                  "mutability": "mutable",
+                  "name": "_newModel",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 6626,
+                  "src": "2294:17:26",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 6622,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "2294:7:26",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "2293:19:26"
+            },
+            "returnParameters": {
+              "id": 6625,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "2327:0:26"
+            },
+            "scope": 6627,
+            "src": "2265:63:26",
             "stateMutability": "nonpayable",
             "virtual": true,
             "visibility": "public"
           }
         ],
-        "scope": 6452,
-        "src": "397:1864:26"
+        "scope": 6628,
+        "src": "397:1933:26"
       }
     ],
-    "src": "0:2262:26"
+    "src": "0:2331:26"
   },
   "compiler": {
     "name": "solc",
@@ -1126,7 +1257,7 @@
   },
   "networks": {},
   "schemaVersion": "3.3.2",
-  "updatedAt": "2020-11-27T18:28:11.172Z",
+  "updatedAt": "2020-11-30T23:18:41.662Z",
   "devdoc": {
     "methods": {
       "_borrow(uint256,address)": {

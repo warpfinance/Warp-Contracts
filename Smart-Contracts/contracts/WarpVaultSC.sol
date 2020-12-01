@@ -31,8 +31,7 @@ contract WarpVaultSC is Ownable, Exponential {
     uint256 public totalBorrows;
     uint256 public totalReserves;
     uint256 internal constant borrowRateMaxMantissa = 0.0005e16;
-    uint256 public percentA = 50;
-    uint256 public percentB = 1500;
+    uint256 public percent = 1500;
     uint256 public divisor = 10000;
     uint256 public timeWizard;
     address public warpTeam;
@@ -50,6 +49,7 @@ contract WarpVaultSC is Ownable, Exponential {
     event StableCoinLent(address _lender, uint _amountLent, uint _amountOfWarpMinted);
     event StableCoinWithdraw(address _lender, uint _amountWithdrawn, uint _amountOfWarpBurnt);
     event LoanRepayed(address _borrower, uint _repayAmount, uint remainingPrinciple, uint remainingInterest);
+    event ReserveWithdraw(uint _amount);
 
     /**
     @notice struct for borrow balance information
@@ -91,7 +91,8 @@ contract WarpVaultSC is Ownable, Exponential {
         address _warpControl,
         address _warpTeam,
         uint256 _initialExchangeRate,
-        uint256 _timelock
+        uint256 _timelock,
+        uint256 _reserveFactorMantissa
     ) public {
         WC = WarpControlI(_warpControl);
         stablecoin = ERC20(_StableCoin);
@@ -101,6 +102,7 @@ contract WarpVaultSC is Ownable, Exponential {
         initialExchangeRateMantissa = _initialExchangeRate; //sets the initialExchangeRateMantissa
         warpTeam = _warpTeam;
         timeWizard = now.add(_timelock);
+        reserveFactorMantissa = _reserveFactorMantissa;
         wStableCoin = new WarpWrapperToken(
             address(stablecoin),
             stablecoin.name(),
@@ -118,18 +120,23 @@ contract WarpVaultSC is Ownable, Exponential {
     /**
     @notice calculateFee is used to calculate the fee earned by the Warp Platform
     @param _payedAmount is a uint representing the full amount of stablecoin earned as interest
-    @param _isLiquidation is a bool representing whether of not a fee is being calculated for a liquidation
-    **/
-    function calculateFee(uint256 _payedAmount, bool _isLiquidation) public view returns(uint) {
-      if(_isLiquidation) {
-        uint256 fee = _payedAmount.mul(percentB).div(divisor);
+        **/
+    function calculateFee(uint256 _payedAmount) public view returns(uint) {
+        uint256 fee = _payedAmount.mul(percent).div(divisor);
         return fee;
-      } else {
-        uint256 fee = _payedAmount.mul(percentA).div(divisor);
-        return fee;
-      }
     }
 
+    function withdrawReserves() public {
+      require(msg.sender == warpTeam);
+      uint cashoutVal = totalReserves;
+      totalReserves = 0;
+      stablecoin.transfer(warpTeam, cashoutVal);
+      emit ReserveWithdraw(cashoutVal);
+    }
+
+    function setNewInterestModel(address _newModel) public onlyOwner {
+      InterestRate = InterestRateModel(_newModel);
+    }
     /**
     @notice Applies accrued interest to total borrows and reserves
     @dev This calculates interest accrued from the last checkpointed block
@@ -386,7 +393,7 @@ contract WarpVaultSC is Ownable, Exponential {
 
         principalBalance[msg.sender] = principalBalance[msg.sender] + _amount;
         if(now <= timeWizard) {
-            WC.addMemberToGroupSC(_refferalCode, msg.sender, _amount);
+            WC.addMemberToGroup(_refferalCode, msg.sender);
         }
 
         //mint appropriate Warp DAI
@@ -407,7 +414,7 @@ contract WarpVaultSC is Ownable, Exponential {
     @notice redeem allows a user to redeem their Warp Wrapper Token for the appropriate amount of underlying stablecoin asset
     @param _amount is the amount of StableCoin the user wishes to exchange
     **/
-    function redeem(uint256 _amount) public angryWizard {
+    function redeem(uint256 _amount) public  {
 
         RedeemLocalVars memory vars;
         //retreive the users current Warp Wrapper balance
@@ -443,16 +450,9 @@ contract WarpVaultSC is Ownable, Exponential {
         } else {
             historicalReward[msg.sender] = historicalReward[msg.sender].add(_amount);
         }
-        //calculate the fee on the principle received
-        uint fee = calculateFee(vars.principalRedeemed, false);
-        //subtract the fee from the amount of stablecoins being redeemed
-        uint feeAdjusted = _amount.sub(fee);
-        //transfer fee amount to Warp team
-        stablecoin.transfer(warpTeam, fee);
-        // Burn away Warp Tokens and exchange for StableCoin
         wStableCoin.burn(msg.sender, vars.burnTokens);
-        stablecoin.transfer(msg.sender, feeAdjusted);
-        emit StableCoinLent(msg.sender, feeAdjusted, vars.burnTokens);
+        stablecoin.transfer(msg.sender, _amount);
+        emit StableCoinLent(msg.sender, _amount, vars.burnTokens);
     }
 
     function viewAccountBalance(address _account) public view returns (uint256) {
@@ -599,13 +599,7 @@ contract WarpVaultSC is Ownable, Exponential {
             accountBorrows[msg.sender].interestIndex
         );
 
-        //calculate the fee on the principle received
-        uint fee = calculateFee(vars.interestPayed, false);
-        //subtract the fee from the amount of stablecoins being redeemed
-        uint feeAdjusted = _repayAmount.sub(fee);
-        //transfer fee amount to Warp team
-        stablecoin.transfer(warpTeam, fee);
-        emit LoanRepayed(msg.sender, feeAdjusted, accountBorrows[msg.sender].principal, accountBorrows[msg.sender].interestIndex);
+        emit LoanRepayed(msg.sender, _repayAmount, accountBorrows[msg.sender].principal, accountBorrows[msg.sender].interestIndex);
     }
 
     /**
@@ -623,9 +617,9 @@ contract WarpVaultSC is Ownable, Exponential {
         //transfer the owed amount of stablecoin from the borrower to this contract
         stablecoin.transferFrom(_liquidator, address(this), _amount);
           //calculate the fee on the principle received
-          uint fee = calculateFee(_amount, true);
+          uint fee = calculateFee(_amount);
         //transfer fee amount to Warp team
-          stablecoin.transfer(warpTeam, fee);
+          totalReserves = totalReserves.add(fee);
           // Clear the borrowers loan
         accountBorrows[_borrower].principal = 0;
         accountBorrows[_borrower].interestIndex = 0;

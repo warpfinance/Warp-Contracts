@@ -78,9 +78,9 @@ contract WarpVaultLP is Ownable {
         collateralizedLP[msg.sender] = collateralizedLP[msg.sender].add(
             _amount
         );
-                if(now <= timeWizard) {
-                    WC.addMemberToGroupLP(_refferalCode, msg.sender, address(LPtoken), _amount);
-                }
+        if(now <= timeWizard) {
+            WC.addMemberToGroup(_refferalCode, msg.sender);
+          }
         emit CollateralProvided(msg.sender, _amount);
     }
 
@@ -88,7 +88,7 @@ contract WarpVaultLP is Ownable {
     @notice withdrawCollateral allows the user to trade in his WarpLP tokens for hiss underlying LP token collateral
     @param _amount is the amount of LP tokens he wishes to withdraw
     **/
-    function withdrawCollateral(uint256 _amount) public angryWizard{
+    function withdrawCollateral(uint256 _amount) public {
 
         //require the availible value of the LP locked in this contract the user has
         //is greater than or equal to the amount being withdrawn

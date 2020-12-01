@@ -56,4 +56,6 @@ abstract contract WarpVaultSCI {
         address _liquidator,
         uint256 _amount
     ) public virtual;
+
+    function setNewInterestModel(address _newModel) public virtual;
 }
