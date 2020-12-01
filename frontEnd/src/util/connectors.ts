@@ -2,7 +2,7 @@ import { InjectedConnector } from "@web3-react/injected-connector";
 import { PortisConnector } from "@web3-react/portis-connector";
 import { WalletLinkConnector } from "@web3-react/walletlink-connector";
 import { NetworkConnector } from "../connectors/network-connector";
-import { WalletConnectConnector } from "../deps/walletconnect-connector/dist";
+import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
 import { supportedNetworks, supportedNetworkIds } from "./networks";
 
 
@@ -38,7 +38,9 @@ const Infura = new NetworkConnector({
 });
 
 const WalletConnect = new WalletConnectConnector({
-    rpc: infuraNetworks
+    rpc: {
+        1: "https://mainnet.infura.io/v3/f30a8e726a8c4851bfc92a44a04bc889"
+    }
 });
 
 export default {

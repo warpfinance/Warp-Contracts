@@ -1,1 +1,0 @@
-NPM package dependencies that had to have minor changes made to them.

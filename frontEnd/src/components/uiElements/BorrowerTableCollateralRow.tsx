@@ -1,24 +1,25 @@
 import * as React from "react";
-import { Token } from "../../util/token";
 
 import { Avatar, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@material-ui/core";
-import { AvatarGroup } from "@material-ui/lab";
-import { CustomButton } from "..";
-import { useTokenBalance } from "../../hooks/useTokenBalance";
-import { useConnectedWeb3Context } from "../../hooks/connectedWeb3";
 import { formatBigNumber, parseBigNumber } from "../../util/tools";
+
+import { AvatarGroup } from "@material-ui/lab";
+import { BigNumber } from "ethers";
+import { BorrowerCountdownContext } from "../../hooks/borrowerCountdown";
+import { CustomButton } from "..";
+import { RefreshToken } from "../../hooks/useRefreshToken";
+import { Token } from "../../util/token";
+import { useConnectedWeb3Context } from "../../hooks/connectedWeb3";
+import { useTokenBalance } from "../../hooks/useTokenBalance";
 import { useTokenValue } from "../../hooks/useTokenValue";
 import { useWarpControl } from "../../hooks/useWarpControl";
-import { BigNumber } from "ethers";
-import { RefreshToken } from "../../hooks/useRefreshToken";
-import { BorrowerCountdownContext } from "../../hooks/borrowerCountdown";
 
 interface Props {
-  token: Token,
-  usdc: Maybe<Token>,
-  onLeftButtonClick: any,
-  onRightButtonClick: any,
-  refreshToken: RefreshToken
+    token: Token,
+    usdc: Maybe<Token>,
+    onLeftButtonClick: any,
+    onRightButtonClick: any,
+    refreshToken: RefreshToken
 }
 
 
@@ -30,13 +31,13 @@ export const BorrowerTableCollateralRow: React.FC<Props> = (props: Props) => {
     </AvatarGroup>
 
     const context = useConnectedWeb3Context();
-    const {walletBalance, vaultBalance} = useTokenBalance(props.token, context, props.refreshToken);
-    const {control} = useWarpControl(context);
-    const {tokenValueInUSDC} = useTokenValue(control, props.token, context);
+    const { walletBalance, vaultBalance } = useTokenBalance(props.token, context, props.refreshToken);
+    const { control } = useWarpControl(context);
+    const { tokenValueInUSDC } = useTokenValue(control, props.token, context);
 
-    const walletAmount = parseBigNumber(walletBalance, props.token.decimals).toLocaleString(undefined, {maximumFractionDigits: 8});
-    const providedAmount = parseBigNumber(vaultBalance, props.token.decimals).toLocaleString(undefined, {maximumFractionDigits: 8});
-    
+    const walletAmount = parseBigNumber(walletBalance, props.token.decimals).toLocaleString(undefined, { maximumFractionDigits: 8 });
+    const providedAmount = parseBigNumber(vaultBalance, props.token.decimals).toLocaleString(undefined, { maximumFractionDigits: 8 });
+
     const calculateValueInUSDC = (amount: BigNumber, value: BigNumber, usdc: Maybe<Token>) => {
         if (!usdc) {
             return '';
@@ -44,7 +45,7 @@ export const BorrowerTableCollateralRow: React.FC<Props> = (props: Props) => {
         const estimateAmount = parseBigNumber(amount, props.token.decimals);
         const estimateValue = parseBigNumber(value, usdc.decimals);
 
-        return (estimateAmount * estimateValue).toLocaleString(undefined, {maximumFractionDigits: 2});
+        return (estimateAmount * estimateValue).toLocaleString(undefined, { maximumFractionDigits: 2 });
     }
 
     let walletValueInUSD = calculateValueInUSDC(walletBalance, tokenValueInUSDC, props.usdc);
@@ -55,7 +56,7 @@ export const BorrowerTableCollateralRow: React.FC<Props> = (props: Props) => {
             func(event, props.token, walletBalance, vaultBalance);
         }
     }
-    
+
 
     return (<TableRow>
         <TableCell>
@@ -119,28 +120,20 @@ export const BorrowerTableCollateralRow: React.FC<Props> = (props: Props) => {
                 alignItems="flex-start"
                 spacing={1}
             >
-                <BorrowerCountdownContext.Consumer>
-                    {value =>
-                        <React.Fragment>
-                            <Grid item>
-                                <CustomButton
-                                    id={"provide" + props.token.symbol}
-                                    onClick={wrapMouseEventWithToken(props.onLeftButtonClick)}
-                                    text={"Provide"}
-                                    type="short" />
-                            </Grid>
-                            <Grid item>
-                                <CustomButton
-                                    disabled={value.countdown === true}
-                                    id={"withdraw" + props.token.symbol}
-                                    onClick={wrapMouseEventWithToken(props.onRightButtonClick)}
-                                    text={"Withdraw"}
-                                    type="short" />
-                            </Grid>
-                        </React.Fragment>
-                    }
-                </BorrowerCountdownContext.Consumer>
-                
+                <Grid item>
+                    <CustomButton
+                        id={"provide" + props.token.symbol}
+                        onClick={wrapMouseEventWithToken(props.onLeftButtonClick)}
+                        text={"Provide"}
+                        type="short" />
+                </Grid>
+                <Grid item>
+                    <CustomButton
+                        id={"withdraw" + props.token.symbol}
+                        onClick={wrapMouseEventWithToken(props.onRightButtonClick)}
+                        text={"Withdraw"}
+                        type="short" />
+                </Grid>
             </Grid>
         </TableCell>
     </TableRow>);

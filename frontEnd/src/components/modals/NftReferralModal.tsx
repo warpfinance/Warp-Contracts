@@ -3,8 +3,9 @@ import * as React from "react";
 import { Card, CardContent, Dialog, DialogContent, DialogTitle, Grid, IconButton, Typography } from "@material-ui/core";
 
 import FileCopyOutlinedIcon from '@material-ui/icons/FileCopyOutlined';
-import { makeStyles } from "@material-ui/core/styles";
 import { TransactionInfo } from "../../util/types";
+import { copyTextToClipboard } from "../../util/tools"
+import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles(theme => ({
     dialog: {
@@ -30,17 +31,6 @@ interface State {
 export const NftReferralModal: React.FC<Props> = (props: Props) => {
     const classes = useStyles();
 
-    const copyTextToClipboard = (text: string) => {
-        if (!navigator.clipboard) {
-            fallbackCopyTextToClipboard(text);
-            return;
-        }
-        navigator.clipboard.writeText(text).then(function () {
-        }, function (err) {
-            console.error(err);
-        });
-    }
-
     const [waitingOnTx, setWaitingOnTx] = React.useState(true);
 
     React.useEffect(() => {
@@ -48,13 +38,13 @@ export const NftReferralModal: React.FC<Props> = (props: Props) => {
         if (!waitingOnTx) {
             return;
         }
-        
+
 
         const waitForTx = async () => {
             if (!props.createTeamTx) {
                 return;
             }
-            
+
             await props.createTeamTx.finished;
 
             if (isSubscribed) {
@@ -66,28 +56,6 @@ export const NftReferralModal: React.FC<Props> = (props: Props) => {
             isSubscribed = false;
         }
     })
-
-    const fallbackCopyTextToClipboard = (text: string) => {
-        var textArea = document.createElement("textarea");
-        textArea.value = text;
-
-        // Avoid scrolling to bottom
-        textArea.style.top = "0";
-        textArea.style.left = "0";
-        textArea.style.position = "fixed";
-
-        document.body.appendChild(textArea);
-        textArea.focus();
-        textArea.select();
-
-        try {
-            document.execCommand('copy');
-        } catch (err) {
-            console.error(err);
-        }
-
-        document.body.removeChild(textArea);
-    }
 
     return (
         <Dialog
@@ -111,8 +79,8 @@ export const NftReferralModal: React.FC<Props> = (props: Props) => {
                     >
                         {
                             !waitingOnTx ? null :
-                            <Typography variant="subtitle2" color="textPrimary" >
-                                Your team name is being registered but you can still use your referral code in the meantime.
+                                <Typography variant="subtitle2" color="textPrimary" >
+                                    Your team name is being registered but you can still use your referral code in the meantime.
                             </Typography>
                         }
                         <Typography variant="subtitle1" color="textSecondary" >

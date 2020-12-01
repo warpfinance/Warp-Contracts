@@ -1,16 +1,18 @@
 import * as React from "react";
 
 import { CustomButton, NftModal, NftReferralModal } from "../../components"
-import { Grid, Link, Typography } from "@material-ui/core";
+import { Grid, IconButton, Link, Typography } from "@material-ui/core";
+import { TransactionInfo, TransactionReceipt } from "../../util/types";
 
 import { BorrowerCountdownContext } from "../../hooks/borrowerCountdown";
+import FileCopyOutlinedIcon from '@material-ui/icons/FileCopyOutlined';
 import { Link as RouterLink } from 'react-router-dom';
+import { WarpControlService } from "../../services/warpControl";
+import { copyTextToClipboard } from "../../util/tools"
+import { getContractAddress } from "../../util/networks";
 import { makeStyles } from "@material-ui/core/styles";
 import { useState } from "react";
 import { useWeb3React } from "@web3-react/core";
-import { TransactionInfo, TransactionReceipt } from "../../util/types";
-import { WarpControlService } from "../../services/warpControl";
-import { getContractAddress } from "../../util/networks";
 
 const useStyles = makeStyles(theme => ({
     content: {
@@ -44,9 +46,11 @@ export const Header: React.FC<Props> = (props: Props) => {
     };
 
     const [createTeamTx, setCreateTeamTX] = useState<Maybe<TransactionInfo>>(null);
+    // TO-DO: Get current link from web3, if it exists
     const [link, setLink] = useState("");
     const [nftModalOpen, setNftModalOpen] = useState(false);
     const [nftReferralModalOpen, setNftReferralModalOpen] = useState(false);
+    // TO-DO: Get team name from web3, if it exists
     const [teamName, setTeamName] = useState("");
     const [teamNameError, setTeamNameError] = useState(true);
 
@@ -129,7 +133,16 @@ export const Header: React.FC<Props> = (props: Props) => {
                             <Grid
                                 item
                             >
-                                <CustomButton text={"Create team referral code"} onClick={() => setNftModalOpen(true)} type={"short"} />
+                                {(link === "" || teamName === "") ?
+                                    <CustomButton text={"Create team referral code"} onClick={() => setNftModalOpen(true)} type={"short"} />
+                                    :
+                                    <React.Fragment>
+                                        <CustomButton disabled={true} text={teamName} type={"short"} />
+                                        <IconButton onClick={() => copyTextToClipboard(link)}>
+                                            <FileCopyOutlinedIcon />
+                                        </IconButton>
+                                    </React.Fragment>
+                                }
                             </Grid>
                         </React.Fragment>
                         :
@@ -212,9 +225,11 @@ export const Header: React.FC<Props> = (props: Props) => {
                     <Grid
                         item
                     >
-                        <Typography className={classes.link} color="textSecondary">
-                            Docs
-                            </Typography>
+                        <Typography>
+                            <Link className={classes.link} color="textSecondary" href={process.env.REACT_APP_DOCS_ENDPOINT || ""} underline="none">
+                                Docs
+                            </Link>
+                        </Typography>
                     </Grid>
                     <Grid
                         item
