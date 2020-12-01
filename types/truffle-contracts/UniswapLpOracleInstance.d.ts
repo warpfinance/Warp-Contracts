@@ -32,6 +32,8 @@ export interface UniswapLpOracleInstanceInstance
 
   blockTimestampLast(txDetails?: Truffle.TransactionDetails): Promise<BN>;
 
+  firstRun(txDetails?: Truffle.TransactionDetails): Promise<boolean>;
+
   /**
    * Returns the address of the current owner.
    */
@@ -136,6 +138,8 @@ export interface UniswapLpOracleInstanceInstance
     PERIOD(txDetails?: Truffle.TransactionDetails): Promise<BN>;
 
     blockTimestampLast(txDetails?: Truffle.TransactionDetails): Promise<BN>;
+
+    firstRun(txDetails?: Truffle.TransactionDetails): Promise<boolean>;
 
     /**
      * Returns the address of the current owner.

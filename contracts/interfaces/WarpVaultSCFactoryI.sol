@@ -24,6 +24,7 @@ abstract contract WarpVaultSCFactoryI {
         address _StableCoin,
         address _warpTeam,
         uint256 _initialExchangeRate,
-        uint256 _timelock
+        uint256 _timelock,
+        uint256 _reserveFactorMantissa
     ) public virtual returns (address);
 }

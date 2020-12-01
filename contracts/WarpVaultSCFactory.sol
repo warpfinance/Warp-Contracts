@@ -27,7 +27,8 @@ contract WarpVaultSCFactory is Ownable {
         address _StableCoin,
         address _warpTeam,
         uint256 _initialExchangeRate,
-        uint256 _timelock
+        uint256 _timelock,
+        uint256 _reserveFactorMantissa
     ) public onlyOwner returns (address) {
         address _WVSC = address(
             new WarpVaultSC(
@@ -36,7 +37,8 @@ contract WarpVaultSCFactory is Ownable {
                 msg.sender,
                 _warpTeam,
                 _initialExchangeRate,
-                _timelock
+                _timelock,
+                _reserveFactorMantissa
             )
         );
 

@@ -62,7 +62,7 @@ module.exports = async deployer => {
     "1000000000000000000", // 1 ETH
     "300000000000000", //$300 USDC
     "900000000000000", // 0.9 ETH
-    "0x7f3A152F09324f2aee916CE069D3908603449173",
+    "0x7d4A13FE119C9F36425008a7afCB2737B2bB5C41",
     100000000000000
   );
   console.log("Listed USDC-wETH");
@@ -84,7 +84,7 @@ module.exports = async deployer => {
     "1000000000000000000", // 1 BTC
     "1300000000000000000000", // $13,000 USDC
     "900000000000000000", //0.9 BTC
-    "0x7f3A152F09324f2aee916CE069D3908603449173",
+    "0x7d4A13FE119C9F36425008a7afCB2737B2bB5C41",
     100000000000000
   );
   console.log("Liquidity is now Liquid!");
@@ -107,7 +107,7 @@ module.exports = async deployer => {
     "1000000000000000000",
     "900000000000000000",
     "900000000000000001",
-    "0x7f3A152F09324f2aee916CE069D3908603449173",
+    "0x7d4A13FE119C9F36425008a7afCB2737B2bB5C41",
     100000000000000
   );
   console.log("Listed USDC-DAI");
@@ -129,7 +129,7 @@ module.exports = async deployer => {
     "1000000000000000000",
     "900000000000000000",
     "900000000000000001",
-    "0x7f3A152F09324f2aee916CE069D3908603449173",
+    "0x7d4A13FE119C9F36425008a7afCB2737B2bB5C41",
     100000000000000
   );
   console.log("Listed USDC-USDT");
@@ -155,7 +155,7 @@ module.exports = async deployer => {
     "1000000000000000000", //one btc
     "34000000000000000000",
     "900000000000000000",
-    "0x7f3A152F09324f2aee916CE069D3908603449173",
+    "0x7d4A13FE119C9F36425008a7afCB2737B2bB5C41",
     100000000000000
   );
   console.log("Listed ETH-wBTC");
@@ -178,7 +178,7 @@ module.exports = async deployer => {
     "1000000000000000000", // 1 ETH
     "34000000000000000000",
     "900000000000000000",
-    "0x7f3A152F09324f2aee916CE069D3908603449173",
+    "0x7d4A13FE119C9F36425008a7afCB2737B2bB5C41",
     100000000000000
   );
   console.log("Listed ETH-DAI");
@@ -200,7 +200,7 @@ module.exports = async deployer => {
     "1000000000000000000", // 1 ETH
     "34000000000000000000",
     "900000000000000000",
-    "0x7f3A152F09324f2aee916CE069D3908603449173",
+    "0x7d4A13FE119C9F36425008a7afCB2737B2bB5C41",
     100000000000000
   );
   console.log("Listed ETH-DAI");
@@ -303,6 +303,7 @@ module.exports = async deployer => {
     "40", //Jump Multiplier Per Year(the multiplier per block after hitting a specific utilizastion point)
     "900000000000000000", //optimal(this is the utilizastion point or "kink" at which the jump multiplier is applied)
     "1000000000000000000", //intitial exchange rate(the rate at which the initial exchange of asset/ART is set)
+    "500000000000000000",
     DAI.address
   );
   console.log("DAI StableCoin Warp Vault created successfully");
@@ -315,6 +316,7 @@ module.exports = async deployer => {
     "40", //Jump Multiplier Per Year(the multiplier per block after hitting a specific utilizastion point)
     "900000000000000000", //optimal(this is the utilizastion point or "kink" at which the jump multiplier is applied)
     "1000000000000000000", //intitial exchange rate(the rate at which the initial exchange of asset/ART is set)
+    "500000000000000000",
     USDC.address
   );
   console.log("USDC StableCoin Warp Vault created successfully");
@@ -327,7 +329,18 @@ module.exports = async deployer => {
     "40", //Jump Multiplier Per Year(the multiplier per block after hitting a specific utilizastion point)
     "900000000000000000", //optimal(this is the utilizastion point or "kink" at which the jump multiplier is applied)
     "1000000000000000000", //intitial exchange rate(the rate at which the initial exchange of asset/ART is set)
+    "500000000000000000",
     USDT.address
   );
   console.log("USDT StableCoin Warp Vault created successfully");
+
+  console.log("REACT_APP_LOCALHOST_ULPOF=" + UniswapLPOracleFactory.address);
+  console.log("REACT_APP_LOCALHOST_DAI=" + DAI.address);
+  console.log("REACT_APP_LOCALHOST_USDC=" + USDC.address);
+  console.log("REACT_APP_LOCALHOST_USDT=" + USDT.address);
+  console.log("REACT_APP_LOCALHOST_ETH_DAI=" + ETH_DAI.address);
+  console.log("REACT_APP_LOCALHOST_ETH_USDT=" + ETH_USDT.address);
+  console.log("REACT_APP_LOCALHOST_ETH_USDC=" + USDC_wETH.address);
+  console.log("REACT_APP_LOCALHOST_ETH_WBTC=" + ETH_wBTC.address);
+  console.log("REACT_APP_LOCALHOST_CONTROL=" + WarpControl.address);
 };

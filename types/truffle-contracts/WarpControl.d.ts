@@ -101,6 +101,12 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
 
   WVSCF(txDetails?: Truffle.TransactionDetails): Promise<string>;
 
+  amountForUserByGroup(
+    arg0: string,
+    arg1: string,
+    txDetails?: Truffle.TransactionDetails
+  ): Promise<BN>;
+
   existingRefferalCode(
     arg0: string,
     txDetails?: Truffle.TransactionDetails
@@ -121,7 +127,13 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
     txDetails?: Truffle.TransactionDetails
   ): Promise<string>;
 
-  isGroupMember(
+  isInGroup(
+    arg0: string,
+    arg1: string,
+    txDetails?: Truffle.TransactionDetails
+  ): Promise<boolean>;
+
+  isParticipant(
     arg0: string,
     txDetails?: Truffle.TransactionDetails
   ): Promise<boolean>;
@@ -141,6 +153,13 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
     txDetails?: Truffle.TransactionDetails
   ): Promise<BN>;
 
+  lpLockedForUserByGroup(
+    arg0: string,
+    arg1: string,
+    arg2: string,
+    txDetails?: Truffle.TransactionDetails
+  ): Promise<BN>;
+
   lpVaults(
     arg0: number | BN | string,
     txDetails?: Truffle.TransactionDetails
@@ -150,6 +169,11 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
    * Returns the address of the current owner.
    */
   owner(txDetails?: Truffle.TransactionDetails): Promise<string>;
+
+  refferalCodeToGroupName(
+    arg0: string,
+    txDetails?: Truffle.TransactionDetails
+  ): Promise<string>;
 
   refferalCodeTracker(
     arg0: string,
@@ -215,10 +239,23 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
     txDetails?: Truffle.TransactionDetails
   ): Promise<string[]>;
 
-  checkIfGroupMember(
-    _account: string,
+  viewSClockedForUserByGroup(
+    _refferalCode: string,
+    _member: string,
     txDetails?: Truffle.TransactionDetails
-  ): Promise<boolean>;
+  ): Promise<BN>;
+
+  viewLPlockedForUserByGroup(
+    _refferalCode: string,
+    _member: string,
+    _lp: string,
+    txDetails?: Truffle.TransactionDetails
+  ): Promise<BN>;
+
+  getGroupName(
+    _refferalCode: string,
+    txDetails?: Truffle.TransactionDetails
+  ): Promise<string>;
 
   /**
    * createNewLPVault allows the contract owner to create a new WarpVaultLP contract for a specific LP token
@@ -316,25 +353,78 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
     ): Promise<number>;
   };
 
-  addMemberToGroup: {
+  createGroup: {
+    (_groupName: string, txDetails?: Truffle.TransactionDetails): Promise<
+      Truffle.TransactionResponse<AllEvents>
+    >;
+    call(
+      _groupName: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<void>;
+    sendTransaction(
+      _groupName: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<string>;
+    estimateGas(
+      _groupName: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<number>;
+  };
+
+  addMemberToGroupSC: {
     (
       _refferalCode: string,
       _member: string,
+      _amount: number | BN | string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<Truffle.TransactionResponse<AllEvents>>;
     call(
       _refferalCode: string,
       _member: string,
+      _amount: number | BN | string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<void>;
     sendTransaction(
       _refferalCode: string,
       _member: string,
+      _amount: number | BN | string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<string>;
     estimateGas(
       _refferalCode: string,
       _member: string,
+      _amount: number | BN | string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<number>;
+  };
+
+  addMemberToGroupLP: {
+    (
+      _refferalCode: string,
+      _member: string,
+      _lp: string,
+      _amount: number | BN | string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<Truffle.TransactionResponse<AllEvents>>;
+    call(
+      _refferalCode: string,
+      _member: string,
+      _lp: string,
+      _amount: number | BN | string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<void>;
+    sendTransaction(
+      _refferalCode: string,
+      _member: string,
+      _lp: string,
+      _amount: number | BN | string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<string>;
+    estimateGas(
+      _refferalCode: string,
+      _member: string,
+      _lp: string,
+      _amount: number | BN | string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<number>;
   };
@@ -535,6 +625,12 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
 
     WVSCF(txDetails?: Truffle.TransactionDetails): Promise<string>;
 
+    amountForUserByGroup(
+      arg0: string,
+      arg1: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<BN>;
+
     existingRefferalCode(
       arg0: string,
       txDetails?: Truffle.TransactionDetails
@@ -555,7 +651,13 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
       txDetails?: Truffle.TransactionDetails
     ): Promise<string>;
 
-    isGroupMember(
+    isInGroup(
+      arg0: string,
+      arg1: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<boolean>;
+
+    isParticipant(
       arg0: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<boolean>;
@@ -575,6 +677,13 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
       txDetails?: Truffle.TransactionDetails
     ): Promise<BN>;
 
+    lpLockedForUserByGroup(
+      arg0: string,
+      arg1: string,
+      arg2: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<BN>;
+
     lpVaults(
       arg0: number | BN | string,
       txDetails?: Truffle.TransactionDetails
@@ -584,6 +693,11 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
      * Returns the address of the current owner.
      */
     owner(txDetails?: Truffle.TransactionDetails): Promise<string>;
+
+    refferalCodeToGroupName(
+      arg0: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<string>;
 
     refferalCodeTracker(
       arg0: string,
@@ -649,10 +763,23 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
       txDetails?: Truffle.TransactionDetails
     ): Promise<string[]>;
 
-    checkIfGroupMember(
-      _account: string,
+    viewSClockedForUserByGroup(
+      _refferalCode: string,
+      _member: string,
       txDetails?: Truffle.TransactionDetails
-    ): Promise<boolean>;
+    ): Promise<BN>;
+
+    viewLPlockedForUserByGroup(
+      _refferalCode: string,
+      _member: string,
+      _lp: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<BN>;
+
+    getGroupName(
+      _refferalCode: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<string>;
 
     /**
      * createNewLPVault allows the contract owner to create a new WarpVaultLP contract for a specific LP token
@@ -750,25 +877,78 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
       ): Promise<number>;
     };
 
-    addMemberToGroup: {
+    createGroup: {
+      (_groupName: string, txDetails?: Truffle.TransactionDetails): Promise<
+        Truffle.TransactionResponse<AllEvents>
+      >;
+      call(
+        _groupName: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<void>;
+      sendTransaction(
+        _groupName: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<string>;
+      estimateGas(
+        _groupName: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<number>;
+    };
+
+    addMemberToGroupSC: {
       (
         _refferalCode: string,
         _member: string,
+        _amount: number | BN | string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<Truffle.TransactionResponse<AllEvents>>;
       call(
         _refferalCode: string,
         _member: string,
+        _amount: number | BN | string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<void>;
       sendTransaction(
         _refferalCode: string,
         _member: string,
+        _amount: number | BN | string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<string>;
       estimateGas(
         _refferalCode: string,
         _member: string,
+        _amount: number | BN | string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<number>;
+    };
+
+    addMemberToGroupLP: {
+      (
+        _refferalCode: string,
+        _member: string,
+        _lp: string,
+        _amount: number | BN | string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<Truffle.TransactionResponse<AllEvents>>;
+      call(
+        _refferalCode: string,
+        _member: string,
+        _lp: string,
+        _amount: number | BN | string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<void>;
+      sendTransaction(
+        _refferalCode: string,
+        _member: string,
+        _lp: string,
+        _amount: number | BN | string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<string>;
+      estimateGas(
+        _refferalCode: string,
+        _member: string,
+        _lp: string,
+        _amount: number | BN | string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<number>;
     };
