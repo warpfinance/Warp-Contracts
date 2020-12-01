@@ -78,6 +78,14 @@ contract WarpVaultSC is Ownable, Exponential {
         }
 
     /**
+    @dev Throws if a function is called by anyone but the warp team
+    **/
+        modifier onlyWarpT() {
+              require(msg.sender == warpTeam);
+              _;
+          }
+
+    /**
     @notice constructor sets up token names and symbols for the WarpWrapperToken
     @param _InterestRate is the address of the Interest Rate Model this vault will be using
     @param _StableCoin is the address of the stablecoin this vault will manage
@@ -126,16 +134,18 @@ contract WarpVaultSC is Ownable, Exponential {
         return fee;
     }
 
-    function withdrawReserves() public {
-      require(msg.sender == warpTeam);
-      uint cashoutVal = totalReserves;
-      totalReserves = 0;
-      stablecoin.transfer(warpTeam, cashoutVal);
-      emit ReserveWithdraw(cashoutVal);
+    function withdrawReserves(uint _amount) public onlyWarpT{
+      totalReserves = totalReserves.sub(_amount);
+      stablecoin.transfer(warpTeam, _amount);
+      emit ReserveWithdraw(_amount);
     }
 
     function setNewInterestModel(address _newModel) public onlyOwner {
       InterestRate = InterestRateModel(_newModel);
+    }
+
+    function updateReserve(uint _newReserveMantissa) public onlyWarpT {
+      reserveFactorMantissa = _newReserveMantissa;
     }
     /**
     @notice Applies accrued interest to total borrows and reserves
@@ -625,4 +635,6 @@ contract WarpVaultSC is Ownable, Exponential {
         accountBorrows[_borrower].interestIndex = 0;
         totalBorrows = totalBorrows.sub(_amount);
     }
+
+
 }

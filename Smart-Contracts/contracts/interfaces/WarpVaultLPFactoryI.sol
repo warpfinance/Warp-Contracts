@@ -21,4 +21,7 @@ abstract contract WarpVaultLPFactoryI {
         public
         virtual
         returns (address);
+
+    function transferOwnership(address _newOwner) public virtual;
+
 }

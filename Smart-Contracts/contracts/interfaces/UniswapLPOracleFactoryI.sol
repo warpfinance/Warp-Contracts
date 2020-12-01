@@ -41,4 +41,7 @@ abstract contract UniswapLPOracleFactoryI {
         returns (uint256);
 
     function viewPriceOfToken(address token) public view virtual returns (uint256);
+
+    function transferOwnership(address _newOwner) public virtual;
+
 }

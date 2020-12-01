@@ -27,4 +27,7 @@ abstract contract WarpVaultSCFactoryI {
         uint256 _timelock,
         uint256 _reserveFactorMantissa
     ) public virtual returns (address);
+
+    function transferOwnership(address _newOwner) public virtual;
+
 }
