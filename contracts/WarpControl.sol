@@ -227,24 +227,21 @@ contract WarpControl is Ownable, Exponential {
     @notice Figures out how much of a given LP token an account is allowed to withdraw
      */
     function getMaxWithdrawAllowed(address account, address lpToken) public returns (uint256) {
-      //gets how much a user has borrowed against in USDC
         uint256 borrowedTotal = getTotalBorrowedValue(account);
-      //gets the total USDC value of a users availible collateral
         uint256 collateralValue = getTotalAvailableCollateralValue(account);
-      //determines usable collateral value
-        uint256 usableCollateral = collateralValue.sub(borrowedTotal);
-      //get current price of one LP token
+        uint256 requiredCollateral = calcCollateralRequired(borrowedTotal);
+        uint256 leftoverCollateral = collateralValue.sub(requiredCollateral);
         uint256 lpValue = Oracle.getUnderlyingPrice(lpToken);
-      //return usable collateral value devided by the price of one lp token for maximum withdrawable lps(scale by 1e18)
-        return usableCollateral.mul(1e18).div(lpValue);
+        return leftoverCollateral.mul(1e18).div(lpValue);
     }
 
     function viewMaxWithdrawAllowed(address account, address lpToken) public view returns (uint256) {
         uint256 borrowedTotal = viewTotalBorrowedValue(account);
         uint256 collateralValue = viewTotalAvailableCollateralValue(account);
-        uint256 usableCollateral = collateralValue.sub(borrowedTotal);
+        uint256 requiredCollateral = calcCollateralRequired(borrowedTotal);
+        uint256 leftoverCollateral = collateralValue.sub(requiredCollateral);
         uint256 lpValue = Oracle.viewUnderlyingPrice(lpToken);
-        return usableCollateral.mul(1e18).div(lpValue);
+        return leftoverCollateral.mul(1e18).div(lpValue);
     }
 
     function getTotalAvailableCollateralValue(address _account)
@@ -374,9 +371,7 @@ contract WarpControl is Ownable, Exponential {
     }
 
     function calcCollateralRequired(uint256 _borrowAmount) public view returns (uint256) {
-        uint256 oneUSDC = Oracle.OneUSDC();
-        uint256 factor = oneUSDC.div(calcBorrowLimit(oneUSDC));
-        return _borrowAmount.mul(factor);
+        return _borrowAmount.mul(3).div(2);
     }
 
     function getBorrowLimit(address _account) public returns (uint256) {
