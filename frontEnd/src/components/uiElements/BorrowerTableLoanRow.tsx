@@ -11,6 +11,7 @@ import { useBorrowedAmount } from "../../hooks/useBorrowedAmount";
 import { useConnectedWeb3Context } from "../../hooks/connectedWeb3";
 import { useTokenBalance } from "../../hooks/useTokenBalance";
 import { useWarpControl } from "../../hooks/useWarpControl";
+import { useTokenInterest } from "../../hooks/useTokenInterest";
 
 interface Props {
     token: Token,
@@ -25,7 +26,7 @@ export const BorrowerTableLoanRow: React.FC<Props> = (props: Props) => {
     const { control } = useWarpControl(context);
     const borrowedAmount = useBorrowedAmount(context, control, props.token, props.refreshToken);
     const { walletBalance } = useTokenBalance(props.token, context, props.refreshToken);
-
+    const { tokenBorrowRate } = useTokenInterest(control, props.token, context);
     const amountDue = parseBigNumber(borrowedAmount, props.token.decimals);
 
     const wrapMouseEventWithToken = (func: any) => {
@@ -61,6 +62,11 @@ export const BorrowerTableLoanRow: React.FC<Props> = (props: Props) => {
                     <Grid item>
                         <Typography variant="subtitle1">
                             {amountDue.toLocaleString(undefined, { maximumFractionDigits: 4 }) + " " + props.token.symbol}
+                        </Typography>
+                    </Grid>
+                    <Grid item>
+                        <Typography variant="subtitle1" color="textSecondary">
+                            {tokenBorrowRate.toLocaleString(undefined, { minimumFractionDigits: 4 }) + "%"}
                         </Typography>
                     </Grid>
                 </Grid>

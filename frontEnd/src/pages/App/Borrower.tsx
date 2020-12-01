@@ -381,13 +381,16 @@ export const Borrower: React.FC<Props> = (props: Props) => {
                     alignItems="stretch"
                 >
                     <Grid item>
-                        <InformationCard header="Borrow Limit" text={`$${data.collateral.toFixed(2)}`} />
+                        <InformationCard header="Borrowed Amount (in USDC)" text={`$${data.borrowLimitUsed.toFixed(2)}`} />
+                    </Grid>
+                    <Grid item>
+                        <InformationCard header="Borrow Limit (in USDC)" text={`$${data.collateral.toFixed(2)}`} />
                     </Grid>
                     <Grid item>
                         <InformationCard header="Limit Used %" text={`${data.borrowPercentage.toFixed(0)}%`} />
                     </Grid>
                     <Grid item>
-                        <InformationCard header="Interest rate" text={`${data.interestRate.toFixed(2)}%`} />
+                        <InformationCard header="Total APY" text={`${data.interestRate.toFixed(2)}%`} />
                     </Grid>
                 </Grid>
                 <Grid

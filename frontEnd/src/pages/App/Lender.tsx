@@ -259,13 +259,13 @@ export const Lender: React.FC<Props> = (props: Props) => {
                     alignItems="stretch"
                 >
                     <Grid item>
-                        <InformationCard header="Wallet balance" text={`$${data.walletBalance}`} />
+                        <InformationCard header="Wallet balance (in USDC)" text={`$${data.walletBalance}`} />
                     </Grid>
                     <Grid item>
-                        <InformationCard header="Stable coin reward" text={`$${data.stableCoinReward}`} />
+                        <InformationCard header="Stable coin reward (in USDC)" text={`$${data.stableCoinReward.toLocaleString(undefined, {maximumFractionDigits: 2})}`} />
                     </Grid>
                     <Grid item>
-                        <InformationCard header="Stable coin deposit" text={`$${data.stableCoinDeposit.toFixed(2)}`} />
+                        <InformationCard header="Stable coin deposit (in USDC)" text={`$${data.stableCoinDeposit.toFixed(2)}`} />
                     </Grid>
                 </Grid>
                 <Grid
