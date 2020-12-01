@@ -58,10 +58,10 @@ abstract contract WarpVaultSCI {
     ) public virtual;
 
     function setNewInterestModel(address _newModel) public virtual;
-<<<<<<< HEAD
+
 
     function transferOwnership(address _newOwner) public virtual;
-=======
-    function stableCoinAddress() public virtual view returns (address);
->>>>>>> b4132d0cf1281ef2445d9a0b2633dc07d87f92b0
+
+    function getSCDecimals() public view virtual returns(uint);
+
 }

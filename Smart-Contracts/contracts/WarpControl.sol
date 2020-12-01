@@ -37,7 +37,8 @@ contract WarpControl is Ownable, Exponential {
 
     mapping(address => address) public instanceLPTracker; //maps LP token address to the assets WarpVault
     mapping(address => address) public instanceSCTracker;
-    mapping(address => uint256) public lockedLPValue;
+    mapping(address => address) public getVaultByAsset;
+    mapping(address => uint) public lockedLPValue;
     mapping(address => bool) public isVault;
     mapping(address => address[]) public refferalCodeTracker;
     mapping(address => string) public refferalCodeToGroupName;
@@ -143,6 +144,8 @@ contract WarpControl is Ownable, Exponential {
         lpVaults.push(_WarpVault);
         //set Warp vault address as an approved vault
         isVault[_WarpVault] = true;
+        //track vault to asset
+        getVaultByAsset[_WarpVault] = _lp;
         emit NewLPVault(_WarpVault);
     }
 
@@ -191,6 +194,8 @@ contract WarpControl is Ownable, Exponential {
         scVaults.push(_WarpVault);
         //set Warp vault address as an approved vault
         isVault[_WarpVault] = true;
+        //track vault to asset
+        getVaultByAsset[_WarpVault] = _StableCoin;
         emit NewSCVault(_WarpVault, IR);
     }
 
@@ -318,9 +323,14 @@ contract WarpControl is Ownable, Exponential {
             //instantiate each LP warp vault
             WarpVaultSCI WVSC = WarpVaultSCI(scVaults[i]);
             //retreive the amount user has borrowed from each stablecoin vault
-            totalBorrowedValue = totalBorrowedValue.add(
-                WVSC.borrowBalancePrior(_account)
-            );
+                uint borrowBalanceInStable = WVSC.borrowBalancePrior(_account);
+                uint decimals = WVSC.getSCDecimals();
+                totalBorrowedValue = totalBorrowedValue.add(
+                  borrowBalanceInStable
+                ).div(
+                  uint256(10) ** decimals
+                );
+
         }
         //return total Borrowed Value
         return totalBorrowedValue;
@@ -335,8 +345,12 @@ contract WarpControl is Ownable, Exponential {
             //instantiate each LP warp vault
             WarpVaultSCI WVSC = WarpVaultSCI(scVaults[i]);
             //retreive the amount user has borrowed from each stablecoin vault
+            uint borrowBalanceInStable = WVSC.borrowBalanceCurrent(_account);
+            uint decimals = WVSC.getSCDecimals();
             totalBorrowedValue = totalBorrowedValue.add(
-                WVSC.borrowBalanceCurrent(_account)
+              borrowBalanceInStable
+            ).div(
+              uint256(10) ** decimals
             );
         }
         //return total Borrowed Value
@@ -428,10 +442,8 @@ contract WarpControl is Ownable, Exponential {
             WarpVaultSCI scVault = WarpVaultSCI(scVaults[i]);
             //retreive the borrowers borrow balance from this vault and add it to the scBalances array
             scBalances[i] = scVault.borrowBalanceCurrent(_borrower);
-
-            ExtendedIERC20 scToken = ExtendedIERC20(scVault.stableCoinAddress());
-            uint8 tokenDecimals = scToken.decimals();
-            uint256 priceOfTokenInUSDC = viewPriceOfToken();
+            uint256 tokenDecimals = uint256(scVault.getSCDecimals());
+            uint256 priceOfTokenInUSDC = viewPriceOfToken(getVaultByAsset[address(scVault)]);
 
             uint256 borrowedAmountInUSDC = (priceOfTokenInUSDC.mul(scBalances[i])).div(uint256(10) ** tokenDecimals);
 
@@ -486,11 +498,11 @@ contract WarpControl is Ownable, Exponential {
       WV.setNewInterestModel(IR);
     }
 
-    function initiateWarpDrive() public onlyWarpT{
+    function startUpgradeTimer() public onlyWarpT{
       graceSpace = now.add(172800);
     }
 
-    function upgradeWarpSpeed(address _newWarpControl) public onlyWarpT {
+    function upgradeWarp(address _newWarpControl) public onlyWarpT {
       require(now >= graceSpace);
         uint256 numVaults = lpVaults.length;
         uint256 numSCVaults = scVaults.length;
