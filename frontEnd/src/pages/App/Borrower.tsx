@@ -75,6 +75,7 @@ export const Borrower: React.FC<Props> = (props: Props) => {
     const [withdrawError, setWithdrawError] = useState(false);
     const [withdrawLpValue, setWithdrawLpValue] = useState(0);
     const [withdrawModalOpen, setWithdrawModalOpen] = useState(false);
+    const [maxWithdrawAmount, setMaxWithdrawAmount] = useState(0);
 
     const [currentToken, setCurrentToken] = useState<Token>({} as Token);
     const [tokenToUSDCRate, setTokenToUSDCRate] = useState(0);
@@ -177,16 +178,18 @@ export const Borrower: React.FC<Props> = (props: Props) => {
         const index = lpTokens.findIndex((elem: any) => elem === token);
         if (index < 0) return true;
         if (value <= 0 ||
-            value > vaultAmount) { //collateralData[index].provided) {
+            value > vaultAmount || value > maxWithdrawAmount) { //collateralData[index].provided) {
             return true;
         }
         return false;
     }
 
-    const getLPToUSDCRatio = async (token: Token) => {
+    const getLPToUSDCRatio = async (token: Token): Promise<number> => {
         const value = await control.getLPPrice(token.address);
         const ratio = parseBigNumber(value, usdcToken?.decimals);
         setTokenToUSDCRate(ratio);
+
+        return ratio;
     }
 
     const onBorrowAmountChange = async (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
@@ -262,7 +265,19 @@ export const Borrower: React.FC<Props> = (props: Props) => {
         setWithdrawAmountValue(0);
         setWithdrawLpValue(0);
 
-        await getLPToUSDCRatio(token);
+        const lpToUSDC = await getLPToUSDCRatio(token);
+
+        if (!context.account) {
+            logger.error("onWithdrawClick: No account when there should be.");
+            return;
+        }
+
+        //1.899484187990010665
+
+        const maxAmount = parseBigNumber(await control.getMaxCollateralWithdrawAmount(context.account, token.address), token.decimals);
+        const maxAmountInUSDC = maxAmount * lpToUSDC;
+        logger.log(`Max amount of ${token.symbol} that can be withdrawn is ${maxAmount} LP or ${maxAmountInUSDC} USDC (converstion rate of ${lpToUSDC})`);
+        setMaxWithdrawAmount(maxAmountInUSDC);
     }
 
     const handleTransaction = async (tx: Promise<TransactionInfo>) => {
