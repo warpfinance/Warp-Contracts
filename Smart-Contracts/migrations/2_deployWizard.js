@@ -341,9 +341,9 @@ module.exports = async deployer => {
   console.log("REACT_APP_LOCALHOST_DAI=" + DAI.address);
   console.log("REACT_APP_LOCALHOST_USDC=" + USDC.address);
   console.log("REACT_APP_LOCALHOST_USDT=" + USDT.address);
-  console.log("REACT_APP_LOCALHOST_ETH_DAI=" + ETH_DAI.address);
-  console.log("REACT_APP_LOCALHOST_ETH_USDT=" + ETH_USDT.address);
-  console.log("REACT_APP_LOCALHOST_ETH_USDC=" + USDC_wETH.address);
-  console.log("REACT_APP_LOCALHOST_ETH_WBTC=" + ETH_wBTC.address);
+  console.log("REACT_APP_LOCALHOST_ETH_DAI=" + ETH_DAI);
+  console.log("REACT_APP_LOCALHOST_ETH_USDT=" + ETH_USDT);
+  console.log("REACT_APP_LOCALHOST_ETH_USDC=" + USDC_wETH);
+  console.log("REACT_APP_LOCALHOST_ETH_WBTC=" + ETH_wBTC);
   console.log("REACT_APP_LOCALHOST_CONTROL=" + WarpControl.address);
 };
