@@ -2,7 +2,6 @@ pragma solidity ^0.6.0;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/math/SafeMath.sol";
-import "./interfaces/ExtendedIERC20.sol";
 import "./interfaces/WarpVaultSCI.sol";
 import "./interfaces/WarpVaultLPI.sol";
 import "./interfaces/WarpVaultLPFactoryI.sol";
@@ -324,7 +323,7 @@ contract WarpControl is Ownable, Exponential {
             WarpVaultSCI WVSC = WarpVaultSCI(scVaults[i]);
             //retreive the amount user has borrowed from each stablecoin vault
                 uint borrowBalanceInStable = WVSC.borrowBalancePrior(_account);
-                uint decimals = WVSC.getSCDecimals();
+                uint8 decimals = WVSC.getSCDecimals();
                 totalBorrowedValue = totalBorrowedValue.add(
                   borrowBalanceInStable
                 ).div(
@@ -346,7 +345,7 @@ contract WarpControl is Ownable, Exponential {
             WarpVaultSCI WVSC = WarpVaultSCI(scVaults[i]);
             //retreive the amount user has borrowed from each stablecoin vault
             uint borrowBalanceInStable = WVSC.borrowBalanceCurrent(_account);
-            uint decimals = WVSC.getSCDecimals();
+            uint8 decimals = WVSC.getSCDecimals();
             totalBorrowedValue = totalBorrowedValue.add(
               borrowBalanceInStable
             ).div(
@@ -442,7 +441,7 @@ contract WarpControl is Ownable, Exponential {
             WarpVaultSCI scVault = WarpVaultSCI(scVaults[i]);
             //retreive the borrowers borrow balance from this vault and add it to the scBalances array
             scBalances[i] = scVault.borrowBalanceCurrent(_borrower);
-            uint256 tokenDecimals = uint256(scVault.getSCDecimals());
+            uint8 tokenDecimals = scVault.getSCDecimals();
             uint256 priceOfTokenInUSDC = viewPriceOfToken(getVaultByAsset[address(scVault)]);
 
             uint256 borrowedAmountInUSDC = (priceOfTokenInUSDC.mul(scBalances[i])).div(uint256(10) ** tokenDecimals);
