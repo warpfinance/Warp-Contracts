@@ -12,6 +12,9 @@ const WarpVaultLPFactory = artifacts.require("WarpVaultLPFactory");
 const WarpControl = artifacts.require("WarpControl");
 
 module.exports = async deployer => {
+
+  const ownerAddress = '0x7d4A13FE119C9F36425008a7afCB2737B2bB5C41';
+
   console.log("Initiate the Token Canon...");
   await deployer.deploy(DAI);
   console.log("Deploying the DAI....");
@@ -62,7 +65,7 @@ module.exports = async deployer => {
     "1000000000000000000", // 1 ETH
     "300000000000000", //$300 USDC
     "900000000000000", // 0.9 ETH
-    "0x7d4A13FE119C9F36425008a7afCB2737B2bB5C41",
+    ownerAddress,
     100000000000000
   );
   console.log("Listed USDC-wETH");
@@ -84,7 +87,7 @@ module.exports = async deployer => {
     "1000000000000000000", // 1 BTC
     "1300000000000000000000", // $13,000 USDC
     "900000000000000000", //0.9 BTC
-    "0x7d4A13FE119C9F36425008a7afCB2737B2bB5C41",
+    ownerAddress,
     100000000000000
   );
   console.log("Liquidity is now Liquid!");
@@ -107,7 +110,7 @@ module.exports = async deployer => {
     "1000000000000000000",
     "900000000000000000",
     "900000000000000001",
-    "0x7d4A13FE119C9F36425008a7afCB2737B2bB5C41",
+    ownerAddress,
     100000000000000
   );
   console.log("Listed USDC-DAI");
@@ -129,7 +132,7 @@ module.exports = async deployer => {
     "1000000000000000000",
     "900000000000000000",
     "900000000000000001",
-    "0x7d4A13FE119C9F36425008a7afCB2737B2bB5C41",
+    ownerAddress,
     100000000000000
   );
   console.log("Listed USDC-USDT");
@@ -155,7 +158,7 @@ module.exports = async deployer => {
     "1000000000000000000", //one btc
     "34000000000000000000",
     "900000000000000000",
-    "0x7d4A13FE119C9F36425008a7afCB2737B2bB5C41",
+    ownerAddress,
     100000000000000
   );
   console.log("Listed ETH-wBTC");
@@ -178,7 +181,7 @@ module.exports = async deployer => {
     "1000000000000000000", // 1 ETH
     "34000000000000000000",
     "900000000000000000",
-    "0x7d4A13FE119C9F36425008a7afCB2737B2bB5C41",
+    ownerAddress,
     100000000000000
   );
   console.log("Listed ETH-DAI");
@@ -200,7 +203,7 @@ module.exports = async deployer => {
     "1000000000000000000", // 1 ETH
     "34000000000000000000",
     "900000000000000000",
-    "0x7d4A13FE119C9F36425008a7afCB2737B2bB5C41",
+    ownerAddress,
     100000000000000
   );
   console.log("Listed ETH-DAI");
@@ -224,7 +227,7 @@ module.exports = async deployer => {
     UniswapLPOracleFactory.address,
     WarpVaultLPFactory.address,
     WarpVaultSCFactory.address,
-    "0x7d4A13FE119C9F36425008a7afCB2737B2bB5C41" //warp team address
+    ownerAddress //warp team address
   );
   console.log("Warp Speed Controlled");
   UOF = await UniswapLPOracleFactory.deployed();
