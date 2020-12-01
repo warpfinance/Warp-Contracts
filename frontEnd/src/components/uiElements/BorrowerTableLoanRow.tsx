@@ -31,7 +31,7 @@ export const BorrowerTableLoanRow: React.FC<Props> = (props: Props) => {
 
     const wrapMouseEventWithToken = (func: any) => {
         return (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-            func(event, props.token, walletBalance);
+            func(event, props.token, walletBalance, borrowedAmount);
         }
     }
 

@@ -69,6 +69,7 @@ export const Borrower: React.FC<Props> = (props: Props) => {
     const [repayAmountValue, setRepayAmountValue] = useState(0);
     const [repayError, setRepayError] = useState(false);
     const [repayModalOpen, setRepayModalOpen] = useState(false);
+    const [borrowedAmount, setBorrowedAmount] = useState(0);
 
     const [withdrawAmountValue, setWithdrawAmountValue] = useState(0);
     const [withdrawError, setWithdrawError] = useState(false);
@@ -166,7 +167,7 @@ export const Borrower: React.FC<Props> = (props: Props) => {
         const index = stableCoins.findIndex((elem: any) => elem === token);
         if (index < 0) return true;
         if (value <= 0 ||
-            value > walletAmount) { // borrowData[index].amount) {
+            value > walletAmount || value > borrowedAmount) { // borrowData[index].amount) {
             return true;
         }
         return false;
@@ -230,6 +231,8 @@ export const Borrower: React.FC<Props> = (props: Props) => {
         setBorrowAmountCurrency(token.symbol);
         setBorrowModalOpen(true);
         setCurrentToken(token);
+        setBorrowTokenAmount(0);
+        
     }
 
     const onProvideClick = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, token: Token, walletAmount: BigNumber, vaultAmount: BigNumber) => {
@@ -237,14 +240,18 @@ export const Borrower: React.FC<Props> = (props: Props) => {
         setProvideModalOpen(true);
         setWalletAmount(parseBigNumber(walletAmount, token.decimals));
         setVaultAmount(parseBigNumber(vaultAmount, token.decimals));
+        setProvideAmountValue(0);
+        setProvideLpValue(0);
 
         await getLPToUSDCRatio(token);
     }
 
-    const onRepayClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, token: Token, walletAmount: BigNumber) => {
+    const onRepayClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, token: Token, walletAmount: BigNumber, amountDue: BigNumber) => {
         setRepayModalOpen(true);
         setCurrentToken(token);
+        setRepayAmountValue(0);
         setWalletAmount(parseBigNumber(walletAmount, token.decimals));
+        setBorrowedAmount(parseBigNumber(amountDue, token.decimals));
     }
 
     const onWithdrawClick = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, token: Token, walletAmount: BigNumber, vaultAmount: BigNumber) => {
@@ -252,6 +259,8 @@ export const Borrower: React.FC<Props> = (props: Props) => {
         setWithdrawModalOpen(true);
         setWalletAmount(parseBigNumber(walletAmount, token.decimals));
         setVaultAmount(parseBigNumber(vaultAmount, token.decimals));
+        setWithdrawAmountValue(0);
+        setWithdrawLpValue(0);
 
         await getLPToUSDCRatio(token);
     }

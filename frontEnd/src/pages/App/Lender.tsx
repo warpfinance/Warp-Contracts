@@ -197,8 +197,6 @@ export const Lender: React.FC<Props> = (props: Props) => {
     }
 
     const onLend = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-        // TO-DO: Web3 handling of referral code
-
         if (!lendToken || !context.account) {
             return;
         }
@@ -221,6 +219,11 @@ export const Lender: React.FC<Props> = (props: Props) => {
 
         setLendModalOpen(false);
 
+        setWithdrawFocusedAmountId("");
+        setWithdrawAmountValue(BigNumber.from(0));
+        setLendFocusedAmountId("");
+        setLendAmountValue(BigNumber.from(0));
+
         await handleTransaction(tx);
         refresh();
     }
@@ -237,6 +240,11 @@ export const Lender: React.FC<Props> = (props: Props) => {
         const tx = scVault.withdraw(withdrawAmountValue);
 
         setWithdrawModalOpen(false);
+
+        setWithdrawFocusedAmountId("");
+        setWithdrawAmountValue(BigNumber.from(0));
+        setLendFocusedAmountId("");
+        setLendAmountValue(BigNumber.from(0));
 
         await handleTransaction(tx);
         refresh();

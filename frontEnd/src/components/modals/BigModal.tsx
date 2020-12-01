@@ -61,8 +61,8 @@ export const BigModal: React.FC<Props> = (props: Props) => {
       }
 
     React.useEffect(() => {
-
-    }, [props.data.newBorrowLimitUsed]);
+        setEnteredValue("");
+    }, [props.open]);
 
     return (
         <Dialog
