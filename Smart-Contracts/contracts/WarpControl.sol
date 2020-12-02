@@ -408,14 +408,14 @@ contract WarpControl is Ownable, Exponential {
 @param _amount is the amount of that stablecoin the user wants to borrow
 **/
     function borrowSC(address _StableCoin, uint256 _amount) public {
-        uint256 borrowedTotal = getTotalBorrowedValue(msg.sender);
-        uint256 availibleCollateralValue = getBorrowLimit(msg.sender);
-        //calculate USDC amount of what the user is allowed to borrow
-        uint256 borrowAmountAllowed = availibleCollateralValue.sub(
-            borrowedTotal
-        );
+        uint256 borrowedTotalInUSDC = getTotalBorrowedValue(msg.sender);
+        uint256 borrowLimitInUSDC = getBorrowLimit(msg.sender);
+        uint256 borrowAmountAllowedInUSDC = borrowLimitInUSDC.sub(borrowedTotalInUSDC);
+
+        uint256 borrowAmountInUSDC = getPriceOfToken(_StableCoin, _amount);
+
         //require the amount being borrowed is less than or equal to the amount they are aloud to borrow
-        require(borrowAmountAllowed >= _amount, "Borrowing more than allowed");
+        require(borrowAmountAllowedInUSDC >= borrowAmountInUSDC, "Borrowing more than allowed");
         //track USDC value of locked LP
         lockedLPValue[msg.sender] = lockedLPValue[msg.sender].add(_amount);
         //retreive stablecoin vault address being borrowed from and instantiate it
