@@ -124,6 +124,7 @@ export const Header: React.FC<Props> = (props: Props) => {
                                     value.countdown === true ?
                                         <Grid
                                             item
+                                            sm
                                         >
                                             <Typography color="textSecondary">
                                                 Warp borrowing starts in
@@ -136,20 +137,32 @@ export const Header: React.FC<Props> = (props: Props) => {
                                         null
                                 }
                             </BorrowerCountdownContext.Consumer>
-                            <Grid
-                                item
-                            >
-                                {(link === "" || teamName === "") ?
-                                    <CustomButton text={"Create team referral code"} onClick={() => setNftModalOpen(true)} type={"short"} />
-                                    :
-                                    <React.Fragment>
-                                        <CustomButton disabled={true} text={teamName} type={"short"} />
-                                        <IconButton onClick={() => copyTextToClipboard(link)}>
-                                            <FileCopyOutlinedIcon />
-                                        </IconButton>
-                                    </React.Fragment>
-                                }
-                            </Grid>
+                            {(link === "" || teamName === "") ?
+                                <React.Fragment>
+                                    <Grid
+                                        item
+                                        sm
+                                    >
+                                        <CustomButton text={"Join a team"} type={"short"} />
+                                    </Grid>
+                                    <Grid
+                                        item
+                                        sm
+                                    >
+                                        <CustomButton text={"Create team referral code"} onClick={() => setNftModalOpen(true)} type={"short"} />
+                                    </Grid>
+                                </React.Fragment>
+                                :
+                                <Grid
+                                    item
+                                    sm
+                                >
+                                    <CustomButton disabled={true} text={teamName} type={"short"} />
+                                    <IconButton onClick={() => copyTextToClipboard(link)}>
+                                        <FileCopyOutlinedIcon />
+                                    </IconButton>
+                                </Grid>
+                            }
                         </React.Fragment>
                         :
                         null
@@ -231,6 +244,7 @@ export const Header: React.FC<Props> = (props: Props) => {
                 <React.Fragment>
                     <Grid
                         item
+                        sm
                     >
                         <Typography>
                             <RouterLink className={classes.routerLink} to={"/markets"}>
@@ -246,6 +260,7 @@ export const Header: React.FC<Props> = (props: Props) => {
                     </Grid>
                     <Grid
                         item
+                        sm={props.home ? 4 : undefined}
                     >
                         <Typography>
                             <Link className={classes.link} color="textSecondary" href={process.env.REACT_APP_DOCS_ENDPOINT || ""} underline="none">
@@ -283,14 +298,13 @@ export const Header: React.FC<Props> = (props: Props) => {
                 item
                 container
                 direction="row"
-                justify="space-evenly"
-                alignItems="center"
-                spacing={(!props.home) ? 3 : 1}
+                justify="space-between"
+                alignItems="flex-start"
                 className={classes.content}
             >
                 <Grid
                     item
-                    sm={(!props.home) ? 5 : 1}
+                    sm
                 >
                     <RouterLink to={"/"}>
                         <img className={classes.logo} src={"warp logo.svg"} alt={"Warp"}></img>
