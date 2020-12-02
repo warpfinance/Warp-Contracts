@@ -1,12 +1,12 @@
 import * as React from "react";
 
-import { CustomButton, NftModal, NftReferralModal } from "../../components"
-import { Grid, IconButton, Link, Typography } from "@material-ui/core";
-import { TransactionInfo, TransactionReceipt } from "../../util/types";
+import { Card, CardContent, Grid, IconButton, Link, Typography } from "@material-ui/core";
+import { CustomButton, NftJoinModal, NftModal, NftReferralModal } from "../../components"
 
 import { BorrowerCountdownContext } from "../../hooks/borrowerCountdown";
 import FileCopyOutlinedIcon from '@material-ui/icons/FileCopyOutlined';
 import { Link as RouterLink } from 'react-router-dom';
+import { TransactionInfo } from "../../util/types";
 import { WarpControlService } from "../../services/warpControl";
 import { copyTextToClipboard } from "../../util/tools"
 import { getContractAddress } from "../../util/networks";
@@ -32,6 +32,11 @@ const useStyles = makeStyles(theme => ({
     },
     selectedLink: {
         color: "#FFFFFF",
+    },
+    teamCard: {
+        maxHeight: "70px",
+        maxWidth: "250px",
+        paddingTop: "0px",
     }
 }));
 
@@ -51,14 +56,15 @@ export const Header: React.FC<Props> = (props: Props) => {
 
     const pathName = useLocation().pathname;
     const [createTeamTx, setCreateTeamTX] = useState<Maybe<TransactionInfo>>(null);
-    const [currentPage, setCurrentPage] = useState("");
     // TO-DO: Get current link from web3, if it exists
     const [link, setLink] = useState("");
     const [nftModalOpen, setNftModalOpen] = useState(false);
+    const [nftJoinModalOpen, setNftJoinModalOpen] = useState(false);
     const [nftReferralModalOpen, setNftReferralModalOpen] = useState(false);
     // TO-DO: Get team name from web3, if it exists
     const [teamName, setTeamName] = useState("");
     const [teamNameError, setTeamNameError] = useState(true);
+    const [linkError, setLinkError] = useState(true);
 
     const context = useWeb3React();
     const account = context.account;
@@ -73,12 +79,24 @@ export const Header: React.FC<Props> = (props: Props) => {
         else {
             setTeamNameError(true);
         }
-    }, [teamName]
+        // TO-DO: Validate referral code for web3
+        if (link !== "") {
+            setLinkError(false);
+        }
+        else {
+            setLinkError(true);
+        }
+    }, [teamName, link]
     );
 
     const handleNftModalClose = (event: {}, reason: "backdropClick" | "escapeKeyDown") => {
         setTeamName("")
         setNftModalOpen(false);
+    }
+
+    const handleNftJoinModalClose = (event: {}, reason: "backdropClick" | "escapeKeyDown") => {
+        setLink("")
+        setNftJoinModalOpen(false);
     }
 
     const handleNftReferralModalClose = (event: {}, reason: "backdropClick" | "escapeKeyDown") => {
@@ -105,10 +123,18 @@ export const Header: React.FC<Props> = (props: Props) => {
         setNftReferralModalOpen(true);
     }
 
+    const onTeamJoin = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+        // TO-DO: Web3 integration for joining a team
+        setNftJoinModalOpen(false);
+    }
+
+    const onLinkChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+        setLink(event.currentTarget.value);
+    }
+
     const onTeamNameChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
         setTeamName(event.currentTarget.value);
     }
-
 
     const getHeaderContent = (connected: boolean) => {
         const connectButton =
@@ -124,6 +150,7 @@ export const Header: React.FC<Props> = (props: Props) => {
                                     value.countdown === true ?
                                         <Grid
                                             item
+                                            sm
                                         >
                                             <Typography color="textSecondary">
                                                 Warp borrowing starts in
@@ -136,20 +163,49 @@ export const Header: React.FC<Props> = (props: Props) => {
                                         null
                                 }
                             </BorrowerCountdownContext.Consumer>
-                            <Grid
-                                item
-                            >
-                                {(link === "" || teamName === "") ?
-                                    <CustomButton text={"Create team referral code"} onClick={() => setNftModalOpen(true)} type={"short"} />
-                                    :
-                                    <React.Fragment>
-                                        <CustomButton disabled={true} text={teamName} type={"short"} />
-                                        <IconButton onClick={() => copyTextToClipboard(link)}>
-                                            <FileCopyOutlinedIcon />
-                                        </IconButton>
-                                    </React.Fragment>
-                                }
-                            </Grid>
+                            {(link === "" || teamName === "") ?
+                                <React.Fragment>
+                                    <Grid
+                                        item
+                                        sm
+                                    >
+                                        <CustomButton text={"Join a team"} type={"short"} onClick={() => setNftJoinModalOpen(true)} />
+                                    </Grid>
+                                    <Grid
+                                        item
+                                        sm
+                                    >
+                                        <CustomButton text={"Create team referral code"} onClick={() => setNftModalOpen(true)} type={"short"} />
+                                    </Grid>
+                                </React.Fragment>
+                                :
+                                <Grid
+                                    item
+                                    sm
+                                >
+                                    <Card className={classes.teamCard}>
+                                        <CardContent>
+                                            <Grid
+                                                container
+                                                direction="row"
+                                                justify="center"
+                                                alignItems="flex-start"
+                                            >
+                                                <Grid item>
+                                                    <Typography variant="subtitle1">
+                                                        {teamName}
+                                                    </Typography>
+                                                </Grid>
+                                                <Grid item>
+                                                    <IconButton onClick={() => copyTextToClipboard(link)}>
+                                                        <FileCopyOutlinedIcon fontSize="small" />
+                                                    </IconButton>
+                                                </Grid>
+                                            </Grid>
+                                        </CardContent>
+                                    </Card>
+                                </Grid>
+                            }
                         </React.Fragment>
                         :
                         null
@@ -231,6 +287,7 @@ export const Header: React.FC<Props> = (props: Props) => {
                 <React.Fragment>
                     <Grid
                         item
+                        sm
                     >
                         <Typography>
                             <RouterLink className={classes.routerLink} to={"/markets"}>
@@ -246,6 +303,7 @@ export const Header: React.FC<Props> = (props: Props) => {
                     </Grid>
                     <Grid
                         item
+                        sm={props.home ? 4 : undefined}
                     >
                         <Typography>
                             <Link className={classes.link} color="textSecondary" href={process.env.REACT_APP_DOCS_ENDPOINT || ""} underline="none">
@@ -272,6 +330,13 @@ export const Header: React.FC<Props> = (props: Props) => {
                 open={nftModalOpen}
                 teamNameError={teamNameError}
             />
+            <NftJoinModal
+                handleClose={handleNftJoinModalClose}
+                onButtonClick={onTeamJoin}
+                onReferralCodeChange={onLinkChange}
+                open={nftJoinModalOpen}
+                referralCodeError={linkError}
+            />
             <NftReferralModal
                 handleClose={handleNftReferralModalClose}
                 createTeamTx={createTeamTx}
@@ -283,14 +348,13 @@ export const Header: React.FC<Props> = (props: Props) => {
                 item
                 container
                 direction="row"
-                justify="space-evenly"
+                justify="space-between"
                 alignItems="center"
-                spacing={(!props.home) ? 3 : 1}
                 className={classes.content}
             >
                 <Grid
                     item
-                    sm={(!props.home) ? 5 : 1}
+                    sm
                 >
                     <RouterLink to={"/"}>
                         <img className={classes.logo} src={"warp logo.svg"} alt={"Warp"}></img>

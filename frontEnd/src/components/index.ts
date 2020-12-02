@@ -10,7 +10,7 @@ export * from "./modals/AmountModal";
 export * from "./modals/AuthorizationModal";
 export * from "./modals/TransactionModal";
 export * from "./modals/NftModal";
-export * from "./modals/NftModal";
+export * from "./modals/NftJoinModal";
 export * from "./modals/NftReferralModal";
 export * from "./uiElements/SocialIcons";
 export * from "./uiElements/BorrowerMarketCard";
