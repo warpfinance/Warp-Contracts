@@ -11,7 +11,7 @@ import { RefreshToken } from "./useRefreshToken";
 
 const logger = getLogger('Hooks::useCombinedSupplyRate');
 
-export const useCombinedSupplyRate = (context: ConnectedWeb3Context, control: WarpControlService, stableCoins: Token[], refreshToken?: RefreshToken) => {
+export const useCombinedSupplyRate = (context: ConnectedWeb3Context, control: WarpControlService, stableCoins: Token[], usdc: Maybe<Token>, refreshToken?: RefreshToken) => {
 
     const [totalInterestRate, setTotalInterestRate] = React.useState(0);
 
@@ -19,11 +19,11 @@ export const useCombinedSupplyRate = (context: ConnectedWeb3Context, control: Wa
       let isSubscribed = true;
     
       const calculateRate = async() => {
-          if (!context.account || !control) {
+          if (!context.account || !control || !usdc) {
               return;
           }
     
-          logger.log("Calculating total interest rate.");
+          logger.log("Calculating total supply interest rate.");
     
           interface SupplyStats {
               amount: number;
@@ -35,11 +35,15 @@ export const useCombinedSupplyRate = (context: ConnectedWeb3Context, control: Wa
           for (const token of stableCoins) {
               const targetVault = await control.getStableCoinVault(token.address);
               const vault = new StableCoinWarpVaultService(context.library, context.account, targetVault);
+              const suppliedAmount = await vault.getBalance(context.account);
+              const tokenValueInUSDC = parseBigNumber(await control.getStableCoinPrice(token.address, suppliedAmount), usdc.decimals);
     
               const stats: SupplyStats = {
                   rate: calculateAPYFromRate(parseBigNumber(await vault.supplyRate())),
-                  amount: parseBigNumber(await vault.getBalance(context.account), token.decimals)
+                  amount: tokenValueInUSDC
               }
+
+              logger.log(`User is supplying $${stats.amount.toFixed(2)} (in USDC) ${token.symbol} at a rate of ${stats.rate.toFixed(2)}%`)
     
               supplyStats.push(stats);
           }
@@ -54,6 +58,7 @@ export const useCombinedSupplyRate = (context: ConnectedWeb3Context, control: Wa
           }
 
           if (isSubscribed) {
+              logger.log(`Calculated weighted supply APY at ${calculatedRate.toFixed(2)}% on a total of $${totalBorrowedAmount.toFixed(2)} (in USDC) assets`)
               setTotalInterestRate(calculatedRate);
           }
       }

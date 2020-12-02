@@ -11,7 +11,7 @@ import { RefreshToken } from "./useRefreshToken";
 
 const logger = getLogger('Hooks::useCombinedBorrowRate');
 
-export const useCombinedBorrowRate = (context: ConnectedWeb3Context, control: WarpControlService, stableCoins: Token[], refreshToken?: RefreshToken) => {
+export const useCombinedBorrowRate = (context: ConnectedWeb3Context, control: WarpControlService, stableCoins: Token[], usdc: Maybe<Token>, refreshToken?: RefreshToken) => {
 
     const [totalInterestRate, setTotalInterestRate] = React.useState(0);
 
@@ -19,12 +19,11 @@ export const useCombinedBorrowRate = (context: ConnectedWeb3Context, control: Wa
       let isSubscribed = true;
     
       const calculateRate = async() => {
-          logger.log("Calculating total interest rate.");
-          if (!context.account || !control) {
+          if (!context.account || !control || !usdc) {
               return;
           }
     
-          logger.log("Calculating total interest rate.");
+          logger.log("Calculating total borrowed interest rate.");
     
           interface BorrowStats {
               amount: number;
@@ -36,13 +35,15 @@ export const useCombinedBorrowRate = (context: ConnectedWeb3Context, control: Wa
           for (const token of stableCoins) {
               const targetVault = await control.getStableCoinVault(token.address);
               const vault = new StableCoinWarpVaultService(context.library, context.account, targetVault);
+              const borrowedTokenAmount = await vault.borrowedAmount(context.account);
+              const tokenValueInUSDC = parseBigNumber(await control.getStableCoinPrice(token.address, borrowedTokenAmount), usdc.decimals);
     
               const stats: BorrowStats = {
                   rate: calculateAPYFromRate(parseBigNumber(await vault.borrowRate())),
-                  amount: parseBigNumber(await vault.borrowedAmount(context.account), token.decimals)
+                  amount: tokenValueInUSDC
               }
 
-              logger.log(`User is borrowing ${stats.amount} ${token.symbol} at ${stats.rate}`);
+              logger.log(`User is borrowing $${stats.amount.toFixed(2)} (in USDC) ${token.symbol} at ${stats.rate.toFixed(2)}`);
     
               borrowStats.push(stats);
           }
@@ -60,7 +61,7 @@ export const useCombinedBorrowRate = (context: ConnectedWeb3Context, control: Wa
           
 
           if (isSubscribed) {
-              logger.log(`Calculated weighted borrow rate is ${calculatedRate}`)
+              logger.log(`Calculated weighted borrow APY is ${calculatedRate.toFixed(2)}% on $${totalBorrowedAmount.toFixed(2)} (in USDC) of assets`)
               setTotalInterestRate(calculatedRate);
           }
       }

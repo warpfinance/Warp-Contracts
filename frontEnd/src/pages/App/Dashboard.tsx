@@ -36,8 +36,8 @@ export const Dashboard: React.FC<Props> = (props: Props) => {
     const usdc = useUSDCToken(context);
     const supplyBalance = useTotalLentAmount(context, control, usdc);
     const {totalBorrowedAmount, borrowLimit} = useBorrowLimit(context, control);
-    const combinedBorrowRate = useCombinedBorrowRate(context, control, stableCoins);
-    const combinedSupplyRate = useCombinedSupplyRate(context, control, stableCoins);
+    const combinedBorrowRate = useCombinedBorrowRate(context, control, stableCoins, usdc);
+    const combinedSupplyRate = useCombinedSupplyRate(context, control, stableCoins, usdc);
 
     let borrowBalanceUSDC = 0;
     let borrowLimitUSDC = 0;
@@ -58,7 +58,6 @@ export const Dashboard: React.FC<Props> = (props: Props) => {
     if (borrowBalanceUSDC > 0 || supplyBalance > 0) {
         const totalAmount = borrowBalanceUSDC + supplyBalance;
         netApy = combinedSupplyRate * (supplyBalance / totalAmount) - combinedBorrowRate * (borrowBalanceUSDC / totalAmount);
-        netApy = netApy * 100;
     }
 
     const data = {

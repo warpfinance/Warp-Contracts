@@ -34,7 +34,7 @@ export const Borrower: React.FC<Props> = (props: Props) => {
     const usdcToken = useUSDCToken(context);
     const { control } = useWarpControl(context);
     const { totalBorrowedAmount, borrowLimit } = useBorrowLimit(context, control, refreshToken);
-    const combinedBorrowRate = useCombinedBorrowRate(context, control, stableCoins, refreshToken);
+    const combinedBorrowRate = useCombinedBorrowRate(context, control, stableCoins, usdcToken, refreshToken);
     const [newBorrowLimitUsed, setNewBorrowLimitUsed] = useState(0);
 
     const data = {
@@ -176,9 +176,10 @@ export const Borrower: React.FC<Props> = (props: Props) => {
 
     const isWithdrawError = (value: number, token: Token) => {
         const index = lpTokens.findIndex((elem: any) => elem === token);
+        console.log(value);
         if (index < 0) return true;
         if (value <= 0 ||
-            value > vaultAmount || value > maxWithdrawAmount) { //collateralData[index].provided) {
+            value > vaultAmount || value > maxWithdrawAmount) { 
             return true;
         }
         return false;
@@ -272,12 +273,10 @@ export const Borrower: React.FC<Props> = (props: Props) => {
             return;
         }
 
-        //1.899484187990010665
-
         const maxAmount = parseBigNumber(await control.getMaxCollateralWithdrawAmount(context.account, token.address), token.decimals);
         const maxAmountInUSDC = maxAmount * lpToUSDC;
-        logger.log(`Max amount of ${token.symbol} that can be withdrawn is ${maxAmount} LP or ${maxAmountInUSDC} USDC (converstion rate of ${lpToUSDC})`);
-        setMaxWithdrawAmount(maxAmountInUSDC);
+        logger.log(`Max amount of ${token.symbol} that can be withdrawn is ${maxAmount} LP or ${maxAmountInUSDC.toFixed(4)} USDC (converstion rate of ${lpToUSDC})`);
+        setMaxWithdrawAmount(maxAmount);
     }
 
     const handleTransaction = async (tx: Promise<TransactionInfo>) => {
