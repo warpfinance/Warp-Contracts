@@ -1,8 +1,9 @@
 import * as React from "react";
 
 import { AmountModal, AuthorizationModal, BigModal, BorrowerTable, Header, InformationCard, RowModal, TransactionModal } from "../../components";
-import { BigNumber } from "ethers";
+import { convertNumberToBigNumber, isAddress, parseBigNumber } from "../../util/tools";
 
+import { BigNumber } from "ethers";
 import { ERC20Service } from "../../services/erc20";
 import { Grid } from "@material-ui/core";
 import { StableCoinWarpVaultService } from "../../services/stableCoinWarpVault";
@@ -10,7 +11,6 @@ import { Token } from "../../util/token";
 import { TransactionInfo } from "../../util/types";
 import { WarpLPVaultService } from "../../services/warpLPVault";
 import { getLogger } from "../../util/logger";
-import { isAddress, parseBigNumber, convertNumberToBigNumber } from "../../util/tools";
 import { useBorrowLimit } from "../../hooks/useBorrowLimit";
 import { useCombinedBorrowRate } from "../../hooks/useCombinedBorrowRate";
 import { useConnectedWeb3Context } from "../../hooks/connectedWeb3";
@@ -486,8 +486,6 @@ export const Borrower: React.FC<Props> = (props: Props) => {
                 onButtonClick={onBorrow}
                 onChange={onBorrowAmountChange}
                 open={borrowModalOpen}
-                onReferralCodeChange={onReferralCodeChange}
-                referralCodeError={referralCodeError}
             />
             <AmountModal
                 action={"Repay " + currentToken.symbol}
