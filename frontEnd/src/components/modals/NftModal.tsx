@@ -1,7 +1,7 @@
 import * as React from "react";
 
-import { CustomButton, Text } from "../../components";
-import { Dialog, DialogContent, DialogTitle, Grid } from "@material-ui/core";
+import { CustomButton, CustomDialogTitle, Text } from "../../components";
+import { Dialog, DialogContent, Grid } from "@material-ui/core";
 
 import { makeStyles } from "@material-ui/core";
 
@@ -41,7 +41,7 @@ export const NftModal: React.FC<Props> = (props: Props) => {
                     justify="center"
                     alignItems="center"
                 >
-                    <DialogTitle >Create Referral Code</DialogTitle>
+                    <CustomDialogTitle onClose={props.handleClose} >Create Referral Code</CustomDialogTitle>
                     <Grid
                         container
                         direction="column"

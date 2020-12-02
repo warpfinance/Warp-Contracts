@@ -1,7 +1,8 @@
 import * as React from "react";
 
-import { Card, CardContent, Dialog, DialogContent, DialogTitle, Grid, IconButton, Typography } from "@material-ui/core";
+import { Card, CardContent, Dialog, DialogContent, Grid, IconButton, Typography } from "@material-ui/core";
 
+import { CustomDialogTitle } from "../../components"
 import FileCopyOutlinedIcon from '@material-ui/icons/FileCopyOutlined';
 import { TransactionInfo } from "../../util/types";
 import { copyTextToClipboard } from "../../util/tools"
@@ -70,7 +71,7 @@ export const NftReferralModal: React.FC<Props> = (props: Props) => {
                     justify="center"
                     alignItems="center"
                 >
-                    <DialogTitle >Your Team Referral Code</DialogTitle>
+                    <CustomDialogTitle onClose={props.handleClose} >Your Team Referral Code</CustomDialogTitle>
                     <Grid
                         container
                         direction="column"

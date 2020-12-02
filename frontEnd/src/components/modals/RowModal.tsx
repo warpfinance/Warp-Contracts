@@ -1,7 +1,7 @@
 import * as React from "react";
 
-import { Amount, CustomButton, Text } from "../../components";
-import { Avatar, Card, CardContent, Dialog, DialogContent, DialogTitle, Grid, Typography } from "@material-ui/core";
+import { Amount, CustomButton, CustomDialogTitle, Text } from "../../components";
+import { Avatar, Card, CardContent, Dialog, DialogContent, Grid, Typography } from "@material-ui/core";
 
 import { AvatarGroup } from "@material-ui/lab";
 import { Token } from "../../util/token";
@@ -57,7 +57,7 @@ export const RowModal: React.FC<Props> = (props: Props) => {
                     justify="center"
                     alignItems="center"
                 >
-                    <DialogTitle >{props.action}</DialogTitle>
+                    <CustomDialogTitle onClose={props.handleClose} >{props.action}</CustomDialogTitle>
                     <Grid
                         container
                         direction="row"

@@ -1,7 +1,7 @@
 import * as React from "react";
 
-import { CustomButton, Text } from "../../components";
-import { Dialog, DialogContent, DialogTitle, Grid } from "@material-ui/core";
+import { CustomButton, CustomDialogTitle, Text } from "../../components";
+import { Dialog, DialogContent, Grid } from "@material-ui/core";
 
 import { makeStyles } from "@material-ui/core";
 
@@ -41,7 +41,7 @@ export const NftJoinModal: React.FC<Props> = (props: Props) => {
                     justify="center"
                     alignItems="center"
                 >
-                    <DialogTitle >Join a Team</DialogTitle>
+                    <CustomDialogTitle onClose={props.handleClose} >Join a Team</CustomDialogTitle>
                     <Grid
                         container
                         direction="column"

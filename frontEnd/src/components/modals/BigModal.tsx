@@ -1,7 +1,7 @@
 import * as React from "react";
 
-import { Amount, CustomButton, Text } from "../../components";
-import { Avatar, Card, CardContent, Dialog, DialogContent, DialogTitle, FormControl, Grid, MenuItem, Select, Typography } from "@material-ui/core";
+import { Amount, CustomButton, CustomDialogTitle } from "../../components";
+import { Avatar, Card, CardContent, Dialog, DialogContent, FormControl, Grid, MenuItem, Select, Typography } from "@material-ui/core";
 
 import { makeStyles } from "@material-ui/core";
 
@@ -56,7 +56,7 @@ export const BigModal: React.FC<Props> = (props: Props) => {
     const onChangeWrapper = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
         setEnteredValue(event.target.value);
         props.onChange(event);
-      }
+    }
 
     React.useEffect(() => {
         setEnteredValue("");
@@ -75,7 +75,7 @@ export const BigModal: React.FC<Props> = (props: Props) => {
                     justify="center"
                     alignItems="center"
                 >
-                    <DialogTitle >{props.action}</DialogTitle>
+                    <CustomDialogTitle onClose={props.handleClose} >{props.action}</CustomDialogTitle>
                     <Typography variant="subtitle1" color="textSecondary" >Enter amount and select stable coin</Typography>
                     <Grid
                         container
@@ -231,10 +231,10 @@ export const BigModal: React.FC<Props> = (props: Props) => {
                                         >
                                             <Typography variant="h6">
                                                 {
-                                                    "$" + 
+                                                    "$" +
                                                     props.data.borrowLimitUsed.toLocaleString(undefined, { minimumFractionDigits: 2 }) +
-                                                    " -> $" + 
-                                                    props.data.newBorrowLimitUsed.toLocaleString(undefined, { minimumFractionDigits: 2})
+                                                    " -> $" +
+                                                    props.data.newBorrowLimitUsed.toLocaleString(undefined, { minimumFractionDigits: 2 })
                                                 }
                                             </Typography>
                                         </Grid>
