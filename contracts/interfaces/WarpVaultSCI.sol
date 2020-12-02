@@ -63,5 +63,6 @@ abstract contract WarpVaultSCI {
     function transferOwnership(address _newOwner) public virtual;
 
     function getSCDecimals() public view virtual returns(uint8);
+    function getSCAddress() public view virtual returns(address);
 
 }

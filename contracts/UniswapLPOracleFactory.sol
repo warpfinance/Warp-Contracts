@@ -144,7 +144,7 @@ contract UniswapLPOracleFactory is Ownable {
         uint256 totalValue = value0 + value1;
         uint16 shiftAmount = supplyDecimals;
         uint256 valueShifted = totalValue * uint256(10) ** shiftAmount;
-        uint256 supplyShifted = supply * uint256(10);
+        uint256 supplyShifted = supply;
         
         uint256 valuePerSupply = valueShifted / supplyShifted;
 
@@ -192,7 +192,7 @@ contract UniswapLPOracleFactory is Ownable {
         //of one LP
     }
 
-    function viewPriceOfToken(address _token) public view returns (uint256) {
+    function viewPriceOfToken(address _token, uint256 _amount) public view returns (uint256) {
         require(
             tokenToUSDC[_token] != address(0),
             "Token not registered with a USDC pairing"
@@ -201,6 +201,24 @@ contract UniswapLPOracleFactory is Ownable {
         UniswapLPOracleInstance oracle = UniswapLPOracleInstance(
             tokenToUSDC[_token]
         );
-        return oracle.viewPrice(_token, OneToken(_token));
+        if (_amount == 0) {
+            _amount = OneToken(_token);
+        }
+        return oracle.viewPrice(_token, _amount);
+    }
+
+    function getPriceOfToken(address _token, uint256 _amount) public returns (uint256) {
+        require(
+            tokenToUSDC[_token] != address(0),
+            "Token not registered with a USDC pairing"
+        );
+
+        UniswapLPOracleInstance oracle = UniswapLPOracleInstance(
+            tokenToUSDC[_token]
+        );
+        if (_amount == 0) {
+            _amount = OneToken(_token);
+        }
+        return oracle.consult(_token, _amount);
     }
 }
