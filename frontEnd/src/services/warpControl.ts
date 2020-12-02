@@ -7,7 +7,7 @@ const warpControlABI:string [] = [
   'function instanceSCTracker(address _address) public view returns (address)',
   'function instanceLPTracker(address _address) public view returns (address)',
   'function viewPriceOfCollateral(address lpToken) public view returns(uint256)',
-  'function viewPriceOfToken(address token) public view returns(uint256)',
+  'function viewPriceOfToken(address token, uint256 amount) public view returns(uint256)',
   'function viewMaxWithdrawAllowed(address account, address lpToken) public view returns (uint256)',
   'function viewTotalAvailableCollateralValue(address _account) public view returns (uint256)',
   'function viewTotalBorrowedValue(address _account) public view returns (uint256)',
@@ -45,8 +45,11 @@ export class WarpControlService {
     return await this.contract.instanceSCTracker(token);
   }
 
-  getStableCoinPrice = async (stablecoin: string): Promise<BigNumber> => {
-    return await this.contract.viewPriceOfToken(stablecoin);
+  getStableCoinPrice = async (stablecoin: string, amount?: BigNumber): Promise<BigNumber> => {
+    if (!amount) {
+      amount = BigNumber.from(0);
+    }
+    return await this.contract.viewPriceOfToken(stablecoin, amount);
   }
 
   getLPPrice = async (lpToken: string): Promise<BigNumber> => {

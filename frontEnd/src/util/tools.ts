@@ -60,3 +60,9 @@ const fallbackCopyTextToClipboard = (text: string) => {
 
   document.body.removeChild(textArea);
 }
+
+export const convertNumberToBigNumber = (amount: number, decimals: number) => {
+  const fixedAmount = amount.toFixed(decimals);
+  const bigParsedAmount = utils.parseUnits(fixedAmount, decimals);
+  return bigParsedAmount;
+}

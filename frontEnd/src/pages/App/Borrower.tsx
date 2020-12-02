@@ -1,7 +1,7 @@
 import * as React from "react";
 
 import { AmountModal, AuthorizationModal, BigModal, BorrowerTable, Header, InformationCard, RowModal, TransactionModal } from "../../components";
-import { BigNumber, utils } from "ethers";
+import { BigNumber } from "ethers";
 
 import { ERC20Service } from "../../services/erc20";
 import { Grid } from "@material-ui/core";
@@ -10,7 +10,7 @@ import { Token } from "../../util/token";
 import { TransactionInfo } from "../../util/types";
 import { WarpLPVaultService } from "../../services/warpLPVault";
 import { getLogger } from "../../util/logger";
-import { isAddress, parseBigNumber } from "../../util/tools";
+import { isAddress, parseBigNumber, convertNumberToBigNumber } from "../../util/tools";
 import { useBorrowLimit } from "../../hooks/useBorrowLimit";
 import { useCombinedBorrowRate } from "../../hooks/useCombinedBorrowRate";
 import { useConnectedWeb3Context } from "../../hooks/connectedWeb3";
@@ -312,9 +312,7 @@ export const Borrower: React.FC<Props> = (props: Props) => {
     }
 
     const onBorrow = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-        
-
-        const amount = utils.parseUnits(borrowTokenAmount.toString(), currentToken.decimals);
+        const amount = convertNumberToBigNumber(borrowTokenAmount, currentToken.decimals);
         logger.log(`Borrowing ${borrowTokenAmount} ${currentToken.symbol} (${amount} in weth)`)
         const tx = control.borrowStableCoin(currentToken.address, amount);
 
@@ -341,7 +339,8 @@ export const Borrower: React.FC<Props> = (props: Props) => {
         }
 
         const lpVault = new WarpLPVaultService(context.library, context.account, targetVault);
-        const amount = utils.parseUnits(provideLpValue.toString(), currentToken.decimals);
+        const amount = convertNumberToBigNumber(provideLpValue, currentToken.decimals);
+        logger.log(`Providing ${amount.toString()} ${currentToken.symbol}`);
 
         const tx = lpVault.provideCollateral(amount, referralCode);
 
@@ -368,7 +367,7 @@ export const Borrower: React.FC<Props> = (props: Props) => {
         }
 
         const scVault = new StableCoinWarpVaultService(context.library, context.account, targetVault);
-        const amount = utils.parseUnits(repayAmountValue.toString(), currentToken.decimals);
+        const amount = convertNumberToBigNumber(repayAmountValue, currentToken.decimals);
 
         const tx = scVault.repay(amount);
 
@@ -381,7 +380,7 @@ export const Borrower: React.FC<Props> = (props: Props) => {
     const onWithdraw = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
         const targetVault = await control.getLPVault(currentToken.address);
         const lpVault = new WarpLPVaultService(context.library, context.account, targetVault);
-        const amount = utils.parseUnits(withdrawLpValue.toString(), currentToken.decimals);
+        const amount = convertNumberToBigNumber(withdrawLpValue, currentToken.decimals);
 
         const tx = lpVault.withdrawCollateral(amount);
 

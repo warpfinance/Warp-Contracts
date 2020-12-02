@@ -4,6 +4,7 @@ import { StableCoinWarpVaultService } from "../services/stableCoinWarpVault";
 import { WarpControlService } from "../services/warpControl";
 import { getLogger } from "../util/logger";
 import { Token } from "../util/token";
+import { parseBigNumber } from "../util/tools";
 import { ConnectedWeb3Context } from "./connectedWeb3";
 import { RefreshToken } from "./useRefreshToken";
 
@@ -24,9 +25,9 @@ export const useBorrowedAmount = (context: ConnectedWeb3Context, control: WarpCo
       const targetVault = await control.getStableCoinVault(token.address);
       const vault = new StableCoinWarpVaultService(context.library, context.account, targetVault);
 
-      logger.log("Fetching borrowed amount of " + token.address)
-
       const amount = await vault.borrowedAmount(context.account);
+
+      logger.log(`User is borrowing ${amount.toString()} (${parseBigNumber(amount, token.decimals)}) ${token.symbol}`);
 
       setBorrowedAmount(amount);
     }

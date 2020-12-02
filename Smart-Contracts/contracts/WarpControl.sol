@@ -305,9 +305,19 @@ contract WarpControl is Ownable, Exponential {
         return Oracle.viewUnderlyingPrice(lpToken);
     }
 
-    function viewPriceOfToken(address token) public view returns(uint256)
+    function getPriceOfCollateral(address lpToken) public returns(uint256)
     {
-        return Oracle.viewPriceOfToken(token);
+        return Oracle.getUnderlyingPrice(lpToken);
+    }
+
+    function viewPriceOfToken(address token, uint256 amount) public view returns(uint256)
+    {
+        return Oracle.viewPriceOfToken(token, amount);
+    }
+
+    function getPriceOfToken(address token, uint256 amount) public returns(uint256)
+    {
+        return Oracle.getPriceOfToken(token, amount);
     }
 
     function viewTotalBorrowedValue(address _account) public view returns (uint256) {
@@ -319,14 +329,14 @@ contract WarpControl is Ownable, Exponential {
             //instantiate each LP warp vault
             WarpVaultSCI WVSC = WarpVaultSCI(scVaults[i]);
             //retreive the amount user has borrowed from each stablecoin vault
-                uint borrowBalanceInStable = WVSC.borrowBalancePrior(_account);
-                uint8 decimals = WVSC.getSCDecimals();
-                totalBorrowedValue = totalBorrowedValue.add(
-                  borrowBalanceInStable
-                ).div(
-                  uint256(10) ** decimals
-                );
-
+            uint256 borrowBalanceInStable = WVSC.borrowBalancePrior(_account);
+            if (borrowBalanceInStable == 0) {
+                continue;
+            }
+            uint256 usdcBorrowedAmount = viewPriceOfToken(WVSC.getSCAddress(), borrowBalanceInStable);
+            totalBorrowedValue = totalBorrowedValue.add(
+                usdcBorrowedAmount
+            );
         }
         //return total Borrowed Value
         return totalBorrowedValue;
@@ -342,11 +352,12 @@ contract WarpControl is Ownable, Exponential {
             WarpVaultSCI WVSC = WarpVaultSCI(scVaults[i]);
             //retreive the amount user has borrowed from each stablecoin vault
             uint borrowBalanceInStable = WVSC.borrowBalanceCurrent(_account);
-            uint8 decimals = WVSC.getSCDecimals();
+            if (borrowBalanceInStable == 0) {
+                continue;
+            }
+            uint256 usdcBorrowedAmount = getPriceOfToken(WVSC.getSCAddress(), borrowBalanceInStable);
             totalBorrowedValue = totalBorrowedValue.add(
-              borrowBalanceInStable
-            ).div(
-              uint256(10) ** decimals
+                usdcBorrowedAmount
             );
         }
         //return total Borrowed Value
@@ -437,9 +448,7 @@ contract WarpControl is Ownable, Exponential {
             //retreive the borrowers borrow balance from this vault and add it to the scBalances array
             scBalances[i] = scVault.borrowBalanceCurrent(_borrower);
             uint8 tokenDecimals = scVault.getSCDecimals();
-            uint256 priceOfTokenInUSDC = viewPriceOfToken(getVaultByAsset[address(scVault)]);
-
-            uint256 borrowedAmountInUSDC = (priceOfTokenInUSDC.mul(scBalances[i])).div(uint256(10) ** tokenDecimals);
+            uint256 borrowedAmountInUSDC = viewPriceOfToken(getVaultByAsset[address(scVault)], scBalances[i]);
 
             //add the borrowed amount to the total borrowed balance
             borrowedAmount = borrowedAmount.add(borrowedAmountInUSDC);

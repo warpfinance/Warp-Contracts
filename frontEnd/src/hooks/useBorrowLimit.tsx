@@ -26,6 +26,8 @@ export const useBorrowLimit = (context: ConnectedWeb3Context, control: WarpContr
       const limit = await control.getBorrowLimit(context.account);
       const amount = await control.getBorrowAmount(context.account);
 
+      logger.log(`Borrowing ${amount.toString()} out of limit of ${limit.toString()}`);
+
       setBorrowLimit(limit);
       setBorrowedAmount(amount);
     }
