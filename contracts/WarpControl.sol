@@ -337,7 +337,7 @@ contract WarpControl is Ownable, Exponential {
             uint256 usdcBorrowedAmount = viewPriceOfToken(WVSC.getSCAddress(), borrowBalanceInStable);
             totalBorrowedValue = totalBorrowedValue.add(
                 usdcBorrowedAmount
-            );0c3a8eafcec1b1986a342392cf3c9
+            );
         }
         //return total Borrowed Value
         return totalBorrowedValue;

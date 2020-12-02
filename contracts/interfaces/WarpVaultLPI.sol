@@ -38,4 +38,6 @@ abstract contract WarpVaultLPI {
 
     function transferOwnership(address _newOwner) public virtual;
 
+    function upgrade(address _warpControl) public virtual;
+
 }
