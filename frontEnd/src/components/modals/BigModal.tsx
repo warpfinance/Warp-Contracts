@@ -46,8 +46,6 @@ interface Props {
     onButtonClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void,
     onChange: (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void,
     open: boolean,
-    onReferralCodeChange: (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void,
-    referralCodeError: boolean,
 }
 
 export const BigModal: React.FC<Props> = (props: Props) => {
@@ -244,9 +242,8 @@ export const BigModal: React.FC<Props> = (props: Props) => {
                                 </Card>
                             </Grid>
                         </Grid>
-                        <Text error={props.referralCodeError} fullWidth={true} onChange={props.onReferralCodeChange} text="Referral code" />
                         <CustomButton
-                            disabled={props.error || props.referralCodeError}
+                            disabled={props.error}
                             onClick={props.onButtonClick}
                             text={props.action.charAt(0).toUpperCase() + props.action.slice(1)}
                             type="short" />
