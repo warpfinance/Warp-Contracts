@@ -122,6 +122,11 @@ contract WarpVaultSC is Ownable, Exponential {
       return stablecoin.decimals();
     }
 
+    function upgrade(address _warpControl) public onlyWC {
+      WC = WarpControlI(_warpControl);
+      transferOwnership(_warpControl);
+    }
+
     /**
     @notice getCashPrior is a view funcion that returns the USD balance of all held underlying stablecoin assets
     **/

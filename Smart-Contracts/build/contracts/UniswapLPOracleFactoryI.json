@@ -106,28 +106,62 @@
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "supply",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "value0",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "value1",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint8",
+          "name": "supplyDecimals",
+          "type": "uint8"
+        }
+      ],
+      "name": "_calculatePriceOfLP",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
     }
   ],
-  "metadata": "{\"compiler\":{\"version\":\"0.6.6+commit.6c089d02\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"name\":\"OneUSDC\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_tokenA\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"_tokenB\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"_lpToken\",\"type\":\"address\"}],\"name\":\"createNewOracles\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_MMI\",\"type\":\"address\"}],\"name\":\"getUnderlyingPrice\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_newOwner\",\"type\":\"address\"}],\"name\":\"transferOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"token\",\"type\":\"address\"}],\"name\":\"viewPriceOfToken\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_MMI\",\"type\":\"address\"}],\"name\":\"viewUnderlyingPrice\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"methods\":{\"createNewOracles(address,address,address)\":{\"details\":\"this function is marked as virtual as it is an abstracted function*\"},\"getUnderlyingPrice(address)\":{\"params\":{\"_MMI\":\"is the address of the MoneyMarketInstance whos asset price is being retrieved\"},\"returns\":{\"_0\":\"returns the price of the asset*\"}}}},\"userdoc\":{\"methods\":{\"createNewOracles(address,address,address)\":{\"notice\":\"createNewOracle allows the owner of this contract to deploy a new oracle contract when a new asset is whitelisted\"},\"getUnderlyingPrice(address)\":{\"notice\":\"getUnderlyingPrice allows for the price retrieval of a MoneyMarketInstances underlying asset\"}},\"notice\":\"The UniswapLPOracleFactoryI contract an abstract contract the Warp platform uses to interface With the UniswapOracleFactory to retrieve token prices.*\"}},\"settings\":{\"compilationTarget\":{\"/home/stan36/repos/Warp/Smart-Contracts/contracts/interfaces/UniswapLPOracleFactoryI.sol\":\"UniswapLPOracleFactoryI\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"/home/stan36/repos/Warp/Smart-Contracts/contracts/interfaces/UniswapLPOracleFactoryI.sol\":{\"keccak256\":\"0x685dccbd93cda20b1704b35a6c2ea1772f0c2d48ef2cde29677419898c862f15\",\"urls\":[\"bzz-raw://ad40a8efcbbcb3bc490b82b5e896a9a434740e526d649d1ae8c1e5b87a75e1a0\",\"dweb:/ipfs/QmXpq6TPchsmXk1Xf6hvTbBx5EGRE2m8jqV8Vt74rDL64u\"]}},\"version\":1}",
+  "metadata": "{\"compiler\":{\"version\":\"0.6.6+commit.6c089d02\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"name\":\"OneUSDC\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"supply\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"value0\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"value1\",\"type\":\"uint256\"},{\"internalType\":\"uint8\",\"name\":\"supplyDecimals\",\"type\":\"uint8\"}],\"name\":\"_calculatePriceOfLP\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"pure\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_tokenA\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"_tokenB\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"_lpToken\",\"type\":\"address\"}],\"name\":\"createNewOracles\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_MMI\",\"type\":\"address\"}],\"name\":\"getUnderlyingPrice\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_newOwner\",\"type\":\"address\"}],\"name\":\"transferOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"token\",\"type\":\"address\"}],\"name\":\"viewPriceOfToken\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_MMI\",\"type\":\"address\"}],\"name\":\"viewUnderlyingPrice\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"methods\":{\"createNewOracles(address,address,address)\":{\"details\":\"this function is marked as virtual as it is an abstracted function*\"},\"getUnderlyingPrice(address)\":{\"params\":{\"_MMI\":\"is the address of the MoneyMarketInstance whos asset price is being retrieved\"},\"returns\":{\"_0\":\"returns the price of the asset*\"}}}},\"userdoc\":{\"methods\":{\"createNewOracles(address,address,address)\":{\"notice\":\"createNewOracle allows the owner of this contract to deploy a new oracle contract when a new asset is whitelisted\"},\"getUnderlyingPrice(address)\":{\"notice\":\"getUnderlyingPrice allows for the price retrieval of a MoneyMarketInstances underlying asset\"}},\"notice\":\"The UniswapLPOracleFactoryI contract an abstract contract the Warp platform uses to interface With the UniswapOracleFactory to retrieve token prices.*\"}},\"settings\":{\"compilationTarget\":{\"/home/stan36/repos/Warp/Smart-Contracts/contracts/interfaces/UniswapLPOracleFactoryI.sol\":\"UniswapLPOracleFactoryI\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"/home/stan36/repos/Warp/Smart-Contracts/contracts/interfaces/UniswapLPOracleFactoryI.sol\":{\"keccak256\":\"0x90d5e411d96008ac36d57794f3d1aa20689e074364a7eb25791e69daf213c9cd\",\"urls\":[\"bzz-raw://377eae47dc9d690dd844da8631c1ffdc499cccfa172787932d08799da0e7844d\",\"dweb:/ipfs/QmWveRcaqazSpbzNkD3DRg6KXmZURKtcFEMZgAdcRGmt1L\"]}},\"version\":1}",
   "bytecode": "0x",
   "deployedBytecode": "0x",
   "immutableReferences": {},
   "sourceMap": "",
   "deployedSourceMap": "",
-  "source": "pragma solidity ^0.6.0;\n\n////////////////////////////////////////////////////////////////////////////////////////////\n/// @title UniswapLPOracleFactoryI\n/// @author Christopher Dixon\n////////////////////////////////////////////////////////////////////////////////////////////\n/**\nThe UniswapLPOracleFactoryI contract an abstract contract the Warp platform uses to interface\n    With the UniswapOracleFactory to retrieve token prices.\n**/\n\nabstract contract UniswapLPOracleFactoryI {\n    /**\n@notice createNewOracle allows the owner of this contract to deploy a new oracle contract when\n        a new asset is whitelisted\n@dev this function is marked as virtual as it is an abstracted function\n**/\n\n    function createNewOracles(\n        address _tokenA,\n        address _tokenB,\n        address _lpToken\n    ) public virtual;\n\n    function OneUSDC() public virtual view returns (uint256);\n\n    /**\n@notice getUnderlyingPrice allows for the price retrieval of a MoneyMarketInstances underlying asset\n@param _MMI is the address of the MoneyMarketInstance whos asset price is being retrieved\n@return returns the price of the asset\n**/\n    function getUnderlyingPrice(address _MMI)\n        public\n        virtual\n        returns (uint256);\n\n    function viewUnderlyingPrice(address _MMI)\n        public\n        view\n        virtual\n        returns (uint256);\n\n    function viewPriceOfToken(address token) public view virtual returns (uint256);\n\n    function transferOwnership(address _newOwner) public virtual;\n\n}\n",
+  "source": "pragma solidity ^0.6.0;\n\n////////////////////////////////////////////////////////////////////////////////////////////\n/// @title UniswapLPOracleFactoryI\n/// @author Christopher Dixon\n////////////////////////////////////////////////////////////////////////////////////////////\n/**\nThe UniswapLPOracleFactoryI contract an abstract contract the Warp platform uses to interface\n    With the UniswapOracleFactory to retrieve token prices.\n**/\n\nabstract contract UniswapLPOracleFactoryI {\n    /**\n@notice createNewOracle allows the owner of this contract to deploy a new oracle contract when\n        a new asset is whitelisted\n@dev this function is marked as virtual as it is an abstracted function\n**/\n\n    function createNewOracles(\n        address _tokenA,\n        address _tokenB,\n        address _lpToken\n    ) public virtual;\n\n    function OneUSDC() public virtual view returns (uint256);\n\n    /**\n@notice getUnderlyingPrice allows for the price retrieval of a MoneyMarketInstances underlying asset\n@param _MMI is the address of the MoneyMarketInstance whos asset price is being retrieved\n@return returns the price of the asset\n**/\n    function getUnderlyingPrice(address _MMI)\n        public\n        virtual\n        returns (uint256);\n\n    function viewUnderlyingPrice(address _MMI)\n        public\n        view\n        virtual\n        returns (uint256);\n\n    function viewPriceOfToken(address token) public view virtual returns (uint256);\n\n    function transferOwnership(address _newOwner) public virtual;\n\n      function _calculatePriceOfLP(uint256 supply, uint256 value0, uint256 value1, uint8 supplyDecimals)\n      public pure virtual returns (uint256);\n}\n",
   "sourcePath": "/home/stan36/repos/Warp/Smart-Contracts/contracts/interfaces/UniswapLPOracleFactoryI.sol",
   "ast": {
     "absolutePath": "/home/stan36/repos/Warp/Smart-Contracts/contracts/interfaces/UniswapLPOracleFactoryI.sol",
     "exportedSymbols": {
       "UniswapLPOracleFactoryI": [
-        6507
+        6614
       ]
     },
-    "id": 6508,
+    "id": 6615,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 6463,
+        "id": 6557,
         "literals": [
           "solidity",
           "^",
@@ -143,15 +177,15 @@
         "contractDependencies": [],
         "contractKind": "contract",
         "documentation": {
-          "id": 6464,
+          "id": 6558,
           "nodeType": "StructuredDocumentation",
           "src": "276:161:21",
           "text": "The UniswapLPOracleFactoryI contract an abstract contract the Warp platform uses to interface\nWith the UniswapOracleFactory to retrieve token prices.*"
         },
         "fullyImplemented": false,
-        "id": 6507,
+        "id": 6614,
         "linearizedBaseContracts": [
-          6507
+          6614
         ],
         "name": "UniswapLPOracleFactoryI",
         "nodeType": "ContractDefinition",
@@ -159,13 +193,13 @@
           {
             "body": null,
             "documentation": {
-              "id": 6465,
+              "id": 6559,
               "nodeType": "StructuredDocumentation",
               "src": "487:209:21",
               "text": "@notice createNewOracle allows the owner of this contract to deploy a new oracle contract when\na new asset is whitelisted\n@dev this function is marked as virtual as it is an abstracted function*"
             },
             "functionSelector": "9485bada",
-            "id": 6474,
+            "id": 6568,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
@@ -173,17 +207,17 @@
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
-              "id": 6472,
+              "id": 6566,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6467,
+                  "id": 6561,
                   "mutability": "mutable",
                   "name": "_tokenA",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 6474,
+                  "scope": 6568,
                   "src": "737:15:21",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -192,7 +226,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 6466,
+                    "id": 6560,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "737:7:21",
@@ -207,12 +241,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 6469,
+                  "id": 6563,
                   "mutability": "mutable",
                   "name": "_tokenB",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 6474,
+                  "scope": 6568,
                   "src": "762:15:21",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -221,7 +255,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 6468,
+                    "id": 6562,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "762:7:21",
@@ -236,12 +270,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 6471,
+                  "id": 6565,
                   "mutability": "mutable",
                   "name": "_lpToken",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 6474,
+                  "scope": 6568,
                   "src": "787:16:21",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -250,7 +284,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 6470,
+                    "id": 6564,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "787:7:21",
@@ -267,12 +301,12 @@
               "src": "727:82:21"
             },
             "returnParameters": {
-              "id": 6473,
+              "id": 6567,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "824:0:21"
             },
-            "scope": 6507,
+            "scope": 6614,
             "src": "702:123:21",
             "stateMutability": "nonpayable",
             "virtual": true,
@@ -282,7 +316,7 @@
             "body": null,
             "documentation": null,
             "functionSelector": "fa7827d2",
-            "id": 6479,
+            "id": 6573,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
@@ -290,23 +324,23 @@
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
-              "id": 6475,
+              "id": 6569,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "847:2:21"
             },
             "returnParameters": {
-              "id": 6478,
+              "id": 6572,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6477,
+                  "id": 6571,
                   "mutability": "mutable",
                   "name": "",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 6479,
+                  "scope": 6573,
                   "src": "879:7:21",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -315,7 +349,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 6476,
+                    "id": 6570,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "879:7:21",
@@ -330,7 +364,7 @@
               ],
               "src": "878:9:21"
             },
-            "scope": 6507,
+            "scope": 6614,
             "src": "831:57:21",
             "stateMutability": "view",
             "virtual": true,
@@ -339,13 +373,13 @@
           {
             "body": null,
             "documentation": {
-              "id": 6480,
+              "id": 6574,
               "nodeType": "StructuredDocumentation",
               "src": "894:237:21",
               "text": "@notice getUnderlyingPrice allows for the price retrieval of a MoneyMarketInstances underlying asset\n@param _MMI is the address of the MoneyMarketInstance whos asset price is being retrieved\n@return returns the price of the asset*"
             },
             "functionSelector": "fc57d4df",
-            "id": 6487,
+            "id": 6581,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
@@ -353,17 +387,17 @@
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
-              "id": 6483,
+              "id": 6577,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6482,
+                  "id": 6576,
                   "mutability": "mutable",
                   "name": "_MMI",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 6487,
+                  "scope": 6581,
                   "src": "1164:12:21",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -372,7 +406,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 6481,
+                    "id": 6575,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "1164:7:21",
@@ -389,17 +423,17 @@
               "src": "1163:14:21"
             },
             "returnParameters": {
-              "id": 6486,
+              "id": 6580,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6485,
+                  "id": 6579,
                   "mutability": "mutable",
                   "name": "",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 6487,
+                  "scope": 6581,
                   "src": "1226:7:21",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -408,7 +442,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 6484,
+                    "id": 6578,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "1226:7:21",
@@ -423,7 +457,7 @@
               ],
               "src": "1225:9:21"
             },
-            "scope": 6507,
+            "scope": 6614,
             "src": "1136:99:21",
             "stateMutability": "nonpayable",
             "virtual": true,
@@ -433,7 +467,7 @@
             "body": null,
             "documentation": null,
             "functionSelector": "b04c6d3f",
-            "id": 6494,
+            "id": 6588,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
@@ -441,17 +475,17 @@
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
-              "id": 6490,
+              "id": 6584,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6489,
+                  "id": 6583,
                   "mutability": "mutable",
                   "name": "_MMI",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 6494,
+                  "scope": 6588,
                   "src": "1270:12:21",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -460,7 +494,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 6488,
+                    "id": 6582,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "1270:7:21",
@@ -477,17 +511,17 @@
               "src": "1269:14:21"
             },
             "returnParameters": {
-              "id": 6493,
+              "id": 6587,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6492,
+                  "id": 6586,
                   "mutability": "mutable",
                   "name": "",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 6494,
+                  "scope": 6588,
                   "src": "1345:7:21",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -496,7 +530,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 6491,
+                    "id": 6585,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "1345:7:21",
@@ -511,7 +545,7 @@
               ],
               "src": "1344:9:21"
             },
-            "scope": 6507,
+            "scope": 6614,
             "src": "1241:113:21",
             "stateMutability": "view",
             "virtual": true,
@@ -521,7 +555,7 @@
             "body": null,
             "documentation": null,
             "functionSelector": "d38ca6d9",
-            "id": 6501,
+            "id": 6595,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
@@ -529,17 +563,17 @@
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
-              "id": 6497,
+              "id": 6591,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6496,
+                  "id": 6590,
                   "mutability": "mutable",
                   "name": "token",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 6501,
+                  "scope": 6595,
                   "src": "1386:13:21",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -548,7 +582,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 6495,
+                    "id": 6589,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "1386:7:21",
@@ -565,17 +599,17 @@
               "src": "1385:15:21"
             },
             "returnParameters": {
-              "id": 6500,
+              "id": 6594,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6499,
+                  "id": 6593,
                   "mutability": "mutable",
                   "name": "",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 6501,
+                  "scope": 6595,
                   "src": "1430:7:21",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -584,7 +618,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 6498,
+                    "id": 6592,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "1430:7:21",
@@ -599,7 +633,7 @@
               ],
               "src": "1429:9:21"
             },
-            "scope": 6507,
+            "scope": 6614,
             "src": "1360:79:21",
             "stateMutability": "view",
             "virtual": true,
@@ -609,7 +643,7 @@
             "body": null,
             "documentation": null,
             "functionSelector": "f2fde38b",
-            "id": 6506,
+            "id": 6600,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
@@ -617,17 +651,17 @@
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
-              "id": 6504,
+              "id": 6598,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6503,
+                  "id": 6597,
                   "mutability": "mutable",
                   "name": "_newOwner",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 6506,
+                  "scope": 6600,
                   "src": "1472:17:21",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -636,7 +670,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 6502,
+                    "id": 6596,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "1472:7:21",
@@ -653,36 +687,207 @@
               "src": "1471:19:21"
             },
             "returnParameters": {
-              "id": 6505,
+              "id": 6599,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "1505:0:21"
             },
-            "scope": 6507,
+            "scope": 6614,
             "src": "1445:61:21",
             "stateMutability": "nonpayable",
             "virtual": true,
             "visibility": "public"
+          },
+          {
+            "body": null,
+            "documentation": null,
+            "functionSelector": "7ef69d12",
+            "id": 6613,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "_calculatePriceOfLP",
+            "nodeType": "FunctionDefinition",
+            "overrides": null,
+            "parameters": {
+              "id": 6609,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 6602,
+                  "mutability": "mutable",
+                  "name": "supply",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 6613,
+                  "src": "1543:14:21",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 6601,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1543:7:21",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 6604,
+                  "mutability": "mutable",
+                  "name": "value0",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 6613,
+                  "src": "1559:14:21",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 6603,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1559:7:21",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 6606,
+                  "mutability": "mutable",
+                  "name": "value1",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 6613,
+                  "src": "1575:14:21",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 6605,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1575:7:21",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 6608,
+                  "mutability": "mutable",
+                  "name": "supplyDecimals",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 6613,
+                  "src": "1591:20:21",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint8",
+                    "typeString": "uint8"
+                  },
+                  "typeName": {
+                    "id": 6607,
+                    "name": "uint8",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1591:5:21",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint8",
+                      "typeString": "uint8"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1542:70:21"
+            },
+            "returnParameters": {
+              "id": 6612,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 6611,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 6613,
+                  "src": "1648:7:21",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 6610,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1648:7:21",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1647:9:21"
+            },
+            "scope": 6614,
+            "src": "1514:143:21",
+            "stateMutability": "pure",
+            "virtual": true,
+            "visibility": "public"
           }
         ],
-        "scope": 6508,
-        "src": "439:1070:21"
+        "scope": 6615,
+        "src": "439:1220:21"
       }
     ],
-    "src": "0:1510:21"
+    "src": "0:1660:21"
   },
   "legacyAST": {
     "absolutePath": "/home/stan36/repos/Warp/Smart-Contracts/contracts/interfaces/UniswapLPOracleFactoryI.sol",
     "exportedSymbols": {
       "UniswapLPOracleFactoryI": [
-        6507
+        6614
       ]
     },
-    "id": 6508,
+    "id": 6615,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 6463,
+        "id": 6557,
         "literals": [
           "solidity",
           "^",
@@ -698,15 +903,15 @@
         "contractDependencies": [],
         "contractKind": "contract",
         "documentation": {
-          "id": 6464,
+          "id": 6558,
           "nodeType": "StructuredDocumentation",
           "src": "276:161:21",
           "text": "The UniswapLPOracleFactoryI contract an abstract contract the Warp platform uses to interface\nWith the UniswapOracleFactory to retrieve token prices.*"
         },
         "fullyImplemented": false,
-        "id": 6507,
+        "id": 6614,
         "linearizedBaseContracts": [
-          6507
+          6614
         ],
         "name": "UniswapLPOracleFactoryI",
         "nodeType": "ContractDefinition",
@@ -714,13 +919,13 @@
           {
             "body": null,
             "documentation": {
-              "id": 6465,
+              "id": 6559,
               "nodeType": "StructuredDocumentation",
               "src": "487:209:21",
               "text": "@notice createNewOracle allows the owner of this contract to deploy a new oracle contract when\na new asset is whitelisted\n@dev this function is marked as virtual as it is an abstracted function*"
             },
             "functionSelector": "9485bada",
-            "id": 6474,
+            "id": 6568,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
@@ -728,17 +933,17 @@
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
-              "id": 6472,
+              "id": 6566,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6467,
+                  "id": 6561,
                   "mutability": "mutable",
                   "name": "_tokenA",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 6474,
+                  "scope": 6568,
                   "src": "737:15:21",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -747,7 +952,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 6466,
+                    "id": 6560,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "737:7:21",
@@ -762,12 +967,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 6469,
+                  "id": 6563,
                   "mutability": "mutable",
                   "name": "_tokenB",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 6474,
+                  "scope": 6568,
                   "src": "762:15:21",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -776,7 +981,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 6468,
+                    "id": 6562,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "762:7:21",
@@ -791,12 +996,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 6471,
+                  "id": 6565,
                   "mutability": "mutable",
                   "name": "_lpToken",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 6474,
+                  "scope": 6568,
                   "src": "787:16:21",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -805,7 +1010,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 6470,
+                    "id": 6564,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "787:7:21",
@@ -822,12 +1027,12 @@
               "src": "727:82:21"
             },
             "returnParameters": {
-              "id": 6473,
+              "id": 6567,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "824:0:21"
             },
-            "scope": 6507,
+            "scope": 6614,
             "src": "702:123:21",
             "stateMutability": "nonpayable",
             "virtual": true,
@@ -837,7 +1042,7 @@
             "body": null,
             "documentation": null,
             "functionSelector": "fa7827d2",
-            "id": 6479,
+            "id": 6573,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
@@ -845,23 +1050,23 @@
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
-              "id": 6475,
+              "id": 6569,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "847:2:21"
             },
             "returnParameters": {
-              "id": 6478,
+              "id": 6572,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6477,
+                  "id": 6571,
                   "mutability": "mutable",
                   "name": "",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 6479,
+                  "scope": 6573,
                   "src": "879:7:21",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -870,7 +1075,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 6476,
+                    "id": 6570,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "879:7:21",
@@ -885,7 +1090,7 @@
               ],
               "src": "878:9:21"
             },
-            "scope": 6507,
+            "scope": 6614,
             "src": "831:57:21",
             "stateMutability": "view",
             "virtual": true,
@@ -894,13 +1099,13 @@
           {
             "body": null,
             "documentation": {
-              "id": 6480,
+              "id": 6574,
               "nodeType": "StructuredDocumentation",
               "src": "894:237:21",
               "text": "@notice getUnderlyingPrice allows for the price retrieval of a MoneyMarketInstances underlying asset\n@param _MMI is the address of the MoneyMarketInstance whos asset price is being retrieved\n@return returns the price of the asset*"
             },
             "functionSelector": "fc57d4df",
-            "id": 6487,
+            "id": 6581,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
@@ -908,17 +1113,17 @@
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
-              "id": 6483,
+              "id": 6577,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6482,
+                  "id": 6576,
                   "mutability": "mutable",
                   "name": "_MMI",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 6487,
+                  "scope": 6581,
                   "src": "1164:12:21",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -927,7 +1132,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 6481,
+                    "id": 6575,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "1164:7:21",
@@ -944,17 +1149,17 @@
               "src": "1163:14:21"
             },
             "returnParameters": {
-              "id": 6486,
+              "id": 6580,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6485,
+                  "id": 6579,
                   "mutability": "mutable",
                   "name": "",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 6487,
+                  "scope": 6581,
                   "src": "1226:7:21",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -963,7 +1168,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 6484,
+                    "id": 6578,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "1226:7:21",
@@ -978,7 +1183,7 @@
               ],
               "src": "1225:9:21"
             },
-            "scope": 6507,
+            "scope": 6614,
             "src": "1136:99:21",
             "stateMutability": "nonpayable",
             "virtual": true,
@@ -988,7 +1193,7 @@
             "body": null,
             "documentation": null,
             "functionSelector": "b04c6d3f",
-            "id": 6494,
+            "id": 6588,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
@@ -996,17 +1201,17 @@
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
-              "id": 6490,
+              "id": 6584,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6489,
+                  "id": 6583,
                   "mutability": "mutable",
                   "name": "_MMI",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 6494,
+                  "scope": 6588,
                   "src": "1270:12:21",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -1015,7 +1220,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 6488,
+                    "id": 6582,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "1270:7:21",
@@ -1032,17 +1237,17 @@
               "src": "1269:14:21"
             },
             "returnParameters": {
-              "id": 6493,
+              "id": 6587,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6492,
+                  "id": 6586,
                   "mutability": "mutable",
                   "name": "",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 6494,
+                  "scope": 6588,
                   "src": "1345:7:21",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -1051,7 +1256,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 6491,
+                    "id": 6585,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "1345:7:21",
@@ -1066,7 +1271,7 @@
               ],
               "src": "1344:9:21"
             },
-            "scope": 6507,
+            "scope": 6614,
             "src": "1241:113:21",
             "stateMutability": "view",
             "virtual": true,
@@ -1076,7 +1281,7 @@
             "body": null,
             "documentation": null,
             "functionSelector": "d38ca6d9",
-            "id": 6501,
+            "id": 6595,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
@@ -1084,17 +1289,17 @@
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
-              "id": 6497,
+              "id": 6591,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6496,
+                  "id": 6590,
                   "mutability": "mutable",
                   "name": "token",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 6501,
+                  "scope": 6595,
                   "src": "1386:13:21",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -1103,7 +1308,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 6495,
+                    "id": 6589,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "1386:7:21",
@@ -1120,17 +1325,17 @@
               "src": "1385:15:21"
             },
             "returnParameters": {
-              "id": 6500,
+              "id": 6594,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6499,
+                  "id": 6593,
                   "mutability": "mutable",
                   "name": "",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 6501,
+                  "scope": 6595,
                   "src": "1430:7:21",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -1139,7 +1344,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 6498,
+                    "id": 6592,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "1430:7:21",
@@ -1154,7 +1359,7 @@
               ],
               "src": "1429:9:21"
             },
-            "scope": 6507,
+            "scope": 6614,
             "src": "1360:79:21",
             "stateMutability": "view",
             "virtual": true,
@@ -1164,7 +1369,7 @@
             "body": null,
             "documentation": null,
             "functionSelector": "f2fde38b",
-            "id": 6506,
+            "id": 6600,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
@@ -1172,17 +1377,17 @@
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
-              "id": 6504,
+              "id": 6598,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6503,
+                  "id": 6597,
                   "mutability": "mutable",
                   "name": "_newOwner",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 6506,
+                  "scope": 6600,
                   "src": "1472:17:21",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -1191,7 +1396,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 6502,
+                    "id": 6596,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "1472:7:21",
@@ -1208,23 +1413,194 @@
               "src": "1471:19:21"
             },
             "returnParameters": {
-              "id": 6505,
+              "id": 6599,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "1505:0:21"
             },
-            "scope": 6507,
+            "scope": 6614,
             "src": "1445:61:21",
             "stateMutability": "nonpayable",
             "virtual": true,
             "visibility": "public"
+          },
+          {
+            "body": null,
+            "documentation": null,
+            "functionSelector": "7ef69d12",
+            "id": 6613,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "_calculatePriceOfLP",
+            "nodeType": "FunctionDefinition",
+            "overrides": null,
+            "parameters": {
+              "id": 6609,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 6602,
+                  "mutability": "mutable",
+                  "name": "supply",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 6613,
+                  "src": "1543:14:21",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 6601,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1543:7:21",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 6604,
+                  "mutability": "mutable",
+                  "name": "value0",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 6613,
+                  "src": "1559:14:21",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 6603,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1559:7:21",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 6606,
+                  "mutability": "mutable",
+                  "name": "value1",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 6613,
+                  "src": "1575:14:21",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 6605,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1575:7:21",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 6608,
+                  "mutability": "mutable",
+                  "name": "supplyDecimals",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 6613,
+                  "src": "1591:20:21",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint8",
+                    "typeString": "uint8"
+                  },
+                  "typeName": {
+                    "id": 6607,
+                    "name": "uint8",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1591:5:21",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint8",
+                      "typeString": "uint8"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1542:70:21"
+            },
+            "returnParameters": {
+              "id": 6612,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 6611,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 6613,
+                  "src": "1648:7:21",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 6610,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1648:7:21",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1647:9:21"
+            },
+            "scope": 6614,
+            "src": "1514:143:21",
+            "stateMutability": "pure",
+            "virtual": true,
+            "visibility": "public"
           }
         ],
-        "scope": 6508,
-        "src": "439:1070:21"
+        "scope": 6615,
+        "src": "439:1220:21"
       }
     ],
-    "src": "0:1510:21"
+    "src": "0:1660:21"
   },
   "compiler": {
     "name": "solc",
@@ -1232,7 +1608,7 @@
   },
   "networks": {},
   "schemaVersion": "3.3.2",
-  "updatedAt": "2020-12-01T19:20:29.070Z",
+  "updatedAt": "2020-12-02T00:08:48.805Z",
   "devdoc": {
     "methods": {
       "createNewOracles(address,address,address)": {

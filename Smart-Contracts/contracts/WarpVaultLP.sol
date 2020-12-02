@@ -67,6 +67,11 @@ contract WarpVaultLP is Ownable {
         timeWizard = now.add(_timelock);
     }
 
+    function upgrade(address _warpControl) public onlyWC {
+      WC = WarpControlI(_warpControl);
+      transferOwnership(_warpControl);
+    }
+
     /**
     @notice provideCollateral allows a user to collateralize this contracts associated LP token
     @param _amount is the amount of LP being collateralized
