@@ -246,7 +246,7 @@ export const Lender: React.FC<Props> = (props: Props) => {
     }
 
     const onLendMax = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-        // TO-DO: Get and set max lend amount from web3
+        // TO-DO: Get and set max lend amount value to max lend from web3
     }
 
     const onWithdraw = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
@@ -272,7 +272,7 @@ export const Lender: React.FC<Props> = (props: Props) => {
     }
 
     const onWithdrawMax = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-        // TO-DO: Get max and set withdrawl amount from web3
+        // TO-DO: Get max and set withdrawl amount value to max withdrawl from web3
     }
 
     return (

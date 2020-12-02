@@ -375,6 +375,10 @@ export const Borrower: React.FC<Props> = (props: Props) => {
         await handleTransaction(tx);
         refresh();
     }
+    
+    const onRepayMax = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+        // TO-DO: Get and set repay amount value to max repay value from web3
+    }
 
     const onWithdraw = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
         const targetVault = await control.getLPVault(currentToken.address);
@@ -496,6 +500,7 @@ export const Borrower: React.FC<Props> = (props: Props) => {
                 handleClose={handleRepayClose}
                 onButtonClick={onRepay}
                 onChange={onRepayAmountChange}
+                onMaxButtonClick={onRepayMax}
                 open={repayModalOpen}
             />
             <AuthorizationModal

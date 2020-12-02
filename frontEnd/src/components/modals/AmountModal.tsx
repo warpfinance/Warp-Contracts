@@ -10,6 +10,12 @@ const useStyles = makeStyles(theme => ({
         borderRadius: "25px",
         boxShadow: "0 40px 80px -20px rgba(0, 0, 0, 0.25)",
     },
+    maxButton: {
+        "&:hover": {
+            cursor: "pointer",
+            color: "#FFFFFF",
+        }
+    },
     smallIcon: {
         width: theme.spacing(3),
         height: theme.spacing(3),
@@ -25,6 +31,7 @@ interface Props {
     handleClose: (event: {}, reason: "backdropClick" | "escapeKeyDown") => void,
     onButtonClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void,
     onChange: (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void,
+    onMaxButtonClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void,
     open: boolean,
 }
 
@@ -56,15 +63,24 @@ export const AmountModal: React.FC<Props> = (props: Props) => {
                         <Grid
                             container
                             direction="row"
-                            justify="center"
+                            justify="space-around"
                             alignItems="center"
-                            spacing={3}
                         >
                             <Grid item>
                                 <Avatar alt={props.iconSrc} src={props.iconSrc} />
                             </Grid>
                             <Grid item>
-                                <Amount adornment={props.currency} onChange={props.onChange} error={props.error} fullWidth={true} />
+                                <Amount adornment={props.currency} onChange={props.onChange} error={props.error} />
+                            </Grid>
+                            <Grid item>
+                                <Typography
+                                    className={classes.maxButton}
+                                    onClick={props.onMaxButtonClick}
+                                    color="textSecondary"
+                                    variant="subtitle1"
+                                >
+                                    max
+                                </Typography>
                             </Grid>
                         </Grid>
                         <CustomButton
