@@ -41,7 +41,7 @@ export const NftJoinModal: React.FC<Props> = (props: Props) => {
                     justify="center"
                     alignItems="center"
                 >
-                    <DialogTitle >Create referral Code</DialogTitle>
+                    <DialogTitle >Join a Team</DialogTitle>
                     <Grid
                         container
                         direction="column"
