@@ -8,7 +8,7 @@ import { Grid } from "@material-ui/core";
 import { StableCoinWarpVaultService } from "../../services/stableCoinWarpVault";
 import { Token } from "../../util/token";
 import { TransactionInfo } from "../../util/types";
-import { formatBigNumber } from "../../util/tools";
+import { countDecimals, formatBigNumber } from "../../util/tools";
 import { useCombinedHistoricalReward } from "../../hooks/useCombinedHistoricalReward";
 import { useConnectedWeb3Context } from "../../hooks/connectedWeb3";
 import { useRefreshToken } from "../../hooks/useRefreshToken";
@@ -107,7 +107,7 @@ export const Lender: React.FC<Props> = (props: Props) => {
     const isError = (value: BigNumber, symbol: string, tokens: Token[], maxValue: BigNumber) => {
         const index = tokens.findIndex((value: Token) => value.symbol === symbol);
         if (index < 0) return true;
-        if (value.lt(BigNumber.from(0)) || value.gt(maxValue)) {
+        if (value.lte(BigNumber.from(0)) || value.gt(maxValue)) {
             return true;
         }
         return false;
@@ -124,8 +124,15 @@ export const Lender: React.FC<Props> = (props: Props) => {
     const onLendAmountChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>, maxAmount: BigNumber, token: Token) => {
         setLendAmountCurrency(event.target.id);
         setLendFocusedAmountId(event.target.id);
-        setLendAmountValue(utils.parseUnits(event.target.value || "0", token.decimals));
-        logger.log("On lend amount change", lendAmountCurrency, lendFocusedAmountId, event.target.value || "0", token.symbol)
+        
+
+        let amount = event.target.value || "0";
+        if (countDecimals(amount) > 3) {
+            amount = "0";
+        }
+
+        setLendAmountValue(utils.parseUnits(amount, token.decimals));
+        logger.log("On lend amount change", lendAmountCurrency, lendFocusedAmountId, event.target.value || "0", token.symbol, amount)
         setLendMaxAmount(maxAmount);
         setLendToken(token);
     };
@@ -149,7 +156,13 @@ export const Lender: React.FC<Props> = (props: Props) => {
     const onWithdrawAmountChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>, maxAmount: BigNumber, token: Token) => {
         setWithdrawFocusedAmountId(event.target.id)
         setWithdrawAmountCurrency(event.target.id);
-        setWithdrawAmountValue(utils.parseUnits(event.target.value || "0", token.decimals));
+
+        let amount = event.target.value || "0";
+        if (countDecimals(amount) > 3) {
+            amount = "0";
+        }
+
+        setWithdrawAmountValue(utils.parseUnits(amount, token.decimals));
         setWithdrawMaxAmount(maxAmount);
         setWithdrawToken(token);
     };

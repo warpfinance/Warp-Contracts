@@ -66,3 +66,17 @@ export const convertNumberToBigNumber = (amount: number, decimals: number) => {
   const bigParsedAmount = utils.parseUnits(fixedAmount, decimals);
   return bigParsedAmount;
 }
+
+export const countDecimals = function (num: number | string) {
+  if (typeof num === "number") {
+    if (Math.floor(num.valueOf()) === num.valueOf()) return 0;
+    num = num.toString();
+  }
+
+  const splitOnDecimal = num.split(".");
+  if (!splitOnDecimal || splitOnDecimal.length <= 1) {
+    return 0;
+  }
+  
+  return splitOnDecimal[1].length || 0; 
+}
