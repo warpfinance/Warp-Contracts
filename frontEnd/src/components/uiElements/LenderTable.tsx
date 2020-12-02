@@ -1,9 +1,10 @@
 import * as React from "react";
 
-import { Amount, CustomButton } from "../../components"
 import { Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@material-ui/core";
-import { LenderStableCoinRow } from "./LenderStableCoinRow";
+
 import { BigNumber } from "ethers";
+import { CustomButton } from "../../components"
+import { LenderStableCoinRow } from "./LenderStableCoinRow";
 import { RefreshToken } from "../../hooks/useRefreshToken";
 
 interface Props {

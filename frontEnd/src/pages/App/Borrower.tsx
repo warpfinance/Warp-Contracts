@@ -349,6 +349,10 @@ export const Borrower: React.FC<Props> = (props: Props) => {
         refresh();
     }
 
+    const onProvideMax = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+        // TO-DO: Get max and set provide amount value to max provide from web3
+    }
+
     const onRepay = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
         if (!context.account) {
             return;
@@ -375,6 +379,10 @@ export const Borrower: React.FC<Props> = (props: Props) => {
         await handleTransaction(tx);
         refresh();
     }
+    
+    const onRepayMax = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+        // TO-DO: Get and set repay amount value to max repay value from web3
+    }
 
     const onWithdraw = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
         const targetVault = await control.getLPVault(currentToken.address);
@@ -387,6 +395,10 @@ export const Borrower: React.FC<Props> = (props: Props) => {
 
         await handleTransaction(tx);
         refresh();
+    }
+
+    const onWithdrawMax = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+        // TO-DO: Get max and set withdrawl amount value to max withdrawl from web3
     }
 
     return (
@@ -454,6 +466,7 @@ export const Borrower: React.FC<Props> = (props: Props) => {
                 lp={withdrawLpValue}
                 onButtonClick={onWithdraw}
                 onChange={onWithdrawAmountChange}
+                onMaxButtonClick={onWithdrawMax}
                 open={withdrawModalOpen}
                 onReferralCodeChange={onReferralCodeChange}
                 poolIconSrcPrimary={currentToken.image || ""}
@@ -468,6 +481,7 @@ export const Borrower: React.FC<Props> = (props: Props) => {
                 lp={provideLpValue}
                 onButtonClick={onProvide}
                 onChange={onProvideAmountChange}
+                onMaxButtonClick={onProvideMax}
                 open={provideModalOpen}
                 onReferralCodeChange={onReferralCodeChange}
                 poolIconSrcPrimary={currentToken.image || ""}
@@ -496,6 +510,7 @@ export const Borrower: React.FC<Props> = (props: Props) => {
                 handleClose={handleRepayClose}
                 onButtonClick={onRepay}
                 onChange={onRepayAmountChange}
+                onMaxButtonClick={onRepayMax}
                 open={repayModalOpen}
             />
             <AuthorizationModal
