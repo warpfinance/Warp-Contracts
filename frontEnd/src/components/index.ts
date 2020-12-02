@@ -3,6 +3,8 @@ export * from "./inputFields/Amount";
 export * from "./inputFields/Text";
 export * from "./menuNavigation/Header";
 export * from "./modals/ConnectModal";
+export * from "./modals/CustomDialogTitle";
+export * from "./modals/ConnectModal";
 export * from "./modals/SimpleModal";
 export * from "./modals/BigModal";
 export * from "./modals/RowModal";

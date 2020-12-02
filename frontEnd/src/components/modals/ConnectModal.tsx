@@ -1,7 +1,8 @@
 import * as React from "react";
 
-import { Avatar, Card, CardContent, Dialog, DialogContent, DialogContentText, DialogTitle, Grid, Link, Typography } from "@material-ui/core";
+import { Avatar, Card, CardContent, Dialog, DialogContent, DialogContentText, Grid, Link, Typography } from "@material-ui/core";
 
+import { CustomDialogTitle } from "../../components"
 import { WalletType } from "../../util/types";
 import { makeStyles } from "@material-ui/core/styles";
 
@@ -48,7 +49,7 @@ export const ConnectModal: React.FC<Props> = (props: Props) => {
                     justify="center"
                     alignItems="center"
                 >
-                    <DialogTitle >Connect wallet</DialogTitle>
+                    <CustomDialogTitle onClose={props.handleClose} >Connect wallet</CustomDialogTitle>
                     <Grid
                         container
                         direction="column"

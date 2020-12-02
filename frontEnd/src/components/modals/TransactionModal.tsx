@@ -1,13 +1,13 @@
 import * as React from "react";
 
-import { Avatar, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Grid, Typography } from "@material-ui/core";
+import { Avatar, CircularProgress, Dialog, DialogActions, DialogContent, Grid, Typography } from "@material-ui/core";
+import { CustomButton, CustomDialogTitle } from "../../components";
+import { NetworkId, getEtherscanURL } from "../../util/networks";
 
 import { AvatarGroup } from "@material-ui/lab";
 import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
-import { CustomButton } from "../buttons/CustomButton";
 import { makeStyles } from "@material-ui/core";
 import { useConnectedWeb3Context } from "../../hooks/connectedWeb3";
-import { getEtherscanURL, NetworkId } from "../../util/networks";
 
 const useStyles = makeStyles(theme => ({
     dialog: {
@@ -72,7 +72,7 @@ export const TransactionModal: React.FC<Props> = (props: Props) => {
         "Confirm the transaction in your wallet";
 
     const spinner = props.confirmed === true ?
-        <CheckCircleOutlineIcon fontSize="large" color="secondary"/> :
+        <CheckCircleOutlineIcon fontSize="large" color="secondary" /> :
         <CircularProgress color="secondary" />;
 
     return (
@@ -82,7 +82,7 @@ export const TransactionModal: React.FC<Props> = (props: Props) => {
             fullWidth={true}
             onClose={props.handleClose}
             open={props.open} >
-            <DialogTitle disableTypography={true}>
+            <CustomDialogTitle onClose={props.handleClose} disableTypography={true}>
                 <Grid
                     container
                     direction="column"
@@ -94,7 +94,7 @@ export const TransactionModal: React.FC<Props> = (props: Props) => {
                     </Typography>
                     {icons}
                 </Grid>
-            </DialogTitle>
+            </CustomDialogTitle>
             <DialogContent >
                 <Grid
                     container

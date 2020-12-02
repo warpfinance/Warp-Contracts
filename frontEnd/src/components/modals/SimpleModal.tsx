@@ -1,7 +1,7 @@
 import * as React from "react";
 
-import { Avatar, Card, CardContent, Checkbox, Dialog, DialogContent, DialogTitle, Grid, Typography } from "@material-ui/core";
-import { CustomButton, Text } from "../../components";
+import { Avatar, Card, CardContent, Checkbox, Dialog, DialogContent, Grid, Typography } from "@material-ui/core";
+import { CustomButton, CustomDialogTitle, Text } from "../../components";
 
 import { makeStyles } from "@material-ui/core";
 
@@ -57,7 +57,7 @@ export const SimpleModal: React.FC<Props> = (props: Props) => {
                     justify="center"
                     alignItems="center"
                 >
-                    <DialogTitle >{props.action}</DialogTitle>
+                    <CustomDialogTitle onClose={props.handleClose} >{props.action}</CustomDialogTitle>
                     <Typography variant="subtitle1" color="textSecondary" >Please confirm {props.action.charAt(0).toLowerCase() + props.action.slice(1)}</Typography>
                     <Grid
                         container

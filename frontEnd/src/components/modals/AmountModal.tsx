@@ -1,7 +1,7 @@
 import * as React from "react";
 
-import { Amount, CustomButton } from "../../components";
-import { Avatar, Dialog, DialogContent, DialogTitle, Grid, Typography } from "@material-ui/core";
+import { Amount, CustomButton, CustomDialogTitle } from "../../components";
+import { Avatar, Dialog, DialogContent, Grid, Typography } from "@material-ui/core";
 
 import { makeStyles } from "@material-ui/core";
 
@@ -52,7 +52,7 @@ export const AmountModal: React.FC<Props> = (props: Props) => {
                     justify="center"
                     alignItems="center"
                 >
-                    <DialogTitle >{props.action}</DialogTitle>
+                    <CustomDialogTitle onClose={props.handleClose} >{props.action}</CustomDialogTitle>
                     <Typography variant="subtitle1" color="textSecondary" >Insert amount</Typography>
                     <Grid
                         container
