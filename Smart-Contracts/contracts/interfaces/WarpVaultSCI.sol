@@ -65,4 +65,6 @@ abstract contract WarpVaultSCI {
     function getSCDecimals() public view virtual returns(uint8);
     function getSCAddress() public view virtual returns(address);
 
+    function upgrade(address _warpControl) public virtual;
+
 }
