@@ -132,7 +132,7 @@ contract UniswapLPOracleFactory is Ownable {
         // Get the total supply of the pool
         IERC20 lpToken = IERC20(_lpToken);
         uint256 totalSupplyOfLP = lpToken.totalSupply();
-        
+
         return _calculatePriceOfLP(totalSupplyOfLP, priceAsset1, priceAsset2, lpToken.decimals());
         //return USDC price of the pool divided by totalSupply of its LPs to get price
         //of one LP
@@ -140,12 +140,11 @@ contract UniswapLPOracleFactory is Ownable {
 
 
     function _calculatePriceOfLP(uint256 supply, uint256 value0, uint256 value1, uint8 supplyDecimals)
-    internal pure returns (uint256) {
+    public pure returns (uint256) {
         uint256 totalValue = value0 + value1;
         uint16 shiftAmount = supplyDecimals;
         uint256 valueShifted = totalValue * uint256(10) ** shiftAmount;
         uint256 supplyShifted = supply;
-        
         uint256 valuePerSupply = valueShifted / supplyShifted;
 
         return valuePerSupply;
@@ -186,7 +185,7 @@ contract UniswapLPOracleFactory is Ownable {
         // Get the total supply of the pool
         IERC20 lpToken = IERC20(_lpToken);
         uint256 totalSupplyOfLP = lpToken.totalSupply();
-        
+
         return _calculatePriceOfLP(totalSupplyOfLP, priceAsset1, priceAsset2, lpToken.decimals());
         //return USDC price of the pool divided by totalSupply of its LPs to get price
         //of one LP

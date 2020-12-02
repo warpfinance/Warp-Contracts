@@ -248,5 +248,5 @@ export const getEtherscanURL = (network: NetworkId) => {
 		return "https://kovan.etherscan.io/";
 	}
 
-	return process.env.REACT_APP_ETHERSCAN_TRANSACTION_ENDPOINT;
+	return "https://etherscan.io/tx/";
 };
