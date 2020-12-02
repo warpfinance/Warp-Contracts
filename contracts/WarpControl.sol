@@ -27,6 +27,7 @@ contract WarpControl is Ownable, Exponential {
     WarpVaultLPFactoryI public WVLPF;
     WarpVaultSCFactoryI public WVSCF;
     address public warpTeam;
+    address public newWarpControl;
     uint public graceSpace;
 
     address[] public lpVaults;
@@ -336,7 +337,7 @@ contract WarpControl is Ownable, Exponential {
             uint256 usdcBorrowedAmount = viewPriceOfToken(WVSC.getSCAddress(), borrowBalanceInStable);
             totalBorrowedValue = totalBorrowedValue.add(
                 usdcBorrowedAmount
-            );
+            );0c3a8eafcec1b1986a342392cf3c9
         }
         //return total Borrowed Value
         return totalBorrowedValue;
@@ -501,26 +502,27 @@ contract WarpControl is Ownable, Exponential {
       WV.setNewInterestModel(IR);
     }
 
-    function startUpgradeTimer() public onlyWarpT{
+    function startUpgradeTimer(address _newWarpControl) public onlyWarpT{
+      newWarpControl = _newWarpControl;
       graceSpace = now.add(172800);
     }
 
-    function upgradeWarp(address _newWarpControl) public onlyWarpT {
+    function upgradeWarp() public onlyWarpT {
       require(now >= graceSpace);
         uint256 numVaults = lpVaults.length;
         uint256 numSCVaults = scVaults.length;
       for (uint256 i = 0; i < numVaults; ++i) {
           WarpVaultLPI vault = WarpVaultLPI(lpVaults[i]);
-          vault.transferOwnership(_newWarpControl);
+          vault.upgrade(newWarpControl);
     }
 
       for (uint256 i = 0; i < numSCVaults; ++i) {
           //instantiate each LP warp vault
           WarpVaultSCI WVSC = WarpVaultSCI(scVaults[i]);
-            WVSC.transferOwnership(_newWarpControl);
+            WVSC.upgrade(newWarpControl);
         }
-          WVLPF.transferOwnership(_newWarpControl);
-          WVSCF.transferOwnership(_newWarpControl);
-          Oracle.transferOwnership(_newWarpControl);
+          WVLPF.transferOwnership(newWarpControl);
+          WVSCF.transferOwnership(newWarpControl);
+          Oracle.transferOwnership(newWarpControl);
   }
 }

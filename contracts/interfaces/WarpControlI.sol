@@ -11,7 +11,18 @@ The WarpControlI contract is an abstract contract used by individual WarpVault c
 
 abstract contract WarpControlI {
     function getMaxWithdrawAllowed(address account, address lpToken) public virtual returns (uint256);
+    function viewMaxWithdrawAllowed(address account, address lpToken) public view virtual returns (uint256);
     function viewPriceOfCollateral(address lpToken) public virtual view returns (uint256);
     function addMemberToGroup(address _refferalCode, address _member) public virtual;
     function checkIfGroupMember(address _account) public view virtual returns(bool);
+    function getTotalAvailableCollateralValue(address _account) public virtual returns (uint256);
+    function viewTotalAvailableCollateralValue(address _account) public view virtual returns (uint256);
+    function viewPriceOfToken(address token) public view virtual returns(uint256);
+    function viewTotalBorrowedValue(address _account) public view virtual returns (uint256);
+    function getTotalBorrowedValue(address _account) public virtual returns (uint256);
+    function calcBorrowLimit(uint256 _collateralValue) public pure virtual returns (uint256);
+    function calcCollateralRequired(uint256 _borrowAmount) public view virtual returns (uint256);
+    function getBorrowLimit(address _account) public virtual returns (uint256);
+    function viewBorrowLimit(address _account) public view virtual returns (uint256);
+    function liquidateAccount(address _borrower) public virtual;
 }

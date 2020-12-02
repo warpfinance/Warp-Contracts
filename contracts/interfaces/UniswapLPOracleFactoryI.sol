@@ -45,4 +45,6 @@ abstract contract UniswapLPOracleFactoryI {
 
     function transferOwnership(address _newOwner) public virtual;
 
+      function _calculatePriceOfLP(uint256 supply, uint256 value0, uint256 value1, uint8 supplyDecimals)
+      public pure virtual returns (uint256);
 }
