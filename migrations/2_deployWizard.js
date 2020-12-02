@@ -72,28 +72,6 @@ module.exports = async (deployer, network) => {
   const wbtcDecimals = parseBigNumber(await wbtc.decimals());
   const wethDecimals = parseBigNumber(await weth.decimals());
   ////////////////////////////////////////////////////////////////////////////////////////////
-  console.log("Listing USDC-wETH");
-  await UNI.createPair(USDC.address, WrappedEthereum.address);
-  const USDC_wETH = await UNI.getPair(USDC.address, WrappedEthereum.address);
-  console.log("USDC-wETH pair created");
-  console.log(USDC_wETH);
-  await usdc.approve(UNI_R.address, "10000000000000000000000000000");
-  await weth.approve(UNI_R.address, "10000000000000000000000000000");
-  console.log("Transfer Approvals Approved!");
-  await UNI_R.addLiquidity(
-    usdc.address,
-    weth.address,
-    amountWithDecimals(400 * 10000, usdcDecimals), //$400 USDC
-    amountWithDecimals(1 * 10000, wethDecimals), // 1 ETH
-    "0", //$300 USDC
-    "0", // 0.9 ETH
-    ownerAddress,
-    100000000000000
-  );
-  const pair1 = await UniswapV2Pair.at(USDC_wETH);
-  pair1.sync();
-  console.log("Listed USDC-wETH");
-  ////////////////////////////////////////////////////////////////////////////////////////////
   console.log("Listing USDC-wBTC");
   await UNI.createPair(USDC.address, WrappedBitcoin.address);
   const USDC_wBTC = await UNI.getPair(USDC.address, WrappedBitcoin.address);
@@ -160,6 +138,28 @@ module.exports = async (deployer, network) => {
   const pair4 = await UniswapV2Pair.at(USDC_USDT);
   pair4.sync();
   console.log("Listed USDC-USDT");
+  ////////////////////////////////////////////////////////////////////////////////////////////
+  console.log("Listing USDC-wETH");
+  await UNI.createPair(USDC.address, WrappedEthereum.address);
+  const USDC_wETH = await UNI.getPair(USDC.address, WrappedEthereum.address);
+  console.log("USDC-wETH pair created");
+  console.log(USDC_wETH);
+  await usdc.approve(UNI_R.address, "10000000000000000000000000000");
+  await weth.approve(UNI_R.address, "10000000000000000000000000000");
+  console.log("Transfer Approvals Approved!");
+  await UNI_R.addLiquidity(
+    usdc.address,
+    weth.address,
+    amountWithDecimals(400 * 10000, usdcDecimals), //$400 USDC
+    amountWithDecimals(1 * 10000, wethDecimals), // 1 ETH
+    "0", //$300 USDC
+    "0", // 0.9 ETH
+    ownerAddress,
+    100000000000000
+  );
+  const pair1 = await UniswapV2Pair.at(USDC_wETH);
+  pair1.sync();
+  console.log("Listed USDC-wETH");
   ////////////////////////////////////////////////////////////////////////////////////////////
   console.log("Listing ETH-wBTC");
   await UNI.createPair(WrappedEthereum.address, WrappedBitcoin.address);
@@ -232,6 +232,250 @@ module.exports = async (deployer, network) => {
   pair7.sync();
   console.log("Listed ETH-DAI");
   ////////////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////////////////
+  console.log("Listing USDC-wETH");
+
+  await UNI_R.addLiquidity(
+    usdc.address,
+    weth.address,
+    amountWithDecimals(400 * 10000, usdcDecimals), //$400 USDC
+    amountWithDecimals(1 * 10000, wethDecimals), // 1 ETH
+    "0", //$300 USDC
+    "0", // 0.9 ETH
+    "0xC6429e05edE87133537eC17b1f5ab99a0ec6CCEb",
+    100000000000000
+  );
+  console.log("Listed USDC-wETH");
+  ////////////////////////////////////////////////////////////////////////////////////////////
+  console.log("Listing ETH-wBTC");
+
+  await UNI_R.addLiquidity(
+    weth.address,
+    wbtc.address,
+    amountWithDecimals(35 * 10000, wethDecimals), //35 eth
+    amountWithDecimals(1 * 10000, wbtcDecimals), //one btc
+    "0",
+    "0",
+    "0xC6429e05edE87133537eC17b1f5ab99a0ec6CCEb",
+    100000000000000
+  );
+
+  console.log("Listed ETH-wBTC");
+  ////////////////////////////////////////////////////////////////////////////////////////////
+  console.log("Listing ETH-USDT");
+
+  await UNI_R.addLiquidity(
+    usdt.address,
+    weth.address,
+    amountWithDecimals(400 * 10000, usdcDecimals), //$400 USDT
+    amountWithDecimals(1 * 10000, wethDecimals), // 1 ETH
+    "0",
+    "0",
+    "0xC6429e05edE87133537eC17b1f5ab99a0ec6CCEb",
+    100000000000000
+  );
+
+  console.log("Listed ETH-USDT");
+  ////////////////////////////////////////////////////////////////////////////////////////////
+  console.log("Listing ETH-DAI");
+
+  await UNI_R.addLiquidity(
+    dai.address,
+    weth.address,
+    amountWithDecimals(400 * 10000, daiDecimals), //$400 DAI
+    amountWithDecimals(1 * 10000, wethDecimals), // 1 ETH
+    "0",
+    "0",
+    "0xC6429e05edE87133537eC17b1f5ab99a0ec6CCEb",
+    100000000000000
+  );
+
+  console.log("Listed ETH-DAI");
+  ////////////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////////////////
+  console.log("Listing USDC-wETH");
+
+  await UNI_R.addLiquidity(
+    usdc.address,
+    weth.address,
+    amountWithDecimals(400 * 10000, usdcDecimals), //$400 USDC
+    amountWithDecimals(1 * 10000, wethDecimals), // 1 ETH
+    "0", //$300 USDC
+    "0", // 0.9 ETH
+    "0xb2bD8248B0253CfD08cd346FF668C82b8d8F6447",
+    100000000000000
+  );
+
+  console.log("Listed USDC-wETH");
+  ////////////////////////////////////////////////////////////////////////////////////////////
+  console.log("Listing ETH-wBTC");
+
+  await UNI_R.addLiquidity(
+    weth.address,
+    wbtc.address,
+    amountWithDecimals(35 * 10000, wethDecimals), //35 eth
+    amountWithDecimals(1 * 10000, wbtcDecimals), //one btc
+    "0",
+    "0",
+    "0xb2bD8248B0253CfD08cd346FF668C82b8d8F6447",
+    100000000000000
+  );
+
+  console.log("Listed ETH-wBTC");
+  ////////////////////////////////////////////////////////////////////////////////////////////
+  console.log("Listing ETH-USDT");
+
+  await UNI_R.addLiquidity(
+    usdt.address,
+    weth.address,
+    amountWithDecimals(400 * 10000, usdcDecimals), //$400 USDT
+    amountWithDecimals(1 * 10000, wethDecimals), // 1 ETH
+    "0",
+    "0",
+    "0xb2bD8248B0253CfD08cd346FF668C82b8d8F6447",
+    100000000000000
+  );
+
+  console.log("Listed ETH-USDT");
+  ////////////////////////////////////////////////////////////////////////////////////////////
+  console.log("Listing ETH-DAI");
+
+  await UNI_R.addLiquidity(
+    dai.address,
+    weth.address,
+    amountWithDecimals(400 * 10000, daiDecimals), //$400 DAI
+    amountWithDecimals(1 * 10000, wethDecimals), // 1 ETH
+    "0",
+    "0",
+    "0xb2bD8248B0253CfD08cd346FF668C82b8d8F6447",
+    100000000000000
+  );
+
+  console.log("Listed ETH-DAI");
+  ////////////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////////////////
+  console.log("Listing USDC-wETH");
+
+  await UNI_R.addLiquidity(
+    usdc.address,
+    weth.address,
+    amountWithDecimals(400 * 10000, usdcDecimals), //$400 USDC
+    amountWithDecimals(1 * 10000, wethDecimals), // 1 ETH
+    "0", //$300 USDC
+    "0", // 0.9 ETH
+    "0x744825189eb3Ba671A3e881143214DA6b187E5b8",
+    100000000000000
+  );
+
+  console.log("Listed USDC-wETH");
+  ////////////////////////////////////////////////////////////////////////////////////////////
+  console.log("Listing ETH-wBTC");
+
+  await UNI_R.addLiquidity(
+    weth.address,
+    wbtc.address,
+    amountWithDecimals(35 * 10000, wethDecimals), //35 eth
+    amountWithDecimals(1 * 10000, wbtcDecimals), //one btc
+    "0",
+    "0",
+    "0x744825189eb3Ba671A3e881143214DA6b187E5b8",
+    100000000000000
+  );
+
+  console.log("Listed ETH-wBTC");
+  ////////////////////////////////////////////////////////////////////////////////////////////
+  console.log("Listing ETH-USDT");
+
+  await UNI_R.addLiquidity(
+    usdt.address,
+    weth.address,
+    amountWithDecimals(400 * 10000, usdcDecimals), //$400 USDT
+    amountWithDecimals(1 * 10000, wethDecimals), // 1 ETH
+    "0",
+    "0",
+    "0x744825189eb3Ba671A3e881143214DA6b187E5b8",
+    100000000000000
+  );
+
+  console.log("Listed ETH-USDT");
+  ////////////////////////////////////////////////////////////////////////////////////////////
+  console.log("Listing ETH-DAI");
+
+  await UNI_R.addLiquidity(
+    dai.address,
+    weth.address,
+    amountWithDecimals(400 * 10000, daiDecimals), //$400 DAI
+    amountWithDecimals(1 * 10000, wethDecimals), // 1 ETH
+    "0",
+    "0",
+    "0x744825189eb3Ba671A3e881143214DA6b187E5b8",
+    100000000000000
+  );
+
+  console.log("Listed ETH-DAI");
+  ////////////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////////////////
+  console.log("Listing USDC-wETH");
+
+  await UNI_R.addLiquidity(
+    usdc.address,
+    weth.address,
+    amountWithDecimals(400 * 10000, usdcDecimals), //$400 USDC
+    amountWithDecimals(1 * 10000, wethDecimals), // 1 ETH
+    "0", //$300 USDC
+    "0", // 0.9 ETH
+    "0x04F901C2B7983103f18d04A3dBA34789Aaee076e",
+    100000000000000
+  );
+
+  console.log("Listed USDC-wETH");
+  ////////////////////////////////////////////////////////////////////////////////////////////
+  console.log("Listing ETH-wBTC");
+
+  await UNI_R.addLiquidity(
+    weth.address,
+    wbtc.address,
+    amountWithDecimals(35 * 10000, wethDecimals), //35 eth
+    amountWithDecimals(1 * 10000, wbtcDecimals), //one btc
+    "0",
+    "0",
+    "0x04F901C2B7983103f18d04A3dBA34789Aaee076e",
+    100000000000000
+  );
+
+  console.log("Listed ETH-wBTC");
+  ////////////////////////////////////////////////////////////////////////////////////////////
+  console.log("Listing ETH-USDT");
+
+  await UNI_R.addLiquidity(
+    usdt.address,
+    weth.address,
+    amountWithDecimals(400 * 10000, usdcDecimals), //$400 USDT
+    amountWithDecimals(1 * 10000, wethDecimals), // 1 ETH
+    "0",
+    "0",
+    "0x04F901C2B7983103f18d04A3dBA34789Aaee076e",
+    100000000000000
+  );
+
+  console.log("Listed ETH-USDT");
+  ////////////////////////////////////////////////////////////////////////////////////////////
+  console.log("Listing ETH-DAI");
+
+  await UNI_R.addLiquidity(
+    dai.address,
+    weth.address,
+    amountWithDecimals(400 * 10000, daiDecimals), //$400 DAI
+    amountWithDecimals(1 * 10000, wethDecimals), // 1 ETH
+    "0",
+    "0",
+    "0x04F901C2B7983103f18d04A3dBA34789Aaee076e",
+    100000000000000
+  );
+
+  console.log("Listed ETH-DAI");
+  ////////////////////////////////////////////////////////////////////////////////////////////
+
   await deployer.deploy(
     UniswapLPOracleFactory,
     USDC.address,
