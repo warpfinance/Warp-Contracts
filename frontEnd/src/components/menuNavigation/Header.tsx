@@ -11,6 +11,7 @@ import { WarpControlService } from "../../services/warpControl";
 import { copyTextToClipboard } from "../../util/tools"
 import { getContractAddress } from "../../util/networks";
 import { makeStyles } from "@material-ui/core/styles";
+import { useLocation } from 'react-router-dom'
 import { useState } from "react";
 import { useWeb3React } from "@web3-react/core";
 
@@ -28,6 +29,9 @@ const useStyles = makeStyles(theme => ({
     },
     routerLink: {
         textDecoration: 'none',
+    },
+    selectedLink: {
+        color: "#FFFFFF",
     }
 }));
 
@@ -45,7 +49,9 @@ export const Header: React.FC<Props> = (props: Props) => {
         return input;
     };
 
+    const pathName = useLocation().pathname;
     const [createTeamTx, setCreateTeamTX] = useState<Maybe<TransactionInfo>>(null);
+    const [currentPage, setCurrentPage] = useState("");
     // TO-DO: Get current link from web3, if it exists
     const [link, setLink] = useState("");
     const [nftModalOpen, setNftModalOpen] = useState(false);
@@ -155,7 +161,11 @@ export const Header: React.FC<Props> = (props: Props) => {
                         {connected === true ?
                             <Typography>
                                 <RouterLink className={classes.routerLink} to={"/dashboard"}>
-                                    <Link className={classes.link} color="textSecondary" href="" underline="none">
+                                    <Link
+                                        className={pathName === "/dashboard" ? classes.selectedLink : classes.link}
+                                        color="textSecondary"
+                                        href=""
+                                        underline="none">
                                         Dashboard
                                     </Link>
                                 </RouterLink>
@@ -172,7 +182,11 @@ export const Header: React.FC<Props> = (props: Props) => {
                         {connected === true ?
                             <Typography>
                                 <RouterLink className={classes.routerLink} to={"/lender"}>
-                                    <Link className={classes.link} color="textSecondary" href="" underline="none">
+                                    <Link
+                                        className={pathName === "/lender" ? classes.selectedLink : classes.link}
+                                        color="textSecondary"
+                                        href=""
+                                        underline="none">
                                         Lender
                                     </Link>
                                 </RouterLink>
@@ -189,7 +203,11 @@ export const Header: React.FC<Props> = (props: Props) => {
                         {connected === true ?
                             <Typography>
                                 <RouterLink className={classes.routerLink} to={"/borrower"}>
-                                    <Link className={classes.link} color="textSecondary" href="" underline="none">
+                                    <Link
+                                        className={pathName === "/borrower" ? classes.selectedLink : classes.link}
+                                        color="textSecondary"
+                                        href=""
+                                        underline="none">
                                         Borrower
                                     </Link>
                                 </RouterLink>
@@ -216,7 +234,11 @@ export const Header: React.FC<Props> = (props: Props) => {
                     >
                         <Typography>
                             <RouterLink className={classes.routerLink} to={"/markets"}>
-                                <Link className={classes.link} color="textSecondary" href="" underline="none">
+                                <Link
+                                    className={pathName === "/markets" ? classes.selectedLink : classes.link}
+                                    color="textSecondary"
+                                    href=""
+                                    underline="none">
                                     Markets
                                     </Link>
                             </RouterLink>
@@ -240,7 +262,6 @@ export const Header: React.FC<Props> = (props: Props) => {
             );
         }
     }
-
 
     return (
         <React.Fragment>
