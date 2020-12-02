@@ -431,6 +431,7 @@ contract WarpVaultSC is Ownable, Exponential {
         uint256 currentWarpBalance;
         uint256 currentCoinBalance;
         uint256 principalRedeemed;
+        uint256 amount;
     }
 
     /**
@@ -441,41 +442,46 @@ contract WarpVaultSC is Ownable, Exponential {
 
         RedeemLocalVars memory vars;
         //retreive the users current Warp Wrapper balance
-        vars.currentCoinBalance = wStableCoin.balanceOf(msg.sender);
+        vars.currentWarpBalance = wStableCoin.balanceOf(msg.sender);
         //retreive current exchange rate
         vars.exchangeRateMantissa = exchangeRateCurrent();
 
-          //We get the current exchange rate and calculate the number of WarpWrapperToken to be burned:
-          //burnTokens = _amount / exchangeRate
-          (vars.mathErr, vars.burnTokens) = divScalarByExpTruncate(
-              _amount,
-              Exp({mantissa: vars.exchangeRateMantissa})
-          );
-          //require the vault has enough stablecoin
-        require(stablecoin.balanceOf(address(this)) >= _amount, "Not enough stablecoin in vault.");
-        //calculate the users current stablecoin balance
         (vars.mathErr, vars.currentCoinBalance) = mulScalarTruncate(
           Exp({mantissa: vars.exchangeRateMantissa}),
           vars.currentWarpBalance
         );
+          if(_amount == 0) {
+                vars.amount = vars.currentCoinBalance;
+            } else {
+                vars.amount = _amount;
+            }
+          //We get the current exchange rate and calculate the number of WarpWrapperToken to be burned:
+          //burnTokens = _amount / exchangeRate
+          (vars.mathErr, vars.burnTokens) = divScalarByExpTruncate(
+              vars.amount,
+              Exp({mantissa: vars.exchangeRateMantissa})
+          );
+          //require the vault has enough stablecoin
+        require(stablecoin.balanceOf(address(this)) >= vars.amount, "Not enough stablecoin in vault.");
+        //calculate the users current stablecoin balance
 
         //calculate and record balances for historical tracking
         uint256 currentStableCoinReward = 0;
         if (vars.currentCoinBalance > principalBalance[msg.sender]) {
             currentStableCoinReward = vars.currentCoinBalance.sub(principalBalance[msg.sender]);
         }
-        vars.principalRedeemed = _amount.sub(currentStableCoinReward);
+        vars.principalRedeemed = vars.amount.sub(currentStableCoinReward);
 
-        if (_amount >= currentStableCoinReward) {
+        if (vars.amount >= currentStableCoinReward) {
             historicalReward[msg.sender] = historicalReward[msg.sender].add(currentStableCoinReward);
             require(vars.principalRedeemed <= principalBalance[msg.sender], "Error calculating reward.");
             principalBalance[msg.sender] = principalBalance[msg.sender].sub(vars.principalRedeemed);
         } else {
-            historicalReward[msg.sender] = historicalReward[msg.sender].add(_amount);
+            historicalReward[msg.sender] = historicalReward[msg.sender].add(vars.amount);
         }
         wStableCoin.burn(msg.sender, vars.burnTokens);
-        stablecoin.transfer(msg.sender, _amount);
-        emit StableCoinLent(msg.sender, _amount, vars.burnTokens);
+        stablecoin.transfer(msg.sender, vars.amount);
+        emit StableCoinLent(msg.sender, vars.amount, vars.burnTokens);
     }
 
     function viewAccountBalance(address _account) public view returns (uint256) {
@@ -637,6 +643,7 @@ contract WarpVaultSC is Ownable, Exponential {
         address _liquidator,
         uint256 _amount
     ) public onlyWC angryWizard{
+      stablecoin.transferFrom(_liquidator, address(this), _amount);
         //calculate the fee on the principle received
         uint256 fee = calculateFee(_amount);
         //transfer fee amount to Warp team
@@ -647,7 +654,6 @@ contract WarpVaultSC is Ownable, Exponential {
         totalBorrows = totalBorrows.sub(_amount);
 
         //transfer the owed amount of stablecoin from the borrower to this contract
-        stablecoin.transferFrom(_liquidator, address(this), _amount);
     }
 
 
