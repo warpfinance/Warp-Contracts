@@ -83,9 +83,7 @@ contract WarpVaultLP is Ownable {
         collateralizedLP[msg.sender] = collateralizedLP[msg.sender].add(
             _amount
         );
-        if(now <= timeWizard) {
-            WC.addMemberToGroup(_refferalCode, msg.sender);
-          }
+      
         emit CollateralProvided(msg.sender, _amount);
     }
 
