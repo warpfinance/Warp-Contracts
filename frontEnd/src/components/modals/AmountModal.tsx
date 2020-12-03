@@ -1,7 +1,7 @@
 import * as React from "react";
 
-import { Amount, CustomButton } from "../../components";
-import { Avatar, Dialog, DialogContent, DialogTitle, Grid, Typography } from "@material-ui/core";
+import { Amount, CustomButton, CustomDialogTitle } from "../../components";
+import { Avatar, Dialog, DialogContent, Grid, Typography } from "@material-ui/core";
 
 import { makeStyles } from "@material-ui/core";
 
@@ -9,6 +9,12 @@ const useStyles = makeStyles(theme => ({
     dialog: {
         borderRadius: "25px",
         boxShadow: "0 40px 80px -20px rgba(0, 0, 0, 0.25)",
+    },
+    maxButton: {
+        "&:hover": {
+            cursor: "pointer",
+            color: "#FFFFFF",
+        }
     },
     smallIcon: {
         width: theme.spacing(3),
@@ -25,6 +31,7 @@ interface Props {
     handleClose: (event: {}, reason: "backdropClick" | "escapeKeyDown") => void,
     onButtonClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void,
     onChange: (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void,
+    onMaxButtonClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void,
     open: boolean,
 }
 
@@ -45,7 +52,7 @@ export const AmountModal: React.FC<Props> = (props: Props) => {
                     justify="center"
                     alignItems="center"
                 >
-                    <DialogTitle >{props.action}</DialogTitle>
+                    <CustomDialogTitle onClose={props.handleClose} >{props.action}</CustomDialogTitle>
                     <Typography variant="subtitle1" color="textSecondary" >Insert amount</Typography>
                     <Grid
                         container
@@ -56,15 +63,24 @@ export const AmountModal: React.FC<Props> = (props: Props) => {
                         <Grid
                             container
                             direction="row"
-                            justify="center"
+                            justify="space-around"
                             alignItems="center"
-                            spacing={3}
                         >
                             <Grid item>
                                 <Avatar alt={props.iconSrc} src={props.iconSrc} />
                             </Grid>
                             <Grid item>
-                                <Amount adornment={props.currency} onChange={props.onChange} error={props.error} fullWidth={true} />
+                                <Amount adornment={props.currency} onChange={props.onChange} error={props.error} />
+                            </Grid>
+                            <Grid item>
+                                <Typography
+                                    className={classes.maxButton}
+                                    onClick={props.onMaxButtonClick}
+                                    color="textSecondary"
+                                    variant="subtitle1"
+                                >
+                                    max
+                                </Typography>
                             </Grid>
                         </Grid>
                         <CustomButton

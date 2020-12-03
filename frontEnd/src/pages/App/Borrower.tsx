@@ -1,8 +1,9 @@
 import * as React from "react";
 
 import { AmountModal, AuthorizationModal, BigModal, BorrowerTable, Header, InformationCard, RowModal, TransactionModal } from "../../components";
-import { BigNumber } from "ethers";
+import { convertNumberToBigNumber, isAddress, parseBigNumber } from "../../util/tools";
 
+import { BigNumber } from "ethers";
 import { ERC20Service } from "../../services/erc20";
 import { Grid } from "@material-ui/core";
 import { StableCoinWarpVaultService } from "../../services/stableCoinWarpVault";
@@ -10,7 +11,6 @@ import { Token } from "../../util/token";
 import { TransactionInfo } from "../../util/types";
 import { WarpLPVaultService } from "../../services/warpLPVault";
 import { getLogger } from "../../util/logger";
-import { isAddress, parseBigNumber, convertNumberToBigNumber } from "../../util/tools";
 import { useBorrowLimit } from "../../hooks/useBorrowLimit";
 import { useCombinedBorrowRate } from "../../hooks/useCombinedBorrowRate";
 import { useConnectedWeb3Context } from "../../hooks/connectedWeb3";
@@ -349,6 +349,10 @@ export const Borrower: React.FC<Props> = (props: Props) => {
         refresh();
     }
 
+    const onProvideMax = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+        // TO-DO: Get max and set provide amount value to max provide from web3
+    }
+
     const onRepay = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
         if (!context.account) {
             return;
@@ -375,6 +379,10 @@ export const Borrower: React.FC<Props> = (props: Props) => {
         await handleTransaction(tx);
         refresh();
     }
+    
+    const onRepayMax = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+        // TO-DO: Get and set repay amount value to max repay value from web3
+    }
 
     const onWithdraw = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
         const targetVault = await control.getLPVault(currentToken.address);
@@ -387,6 +395,10 @@ export const Borrower: React.FC<Props> = (props: Props) => {
 
         await handleTransaction(tx);
         refresh();
+    }
+
+    const onWithdrawMax = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+        // TO-DO: Get max and set withdrawl amount value to max withdrawl from web3
     }
 
     return (
@@ -454,6 +466,7 @@ export const Borrower: React.FC<Props> = (props: Props) => {
                 lp={withdrawLpValue}
                 onButtonClick={onWithdraw}
                 onChange={onWithdrawAmountChange}
+                onMaxButtonClick={onWithdrawMax}
                 open={withdrawModalOpen}
                 onReferralCodeChange={onReferralCodeChange}
                 poolIconSrcPrimary={currentToken.image || ""}
@@ -468,6 +481,7 @@ export const Borrower: React.FC<Props> = (props: Props) => {
                 lp={provideLpValue}
                 onButtonClick={onProvide}
                 onChange={onProvideAmountChange}
+                onMaxButtonClick={onProvideMax}
                 open={provideModalOpen}
                 onReferralCodeChange={onReferralCodeChange}
                 poolIconSrcPrimary={currentToken.image || ""}
@@ -486,8 +500,6 @@ export const Borrower: React.FC<Props> = (props: Props) => {
                 onButtonClick={onBorrow}
                 onChange={onBorrowAmountChange}
                 open={borrowModalOpen}
-                onReferralCodeChange={onReferralCodeChange}
-                referralCodeError={referralCodeError}
             />
             <AmountModal
                 action={"Repay " + currentToken.symbol}
@@ -498,6 +510,7 @@ export const Borrower: React.FC<Props> = (props: Props) => {
                 handleClose={handleRepayClose}
                 onButtonClick={onRepay}
                 onChange={onRepayAmountChange}
+                onMaxButtonClick={onRepayMax}
                 open={repayModalOpen}
             />
             <AuthorizationModal

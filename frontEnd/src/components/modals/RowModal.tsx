@@ -1,7 +1,7 @@
 import * as React from "react";
 
-import { Amount, CustomButton, Text } from "../../components";
-import { Avatar, Card, CardContent, Dialog, DialogContent, DialogTitle, Grid, Typography } from "@material-ui/core";
+import { Amount, CustomButton, CustomDialogTitle, Text } from "../../components";
+import { Avatar, Card, CardContent, Dialog, DialogContent, Grid, Typography } from "@material-ui/core";
 
 import { AvatarGroup } from "@material-ui/lab";
 import { Token } from "../../util/token";
@@ -11,6 +11,12 @@ const useStyles = makeStyles(theme => ({
     dialog: {
         borderRadius: "25px",
         boxShadow: "0 40px 80px -20px rgba(0, 0, 0, 0.25)",
+    },
+    maxButton: {
+        "&:hover": {
+            cursor: "pointer",
+            color: "#FFFFFF",
+        }
     },
     smallIcon: {
         width: theme.spacing(3),
@@ -25,6 +31,7 @@ interface Props {
     lp: number,
     onButtonClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void,
     onChange: (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void,
+    onMaxButtonClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void,
     open: boolean,
     poolIconSrcPrimary: string,
     poolIconSrcSecondary: string,
@@ -50,7 +57,7 @@ export const RowModal: React.FC<Props> = (props: Props) => {
                     justify="center"
                     alignItems="center"
                 >
-                    <DialogTitle >{props.action}</DialogTitle>
+                    <CustomDialogTitle onClose={props.handleClose} >{props.action}</CustomDialogTitle>
                     <Grid
                         container
                         direction="row"
@@ -74,7 +81,28 @@ export const RowModal: React.FC<Props> = (props: Props) => {
                         <Typography variant="subtitle2" color="textSecondary" >
                             {props.action.split(" ")[0]}
                         </Typography>
-                        <Amount adornment="USD" onChange={props.onChange} error={props.error} fullWidth={true} />
+                        <Grid
+                            container
+                            item
+                            direction="row"
+                            justify="space-around"
+                            alignItems="center"
+                        >
+                            <Grid item xs={2}></Grid>
+                            <Grid item xs={6}>
+                                <Amount adornment="USD" onChange={props.onChange} error={props.error} />
+                            </Grid>
+                            <Grid item>
+                                <Typography
+                                    className={classes.maxButton}
+                                    onClick={props.onMaxButtonClick}
+                                    color="textSecondary"
+                                    variant="subtitle1"
+                                >
+                                    max
+                            </Typography>
+                            </Grid>
+                        </Grid>
                         <Typography variant="subtitle2" color="textSecondary" >
                             Amount of LP
                         </Typography>

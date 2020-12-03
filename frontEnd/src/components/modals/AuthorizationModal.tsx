@@ -1,8 +1,9 @@
 import * as React from "react";
 
-import { Dialog, DialogContent, DialogTitle, Grid, Typography } from "@material-ui/core";
+import { Dialog, DialogContent, Grid, Typography } from "@material-ui/core";
 
 import { CustomButton } from "../buttons/CustomButton";
+import { CustomDialogTitle } from "../../components";
 import { makeStyles } from "@material-ui/core";
 
 const useStyles = makeStyles(theme => ({
@@ -42,7 +43,7 @@ export const AuthorizationModal: React.FC<Props> = (props: Props) => {
                     spacing={2}
                 >
                     <Grid item>
-                        <DialogTitle >{props.action.charAt(0).toUpperCase() + props.action.slice(1)}</DialogTitle>
+                        <CustomDialogTitle onClose={props.handleClose} >{props.action.charAt(0).toUpperCase() + props.action.slice(1)}</CustomDialogTitle>
                     </Grid>
                     <Grid item>
                         <Typography variant="subtitle1" color="textSecondary" >Authorize Warp to {props.action}</Typography>

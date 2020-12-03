@@ -1,7 +1,7 @@
 import * as React from "react";
 
-import { Avatar, Card, CardContent, Checkbox, Dialog, DialogContent, DialogTitle, Grid, Typography } from "@material-ui/core";
-import { CustomButton, Text } from "../../components";
+import { Avatar, Card, CardContent, Checkbox, Dialog, DialogContent, Grid, Typography } from "@material-ui/core";
+import { CustomButton, CustomDialogTitle, Text } from "../../components";
 
 import { makeStyles } from "@material-ui/core";
 
@@ -9,6 +9,12 @@ const useStyles = makeStyles(theme => ({
     dialog: {
         borderRadius: "25px",
         boxShadow: "0 40px 80px -20px rgba(0, 0, 0, 0.25)",
+    },
+    maxButton: {
+        "&:hover": {
+            cursor: "pointer",
+            color: "#FFFFFF",
+        }
     },
     smallIcon: {
         width: theme.spacing(3),
@@ -23,6 +29,7 @@ interface Props {
     iconSrc: string,
     handleClose: (event: {}, reason: "backdropClick" | "escapeKeyDown") => void,
     onButtonClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void,
+    onMaxButtonClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void,
     open: boolean,
     onReferralCodeChange?: (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void,
     referralCodeError?: boolean,
@@ -50,7 +57,7 @@ export const SimpleModal: React.FC<Props> = (props: Props) => {
                     justify="center"
                     alignItems="center"
                 >
-                    <DialogTitle >{props.action}</DialogTitle>
+                    <CustomDialogTitle onClose={props.handleClose} >{props.action}</CustomDialogTitle>
                     <Typography variant="subtitle1" color="textSecondary" >Please confirm {props.action.charAt(0).toLowerCase() + props.action.slice(1)}</Typography>
                     <Grid
                         container
@@ -63,10 +70,10 @@ export const SimpleModal: React.FC<Props> = (props: Props) => {
                                 <Grid
                                     container
                                     direction="row"
-                                    justify="flex-start"
+                                    justify="space-around"
                                     alignItems="center"
                                 >
-                                    <Grid item xs={4}>
+                                    <Grid item xs={3}>
                                         <Checkbox
                                             checked={checked}
                                             onChange={handleCheck}
@@ -75,12 +82,21 @@ export const SimpleModal: React.FC<Props> = (props: Props) => {
                                     <Grid item>
                                         <Avatar alt={props.iconSrc} className={classes.smallIcon} src={props.iconSrc} />
                                     </Grid>
-                                    <Grid item>
+                                    <Grid item xs={5}>
                                         <Typography variant="subtitle1">
                                             {props.amount + " " + props.currency}
                                         </Typography>
                                     </Grid>
-                                    <Grid item xs={4}></Grid>
+                                    <Grid item>
+                                        <Typography
+                                            className={classes.maxButton}
+                                            onClick={props.onMaxButtonClick}
+                                            color="textSecondary"
+                                            variant="subtitle1"
+                                        >
+                                            max
+                                        </Typography>
+                                    </Grid>
                                 </Grid>
                             </CardContent>
                         </Card>

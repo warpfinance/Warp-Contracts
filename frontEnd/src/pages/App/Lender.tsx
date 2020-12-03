@@ -2,13 +2,15 @@ import * as React from "react";
 
 import { AuthorizationModal, Header, InformationCard, LenderTable, SimpleModal, TransactionModal } from "../../components";
 import { BigNumber, utils } from "ethers";
+import { countDecimals, formatBigNumber } from "../../util/tools";
 
 import { ERC20Service } from "../../services/erc20";
 import { Grid } from "@material-ui/core";
 import { StableCoinWarpVaultService } from "../../services/stableCoinWarpVault";
 import { Token } from "../../util/token";
 import { TransactionInfo } from "../../util/types";
-import { countDecimals, formatBigNumber } from "../../util/tools";
+import { getLogger } from "../../util/logger";
+import { isAddress } from "ethers/lib/utils";
 import { useCombinedHistoricalReward } from "../../hooks/useCombinedHistoricalReward";
 import { useConnectedWeb3Context } from "../../hooks/connectedWeb3";
 import { useRefreshToken } from "../../hooks/useRefreshToken";
@@ -18,8 +20,6 @@ import { useTotalLentAmount } from "../../hooks/useTotalLentAmount";
 import { useTotalWalletBalance } from "../../hooks/useTotalWalletBalance";
 import { useUSDCToken } from "../../hooks/useUSDC";
 import { useWarpControl } from "../../hooks/useWarpControl";
-import { isAddress } from "ethers/lib/utils";
-import { getLogger } from "../../util/logger";
 
 interface Props {
 }
@@ -245,6 +245,10 @@ export const Lender: React.FC<Props> = (props: Props) => {
         refresh();
     }
 
+    const onLendMax = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+        // TO-DO: Get and set max lend amount value to max lend from web3
+    }
+
     const onWithdraw = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
         if (!withdrawToken || !context.account) {
             return;
@@ -265,6 +269,10 @@ export const Lender: React.FC<Props> = (props: Props) => {
 
         await handleTransaction(tx);
         refresh();
+    }
+
+    const onWithdrawMax = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+        // TO-DO: Get max and set withdrawl amount value to max withdrawl from web3
     }
 
     return (
@@ -336,6 +344,7 @@ export const Lender: React.FC<Props> = (props: Props) => {
                 handleClose={handleLendClose}
                 iconSrc={`${lendAmountCurrency.toLowerCase()}.png`}
                 onButtonClick={onLend}
+                onMaxButtonClick={onLendMax}
                 open={lendModalOpen}
                 onReferralCodeChange={onReferralCodeChange}
                 referralCodeError={referralCodeError}
@@ -346,6 +355,7 @@ export const Lender: React.FC<Props> = (props: Props) => {
                 currency={withdrawAmountCurrency}
                 iconSrc={`${withdrawAmountCurrency.toLowerCase()}.png`}
                 onButtonClick={onWithdraw}
+                onMaxButtonClick={onWithdrawMax}
                 handleClose={handleWithdrawClose}
                 open={withdrawModalOpen} />
             <AuthorizationModal

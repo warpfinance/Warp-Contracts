@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { Avatar, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@material-ui/core";
+import { Avatar, Grid, TableCell, TableRow, Typography } from "@material-ui/core";
 
 import { BorrowerCountdownContext } from "../../hooks/borrowerCountdown";
 import { CustomButton } from "..";
@@ -10,8 +10,8 @@ import { parseBigNumber } from "../../util/tools";
 import { useBorrowedAmount } from "../../hooks/useBorrowedAmount";
 import { useConnectedWeb3Context } from "../../hooks/connectedWeb3";
 import { useTokenBalance } from "../../hooks/useTokenBalance";
-import { useWarpControl } from "../../hooks/useWarpControl";
 import { useTokenInterest } from "../../hooks/useTokenInterest";
+import { useWarpControl } from "../../hooks/useWarpControl";
 
 interface Props {
     token: Token,
