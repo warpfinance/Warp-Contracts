@@ -1,7 +1,7 @@
 import * as React from "react";
 
 import { Card, CardContent, Grid, IconButton, Link, Typography } from "@material-ui/core";
-import { CustomButton, NftJoinModal, NftModal, NftReferralModal } from "../../components"
+import { CustomButton, NftJoinModal, NftModal, NftReferralModal, NotificationModal } from "../../components"
 
 import { BorrowerCountdownContext } from "../../hooks/borrowerCountdown";
 import FileCopyOutlinedIcon from '@material-ui/icons/FileCopyOutlined';

@@ -1,7 +1,7 @@
 import * as React from "react";
 
 import { Avatar, Card, CardContent, Checkbox, Dialog, DialogContent, Grid, Typography } from "@material-ui/core";
-import { CustomButton, CustomDialogTitle, Text } from "../../components";
+import { CustomButton, CustomDialogTitle, ErrorCustomButton, Text } from "../../components";
 
 import { makeStyles } from "@material-ui/core";
 
@@ -16,12 +16,14 @@ interface Props {
     handleClose: (event: {}, reason: "backdropClick" | "escapeKeyDown") => void,
     open: boolean,
     buttonText?: string,
+    children?: any,
     contentText?: string,
+    error?: boolean,
     onButtonClick?: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void,
     titleText?: string,
 }
 
-export const SimpleModal: React.FC<Props> = (props: Props) => {
+export const NotificationModal: React.FC<Props> = (props: Props) => {
     const classes = useStyles();
 
     return (
@@ -30,7 +32,7 @@ export const SimpleModal: React.FC<Props> = (props: Props) => {
             maxWidth={"xs"}
             fullWidth={true}
             onClose={props.handleClose}
-            open={props.open} >
+            open={props.open}>
             <DialogContent>
                 <Grid
                     container
@@ -38,18 +40,27 @@ export const SimpleModal: React.FC<Props> = (props: Props) => {
                     justify="center"
                     alignItems="center"
                 >
-                    <CustomDialogTitle onClose={props.handleClose} >{props.titleText || ""}</CustomDialogTitle>
-                    <Typography variant="subtitle1" color="textSecondary" >{props.contentText || ""}</Typography>
+                    <CustomDialogTitle onClose={props.handleClose}>{props.titleText || "Error"}</CustomDialogTitle>
+                    {props.children ||
+                        <Typography variant="subtitle1" color="textSecondary" >{"Transaction failed"}</Typography>
+                    }
                     <Grid
                         container
                         direction="column"
                         justify="center"
                         alignItems="stretch"
                     >
-                        <CustomButton
-                            onClick={props.onButtonClick || undefined}
-                            text={props.buttonText || ""}
-                            type="short" />
+                        {props.error === true ?
+                            <ErrorCustomButton
+                                onClick={props.onButtonClick || undefined}
+                                text={props.buttonText || "Ok"}
+                                type="short" />
+                            :
+                            <CustomButton
+                                onClick={props.onButtonClick || undefined}
+                                text={props.buttonText || "Ok"}
+                                type="short" />
+                        }
                     </Grid>
                 </Grid>
             </DialogContent>
