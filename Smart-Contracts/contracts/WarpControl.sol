@@ -208,16 +208,16 @@ contract WarpControl is Ownable, Exponential {
           groups.push(msg.sender);
     }
 
-    function addMemberToGroup(address _refferalCode, address _member) public onlyVault {
+    function addMemberToGroup(address _refferalCode) public {
       //Require a member is either not in a group OR has entered their groups refferal code
-      require(isInGroup[_member] == false || groupsYourIn[_member] == _refferalCode, "Cant join more than one group");
-        refferalCodeTracker[_refferalCode].push(_member);
-        isInGroup[_member] = true;
-        groupsYourIn[_member] = _refferalCode;
+      require(isInGroup[msg.sender] == false || groupsYourIn[msg.sender] == _refferalCode, "Cant join more than one group");
+        refferalCodeTracker[_refferalCode].push(msg.sender);
+        isInGroup[msg.sender] = true;
+        groupsYourIn[msg.sender] = _refferalCode;
             //add the mebers address to the total participants member array
-      if(isParticipant[_member] == false) {
-        launchParticipants.push(_member);
-        isParticipant[_member] == true;
+      if(isParticipant[msg.sender] == false) {
+        launchParticipants.push(msg.sender);
+        isParticipant[msg.sender] == true;
       }
     }
 

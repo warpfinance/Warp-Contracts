@@ -399,7 +399,7 @@ contract WarpVaultSC is Ownable, Exponential {
     @param _amount is the amount of the asset being lent
     @dev the user will need to first approve the transfer of the underlying asset
     **/
-    function lendToWarpVault(uint256 _amount, address _refferalCode) public {
+    function lendToWarpVault(uint256 _amount) public {
         //declare struct
         MintLocalVars memory vars;
         //retrieve exchange rate
@@ -415,9 +415,7 @@ contract WarpVaultSC is Ownable, Exponential {
         stablecoin.transferFrom(msg.sender, address(this), _amount);
 
         principalBalance[msg.sender] = principalBalance[msg.sender] + _amount;
-        if(now <= timeWizard) {
-            WC.addMemberToGroup(_refferalCode, msg.sender);
-        }
+
 
         //mint appropriate Warp DAI
         wStableCoin.mint(msg.sender, vars.mintTokens);
