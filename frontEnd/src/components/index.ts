@@ -1,4 +1,5 @@
 export * from "./buttons/CustomButton";
+export * from "./buttons/ErrorCustomButton";
 export * from "./inputFields/Amount";
 export * from "./inputFields/Text";
 export * from "./menuNavigation/Header";
@@ -14,6 +15,7 @@ export * from "./modals/TransactionModal";
 export * from "./modals/NftModal";
 export * from "./modals/NftJoinModal";
 export * from "./modals/NftReferralModal";
+export * from "./modals/NotificationModal";
 export * from "./uiElements/SocialIcons";
 export * from "./uiElements/BorrowerMarketCard";
 export * from "./uiElements/LenderMarketCard";
