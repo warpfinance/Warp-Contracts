@@ -149,10 +149,6 @@ export const Lender: React.FC<Props> = (props: Props) => {
         }
     };
 
-    const onReferralCodeChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-        setReferralCode(event.target.value);
-    };
-
     const onWithdrawAmountChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>, maxAmount: BigNumber, token: Token) => {
         setWithdrawFocusedAmountId(event.target.id)
         setWithdrawAmountCurrency(event.target.id);
@@ -346,8 +342,6 @@ export const Lender: React.FC<Props> = (props: Props) => {
                 onButtonClick={onLend}
                 onMaxButtonClick={onLendMax}
                 open={lendModalOpen}
-                onReferralCodeChange={onReferralCodeChange}
-                referralCodeError={referralCodeError}
             />
             <SimpleModal
                 action="Withdraw"

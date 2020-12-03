@@ -30,9 +30,7 @@ interface Props {
     handleClose: (event: {}, reason: "backdropClick" | "escapeKeyDown") => void,
     onButtonClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void,
     onMaxButtonClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void,
-    open: boolean,
-    onReferralCodeChange?: (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void,
-    referralCodeError?: boolean,
+    open: boolean
 }
 
 export const SimpleModal: React.FC<Props> = (props: Props) => {
@@ -100,13 +98,8 @@ export const SimpleModal: React.FC<Props> = (props: Props) => {
                                 </Grid>
                             </CardContent>
                         </Card>
-                        {props.action.toLowerCase() === "lend" ?
-                            <Text error={props.referralCodeError} fullWidth={true} onChange={props.onReferralCodeChange} text="Referral code" />
-                            :
-                            null
-                        }
                         <CustomButton
-                            disabled={checked !== true || props.referralCodeError === true}
+                            disabled={checked !== true}
                             onClick={props.onButtonClick}
                             text={props.action.charAt(0).toUpperCase() + props.action.slice(1)}
                             type="short" />

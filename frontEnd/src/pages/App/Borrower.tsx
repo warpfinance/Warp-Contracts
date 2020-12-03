@@ -64,7 +64,6 @@ export const Borrower: React.FC<Props> = (props: Props) => {
     const [provideModalOpen, setProvideModalOpen] = useState(false);
 
     const [referralCode, setReferralCode] = useState("");
-    const [referralCodeError, setReferralCodeError] = useState(false);
 
     const [repayAmountValue, setRepayAmountValue] = useState(0);
     const [repayError, setRepayError] = useState(false);
@@ -100,17 +99,11 @@ export const Borrower: React.FC<Props> = (props: Props) => {
         if (withdrawLpValue !== 0) {
             setWithdrawError(isWithdrawError(withdrawLpValue, currentToken));
         }
-        if (referralCode && !isAddress(referralCode)) {
-            setReferralCodeError(true);
-        } else {
-            setReferralCodeError(false);
-        }
     }, [borrowTokenAmount,
         borrowAmountCurrency,
         provideLpValue,
         currentToken,
         repayAmountValue,
-        referralCode,
         withdrawLpValue,
         tokenToUSDCRate]
     );
@@ -217,10 +210,6 @@ export const Borrower: React.FC<Props> = (props: Props) => {
 
     const onRepayAmountChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
         setRepayAmountValue(Number(event.target.value));
-    };
-
-    const onReferralCodeChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-        setReferralCode(event.target.value);
     };
 
     const onWithdrawAmountChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
@@ -468,10 +457,8 @@ export const Borrower: React.FC<Props> = (props: Props) => {
                 onChange={onWithdrawAmountChange}
                 onMaxButtonClick={onWithdrawMax}
                 open={withdrawModalOpen}
-                onReferralCodeChange={onReferralCodeChange}
                 poolIconSrcPrimary={currentToken.image || ""}
                 poolIconSrcSecondary={currentToken.image2 || ""}
-                referralCodeError={referralCodeError}
                 token={currentToken}
             />
             <RowModal
@@ -483,10 +470,8 @@ export const Borrower: React.FC<Props> = (props: Props) => {
                 onChange={onProvideAmountChange}
                 onMaxButtonClick={onProvideMax}
                 open={provideModalOpen}
-                onReferralCodeChange={onReferralCodeChange}
                 poolIconSrcPrimary={currentToken.image || ""}
                 poolIconSrcSecondary={currentToken.image2 || ""}
-                referralCodeError={referralCodeError}
                 token={currentToken}
             />
             <BigModal
