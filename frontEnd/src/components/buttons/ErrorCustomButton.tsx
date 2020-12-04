@@ -31,6 +31,7 @@ interface Props {
     id?: string,
     iconSrc?: string,
     onClick?: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void,
+    variant?: "contained" | "outlined",
     wallet?: boolean,
 }
 
@@ -38,14 +39,15 @@ export const ErrorCustomButton: React.FC<Props> = (props: Props) => {
 
     const classes = useStyles();
 
+    let backgroundColor = "";
     let border = "";
     let externalHref = { pathname: props.href };
-    let color: "default" | "secondary" = "default";
+    let color: "default" | "primary" | "secondary" = "default";
     let icon = null;
     let minHeight = "";
     let minWidth = "";
     let pointerEvents = "auto";
-    let variant: "contained" | "outlined" = "contained";
+    let variant: "contained" | "outlined" = props.variant || "contained";
     if (props.type === "long") {
         minHeight = "50px";
         minWidth = "400px";
@@ -56,11 +58,10 @@ export const ErrorCustomButton: React.FC<Props> = (props: Props) => {
     }
 
     if (props.wallet === true) {
-        color = "secondary";
-        icon = <Avatar className={classes.avatar} src={props.iconSrc} alt={props.iconSrc} />;
+        color = "primary";
         pointerEvents = "none";
     }
-    else if (props.disabled !== true) {
+    else if (props.disabled !== true && props.variant !== "contained") {
         border = "solid 2px #ff6666";
         variant = "outlined";
     }

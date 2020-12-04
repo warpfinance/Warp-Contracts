@@ -1,7 +1,7 @@
 import * as React from "react";
 
 import { Card, CardContent, Grid, IconButton, Link, Typography } from "@material-ui/core";
-import { CustomButton, NftJoinModal, NftModal, NftReferralModal, NotificationModal } from "../../components"
+import { CustomButton, ErrorCustomButton, NftJoinModal, NftModal, NftReferralModal } from "../../components"
 
 import { BorrowerCountdownContext } from "../../hooks/borrowerCountdown";
 import FileCopyOutlinedIcon from '@material-ui/icons/FileCopyOutlined';
@@ -138,7 +138,11 @@ export const Header: React.FC<Props> = (props: Props) => {
 
     const getHeaderContent = (connected: boolean) => {
         const connectButton =
-            <CustomButton disabled={true} text={!connected ? "No wallet" : truncate(walletAddress)} type={"short"} />
+            <ErrorCustomButton disabled={!connected}
+                text={!connected ? "No wallet" : "Disconnect"}
+                type="short"
+                variant="contained"
+            />
 
         if (!props.home) {
             return (
