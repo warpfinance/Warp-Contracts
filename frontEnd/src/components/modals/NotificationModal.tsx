@@ -42,7 +42,7 @@ export const NotificationModal: React.FC<Props> = (props: Props) => {
                 >
                     <CustomDialogTitle onClose={props.handleClose}>{props.titleText || "Error"}</CustomDialogTitle>
                     {props.children ||
-                        <Typography variant="subtitle1" color="textSecondary" >{"Transaction failed"}</Typography>
+                        <Typography variant="subtitle1" color="textSecondary" >{props.contentText || "Transaction failed"}</Typography>
                     }
                     <Grid
                         container
