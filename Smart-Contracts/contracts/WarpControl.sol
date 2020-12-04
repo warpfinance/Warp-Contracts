@@ -382,7 +382,7 @@ contract WarpControl is Ownable, Exponential {
         return thirdCollatVal.add(thirdCollatVal);
     }
 
-    function calcCollateralRequired(uint256 _borrowAmount) public view returns (uint256) {
+    function calcCollateralRequired(uint256 _borrowAmount) public pure returns (uint256) {
         return _borrowAmount.mul(3).div(2);
     }
 
@@ -432,7 +432,7 @@ contract WarpControl is Ownable, Exponential {
 @param _borrower is the address of the borrower whos loan is non-compliant
 **/
     function liquidateAccount(address _borrower) public {
-        //require the liquidator is not also the borrower
+         //require the liquidator is not also the borrower
         require(msg.sender != _borrower);
         //retreive the number of stablecoin vaults in the warp platform
         uint256 numSCVaults = scVaults.length;
@@ -448,7 +448,6 @@ contract WarpControl is Ownable, Exponential {
             WarpVaultSCI scVault = WarpVaultSCI(scVaults[i]);
             //retreive the borrowers borrow balance from this vault and add it to the scBalances array
             scBalances[i] = scVault.borrowBalanceCurrent(_borrower);
-            uint8 tokenDecimals = scVault.getSCDecimals();
             uint256 borrowedAmountInUSDC = viewPriceOfToken(getVaultByAsset[address(scVault)], scBalances[i]);
 
             //add the borrowed amount to the total borrowed balance
