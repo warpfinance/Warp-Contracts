@@ -36,6 +36,7 @@ export const Borrower: React.FC<Props> = (props: Props) => {
     const { totalBorrowedAmount, borrowLimit } = useBorrowLimit(context, control, refreshToken);
     const combinedBorrowRate = useCombinedBorrowRate(context, control, stableCoins, usdcToken, refreshToken);
     const [newBorrowLimitUsed, setNewBorrowLimitUsed] = useState(0);
+    const [ authType, setAuthType ] = React.useState<"sc" | "lp">("sc");
 
     const data = {
         collateral: parseBigNumber(borrowLimit, usdcToken?.decimals),
@@ -291,9 +292,17 @@ export const Borrower: React.FC<Props> = (props: Props) => {
 
     const onAuth = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
         const erc20 = new ERC20Service(context.library, context.account, currentToken.address);
-        const targetVault = await control.getLPVault(currentToken.address);
+        let targetVault;
+        if (authType == "lp") {
+            targetVault = await control.getLPVault(currentToken.address);
+        } else {
+            targetVault = await control.getStableCoinVault(currentToken.address);
+        }
+
         const tx = erc20.approveUnlimited(targetVault);
+
         setAuthorizationModalOpen(false);
+        setAction("Authorizing");
 
         await handleTransaction(tx);
         refresh();
@@ -303,6 +312,8 @@ export const Borrower: React.FC<Props> = (props: Props) => {
         const amount = convertNumberToBigNumber(borrowTokenAmount, currentToken.decimals);
         logger.log(`Borrowing ${borrowTokenAmount} ${currentToken.symbol} (${amount} in weth)`)
         const tx = control.borrowStableCoin(currentToken.address, amount);
+
+        setAction("Borrowing");
 
         setBorrowModalOpen(false);
 
@@ -314,7 +325,7 @@ export const Borrower: React.FC<Props> = (props: Props) => {
         if (!context.account) {
             return;
         }
-        setAction("provide");
+        setAction("Provide Collateral");
 
         const erc20 = new ERC20Service(context.library, context.account, currentToken.address);
         const targetVault = await control.getLPVault(currentToken.address);
@@ -322,6 +333,7 @@ export const Borrower: React.FC<Props> = (props: Props) => {
         const needsAuth = provideLpValue > enabledAmount;
 
         if (needsAuth) {
+            setAuthType("lp");
             setAuthorizationModalOpen(true);
             return;
         }
@@ -352,9 +364,10 @@ export const Borrower: React.FC<Props> = (props: Props) => {
         const enabledAmount = parseBigNumber(await erc20.allowance(context.account, targetVault), currentToken.decimals);
         const needsAuth = repayAmountValue > enabledAmount;
 
+        setAction("Repay Loan");
         if (needsAuth) {
+            setAuthType("sc");
             setAuthorizationModalOpen(true);
-            setAction("repay");
             return;
         }
 
@@ -381,7 +394,7 @@ export const Borrower: React.FC<Props> = (props: Props) => {
         const tx = lpVault.withdrawCollateral(amount);
 
         setWithdrawModalOpen(false);
-
+        setAction("Withdraw Collateral");
         await handleTransaction(tx);
         refresh();
     }
