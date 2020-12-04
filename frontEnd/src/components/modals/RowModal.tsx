@@ -36,6 +36,7 @@ interface Props {
     poolIconSrcPrimary: string,
     poolIconSrcSecondary: string,
     token: Token
+    value: string
 }
 
 export const RowModal: React.FC<Props> = (props: Props) => {
@@ -88,7 +89,7 @@ export const RowModal: React.FC<Props> = (props: Props) => {
                         >
                             <Grid item xs={2}></Grid>
                             <Grid item xs={6}>
-                                <Amount adornment="USD" onChange={props.onChange} error={props.error} />
+                                <Amount adornment="USD" value={props.value} onChange={props.onChange} error={props.error} />
                             </Grid>
                             <Grid item>
                                 <Typography

@@ -1,3 +1,4 @@
+import { BigNumber } from "ethers";
 import React from "react";
 import { StableCoinWarpVaultService } from "../services/stableCoinWarpVault";
 import { WarpControlService } from "../services/warpControl";
@@ -36,6 +37,10 @@ export const useCombinedBorrowRate = (context: ConnectedWeb3Context, control: Wa
               const targetVault = await control.getStableCoinVault(token.address);
               const vault = new StableCoinWarpVaultService(context.library, context.account, targetVault);
               const borrowedTokenAmount = await vault.borrowedAmount(context.account);
+              if (borrowedTokenAmount.eq(BigNumber.from(0))) {
+                  continue;
+              }
+
               const tokenValueInUSDC = parseBigNumber(await control.getStableCoinPrice(token.address, borrowedTokenAmount), usdc.decimals);
     
               const stats: BorrowStats = {
