@@ -1,7 +1,7 @@
 import * as React from "react";
 
 import { AmountModal, AuthorizationModal, BigModal, BorrowerTable, Header, InformationCard, RowModal, TransactionModal } from "../../components";
-import { convertNumberToBigNumber, isAddress, parseBigNumber } from "../../util/tools";
+import { convertNumberToBigNumber, countDecimals, formatBigNumber, isAddress, parseBigNumber } from "../../util/tools";
 
 import { BigNumber } from "ethers";
 import { ERC20Service } from "../../services/erc20";
@@ -36,6 +36,7 @@ export const Borrower: React.FC<Props> = (props: Props) => {
     const { totalBorrowedAmount, borrowLimit } = useBorrowLimit(context, control, refreshToken);
     const combinedBorrowRate = useCombinedBorrowRate(context, control, stableCoins, usdcToken, refreshToken);
     const [newBorrowLimitUsed, setNewBorrowLimitUsed] = useState(0);
+    const [ authType, setAuthType ] = React.useState<"sc" | "lp">("sc");
 
     const data = {
         collateral: parseBigNumber(borrowLimit, usdcToken?.decimals),
@@ -58,29 +59,30 @@ export const Borrower: React.FC<Props> = (props: Props) => {
     const [borrowError, setBorrowError] = useState(false);
     const [borrowModalOpen, setBorrowModalOpen] = useState(false);
 
-    const [provideAmountValue, setProvideAmountValue] = useState(0);
+    const [provideAmountValue, setProvideAmountValue] = useState("");
+    const [provideMax, setProvideMax] = useState(false);
     const [provideError, setProvideError] = useState(false);
-    const [provideLpValue, setProvideLpValue] = useState(0);
+    const [provideLpValue, setProvideLpValue] = useState(BigNumber.from(0));
     const [provideModalOpen, setProvideModalOpen] = useState(false);
 
-    const [referralCode, setReferralCode] = useState("");
-    const [referralCodeError, setReferralCodeError] = useState(false);
-
-    const [repayAmountValue, setRepayAmountValue] = useState(0);
+    const [repayAmountValue, setRepayAmountValue] = useState(BigNumber.from(0));
+    const [repayMax, setRepayMax] = useState(false);
     const [repayError, setRepayError] = useState(false);
     const [repayModalOpen, setRepayModalOpen] = useState(false);
-    const [borrowedAmount, setBorrowedAmount] = useState(0);
+    const [borrowedAmount, setBorrowedAmount] = useState(BigNumber.from(0));
 
-    const [withdrawAmountValue, setWithdrawAmountValue] = useState(0);
+    const [withdrawAmountValue, setWithdrawAmountValue] = useState("");
+    const [withdrawMax, setWithdrawMax] = useState(false);
     const [withdrawError, setWithdrawError] = useState(false);
-    const [withdrawLpValue, setWithdrawLpValue] = useState(0);
+    const [withdrawLpValue, setWithdrawLpValue] = useState(BigNumber.from(0));
     const [withdrawModalOpen, setWithdrawModalOpen] = useState(false);
-    const [maxWithdrawAmount, setMaxWithdrawAmount] = useState(0);
+    const [maxWithdrawAmount, setMaxWithdrawAmount] = useState(BigNumber.from(0));
 
     const [currentToken, setCurrentToken] = useState<Token>({} as Token);
     const [tokenToUSDCRate, setTokenToUSDCRate] = useState(0);
-    const [walletAmount, setWalletAmount] = useState(0);
-    const [vaultAmount, setVaultAmount] = useState(0);
+    const [walletAmount, setWalletAmount] = useState(BigNumber.from(0));
+    const [vaultAmount, setVaultAmount] = useState(BigNumber.from(0));
+    
 
     // TO-DO: Web3 integration
     const [transactionHash, setTransactionHash] = useState("0x716af84c2de1026e87ec2d32df563a6e7e43b261227eb10358ba3d8dd372eceb");
@@ -91,26 +93,21 @@ export const Borrower: React.FC<Props> = (props: Props) => {
         if (borrowTokenAmount !== 0) {
             setBorrowError(isBorrowError(borrowTokenAmount, currentToken));
         }
-        if (provideLpValue !== 0) {
+
+        if (!provideLpValue.eq(BigNumber.from(0))) {
             setProvideError(isProvideError(provideLpValue, currentToken));
         }
-        if (repayAmountValue !== 0) {
-            setRepayError(isRepayError(repayAmountValue, currentToken));
-        }
-        if (withdrawLpValue !== 0) {
+
+        setRepayError(isRepayError(repayAmountValue, currentToken));
+    
+        if (!withdrawLpValue.eq(BigNumber.from(0))) {
             setWithdrawError(isWithdrawError(withdrawLpValue, currentToken));
-        }
-        if (referralCode && !isAddress(referralCode)) {
-            setReferralCodeError(true);
-        } else {
-            setReferralCodeError(false);
         }
     }, [borrowTokenAmount,
         borrowAmountCurrency,
         provideLpValue,
         currentToken,
         repayAmountValue,
-        referralCode,
         withdrawLpValue,
         tokenToUSDCRate]
     );
@@ -154,32 +151,31 @@ export const Borrower: React.FC<Props> = (props: Props) => {
         return false;
     }
 
-    const isProvideError = (value: number, token: Token) => {
+    const isProvideError = (value: BigNumber, token: Token) => {
         const index = lpTokens.findIndex((elem: any) => elem === token);
         if (index < 0) return true;
-        if (value <= 0 ||
-            value > walletAmount) {//collateralData[index].available) {
+        if (value.lte(BigNumber.from(0)) ||
+            value.gt(walletAmount)) {
             return true;
         }
         return false;
     }
 
-    const isRepayError = (value: number, token: Token) => {
+    const isRepayError = (value: BigNumber, token: Token) => {
         const index = stableCoins.findIndex((elem: any) => elem === token);
         if (index < 0) return true;
-        if (value <= 0 ||
-            value > walletAmount || value > borrowedAmount) { // borrowData[index].amount) {
+        if (value.lte(BigNumber.from(0)) ||
+            value.gt(walletAmount) || value.gt(borrowedAmount)) {
             return true;
         }
         return false;
     }
 
-    const isWithdrawError = (value: number, token: Token) => {
+    const isWithdrawError = (value: BigNumber, token: Token) => {
         const index = lpTokens.findIndex((elem: any) => elem === token);
-        console.log(value);
         if (index < 0) return true;
-        if (value <= 0 ||
-            value > vaultAmount || value > maxWithdrawAmount) { 
+        if (value.lte(BigNumber.from(0)) ||
+            value.gt(vaultAmount) || value.gt(maxWithdrawAmount)) { 
             return true;
         }
         return false;
@@ -211,24 +207,22 @@ export const Borrower: React.FC<Props> = (props: Props) => {
         const usdAmount = Number(event.target.value);
         const lpAmount = usdAmount / tokenToUSDCRate;
 
-        setProvideLpValue(lpAmount);
-        setProvideAmountValue(usdAmount);
+        setProvideLpValue(convertNumberToBigNumber(lpAmount, currentToken.decimals));
+        setProvideAmountValue(event.target.value);
     };
 
     const onRepayAmountChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-        setRepayAmountValue(Number(event.target.value));
-    };
-
-    const onReferralCodeChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-        setReferralCode(event.target.value);
+        logger.log(`Repay amount changed to ${event.target.value}`)
+        setRepayAmountValue(convertNumberToBigNumber(Number(event.target.value), currentToken.decimals));
+        setRepayMax(false);
     };
 
     const onWithdrawAmountChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
         const usdAmount = Number(event.target.value);
         const lpAmount = usdAmount / tokenToUSDCRate;
 
-        setWithdrawLpValue(lpAmount);
-        setWithdrawAmountValue(usdAmount);
+        setWithdrawLpValue(convertNumberToBigNumber(lpAmount, currentToken.decimals));
+        setWithdrawAmountValue(event.target.value);
     };
 
     const onBorrowClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, token: Token) => {
@@ -242,10 +236,11 @@ export const Borrower: React.FC<Props> = (props: Props) => {
     const onProvideClick = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, token: Token, walletAmount: BigNumber, vaultAmount: BigNumber) => {
         setCurrentToken(token);
         setProvideModalOpen(true);
-        setWalletAmount(parseBigNumber(walletAmount, token.decimals));
-        setVaultAmount(parseBigNumber(vaultAmount, token.decimals));
-        setProvideAmountValue(0);
-        setProvideLpValue(0);
+        setWalletAmount(walletAmount);
+        setVaultAmount(vaultAmount);
+        setProvideAmountValue("");
+        setProvideLpValue(BigNumber.from(0));
+        setProvideMax(false);
 
         await getLPToUSDCRatio(token);
     }
@@ -253,18 +248,20 @@ export const Borrower: React.FC<Props> = (props: Props) => {
     const onRepayClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, token: Token, walletAmount: BigNumber, amountDue: BigNumber) => {
         setRepayModalOpen(true);
         setCurrentToken(token);
-        setRepayAmountValue(0);
-        setWalletAmount(parseBigNumber(walletAmount, token.decimals));
-        setBorrowedAmount(parseBigNumber(amountDue, token.decimals));
+        setRepayAmountValue(BigNumber.from(0));
+        setRepayMax(false);
+        setWalletAmount(walletAmount);
+        setBorrowedAmount(amountDue);
     }
 
     const onWithdrawClick = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, token: Token, walletAmount: BigNumber, vaultAmount: BigNumber) => {
         setCurrentToken(token);
         setWithdrawModalOpen(true);
-        setWalletAmount(parseBigNumber(walletAmount, token.decimals));
-        setVaultAmount(parseBigNumber(vaultAmount, token.decimals));
-        setWithdrawAmountValue(0);
-        setWithdrawLpValue(0);
+        setWalletAmount(walletAmount);
+        setVaultAmount(vaultAmount);
+        setWithdrawAmountValue("");
+        setWithdrawLpValue(BigNumber.from(0));
+        setWithdrawMax(false);
 
         const lpToUSDC = await getLPToUSDCRatio(token);
 
@@ -273,9 +270,10 @@ export const Borrower: React.FC<Props> = (props: Props) => {
             return;
         }
 
-        const maxAmount = parseBigNumber(await control.getMaxCollateralWithdrawAmount(context.account, token.address), token.decimals);
-        const maxAmountInUSDC = maxAmount * lpToUSDC;
-        logger.log(`Max amount of ${token.symbol} that can be withdrawn is ${maxAmount} LP or ${maxAmountInUSDC.toFixed(4)} USDC (converstion rate of ${lpToUSDC})`);
+        const maxAmount = await control.getMaxCollateralWithdrawAmount(context.account, token.address);
+        const maxAmountParsed = parseBigNumber(maxAmount, token.decimals);
+        const maxAmountInUSDC = maxAmountParsed * lpToUSDC;
+        logger.log(`Max amount of ${token.symbol} that can be withdrawn is ${maxAmountParsed} LP or ${maxAmountInUSDC.toFixed(4)} USDC (converstion rate of ${lpToUSDC})`);
         setMaxWithdrawAmount(maxAmount);
     }
 
@@ -302,9 +300,17 @@ export const Borrower: React.FC<Props> = (props: Props) => {
 
     const onAuth = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
         const erc20 = new ERC20Service(context.library, context.account, currentToken.address);
-        const targetVault = await control.getLPVault(currentToken.address);
+        let targetVault;
+        if (authType == "lp") {
+            targetVault = await control.getLPVault(currentToken.address);
+        } else {
+            targetVault = await control.getStableCoinVault(currentToken.address);
+        }
+
         const tx = erc20.approveUnlimited(targetVault);
+
         setAuthorizationModalOpen(false);
+        setAction("Authorizing");
 
         await handleTransaction(tx);
         refresh();
@@ -314,6 +320,8 @@ export const Borrower: React.FC<Props> = (props: Props) => {
         const amount = convertNumberToBigNumber(borrowTokenAmount, currentToken.decimals);
         logger.log(`Borrowing ${borrowTokenAmount} ${currentToken.symbol} (${amount} in weth)`)
         const tx = control.borrowStableCoin(currentToken.address, amount);
+
+        setAction("Borrowing");
 
         setBorrowModalOpen(false);
 
@@ -325,23 +333,25 @@ export const Borrower: React.FC<Props> = (props: Props) => {
         if (!context.account) {
             return;
         }
-        setAction("provide");
+        setAction("Provide Collateral");
 
         const erc20 = new ERC20Service(context.library, context.account, currentToken.address);
         const targetVault = await control.getLPVault(currentToken.address);
-        const enabledAmount = parseBigNumber(await erc20.allowance(context.account, targetVault), currentToken.decimals);
-        const needsAuth = provideLpValue > enabledAmount;
+        const enabledAmount = await erc20.allowance(context.account, targetVault);
+        const needsAuth = provideLpValue.gt(enabledAmount);
 
         if (needsAuth) {
+            setAuthType("lp");
             setAuthorizationModalOpen(true);
             return;
         }
 
         const lpVault = new WarpLPVaultService(context.library, context.account, targetVault);
-        const amount = convertNumberToBigNumber(provideLpValue, currentToken.decimals);
-        logger.log(`Providing ${amount.toString()} ${currentToken.symbol}`);
 
-        const tx = lpVault.provideCollateral(amount, referralCode);
+        const parsedProvideLpValue = parseBigNumber(provideLpValue, currentToken.decimals);
+        logger.log(`Providing ${parsedProvideLpValue.toString()} (${provideLpValue}) ${currentToken.symbol}`);
+
+        const tx = lpVault.provideCollateral(provideLpValue);
 
         setProvideModalOpen(false);
 
@@ -350,7 +360,12 @@ export const Borrower: React.FC<Props> = (props: Props) => {
     }
 
     const onProvideMax = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-        // TO-DO: Get max and set provide amount value to max provide from web3
+        setProvideMax(true);
+        setProvideLpValue(walletAmount);
+
+        const maxAmountParsed = parseBigNumber(walletAmount, currentToken.decimals);
+        const maxAmountInUSDC = maxAmountParsed * tokenToUSDCRate;
+        setProvideAmountValue(maxAmountInUSDC.toFixed(4));
     }
 
     const onRepay = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
@@ -360,19 +375,19 @@ export const Borrower: React.FC<Props> = (props: Props) => {
 
         const erc20 = new ERC20Service(context.library, context.account, currentToken.address);
         const targetVault = await control.getStableCoinVault(currentToken.address);
-        const enabledAmount = parseBigNumber(await erc20.allowance(context.account, targetVault), currentToken.decimals);
-        const needsAuth = repayAmountValue > enabledAmount;
+        const enabledAmount = await erc20.allowance(context.account, targetVault);
+        const needsAuth = repayAmountValue.gt(enabledAmount);
 
+        setAction("Repay Loan");
         if (needsAuth) {
+            setAuthType("sc");
             setAuthorizationModalOpen(true);
-            setAction("repay");
             return;
         }
 
         const scVault = new StableCoinWarpVaultService(context.library, context.account, targetVault);
-        const amount = convertNumberToBigNumber(repayAmountValue, currentToken.decimals);
 
-        const tx = scVault.repay(amount);
+        const tx = scVault.repay(repayAmountValue);
 
         setRepayModalOpen(false);
 
@@ -381,24 +396,35 @@ export const Borrower: React.FC<Props> = (props: Props) => {
     }
     
     const onRepayMax = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-        // TO-DO: Get and set repay amount value to max repay value from web3
+        setRepayMax(true);
+        logger.log(`Set repay to max of ${parseBigNumber(borrowedAmount, currentToken.decimals).toFixed(currentToken.decimals)} (${borrowedAmount.toString()})`);
+        setRepayAmountValue(borrowedAmount);
     }
 
     const onWithdraw = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
         const targetVault = await control.getLPVault(currentToken.address);
         const lpVault = new WarpLPVaultService(context.library, context.account, targetVault);
-        const amount = convertNumberToBigNumber(withdrawLpValue, currentToken.decimals);
 
-        const tx = lpVault.withdrawCollateral(amount);
+        const withdrawAmountParsed = parseBigNumber(withdrawLpValue, currentToken.decimals);
+        const maxWithdrawAmountParsed = parseBigNumber(maxWithdrawAmount, currentToken.decimals);
+        logger.log(`Withdrawing ${withdrawAmountParsed} LP (${withdrawLpValue.toString()}) current max is ${maxWithdrawAmountParsed} LP (${maxWithdrawAmount.toString()})`);
+
+        const tx = lpVault.withdrawCollateral(withdrawLpValue);
 
         setWithdrawModalOpen(false);
-
+        setAction("Withdraw Collateral");
         await handleTransaction(tx);
         refresh();
     }
 
     const onWithdrawMax = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-        // TO-DO: Get max and set withdrawl amount value to max withdrawl from web3
+        setWithdrawMax(true);
+        setWithdrawLpValue(maxWithdrawAmount);
+
+        const maxAmountParsed = parseBigNumber(maxWithdrawAmount, currentToken.decimals);
+
+        const maxAmountInUSDC = maxAmountParsed * tokenToUSDCRate;
+        setWithdrawAmountValue(maxAmountInUSDC.toFixed(4));
     }
 
     return (
@@ -463,31 +489,29 @@ export const Borrower: React.FC<Props> = (props: Props) => {
                 action={"Withdraw Collateral"}
                 error={withdrawError}
                 handleClose={handleWithdrawClose}
-                lp={withdrawLpValue}
+                lp={parseBigNumber(withdrawLpValue, currentToken.decimals)}
                 onButtonClick={onWithdraw}
                 onChange={onWithdrawAmountChange}
                 onMaxButtonClick={onWithdrawMax}
                 open={withdrawModalOpen}
-                onReferralCodeChange={onReferralCodeChange}
                 poolIconSrcPrimary={currentToken.image || ""}
                 poolIconSrcSecondary={currentToken.image2 || ""}
-                referralCodeError={referralCodeError}
                 token={currentToken}
+                value={withdrawAmountValue}
             />
             <RowModal
                 action={"Provide Collateral"}
                 error={provideError}
                 handleClose={handleProvideClose}
-                lp={provideLpValue}
+                lp={parseBigNumber(provideLpValue, currentToken.decimals)}
                 onButtonClick={onProvide}
                 onChange={onProvideAmountChange}
                 onMaxButtonClick={onProvideMax}
                 open={provideModalOpen}
-                onReferralCodeChange={onReferralCodeChange}
                 poolIconSrcPrimary={currentToken.image || ""}
                 poolIconSrcSecondary={currentToken.image2 || ""}
-                referralCodeError={referralCodeError}
                 token={currentToken}
+                value={provideAmountValue}
             />
             <BigModal
                 action="Borrow"
@@ -503,7 +527,11 @@ export const Borrower: React.FC<Props> = (props: Props) => {
             />
             <AmountModal
                 action={"Repay " + currentToken.symbol}
-                amount={repayAmountValue}
+                amount={
+                    repayMax ? 
+                    formatBigNumber(repayAmountValue, currentToken.decimals, currentToken.decimals) :
+                    formatBigNumber(repayAmountValue, currentToken.decimals)
+                }
                 currency={currentToken.symbol}
                 error={repayError}
                 iconSrc={currentToken.symbol || ""}

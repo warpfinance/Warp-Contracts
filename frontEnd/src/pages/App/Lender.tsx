@@ -53,9 +53,6 @@ export const Lender: React.FC<Props> = (props: Props) => {
     const [lendFocusedAmountId, setLendFocusedAmountId] = useState("");
     const [lendMaxAmount, setLendMaxAmount] = useState(BigNumber.from(0));
 
-    const [referralCode, setReferralCode] = useState("");
-    const [referralCodeError, setReferralCodeError] = useState(false);
-
     const [withdrawToken, setWithdrawToken] = useState<Maybe<Token>>(null);
     const [withdrawAmountCurrency, setWithdrawAmountCurrency] = useState("");
     const [withdrawAmountValue, setWithdrawAmountValue] = useState(BigNumber.from(0));
@@ -79,13 +76,7 @@ export const Lender: React.FC<Props> = (props: Props) => {
         if (!withdrawAmountValue.eq(BigNumber.from(0)) && withdrawAmountCurrency !== "") {
             setWithdrawError(isError(withdrawAmountValue, withdrawAmountCurrency, tokens, withdrawMaxAmount));
         }
-
-        if (referralCode && !isAddress(referralCode)) {
-            setReferralCodeError(true);
-        } else {
-            setReferralCodeError(false);
-        }
-    }, [lendAmountValue, lendAmountCurrency, referralCode, withdrawAmountValue, withdrawAmountCurrency]
+    }, [lendAmountValue, lendAmountCurrency, withdrawAmountValue, withdrawAmountCurrency]
     );
 
     const handleAuthClose = (event: {}, reason: "backdropClick" | "escapeKeyDown") => {
@@ -147,10 +138,6 @@ export const Lender: React.FC<Props> = (props: Props) => {
         if (event !== null && event !== undefined && lendFocusedAmountId !== event.target.id) {
             setLendFocusedAmountId(event.target.id);
         }
-    };
-
-    const onReferralCodeChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-        setReferralCode(event.target.value);
     };
 
     const onWithdrawAmountChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>, maxAmount: BigNumber, token: Token) => {
@@ -232,7 +219,7 @@ export const Lender: React.FC<Props> = (props: Props) => {
 
         const scVault = new StableCoinWarpVaultService(context.library, context.account, targetVault);
 
-        const tx = scVault.lendToVault(lendAmountValue, referralCode);
+        const tx = scVault.lendToVault(lendAmountValue);
 
         setLendModalOpen(false);
 
@@ -346,8 +333,6 @@ export const Lender: React.FC<Props> = (props: Props) => {
                 onButtonClick={onLend}
                 onMaxButtonClick={onLendMax}
                 open={lendModalOpen}
-                onReferralCodeChange={onReferralCodeChange}
-                referralCodeError={referralCodeError}
             />
             <SimpleModal
                 action="Withdraw"

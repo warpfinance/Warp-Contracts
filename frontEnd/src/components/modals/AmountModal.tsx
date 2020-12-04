@@ -24,7 +24,7 @@ const useStyles = makeStyles(theme => ({
 
 interface Props {
     action: string,
-    amount: number,
+    amount:  number | string,
     currency: string,
     error: boolean,
     iconSrc: string,
@@ -70,7 +70,7 @@ export const AmountModal: React.FC<Props> = (props: Props) => {
                                 <Avatar alt={props.iconSrc} src={props.iconSrc} />
                             </Grid>
                             <Grid item>
-                                <Amount adornment={props.currency} onChange={props.onChange} error={props.error} />
+                                <Amount value={props.amount} adornment={props.currency} onChange={props.onChange} error={props.error} />
                             </Grid>
                             <Grid item>
                                 <Typography
@@ -84,7 +84,7 @@ export const AmountModal: React.FC<Props> = (props: Props) => {
                             </Grid>
                         </Grid>
                         <CustomButton
-                            disabled={props.amount <= 0 || props.error === true}
+                            disabled={props.error === true}
                             onClick={props.onButtonClick}
                             text={props.action.split(" ")[0]}
                             type="short" />

@@ -7,7 +7,7 @@ import { createTransactionInfo, TransactionInfo } from "../util/types";
 const contractABI = [
   'function borrowRatePerBlock() public view returns (uint256)',
   'function supplyRatePerBlock() public view returns (uint256)',
-  'function lendToWarpVault(uint256 _amount, address _refferalCode) public',
+  'function lendToWarpVault(uint256 _amount) public',
   'function viewAccountBalance(address _account) public view returns (uint256)',
   'function exchangeRatePrior() public view returns (uint256)',
   'function redeem(uint256 _amount) public',
@@ -43,19 +43,8 @@ export class StableCoinWarpVaultService {
     return await this.contract.borrowRatePerBlock();
   }
 
-  lendToVault = async (amount: BigNumber, referralCode: Maybe<string>): Promise<TransactionInfo> => {
-    let code = nullAddress;
-    if (referralCode) {
-      if (!isAddress(referralCode)) {
-        const errorMessage = "provideCollateral referral address invalid: " + referralCode
-        logger.error(errorMessage);
-        throw Error(errorMessage);
-      }
-
-      code = referralCode;
-    }
-
-    const transactionObject = await this.contract.lendToWarpVault(amount, code);
+  lendToVault = async (amount: BigNumber): Promise<TransactionInfo> => {
+    const transactionObject = await this.contract.lendToWarpVault(amount);
 
     logger.log("lendToWarpVault: " + transactionObject.hash);
     

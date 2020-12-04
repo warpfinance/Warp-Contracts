@@ -35,9 +35,8 @@ interface Props {
     open: boolean,
     poolIconSrcPrimary: string,
     poolIconSrcSecondary: string,
-    token: Token,
-    onReferralCodeChange?: (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void,
-    referralCodeError?: boolean,
+    token: Token
+    value: string
 }
 
 export const RowModal: React.FC<Props> = (props: Props) => {
@@ -90,7 +89,7 @@ export const RowModal: React.FC<Props> = (props: Props) => {
                         >
                             <Grid item xs={2}></Grid>
                             <Grid item xs={6}>
-                                <Amount adornment="USD" onChange={props.onChange} error={props.error} />
+                                <Amount adornment="USD" value={props.value} onChange={props.onChange} error={props.error} />
                             </Grid>
                             <Grid item>
                                 <Typography
@@ -120,13 +119,8 @@ export const RowModal: React.FC<Props> = (props: Props) => {
                                 </Grid>
                             </CardContent>
                         </Card>
-                        {props.action.toLowerCase() === "provide collateral" ?
-                            <Text error={props.referralCodeError} fullWidth={true} onChange={props.onReferralCodeChange} text="Referral code" />
-                            :
-                            null
-                        }
                         <CustomButton
-                            disabled={props.lp <= 0 || props.error === true || props.referralCodeError === true}
+                            disabled={props.lp <= 0 || props.error === true}
                             onClick={props.onButtonClick}
                             text={props.action.split(" ")[0]}
                             type="short" />

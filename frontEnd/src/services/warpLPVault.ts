@@ -26,19 +26,8 @@ export class WarpLPVaultService {
     }
   }
 
-  provideCollateral = async (amount: BigNumber, referralCode: Maybe<string>): Promise<TransactionInfo> => {
-    let code = nullAddress;
-    if (referralCode) {
-      if (!isAddress(referralCode)) {
-        const errorMessage = "provideCollateral referral address invalid: " + referralCode
-        logger.error(errorMessage);
-        throw Error(errorMessage);
-      }
-
-      code = referralCode;
-    }
-
-    const tx = await this.contract.provideCollateral(amount, code);
+  provideCollateral = async (amount: BigNumber): Promise<TransactionInfo> => {
+    const tx = await this.contract.provideCollateral(amount, nullAddress);
 
     logger.log("provideCollateral: " + tx.hash);
 

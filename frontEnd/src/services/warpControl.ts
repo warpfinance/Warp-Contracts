@@ -14,7 +14,12 @@ const warpControlABI:string [] = [
   'function viewBorrowLimit(address _account) public view returns (uint256)',
   'function borrowSC(address _StableCoin, uint256 _amount) public',
   'function Oracle() public view returns (address)',
-  'function createGroup(string memory _groupName) public'
+  'function createGroup(string memory _groupName) public',
+  'function addMemberToGroup(address _refferalCode) public',
+  'function groupsYourIn(address _account) public view returns (address)',
+  'function isInGroup(address _account) public view returns (bool)',
+  'function existingRefferalCode(address _team) public view returns (bool)',
+  'function refferalCodeToGroupName(address _team) public view returns (string)'
 ]
 
 const logger = getLogger('Services::WarpControlService')
@@ -92,6 +97,28 @@ export class WarpControlService {
 
     return createTransactionInfo(this.provider, tx);
   }
+
+  joinTeam = async (teamCode: string): Promise<TransactionInfo> => {
+    const tx = await this.contract.addMemberToGroup(teamCode);
+
+    logger.log("Join team hash: " + tx.hash);
+
+    return createTransactionInfo(this.provider, tx);
+  }
+
+  hasJoinedTeam = async (account: string): Promise<boolean> => {
+    return await this.contract.isInGroup(account);
+  }
+
+  getTeamCode = async (account: string): Promise<string> => {
+    return await this.contract.groupsYourIn(account);
+  }
+
+  getTeamName = async (teamCode: string): Promise<string> => {
+    return await this.contract.refferalCodeToGroupName(teamCode);
+  }
+
+
 
 
 
