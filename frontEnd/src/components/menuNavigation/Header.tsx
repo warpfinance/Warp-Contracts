@@ -1,7 +1,7 @@
 import * as React from "react";
 
 import { Card, CardContent, Grid, IconButton, Link, Typography } from "@material-ui/core";
-import { CustomButton, ErrorCustomButton, NftJoinModal, NftModal, NftReferralModal } from "../../components"
+import { CustomButton, ErrorCustomButton, NftJoinModal, NftModal, NftReferralModal, NotificationModal } from "../../components"
 
 import { BorrowerCountdownContext } from "../../hooks/borrowerCountdown";
 import FileCopyOutlinedIcon from '@material-ui/icons/FileCopyOutlined';
@@ -48,14 +48,15 @@ interface Props {
 export const Header: React.FC<Props> = (props: Props) => {
     const classes = useStyles();
     const truncate = (input: string) => {
-        if (input.length > 5) {
-            return input.substring(0, 5) + '...';
+        if (input.length > 10) {
+            return input.substring(0, 6) + '...' + input.slice(-4);
         }
         return input;
     };
 
     const pathName = useLocation().pathname;
     const [createTeamTx, setCreateTeamTX] = useState<Maybe<TransactionInfo>>(null);
+    const [disconnectModalOpen, setDisconnectModalOpen] = useState(false);
     // TO-DO: Get current link from web3, if it exists
     const [link, setLink] = useState("");
     const [nftModalOpen, setNftModalOpen] = useState(false);
@@ -88,6 +89,11 @@ export const Header: React.FC<Props> = (props: Props) => {
         }
     }, [teamName, link]
     );
+
+
+    const handleDisconnectModalClose = (event: {}, reason: "backdropClick" | "escapeKeyDown") => {
+        setDisconnectModalOpen(false);
+    }
 
     const handleNftModalClose = (event: {}, reason: "backdropClick" | "escapeKeyDown") => {
         setTeamName("")
@@ -136,9 +142,16 @@ export const Header: React.FC<Props> = (props: Props) => {
         setTeamName(event.currentTarget.value);
     }
 
+    const onDisconnect = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+        setDisconnectModalOpen(false);
+        context.deactivate();
+    }
+
     const getHeaderContent = (connected: boolean) => {
         const connectButton =
-            <ErrorCustomButton disabled={!connected}
+            <ErrorCustomButton
+                disabled={!connected}
+                onClick={!connected ? undefined : () => setDisconnectModalOpen(true)}
                 text={!connected ? "No wallet" : "Disconnect"}
                 type="short"
                 variant="contained"
@@ -327,6 +340,20 @@ export const Header: React.FC<Props> = (props: Props) => {
 
     return (
         <React.Fragment>
+            <NotificationModal
+                children={
+                    <Card>
+                        <CardContent>
+                            <Typography variant="subtitle1">{truncate(walletAddress)}</Typography>
+                        </CardContent>
+                    </Card>
+                }
+                handleClose={handleDisconnectModalClose}
+                onButtonClick={onDisconnect}
+                open={disconnectModalOpen}
+                buttonText={"Log out"}
+                titleText={"Account"}
+            />
             <NftModal
                 handleClose={handleNftModalClose}
                 onButtonClick={onTeamCreate}
