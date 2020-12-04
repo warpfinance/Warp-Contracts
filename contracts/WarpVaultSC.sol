@@ -580,12 +580,9 @@ contract WarpVaultSC is Ownable, Exponential {
         vars.accountBorrows = borrowBalanceCurrent(msg.sender);
         //require the borrower cant pay more than they owe
         require(_repayAmount <= vars.accountBorrows, "You are trying to pay back more than you owe");
-        //We remember the original borrowerPrinciple for verification purposes
-        vars.borrowPrinciple = accountBorrows[msg.sender].principal;
-          //We remember the original borrowerIndex for verification purposes
-        vars.borrowerIndex = accountBorrows[msg.sender].interestIndex;
-        //If repayAmount == 0, repayAmount = accountBorrows
-        if (_repayAmount == 0) {
+
+        //If repayAmount == -1, repayAmount = accountBorrows
+        if (_repayAmount == uint(-1)) {
             vars.repayAmount = vars.accountBorrows;
         } else {
             vars.repayAmount = _repayAmount;
@@ -601,30 +598,20 @@ contract WarpVaultSC is Ownable, Exponential {
             vars.accountBorrows,
             vars.repayAmount
         );
+        require(vars.mathErr == MathError.NO_ERROR, "REPAY_BORROW_NEW_ACCOUNT_BORROW_BALANCE_CALCULATION_FAILED");
+        
         //totalBorrowsNew = totalBorrows - actualRepayAmount
         (vars.mathErr, vars.totalBorrowsNew) = subUInt(
             totalBorrows,
             vars.repayAmount
         );
-        //if the borrowers principle is larger than the repayed amount
-        if(accountBorrows[msg.sender].principal >= _repayAmount) {
-          //calculate remaining principle and write it to storage
-          accountBorrows[msg.sender].principal = vars.accountBorrowsNew;
-          //write new borrow Index into storage
-          accountBorrows[msg.sender].interestIndex = vars.borrowerIndex;
-        } else { // the principal is smaller than the amount payed
-          //calculate the amount of interest that will be payed off
-          vars.interestPayed = vars.accountBorrowsNew.sub(accountBorrows[msg.sender].principal);
-          //write principal into storage as zero since its payed off
-          accountBorrows[msg.sender].principal = 0;
-          //calculate remaining interest amount and write it into storage
-          accountBorrows[msg.sender].interestIndex = accountBorrows[msg.sender].interestIndex.sub(vars.interestPayed);
-        }
+        require(vars.mathErr == MathError.NO_ERROR, "REPAY_BORROW_NEW_TOTAL_BALANCE_CALCULATION_FAILED");
+        
         /* We write the previously calculated values into storage */
         totalBorrows = vars.totalBorrowsNew;
-        vars.totalOwed = accountBorrows[msg.sender].principal.add(
-            accountBorrows[msg.sender].interestIndex
-        );
+        accountBorrows[msg.sender].principal = vars.accountBorrowsNew;
+        accountBorrows[msg.sender].interestIndex = borrowIndex
+
 
         emit LoanRepayed(msg.sender, _repayAmount, accountBorrows[msg.sender].principal, accountBorrows[msg.sender].interestIndex);
     }
