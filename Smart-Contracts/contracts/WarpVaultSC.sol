@@ -117,15 +117,24 @@ contract WarpVaultSC is Ownable, Exponential {
             stablecoin.symbol()
         );
     }
-
+    /**
+    @notice getSCDecimals allows for easy retrieval of the vaults stablecoin decimals
+    **/
     function getSCDecimals() public view returns(uint8) {
         return stablecoin.decimals();
     }
 
+    /**
+    @notice getSCAddress allows for the easy retrieval of the vaults stablecoin address
+    **/
     function getSCAddress() public view returns(address) {
         return address(stablecoin);
     }
 
+    /**
+    @notice upgrade is used when upgrading to a new version of the WarpControl contracts
+    @dev this is a protected function that can only be called by the WarpControl contract
+    **/
     function upgrade(address _warpControl) public onlyWC {
       WC = WarpControlI(_warpControl);
       transferOwnership(_warpControl);
@@ -147,19 +156,35 @@ contract WarpVaultSC is Ownable, Exponential {
         return fee;
     }
 
+    /**
+    @notice withdrawReserves allows the warp team to withdraw the reserves earned by fees
+    @param _amount is the amount of a stablecoin being withdrawn
+    @dev this is a protected function that can only be called by the warpTeam address
+    **/
     function withdrawReserves(uint _amount) public onlyWarpT{
+      require(totalReserves >= _amount, "You are trying to withdraw too much");
       totalReserves = totalReserves.sub(_amount);
       stablecoin.transfer(warpTeam, _amount);
       emit ReserveWithdraw(_amount);
     }
 
-    function setNewInterestModel(address _newModel) public onlyOwner {
+    /**
+    @notice setNewInterestModel allows for a new interest rate model to be set for this vault
+    @param _newModel is the address of the new interest rate model contract
+    @dev this is a protected function that can only be called by the WarpControl contract
+    **/
+    function setNewInterestModel(address _newModel) public onlyWC {
       InterestRate = InterestRateModel(_newModel);
     }
 
+    /**
+    @notice updateReserve allows for a new reserv percentage to be set
+    @param _newReserveMantissa is the reserve percentage scaled by 1e18
+    **/
     function updateReserve(uint _newReserveMantissa) public onlyWarpT {
       reserveFactorMantissa = _newReserveMantissa;
     }
+
     /**
     @notice Applies accrued interest to total borrows and reserves
     @dev This calculates interest accrued from the last checkpointed block
@@ -482,6 +507,10 @@ contract WarpVaultSC is Ownable, Exponential {
         emit StableCoinLent(msg.sender, vars.amount, vars.burnTokens);
     }
 
+    /**
+    @notice viewAccountBalance is used to view the current balance of an account
+    @param _account is the account whos balance is being viewed
+    **/
     function viewAccountBalance(address _account) public view returns (uint256) {
         uint256 exchangeRate = exchangeRatePrior();
         uint256 accountBalance = wStableCoin.balanceOf(_account);
@@ -496,6 +525,10 @@ contract WarpVaultSC is Ownable, Exponential {
         return balance;
     }
 
+    /**
+    @notice viewHistoricalReward is used to view the total gains of an account
+    @param _account is the account whos gains are being viewed 
+    **/
     function viewHistoricalReward(address _account) public view returns (uint256) {
         uint256 exchangeRate = exchangeRatePrior();
         uint256 currentWarpBalance = wStableCoin.balanceOf(_account);
@@ -598,19 +631,19 @@ contract WarpVaultSC is Ownable, Exponential {
             vars.accountBorrows,
             vars.repayAmount
         );
-        require(vars.mathErr == MathError.NO_ERROR, "REPAY_BORROW_NEW_ACCOUNT_BORROW_BALANCE_CALCULATION_FAILED");
-        
+        require(vars.mathErr == MathError.NO_ERROR, "Repay borrow new account balance calculation failed");
+
         //totalBorrowsNew = totalBorrows - actualRepayAmount
         (vars.mathErr, vars.totalBorrowsNew) = subUInt(
             totalBorrows,
             vars.repayAmount
         );
-        require(vars.mathErr == MathError.NO_ERROR, "REPAY_BORROW_NEW_TOTAL_BALANCE_CALCULATION_FAILED");
-        
+        require(vars.mathErr == MathError.NO_ERROR, "Repay borrow new total balance calculation failed");
+
         /* We write the previously calculated values into storage */
         totalBorrows = vars.totalBorrowsNew;
         accountBorrows[msg.sender].principal = vars.accountBorrowsNew;
-        accountBorrows[msg.sender].interestIndex = borrowIndex
+        accountBorrows[msg.sender].interestIndex = borrowIndex;
 
 
         emit LoanRepayed(msg.sender, _repayAmount, accountBorrows[msg.sender].principal, accountBorrows[msg.sender].interestIndex);
