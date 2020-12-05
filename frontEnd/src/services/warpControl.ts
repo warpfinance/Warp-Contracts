@@ -19,7 +19,7 @@ const warpControlABI:string [] = [
   'function groupsYourIn(address _account) public view returns (address)',
   'function isInGroup(address _account) public view returns (bool)',
   'function existingRefferalCode(address _team) public view returns (bool)',
-  'function refferalCodeToGroupName(address _team) public view returns (string)'
+  'function getGroupName(address _refferalCode) public view returns(string memory)'
 ]
 
 const logger = getLogger('Services::WarpControlService')
@@ -115,7 +115,7 @@ export class WarpControlService {
   }
 
   getTeamName = async (teamCode: string): Promise<string> => {
-    return await this.contract.refferalCodeToGroupName(teamCode);
+    return await this.contract.getGroupName(teamCode);
   }
 
 

@@ -230,11 +230,19 @@ contract WarpControl is Ownable, Exponential {
     @dev the refferal code for this group is the address of the msg.sender
     **/
     function createGroup(string memory _groupName) public {
-      require(existingRefferalCode[msg.sender] == false);
+        require(isInGroup[msg.sender] == false, "Cant create a group once already in one");
+
+        // Create group
+        existingRefferalCode[msg.sender] = true;
+        refferalCodeToGroupName[msg.sender] = _groupName;
+        groups.push(msg.sender);
+
+        // Join Group
         refferalCodeTracker[msg.sender].push(msg.sender);
-          existingRefferalCode[msg.sender] = true;
-          refferalCodeToGroupName[msg.sender] = _groupName;
-          groups.push(msg.sender);
+        isInGroup[msg.sender] = true;
+        groupsYourIn[msg.sender] = msg.sender;
+        
+        launchParticipants.push(msg.sender);
     }
 
     /**
@@ -243,16 +251,16 @@ contract WarpControl is Ownable, Exponential {
     @dev the member being added is the msg.sender
     **/
     function addMemberToGroup(address _refferalCode) public {
-      //Require a member is either not in a group OR has entered their groups refferal code
-      require(isInGroup[msg.sender] == false || groupsYourIn[msg.sender] == _refferalCode, "Cant join more than one group");
+        //Require a member is either not in a group OR has entered their groups refferal code
+        require(isInGroup[msg.sender] == false, "Cant join more than one group");
+        require(existingRefferalCode[_refferalCode] == true, "Group doesn't exist.");
+
+        // Join Group
         refferalCodeTracker[_refferalCode].push(msg.sender);
         isInGroup[msg.sender] = true;
         groupsYourIn[msg.sender] = _refferalCode;
-            //add the mebers address to the total participants member array
-      if(isParticipant[msg.sender] == false) {
+
         launchParticipants.push(msg.sender);
-        isParticipant[msg.sender] == true;
-      }
     }
 
 

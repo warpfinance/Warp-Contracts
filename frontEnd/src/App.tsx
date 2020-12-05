@@ -26,6 +26,7 @@ import { Web3AccountRequired } from "./pages/Web3AccountRequired";
 import { Web3ReactProvider } from '@web3-react/core'
 import { ethers } from "ethers";
 import { useState } from "react";
+import { TeamContextProvider } from "./hooks/useTeams";
 
 const outerTheme = createMuiTheme({
 	palette: {
@@ -117,22 +118,24 @@ const App: React.FC = () => {
 			<Router>
 				<ThemeProvider theme={outerTheme}>
 					<BorrowerCountdownContext.Provider value={{ countdown: countdown, countdownText: countdownText }} >
-						<CssBaseline>
-							<div className={classes.root}>
-								<Switch>
-									<Route exact={true} path="/" component={Home} />
-									<Route exact={true} path="/connect" component={Connect} />
-									<Route exact={true} path="/borrower"
-										render={() => <Web3AccountRequired><Borrower /></Web3AccountRequired>} />
-									<Route exact={true} path="/dashboard"
-										render={() => <Web3AccountRequired><Dashboard /></Web3AccountRequired>} />
-									<Route exact={true} path="/lender"
-										render={() => <Web3AccountRequired><Lender /></Web3AccountRequired>} />
-									<Route exact={true} path="/markets"
-										render={() => <ConnectedWeb3><Markets /></ConnectedWeb3>} />
-								</Switch>
-							</div>
-						</CssBaseline>
+						<TeamContextProvider>
+							<CssBaseline>
+								<div className={classes.root}>
+									<Switch>
+										<Route exact={true} path="/" component={Home} />
+										<Route exact={true} path="/connect" component={Connect} />
+										<Route exact={true} path="/borrower"
+											render={() => <Web3AccountRequired><Borrower /></Web3AccountRequired>} />
+										<Route exact={true} path="/dashboard"
+											render={() => <Web3AccountRequired><Dashboard /></Web3AccountRequired>} />
+										<Route exact={true} path="/lender"
+											render={() => <Web3AccountRequired><Lender /></Web3AccountRequired>} />
+										<Route exact={true} path="/markets"
+											render={() => <ConnectedWeb3><Markets /></ConnectedWeb3>} />
+									</Switch>
+								</div>
+							</CssBaseline>
+						</TeamContextProvider>
 					</BorrowerCountdownContext.Provider>
 				</ThemeProvider>
 			</Router>

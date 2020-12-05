@@ -14,6 +14,10 @@ import { makeStyles } from "@material-ui/core/styles";
 import { useLocation } from 'react-router-dom'
 import { useState } from "react";
 import { useWeb3React } from "@web3-react/core";
+import { useTeams } from "../../hooks/useTeams";
+import { useRefreshToken } from "../../hooks/useRefreshToken";
+import { isAddress } from "ethers/lib/utils";
+import { getLogger } from "../../util/logger";
 
 const useStyles = makeStyles(theme => ({
     content: {
@@ -45,6 +49,8 @@ interface Props {
     home?: boolean
 }
 
+const logger = getLogger('Components::Header');
+
 export const Header: React.FC<Props> = (props: Props) => {
     const classes = useStyles();
     const truncate = (input: string) => {
@@ -57,13 +63,11 @@ export const Header: React.FC<Props> = (props: Props) => {
     const pathName = useLocation().pathname;
     const [createTeamTx, setCreateTeamTX] = useState<Maybe<TransactionInfo>>(null);
     const [disconnectModalOpen, setDisconnectModalOpen] = useState(false);
-    // TO-DO: Get current link from web3, if it exists
-    const [link, setLink] = useState("");
+
     const [nftModalOpen, setNftModalOpen] = useState(false);
     const [nftJoinModalOpen, setNftJoinModalOpen] = useState(false);
     const [nftReferralModalOpen, setNftReferralModalOpen] = useState(false);
-    // TO-DO: Get team name from web3, if it exists
-    const [teamName, setTeamName] = useState("");
+
     const [teamNameError, setTeamNameError] = useState(true);
     const [linkError, setLinkError] = useState(true);
 
@@ -71,23 +75,28 @@ export const Header: React.FC<Props> = (props: Props) => {
     const account = context.account;
     const walletAddress = account ? account : "Connect";
     const isConnected = Boolean(account);
+    const { onTeam, teamCode, teamName, refresh} = useTeams();
+
+    const [tryingToCreateTeam, setTryingToCreateTeam] = useState(false);
+    const [tryingToJoinTeam, setTryingToJoinTeam] = useState(false);
+    const [teamNameOverride, setTeamNameOverride] = useState("");
+    const [teamCodeOverride, setTeamCodeOverride] = useState("");
 
     React.useEffect(() => {
-        // TO-DO: Validate team name for web3
-        if (teamName !== "") {
+        if (teamNameOverride !== "") {
             setTeamNameError(false);
         }
         else {
             setTeamNameError(true);
         }
-        // TO-DO: Validate referral code for web3
-        if (link !== "") {
-            setLinkError(false);
+
+        if (teamCodeOverride !== "") {
+            setLinkError(!isAddress(teamCodeOverride));
         }
         else {
             setLinkError(true);
         }
-    }, [teamName, link]
+    }, [teamNameOverride, teamCodeOverride]
     );
 
 
@@ -95,18 +104,26 @@ export const Header: React.FC<Props> = (props: Props) => {
         setDisconnectModalOpen(false);
     }
 
+    const handleTeamJoinOpen = () => {
+        setNftJoinModalOpen(true);
+    }
+
+    const handleTeamCreateOpen = () => {
+        setNftModalOpen(true);
+    }
+
     const handleNftModalClose = (event: {}, reason: "backdropClick" | "escapeKeyDown") => {
-        setTeamName("")
+        setTeamNameOverride("")
         setNftModalOpen(false);
     }
 
     const handleNftJoinModalClose = (event: {}, reason: "backdropClick" | "escapeKeyDown") => {
-        setLink("")
+        setTeamCodeOverride("")
         setNftJoinModalOpen(false);
     }
 
     const handleNftReferralModalClose = (event: {}, reason: "backdropClick" | "escapeKeyDown") => {
-        setTeamName("")
+        setTeamNameOverride("")
         setNftReferralModalOpen(false);
     }
 
@@ -118,28 +135,72 @@ export const Header: React.FC<Props> = (props: Props) => {
 
         const controlAddress = getContractAddress(context.chainId, 'warpControl');
         const control = new WarpControlService(context.library, context.account, controlAddress);
-        const tx = await control.createTeam(teamName);
-        setCreateTeamTX(tx);
+        let tx: Maybe<TransactionInfo> = null;
+        try {
+            tx = await control.createTeam(teamNameOverride);
+            setCreateTeamTX(tx);
+        } catch (e) {
+            let reason = `${e.message}`;
+            if (e.data) {
+                reason += `\n${e.data.message}`;
+            }
+            logger.error(`\nTransaction Failed!  Reason:\n${reason}`);
+            throw e;
+        }
+        
 
         if (account) {
-            setLink(account);
+            setTeamCodeOverride(account);
         }
 
         setNftModalOpen(false);
         setNftReferralModalOpen(true);
+        setTryingToJoinTeam(true);
+        setTryingToCreateTeam(true);
+
+        await tx.finished;
+        refresh();
     }
 
     const onTeamJoin = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-        // TO-DO: Web3 integration for joining a team
+        if (!context.chainId || !context.account) {
+            console.log("Not connected to web3");
+            return;
+        }
+
+        const controlAddress = getContractAddress(context.chainId, 'warpControl');
+        const control = new WarpControlService(context.library, context.account, controlAddress);
+        let tx: Maybe<TransactionInfo> = null;
+        try {
+            tx = await control.joinTeam(teamCodeOverride);
+            setCreateTeamTX(tx);
+        } catch (e) {
+            let reason = `${e.message}`;
+            if (e.data) {
+                reason += `\n${e.data.message}`;
+            }
+            logger.error(`\nTransaction Failed!  Reason:\n${reason}`);
+            throw e;
+        }
+
+        const joinedTeamName = await control.getTeamName(teamCodeOverride);
+        setTeamNameOverride(joinedTeamName);
+
         setNftJoinModalOpen(false);
+        setNftReferralModalOpen(true);
+        setTryingToCreateTeam(false);
+        setTryingToJoinTeam(true);
+
+        await tx.finished;
+        refresh();
     }
 
     const onLinkChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-        setLink(event.currentTarget.value);
+        setTeamCodeOverride(event.currentTarget.value);
     }
 
     const onTeamNameChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-        setTeamName(event.currentTarget.value);
+        setTeamNameOverride(event.currentTarget.value);
     }
 
     const onDisconnect = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
@@ -180,19 +241,19 @@ export const Header: React.FC<Props> = (props: Props) => {
                                         null
                                 }
                             </BorrowerCountdownContext.Consumer>
-                            {(link === "" || teamName === "") ?
+                            {(!onTeam && !tryingToJoinTeam) ?
                                 <React.Fragment>
                                     <Grid
                                         item
                                         sm
                                     >
-                                        <CustomButton text={"Join a team"} type={"short"} onClick={() => setNftJoinModalOpen(true)} />
+                                        <CustomButton text={"Join a team"} type={"short"} onClick={handleTeamJoinOpen} />
                                     </Grid>
                                     <Grid
                                         item
                                         sm
                                     >
-                                        <CustomButton text={"Create team referral code"} onClick={() => setNftModalOpen(true)} type={"short"} />
+                                        <CustomButton text={"Create team referral code"} onClick={handleTeamCreateOpen} type={"short"} />
                                     </Grid>
                                 </React.Fragment>
                                 :
@@ -210,11 +271,11 @@ export const Header: React.FC<Props> = (props: Props) => {
                                             >
                                                 <Grid item>
                                                     <Typography variant="subtitle1">
-                                                        {teamName}
+                                                        {onTeam ? teamName : teamNameOverride}
                                                     </Typography>
                                                 </Grid>
                                                 <Grid item>
-                                                    <IconButton onClick={() => copyTextToClipboard(link)}>
+                                                    <IconButton onClick={() => copyTextToClipboard(onTeam ? teamCode : teamCodeOverride)}>
                                                         <FileCopyOutlinedIcon fontSize="small" />
                                                     </IconButton>
                                                 </Grid>
@@ -371,9 +432,10 @@ export const Header: React.FC<Props> = (props: Props) => {
             <NftReferralModal
                 handleClose={handleNftReferralModalClose}
                 createTeamTx={createTeamTx}
-                link={link}
+                link={teamCodeOverride}
                 open={nftReferralModalOpen}
-                teamName={teamName}
+                teamName={teamNameOverride}
+                createdTeam={tryingToCreateTeam}
             />
             <Grid
                 item

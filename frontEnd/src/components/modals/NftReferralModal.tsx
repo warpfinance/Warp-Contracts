@@ -24,6 +24,7 @@ interface Props {
     open: boolean,
     teamName: string,
     createTeamTx: Maybe<TransactionInfo>;
+    createdTeam: boolean;
 }
 
 interface State {
@@ -53,6 +54,8 @@ export const NftReferralModal: React.FC<Props> = (props: Props) => {
             }
         }
 
+        waitForTx();
+
         return () => {
             isSubscribed = false;
         }
@@ -80,9 +83,16 @@ export const NftReferralModal: React.FC<Props> = (props: Props) => {
                     >
                         {
                             !waitingOnTx ? null :
-                                <Typography variant="subtitle2" color="textPrimary" >
-                                    Your team name is being registered but you can still use your referral code in the meantime.
-                            </Typography>
+                            (
+                                props.createdTeam ? 
+                                    <Typography variant="subtitle2" color="textPrimary" >
+                                        Your team is being registered, once the transaction has been confirmed your referral code will be activated.
+                                    </Typography>
+                                :
+                                    <Typography variant="subtitle2" color="textPrimary" >
+                                        You are joining the team, it may take a few minutes for the transaction to complete.
+                                    </Typography>
+                            )
                         }
                         <Typography variant="subtitle1" color="textSecondary" >
                             Team name
