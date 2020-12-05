@@ -87,9 +87,8 @@ export const RowModal: React.FC<Props> = (props: Props) => {
                             justify="space-around"
                             alignItems="center"
                         >
-                            <Grid item xs={2}></Grid>
-                            <Grid item xs={6}>
-                                <Amount adornment="USD" value={props.value} onChange={props.onChange} error={props.error} />
+                            <Grid item xs={9}>
+                                <Amount fullWidth={true} adornment="USD" value={props.value} onChange={props.onChange} error={props.error} />
                             </Grid>
                             <Grid item>
                                 <Typography
@@ -114,7 +113,7 @@ export const RowModal: React.FC<Props> = (props: Props) => {
                                     alignItems="center"
                                 >
                                     <Typography variant="subtitle1">
-                                        {props.lp.toLocaleString(undefined, { maximumFractionDigits: 6 }) + " LP"}
+                                        {props.lp.toFixed(8) + " LP"}
                                     </Typography>
                                 </Grid>
                             </CardContent>

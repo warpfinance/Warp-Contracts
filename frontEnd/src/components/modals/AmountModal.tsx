@@ -69,8 +69,8 @@ export const AmountModal: React.FC<Props> = (props: Props) => {
                             <Grid item>
                                 <Avatar alt={props.iconSrc} src={props.iconSrc} />
                             </Grid>
-                            <Grid item>
-                                <Amount value={props.amount} adornment={props.currency} onChange={props.onChange} error={props.error} />
+                            <Grid item xs={8}>
+                                <Amount fullWidth={true} value={props.amount} adornment={props.currency} onChange={props.onChange} error={props.error} />
                             </Grid>
                             <Grid item>
                                 <Typography
@@ -83,6 +83,7 @@ export const AmountModal: React.FC<Props> = (props: Props) => {
                                 </Typography>
                             </Grid>
                         </Grid>
+                        <br/>
                         <CustomButton
                             disabled={props.error === true}
                             onClick={props.onButtonClick}
