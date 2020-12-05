@@ -83,7 +83,7 @@ export const Header: React.FC<Props> = (props: Props) => {
     const [teamCodeOverride, setTeamCodeOverride] = useState("");
 
     React.useEffect(() => {
-        if (teamNameOverride !== "") {
+        if (teamNameOverride !== "" && teamNameOverride.length < 32) {
             setTeamNameError(false);
         }
         else {
