@@ -27,7 +27,7 @@ export class WarpLPVaultService {
   }
 
   provideCollateral = async (amount: BigNumber): Promise<TransactionInfo> => {
-    const tx = await this.contract.provideCollateral(amount, nullAddress);
+    const tx = await this.contract.provideCollateral(amount);
 
     logger.log("provideCollateral: " + tx.hash);
 
