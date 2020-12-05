@@ -93,16 +93,17 @@ contract WarpVaultLP is Ownable {
     **/
     function withdrawCollateral(uint256 _amount) public {
         uint256 amount;
+        uint256 maxAmount = WC.getMaxWithdrawAllowed(msg.sender, address(LPtoken));
         if(_amount == 0) {
-              amount = collateralizedLP[msg.sender];
+            amount = maxAmount
           } else {
-              amount = _amount;
+            amount = _amount;
           }
 
         //require the availible value of the LP locked in this contract the user has
         //is greater than or equal to the amount being withdrawn
         require(
-            WC.getMaxWithdrawAllowed(msg.sender, address(LPtoken)) >= amount,
+            maxAmount >= amount,
             "Trying to withdraw too much"
         );
         //require the user has locked up enough collateral to withdraw this amount
