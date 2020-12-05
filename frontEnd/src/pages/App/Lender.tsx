@@ -5,7 +5,7 @@ import { BigNumber, utils } from "ethers";
 import { countDecimals, formatBigNumber } from "../../util/tools";
 
 import { ERC20Service } from "../../services/erc20";
-import { Grid } from "@material-ui/core";
+import { Grid, makeStyles } from "@material-ui/core";
 import { StableCoinWarpVaultService } from "../../services/stableCoinWarpVault";
 import { Token } from "../../util/token";
 import { TransactionInfo } from "../../util/types";
@@ -26,7 +26,15 @@ interface Props {
 
 const logger = getLogger("Pages::Lender");
 
+const useStyles = makeStyles(theme => ({
+    lenderRow: {
+        height: "110px"
+    },
+}));
+
 export const Lender: React.FC<Props> = (props: Props) => {
+    const classes = useStyles();
+
     const context = useConnectedWeb3Context();
     const { refreshToken, refresh } = useRefreshToken();
     const tokens = useStableCoinTokens(context);
@@ -307,6 +315,7 @@ export const Lender: React.FC<Props> = (props: Props) => {
                             onChange={onLendAmountChange}
                             onFocus={onLendFocus}
                             refreshToken={refreshToken}
+                            rowClass={classes.lenderRow}
                             type="lend" />
                     </Grid>
                     <Grid item sm>
@@ -320,6 +329,7 @@ export const Lender: React.FC<Props> = (props: Props) => {
                             onChange={onWithdrawAmountChange}
                             onFocus={onWithdrawFocus}
                             refreshToken={refreshToken}
+                            rowClass={classes.lenderRow}
                             type="withdraw" />
                     </Grid>
                 </Grid>

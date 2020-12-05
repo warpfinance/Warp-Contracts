@@ -18,7 +18,8 @@ interface Props {
     onChange: any,
     onFocus: (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void,
     type: "lend" | "withdraw",
-    refreshToken: RefreshToken
+    refreshToken: RefreshToken,
+    rowClass: string
 }
 
 export const LenderTable: React.FC<Props> = (props: Props) => {
@@ -62,6 +63,7 @@ export const LenderTable: React.FC<Props> = (props: Props) => {
                                 onFocus={props.onFocus}
                                 type={props.type}
                                 refreshToken={props.refreshToken}
+                                rowClass={props.rowClass}
                             />
                         ))}
 

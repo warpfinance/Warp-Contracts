@@ -20,7 +20,8 @@ interface Props {
   onChange: (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>, maxAmount: BigNumber, token: Token) => void,
   onFocus: (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void,
   type: "lend" | "withdraw",
-  refreshToken: RefreshToken
+  refreshToken: RefreshToken,
+  rowClass: string
 }
 
 export const LenderStableCoinRow: React.FC<Props> = (props: Props) => {
@@ -61,7 +62,7 @@ export const LenderStableCoinRow: React.FC<Props> = (props: Props) => {
   }
 
   return (
-    <TableRow>
+    <TableRow className={props.rowClass}>
       <TableCell>
         <Grid
           container
