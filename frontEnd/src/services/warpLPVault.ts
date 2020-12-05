@@ -5,7 +5,7 @@ import { nullAddress } from "../util/tools";
 import { createTransactionInfo, TransactionInfo } from "../util/types";
 
 const contractABI = [
-  'function provideCollateral(uint256 _amount, address referralCode) public',
+  'function provideCollateral(uint256 _amount) public',
   'function withdrawCollateral(uint256 _amount) public',
   'function collateralOfAccount(address _account) public view returns (uint256)'
 ]

@@ -614,8 +614,8 @@ contract WarpVaultSC is Ownable, Exponential {
         //require the borrower cant pay more than they owe
         require(_repayAmount <= vars.accountBorrows, "You are trying to pay back more than you owe");
 
-        //If repayAmount == -1, repayAmount = accountBorrows
-        if (_repayAmount == uint(-1)) {
+        //If repayAmount == 0, repayAmount = accountBorrows
+        if (_repayAmount == 0 {
             vars.repayAmount = vars.accountBorrows;
         } else {
             vars.repayAmount = _repayAmount;

@@ -98,10 +98,10 @@ export const Borrower: React.FC<Props> = (props: Props) => {
             setProvideError(isProvideError(provideLpValue, currentToken));
         }
 
-        setRepayError(isRepayError(repayAmountValue, currentToken));
+        setRepayError(!repayMax && isRepayError(repayAmountValue, currentToken));
     
         if (!withdrawLpValue.eq(BigNumber.from(0))) {
-            setWithdrawError(isWithdrawError(withdrawLpValue, currentToken));
+            setWithdrawError(!withdrawMax && isWithdrawError(withdrawLpValue, currentToken));
         }
     }, [borrowTokenAmount,
         borrowAmountCurrency,
@@ -220,9 +220,12 @@ export const Borrower: React.FC<Props> = (props: Props) => {
     const onWithdrawAmountChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
         const usdAmount = Number(event.target.value);
         const lpAmount = usdAmount / tokenToUSDCRate;
+        const lpValue = convertNumberToBigNumber(lpAmount, currentToken.decimals);
 
-        setWithdrawLpValue(convertNumberToBigNumber(lpAmount, currentToken.decimals));
+        logger.log(`Withdraw amount changed to ${usdAmount} USD or ${lpAmount} LP`);
+        setWithdrawLpValue(lpValue);
         setWithdrawAmountValue(event.target.value);
+        setWithdrawMax(false);
     };
 
     const onBorrowClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, token: Token) => {
@@ -405,19 +408,29 @@ export const Borrower: React.FC<Props> = (props: Props) => {
         const targetVault = await control.getLPVault(currentToken.address);
         const lpVault = new WarpLPVaultService(context.library, context.account, targetVault);
 
-        const withdrawAmountParsed = parseBigNumber(withdrawLpValue, currentToken.decimals);
-        const maxWithdrawAmountParsed = parseBigNumber(maxWithdrawAmount, currentToken.decimals);
-        logger.log(`Withdrawing ${withdrawAmountParsed} LP (${withdrawLpValue.toString()}) current max is ${maxWithdrawAmountParsed} LP (${maxWithdrawAmount.toString()})`);
+       
+        let tx: Maybe<Promise<TransactionInfo>> = null;
 
-        const tx = lpVault.withdrawCollateral(withdrawLpValue);
+        if (withdrawMax) {
+            logger.log(`Withdrawing max.`);
+            tx = lpVault.withdrawCollateral(BigNumber.from(0));
+        } else {
+            const withdrawAmountParsed = parseBigNumber(withdrawLpValue, currentToken.decimals);
+            const maxWithdrawAmountParsed = parseBigNumber(maxWithdrawAmount, currentToken.decimals);
+            logger.log(`Withdrawing ${withdrawAmountParsed} LP (${withdrawLpValue.toString()}) current max is ${maxWithdrawAmountParsed} LP (${maxWithdrawAmount.toString()})`);
+
+            tx = lpVault.withdrawCollateral(withdrawLpValue);
+        }
 
         setWithdrawModalOpen(false);
+        setWithdrawMax(false);
         setAction("Withdraw Collateral");
         await handleTransaction(tx);
         refresh();
     }
 
     const onWithdrawMax = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+        logger.log(`User indicated to withdrawing max`);
         setWithdrawMax(true);
         setWithdrawLpValue(maxWithdrawAmount);
 

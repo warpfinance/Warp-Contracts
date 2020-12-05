@@ -50,6 +50,7 @@ export const BorrowerTableCollateralRow: React.FC<Props> = (props: Props) => {
 
     let walletValueInUSD = calculateValueInUSDC(walletBalance, tokenValueInUSDC, props.usdc);
     let providedValueInUSD = calculateValueInUSDC(vaultBalance, tokenValueInUSDC, props.usdc);
+    const providedLessThanOnePenny = parseFloat(providedValueInUSD) < 0.01;
 
     const wrapMouseEventWithToken = (func: any) => {
         return (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
@@ -107,7 +108,7 @@ export const BorrowerTableCollateralRow: React.FC<Props> = (props: Props) => {
                 </Grid>
                 <Grid item>
                     <Typography color="textSecondary">
-                        {providedAmount + " LP"}
+                        {(providedLessThanOnePenny ? "0" : providedAmount) + " LP"}
                     </Typography>
                 </Grid>
             </Grid>
@@ -131,6 +132,7 @@ export const BorrowerTableCollateralRow: React.FC<Props> = (props: Props) => {
                     <CustomButton
                         id={"withdraw" + props.token.symbol}
                         onClick={wrapMouseEventWithToken(props.onRightButtonClick)}
+                        disabled={providedLessThanOnePenny}
                         text={"Withdraw"}
                         type="short" />
                 </Grid>
