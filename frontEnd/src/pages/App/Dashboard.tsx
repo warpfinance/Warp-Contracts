@@ -49,7 +49,7 @@ export const Dashboard: React.FC<Props> = (props: Props) => {
         if (borrowLimitUSDC > borrowBalanceUSDC) {
             borrowPercent = (borrowBalanceUSDC / borrowLimitUSDC) * 100;
         } else {
-            borrowPercent = 100;
+            borrowPercent = 0;
         }
     }
 

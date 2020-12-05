@@ -95,7 +95,7 @@ contract WarpVaultLP is Ownable {
         uint256 amount;
         uint256 maxAmount = WC.getMaxWithdrawAllowed(msg.sender, address(LPtoken));
         if(_amount == 0) {
-            amount = maxAmount
+            amount = maxAmount;
           } else {
             amount = _amount;
           }
