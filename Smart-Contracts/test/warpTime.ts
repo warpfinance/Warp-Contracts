@@ -25,7 +25,7 @@ const ONE_DAY = 1000 * 86400;
 
 contract("Warp Time", function(accounts) {
   it("warp", async () => {
-    const controlAddress = "0xf5fE15b388Ac86499c1109c652FF70c31A0E5bD9";
+    const controlAddress = "0xBf69D80A425618AB041CD5c2FBEEF7112aB8F2F3";
 
     {
       const warpControl = await WarpControl.at(controlAddress);
@@ -33,21 +33,21 @@ contract("Warp Time", function(accounts) {
         const vaultAddress = await await warpControl.scVaults(i);
         const vault = await WarpVaultSC.at(vaultAddress);
         await vault.accrueInterest();
-      }   
+      }
     }
-    
+
     const numWeeks = 500000;
     for (let week = 0; week < numWeeks; ++week) {
       await utils.advanceBlock();
       const warpControl = await WarpControl.at(controlAddress);
-      const numVaults = parseInt((await warpControl.viewNumSCVaults).toString())
+      const numVaults = parseInt(
+        (await warpControl.viewNumSCVaults).toString()
+      );
       for (let i = 0; i < numVaults; ++i) {
         const vaultAddress = await await warpControl.scVaults(i);
         const vault = await WarpVaultSC.at(vaultAddress);
         await vault.accrueInterest();
-      }      
+      }
     }
-
-    
   });
 });
