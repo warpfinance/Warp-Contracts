@@ -24,7 +24,7 @@ interface Props {
     teamNameError?: boolean,
 }
 
-export const NftModal: React.FC<Props> = (props: Props) => {
+export const TeamModal: React.FC<Props> = (props: Props) => {
     const classes = useStyles();
 
     return (

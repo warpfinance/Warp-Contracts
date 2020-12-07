@@ -30,7 +30,7 @@ interface Props {
 interface State {
 }
 
-export const NftReferralModal: React.FC<Props> = (props: Props) => {
+export const TeamReferralModal: React.FC<Props> = (props: Props) => {
     const classes = useStyles();
 
     const [waitingOnTx, setWaitingOnTx] = React.useState(true);
