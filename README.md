@@ -2,7 +2,7 @@
 
 ## Push Smart Contracts to Public Repository
 
-Update deploy branch with just frontEnd directory from master
+Update contracts branch with just Smart-Contracts directory from master
 ```bash
 git checkout master
 git pull
