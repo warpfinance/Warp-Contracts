@@ -424,7 +424,7 @@ export const Borrower: React.FC<Props> = (props: Props) => {
 
         setWithdrawModalOpen(false);
         setWithdrawMax(false);
-        setAction("Withdraw Collateral");
+        setAction("Withdraw");
         await handleTransaction(tx);
         refresh();
     }
@@ -499,7 +499,7 @@ export const Borrower: React.FC<Props> = (props: Props) => {
                 </Grid>
             </Grid >
             <RowModal
-                action={"Withdraw Collateral"}
+                action={"Withdraw"}
                 error={withdrawError}
                 handleClose={handleWithdrawClose}
                 lp={parseBigNumber(withdrawLpValue, currentToken.decimals)}
