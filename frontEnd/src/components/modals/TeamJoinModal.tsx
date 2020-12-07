@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { CustomButton, CustomDialogTitle, Text } from "../../components";
+import { CustomButton, CustomDialogTitle, Text } from "..";
 import { Dialog, DialogContent, Grid } from "@material-ui/core";
 
 import { makeStyles } from "@material-ui/core";
@@ -24,7 +24,7 @@ interface Props {
     referralCodeError?: boolean,
 }
 
-export const NftJoinModal: React.FC<Props> = (props: Props) => {
+export const TeamJoinModal: React.FC<Props> = (props: Props) => {
     const classes = useStyles();
 
     return (

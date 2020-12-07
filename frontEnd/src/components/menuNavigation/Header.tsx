@@ -1,7 +1,7 @@
 import * as React from "react";
 
 import { Card, CardContent, Grid, IconButton, Link, Typography } from "@material-ui/core";
-import { CustomButton, ErrorCustomButton, NftJoinModal, NftModal, NftReferralModal, NotificationModal } from "../../components"
+import { CustomButton, ErrorCustomButton, NotificationModal, TeamJoinModal, TeamModal, TeamReferralModal } from "../../components"
 
 import { BorrowerCountdownContext } from "../../hooks/borrowerCountdown";
 import FileCopyOutlinedIcon from '@material-ui/icons/FileCopyOutlined';
@@ -10,14 +10,13 @@ import { TransactionInfo } from "../../util/types";
 import { WarpControlService } from "../../services/warpControl";
 import { copyTextToClipboard } from "../../util/tools"
 import { getContractAddress } from "../../util/networks";
+import { getLogger } from "../../util/logger";
+import { isAddress } from "ethers/lib/utils";
 import { makeStyles } from "@material-ui/core/styles";
 import { useLocation } from 'react-router-dom'
 import { useState } from "react";
-import { useWeb3React } from "@web3-react/core";
 import { useTeams } from "../../hooks/useTeams";
-import { useRefreshToken } from "../../hooks/useRefreshToken";
-import { isAddress } from "ethers/lib/utils";
-import { getLogger } from "../../util/logger";
+import { useWeb3React } from "@web3-react/core";
 
 const useStyles = makeStyles(theme => ({
     content: {
@@ -64,9 +63,9 @@ export const Header: React.FC<Props> = (props: Props) => {
     const [createTeamTx, setCreateTeamTX] = useState<Maybe<TransactionInfo>>(null);
     const [disconnectModalOpen, setDisconnectModalOpen] = useState(false);
 
-    const [nftModalOpen, setNftModalOpen] = useState(false);
-    const [nftJoinModalOpen, setNftJoinModalOpen] = useState(false);
-    const [nftReferralModalOpen, setNftReferralModalOpen] = useState(false);
+    const [teamModalOpen, setTeamModalOpen] = useState(false);
+    const [teamJoinModalOpen, setTeamJoinModalOpen] = useState(false);
+    const [teamReferralModalOpen, setTeamReferralModalOpen] = useState(false);
 
     const [teamNameError, setTeamNameError] = useState(true);
     const [linkError, setLinkError] = useState(true);
@@ -75,12 +74,14 @@ export const Header: React.FC<Props> = (props: Props) => {
     const account = context.account;
     const walletAddress = account ? account : "Connect";
     const isConnected = Boolean(account);
-    const { onTeam, teamCode, teamName, refresh} = useTeams();
+    const { onTeam, teamCode, teamName, refresh } = useTeams();
 
     const [tryingToCreateTeam, setTryingToCreateTeam] = useState(false);
     const [tryingToJoinTeam, setTryingToJoinTeam] = useState(false);
     const [teamNameOverride, setTeamNameOverride] = useState("");
     const [teamCodeOverride, setTeamCodeOverride] = useState("");
+
+    const elementSize = isConnected === true ? 1 : 3;
 
     React.useEffect(() => {
         if (teamNameOverride !== "" && teamNameOverride.length < 32) {
@@ -105,26 +106,26 @@ export const Header: React.FC<Props> = (props: Props) => {
     }
 
     const handleTeamJoinOpen = () => {
-        setNftJoinModalOpen(true);
+        setTeamJoinModalOpen(true);
     }
 
     const handleTeamCreateOpen = () => {
-        setNftModalOpen(true);
+        setTeamModalOpen(true);
     }
 
-    const handleNftModalClose = (event: {}, reason: "backdropClick" | "escapeKeyDown") => {
+    const handleTeamModalClose = (event: {}, reason: "backdropClick" | "escapeKeyDown") => {
         setTeamNameOverride("")
-        setNftModalOpen(false);
+        setTeamModalOpen(false);
     }
 
-    const handleNftJoinModalClose = (event: {}, reason: "backdropClick" | "escapeKeyDown") => {
+    const handleTeamJoinModalClose = (event: {}, reason: "backdropClick" | "escapeKeyDown") => {
         setTeamCodeOverride("")
-        setNftJoinModalOpen(false);
+        setTeamJoinModalOpen(false);
     }
 
-    const handleNftReferralModalClose = (event: {}, reason: "backdropClick" | "escapeKeyDown") => {
+    const handleTeamReferralModalClose = (event: {}, reason: "backdropClick" | "escapeKeyDown") => {
         setTeamNameOverride("")
-        setNftReferralModalOpen(false);
+        setTeamReferralModalOpen(false);
     }
 
     const onTeamCreate = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
@@ -147,14 +148,14 @@ export const Header: React.FC<Props> = (props: Props) => {
             logger.error(`\nTransaction Failed!  Reason:\n${reason}`);
             throw e;
         }
-        
+
 
         if (account) {
             setTeamCodeOverride(account);
         }
 
-        setNftModalOpen(false);
-        setNftReferralModalOpen(true);
+        setTeamModalOpen(false);
+        setTeamReferralModalOpen(true);
         setTryingToJoinTeam(true);
         setTryingToCreateTeam(true);
 
@@ -186,8 +187,8 @@ export const Header: React.FC<Props> = (props: Props) => {
         const joinedTeamName = await control.getTeamName(teamCodeOverride);
         setTeamNameOverride(joinedTeamName);
 
-        setNftJoinModalOpen(false);
-        setNftReferralModalOpen(true);
+        setTeamJoinModalOpen(false);
+        setTeamReferralModalOpen(true);
         setTryingToCreateTeam(false);
         setTryingToJoinTeam(true);
 
@@ -253,7 +254,7 @@ export const Header: React.FC<Props> = (props: Props) => {
                                         item
                                         sm
                                     >
-                                        <CustomButton text={"Create team referral code"} onClick={handleTeamCreateOpen} type={"short"} />
+                                        <CustomButton text={"Create team"} onClick={handleTeamCreateOpen} type={"short"} />
                                     </Grid>
                                 </React.Fragment>
                                 :
@@ -290,7 +291,7 @@ export const Header: React.FC<Props> = (props: Props) => {
                     }
                     <Grid
                         item
-                        sm
+                        sm={2}
                     >
                         {connected === true ?
                             <Typography>
@@ -311,7 +312,7 @@ export const Header: React.FC<Props> = (props: Props) => {
                     </Grid>
                     <Grid
                         item
-                        sm
+                        sm={2}
                     >
                         {connected === true ?
                             <Typography>
@@ -332,7 +333,7 @@ export const Header: React.FC<Props> = (props: Props) => {
                     </Grid>
                     <Grid
                         item
-                        sm
+                        sm={connected === true ? 2 : 4}
                     >
                         {connected === true ?
                             <Typography>
@@ -353,7 +354,6 @@ export const Header: React.FC<Props> = (props: Props) => {
                     </Grid>
                     <Grid
                         item
-                        sm
                     >
                         {connectButton}
                     </Grid>
@@ -415,25 +415,25 @@ export const Header: React.FC<Props> = (props: Props) => {
                 buttonText={"Log out"}
                 titleText={"Account"}
             />
-            <NftModal
-                handleClose={handleNftModalClose}
+            <TeamModal
+                handleClose={handleTeamModalClose}
                 onButtonClick={onTeamCreate}
                 onTeamNameChange={onTeamNameChange}
-                open={nftModalOpen}
+                open={teamModalOpen}
                 teamNameError={teamNameError}
             />
-            <NftJoinModal
-                handleClose={handleNftJoinModalClose}
+            <TeamJoinModal
+                handleClose={handleTeamJoinModalClose}
                 onButtonClick={onTeamJoin}
                 onReferralCodeChange={onLinkChange}
-                open={nftJoinModalOpen}
+                open={teamJoinModalOpen}
                 referralCodeError={linkError}
             />
-            <NftReferralModal
-                handleClose={handleNftReferralModalClose}
+            <TeamReferralModal
+                handleClose={handleTeamReferralModalClose}
                 createTeamTx={createTeamTx}
                 link={teamCodeOverride}
-                open={nftReferralModalOpen}
+                open={teamReferralModalOpen}
                 teamName={teamNameOverride}
                 createdTeam={tryingToCreateTeam}
             />
@@ -447,7 +447,7 @@ export const Header: React.FC<Props> = (props: Props) => {
             >
                 <Grid
                     item
-                    sm
+                    xs
                 >
                     <RouterLink to={"/"}>
                         <img className={classes.logo} src={"warp logo.svg"} alt={"Warp"}></img>
