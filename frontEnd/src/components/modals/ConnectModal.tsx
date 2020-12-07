@@ -56,7 +56,7 @@ export const ConnectModal: React.FC<Props> = (props: Props) => {
                         justify="center"
                         alignItems="stretch"
                     >
-                        <Card className={classes.clickableCard} onClick={() => props.connectToWallet(WalletType.WalletLink)}>
+                        <Card className={classes.clickableCard} onClick={() => props.connectToWallet(WalletType.MetaMask)}>
                             <CardContent>
                                 <Grid
                                     container
@@ -66,11 +66,11 @@ export const ConnectModal: React.FC<Props> = (props: Props) => {
                                     spacing={1}
                                 >
                                     <Grid item>
-                                        <Avatar alt="coinbase-wallet.svg" src="coinbase-wallet.svg" />
+                                        <Avatar alt="metamask-wallet.svg" src="metamask-wallet.svg" />
                                     </Grid>
                                     <Grid item>
                                         <Typography variant="subtitle1">
-                                            Coinbase Wallet
+                                            Metamask
                                         </Typography>
                                     </Grid>
                                 </Grid>
@@ -116,7 +116,7 @@ export const ConnectModal: React.FC<Props> = (props: Props) => {
                                 </Grid>
                             </CardContent>
                         </Card>
-                        <Card className={classes.clickableCard} onClick={() => props.connectToWallet(WalletType.MetaMask)}>
+                        <Card className={classes.clickableCard} onClick={() => props.connectToWallet(WalletType.WalletLink)}>
                             <CardContent>
                                 <Grid
                                     container
@@ -126,11 +126,11 @@ export const ConnectModal: React.FC<Props> = (props: Props) => {
                                     spacing={1}
                                 >
                                     <Grid item>
-                                        <Avatar alt="metamask-wallet.svg" src="metamask-wallet.svg" />
+                                        <Avatar alt="coinbase-wallet.svg" src="coinbase-wallet.svg" />
                                     </Grid>
                                     <Grid item>
                                         <Typography variant="subtitle1">
-                                            Metamask
+                                            Coinbase Wallet
                                         </Typography>
                                     </Grid>
                                 </Grid>
