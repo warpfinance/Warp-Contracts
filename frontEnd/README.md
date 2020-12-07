@@ -1,3 +1,5 @@
+# Warp Front End
+
 ## Quickstart
 
 Start the site locally by running the following in this directory:
@@ -11,6 +13,19 @@ You can connect your components to Zeplin by following the docs [here](https://g
 npm install -g @zeplin/cli
 npm install -g @zeplin/cli-connect-react-plugin
 ```
+
+## Test Deploy
+
+Update testDeploy branch with just frontEnd directory from master
+```bash
+git checkout master
+git pull
+git subtree split --prefix frontEnd -b testDeploy
+git checkout testDeploy
+git push
+```
+
+Deploys on Heroku to [here](https://warpfinance-warp-test.herokuapp.com)
 
 ## Production Deploy
 
