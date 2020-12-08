@@ -213,7 +213,8 @@ export const Borrower: React.FC<Props> = (props: Props) => {
     };
 
     const onRepayAmountChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-        logger.log(`Repay amount changed to ${event.target.value}`)
+        logger.log(`Repay amount changed to ${event.target.value}`);
+        setDisplayedRepayAmountValue(event.target.value);
         setRepayAmountValue(convertNumberToBigNumber(Number(event.target.value), currentToken.decimals));
         setRepayMax(false);
     };
