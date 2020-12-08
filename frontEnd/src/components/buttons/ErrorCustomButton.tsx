@@ -11,11 +11,13 @@ const useStyles = makeStyles(theme => ({
         height: theme.spacing(3),
     },
     button: {
-        textTransform: "none",
+        backgroundColor: "#272727",
         borderRadius: "15px",
+        color: "#ffffff",
         "&:hover": {
             backgroundColor: "#ff6666"
-        }
+        },
+        textTransform: "none",
     },
     routerLink: {
         textDecoration: 'none',
