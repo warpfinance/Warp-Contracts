@@ -17,6 +17,7 @@ import { useLocation } from 'react-router-dom'
 import { useState } from "react";
 import { useTeams } from "../../hooks/useTeams";
 import { useWeb3React } from "@web3-react/core";
+import { useNotificationModal } from "../../hooks/useNotificationModal";
 
 const useStyles = makeStyles(theme => ({
     content: {
@@ -82,6 +83,12 @@ export const Header: React.FC<Props> = (props: Props) => {
     const [teamCodeOverride, setTeamCodeOverride] = useState("");
 
     const elementSize = isConnected === true ? 1 : 3;
+
+    const {
+        notify,
+        notifyError,
+        modal
+    } = useNotificationModal();
 
     React.useEffect(() => {
         if (teamNameOverride !== "" && teamNameOverride.length < 32) {
@@ -171,6 +178,15 @@ export const Header: React.FC<Props> = (props: Props) => {
 
         const controlAddress = getContractAddress(context.chainId, 'warpControl');
         const control = new WarpControlService(context.library, context.account, controlAddress);
+
+        const exists = await control.teamExists(teamCodeOverride);
+
+        if (!exists) {
+            notifyError(`There is no team with the code ${teamCodeOverride} that exists.`, `Team not found`);
+            return;
+        }
+
+
         let tx: Maybe<TransactionInfo> = null;
         try {
             tx = await control.joinTeam(teamCodeOverride);
@@ -181,7 +197,9 @@ export const Header: React.FC<Props> = (props: Props) => {
                 reason += `\n${e.data.message}`;
             }
             logger.error(`\nTransaction Failed!  Reason:\n${reason}`);
-            throw e;
+            
+            notifyError("Transaction failed. Please try again later.");
+            return;
         }
 
         const joinedTeamName = await control.getTeamName(teamCodeOverride);
@@ -437,6 +455,7 @@ export const Header: React.FC<Props> = (props: Props) => {
                 teamName={teamNameOverride}
                 createdTeam={tryingToCreateTeam}
             />
+            {modal}
             <Grid
                 item
                 container

@@ -20,6 +20,7 @@ import { useTotalLentAmount } from "../../hooks/useTotalLentAmount";
 import { useTotalWalletBalance } from "../../hooks/useTotalWalletBalance";
 import { useUSDCToken } from "../../hooks/useUSDC";
 import { useWarpControl } from "../../hooks/useWarpControl";
+import { useNotificationModal } from "../../hooks/useNotificationModal";
 
 interface Props {
 }
@@ -51,6 +52,12 @@ export const Lender: React.FC<Props> = (props: Props) => {
         stableCoinReward: totalReward,
         walletBalance: walletBalance.toLocaleString(undefined, {maximumFractionDigits: 2})
     }
+
+    const {
+        notify,
+        notifyError,
+        modal
+    } = useNotificationModal();
 
     const [action, setAction] = useState("lend");
     const [authorizationModalOpen, setAuthorizationModalOpen] = useState(false);
@@ -189,7 +196,8 @@ export const Lender: React.FC<Props> = (props: Props) => {
                 reason += `\n${e.data.message}`;
             }
             logger.error(`\nTransaction Failed!  Reason:\n${reason}`);
-            throw e;
+            notifyError("Transaction failed to submit. Please try again later.");
+            setTransactionModalOpen(false);
         }
     }
 
@@ -252,6 +260,15 @@ export const Lender: React.FC<Props> = (props: Props) => {
         setAction("withdraw");
         const targetVault = await control.getStableCoinVault(withdrawToken.address);
         const scVault = new StableCoinWarpVaultService(context.library, context.account, targetVault);
+
+        const erc20 = new ERC20Service(context.library, context.account, withdrawToken.address);
+
+        const cash = await erc20.balanceOf(targetVault);
+
+        if (withdrawAmountValue.gt(cash)) {
+            notifyError(`You are trying to withdraw more ${withdrawToken.symbol} than the vault has as available liquidity. At most you can withdraw up to ${formatBigNumber(cash, withdrawToken.decimals, 2)} ${withdrawToken.symbol}.`, 'Withdrawing too much');
+            return;
+        }
 
         const tx = scVault.withdraw(withdrawAmountValue);
 
@@ -366,6 +383,7 @@ export const Lender: React.FC<Props> = (props: Props) => {
                 open={transactionModalOpen}
                 txHash={transactionHash || ""}
             />
+            {modal}
         </React.Fragment>
     );
 }

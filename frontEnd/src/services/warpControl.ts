@@ -118,6 +118,10 @@ export class WarpControlService {
     return await this.contract.getGroupName(teamCode);
   }
 
+  teamExists = async (teamCode: string): Promise<boolean> => {
+    return await this.contract.existingRefferalCode(teamCode);
+  }
+
 
 
 

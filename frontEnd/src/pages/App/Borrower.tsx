@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { AmountModal, AuthorizationModal, BigModal, BorrowerTable, Header, InformationCard, RowModal, TransactionModal } from "../../components";
+import { AmountModal, AuthorizationModal, BigModal, BorrowerTable, Header, InformationCard, NotificationModal, RowModal, TransactionModal } from "../../components";
 import { convertNumberToBigNumber, countDecimals, formatBigNumber, isAddress, parseBigNumber } from "../../util/tools";
 
 import { BigNumber } from "ethers";
@@ -20,6 +20,7 @@ import { useStableCoinTokens } from "../../hooks/useStableCoins";
 import { useState } from "react";
 import { useUSDCToken } from "../../hooks/useUSDC";
 import { useWarpControl } from "../../hooks/useWarpControl";
+import { useNotificationModal } from "../../hooks/useNotificationModal";
 
 interface Props {
 }
@@ -83,7 +84,12 @@ export const Borrower: React.FC<Props> = (props: Props) => {
     const [tokenToUSDCRate, setTokenToUSDCRate] = useState(0);
     const [walletAmount, setWalletAmount] = useState(BigNumber.from(0));
     const [vaultAmount, setVaultAmount] = useState(BigNumber.from(0));
-    
+
+    const {
+        notify,
+        notifyError,
+        modal
+    } = useNotificationModal();
 
     // TO-DO: Web3 integration
     const [transactionHash, setTransactionHash] = useState("0x716af84c2de1026e87ec2d32df563a6e7e43b261227eb10358ba3d8dd372eceb");
@@ -299,7 +305,9 @@ export const Borrower: React.FC<Props> = (props: Props) => {
                 reason += `\n${e.data.message}`;
             }
             logger.error(`\nTransaction Failed!  Reason:\n${reason}`);
-            throw e;
+            
+            notifyError(`Transaction failed to submit. Please try again later.`);
+            setTransactionModalOpen(false);
         }
         
     }
@@ -325,14 +333,31 @@ export const Borrower: React.FC<Props> = (props: Props) => {
     const onBorrow = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
         const amount = convertNumberToBigNumber(borrowTokenAmount, currentToken.decimals);
         logger.log(`Borrowing ${borrowTokenAmount} ${currentToken.symbol} (${amount} in weth)`)
-        const tx = control.borrowStableCoin(currentToken.address, amount);
 
-        setAction("Borrowing");
+        try {
+            const vaultAddress = await control.getStableCoinVault(currentToken.address);
+            const erc20 = new ERC20Service(context.library, context.account, currentToken.address);
 
-        setBorrowModalOpen(false);
+            const cash = await erc20.balanceOf(vaultAddress);
 
-        await handleTransaction(tx);
-        refresh();
+            if (amount.gte(cash)) {
+                notifyError(`You are trying to borrow more ${currentToken.symbol} than the vault has inside of it. Borrow less than ${formatBigNumber(cash, currentToken.decimals, 2)} ${currentToken.symbol}.`, 'Borrowing too much');
+                return;
+            }
+
+            const tx = control.borrowStableCoin(currentToken.address, amount);
+
+            setAction("Borrowing");
+
+            setBorrowModalOpen(false);
+
+            await handleTransaction(tx);
+            refresh();
+        } catch (e) {
+            setTransactionModalOpen(false);
+            notifyError("Failed to borrow, please try again later.");
+        }
+        
     }
 
     const onProvide = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
@@ -572,6 +597,7 @@ export const Borrower: React.FC<Props> = (props: Props) => {
                 open={transactionModalOpen}
                 txHash={transactionHash || ""}
             />
+            {modal}
         </React.Fragment>
     );
 }

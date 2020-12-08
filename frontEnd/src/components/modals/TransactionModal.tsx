@@ -68,8 +68,8 @@ export const TransactionModal: React.FC<Props> = (props: Props) => {
         null;
 
     const dialogSubtitle = props.confirmed === true ?
-        "Confirmed" :
-        "Confirm the transaction in your wallet";
+        "Transaction Submitted" :
+        "Submit the transaction in your wallet";
 
     const spinner = props.confirmed === true ?
         <CheckCircleOutlineIcon fontSize="large" color="secondary" /> :
@@ -106,6 +106,11 @@ export const TransactionModal: React.FC<Props> = (props: Props) => {
                     <Typography variant="subtitle1" color="textSecondary" >
                         {dialogSubtitle}
                     </Typography>
+                    {
+                        props.confirmed ? <Typography variant="subtitle1" color="textSecondary" >
+                            Your transaction has been submitted. Please wait while it is confirmed.
+                        </Typography> : null
+                    }
                 </Grid>
             </DialogContent>
             <DialogActions>
