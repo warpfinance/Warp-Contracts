@@ -66,6 +66,7 @@ export const Borrower: React.FC<Props> = (props: Props) => {
     const [provideModalOpen, setProvideModalOpen] = useState(false);
 
     const [repayAmountValue, setRepayAmountValue] = useState(BigNumber.from(0));
+    const [displayedRepayAmountValue, setDisplayedRepayAmountValue] = useState("");
     const [repayMax, setRepayMax] = useState(false);
     const [repayError, setRepayError] = useState(false);
     const [repayModalOpen, setRepayModalOpen] = useState(false);
@@ -252,6 +253,7 @@ export const Borrower: React.FC<Props> = (props: Props) => {
         setRepayModalOpen(true);
         setCurrentToken(token);
         setRepayAmountValue(BigNumber.from(0));
+        setDisplayedRepayAmountValue("");
         setRepayMax(false);
         setWalletAmount(walletAmount);
         setBorrowedAmount(amountDue);
@@ -381,6 +383,8 @@ export const Borrower: React.FC<Props> = (props: Props) => {
         const enabledAmount = await erc20.allowance(context.account, targetVault);
         const needsAuth = repayAmountValue.gt(enabledAmount);
 
+        logger.log(`Repaying ${formatBigNumber(repayAmountValue, currentToken.decimals, currentToken.decimals)} ${currentToken.symbol}`);
+
         setAction("Repay Loan");
         if (needsAuth) {
             setAuthType("sc");
@@ -402,6 +406,7 @@ export const Borrower: React.FC<Props> = (props: Props) => {
         setRepayMax(true);
         logger.log(`Set repay to max of ${parseBigNumber(borrowedAmount, currentToken.decimals).toFixed(currentToken.decimals)} (${borrowedAmount.toString()})`);
         setRepayAmountValue(borrowedAmount);
+        setDisplayedRepayAmountValue(formatBigNumber(borrowedAmount, currentToken.decimals, currentToken.decimals));
     }
 
     const onWithdraw = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
@@ -540,11 +545,7 @@ export const Borrower: React.FC<Props> = (props: Props) => {
             />
             <AmountModal
                 action={"Repay " + currentToken.symbol}
-                amount={
-                    repayMax ? 
-                    formatBigNumber(repayAmountValue, currentToken.decimals, currentToken.decimals) :
-                    formatBigNumber(repayAmountValue, currentToken.decimals)
-                }
+                amount={displayedRepayAmountValue}
                 currency={currentToken.symbol}
                 error={repayError}
                 iconSrc={currentToken.symbol || ""}

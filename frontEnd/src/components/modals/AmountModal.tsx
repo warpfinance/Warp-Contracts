@@ -4,6 +4,7 @@ import { Amount, CustomButton, CustomDialogTitle } from "../../components";
 import { Avatar, Dialog, DialogContent, Grid, Typography } from "@material-ui/core";
 
 import { makeStyles } from "@material-ui/core";
+import { BigNumber } from "ethers";
 
 const useStyles = makeStyles(theme => ({
     dialog: {
@@ -24,7 +25,7 @@ const useStyles = makeStyles(theme => ({
 
 interface Props {
     action: string,
-    amount:  number | string,
+    amount:  string,
     currency: string,
     error: boolean,
     iconSrc: string,
