@@ -143,7 +143,7 @@ contract WarpVaultSC is Ownable, Exponential {
     /**
     @notice getCashPrior is a view funcion that returns the USD balance of all held underlying stablecoin assets
     **/
-    function getCashPrior() internal view returns (uint256) {
+    function getCashPrior() public view returns (uint256) {
         return stablecoin.balanceOf(address(this));
     }
 
