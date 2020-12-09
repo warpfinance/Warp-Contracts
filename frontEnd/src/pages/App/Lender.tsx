@@ -235,6 +235,7 @@ export const Lender: React.FC<Props> = (props: Props) => {
 
         const scVault = new StableCoinWarpVaultService(context.library, context.account, targetVault);
 
+        console.log(`Lending ${formatBigNumber(lendAmountValue, lendToken.decimals)} (${lendAmountValue.toString()}) ${lendToken.symbol} (address: ${lendToken.address}) to ${targetVault}`)
         const tx = scVault.lendToVault(lendAmountValue);
 
         setLendModalOpen(false);

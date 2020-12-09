@@ -34,7 +34,7 @@ const networks: { [K in NetworkId]: Network } = {
 		label: "Mainnet",
 		uri: "https://mainnet.infura.io/v3/f30a8e726a8c4851bfc92a44a04bc889",
 		contracts: {
-			warpControl: "0xCc8D17FeeB20969523F096797c3D5C4a490eD9A8",
+			warpControl: "0x999b20eBD622a5DbB0Ef897d9186fa302c422a5d",
 		},
 	},
 	[networkIds.KOVAN]: {
@@ -66,6 +66,7 @@ interface KnownTokenData {
 	};
 	order: number;
 	lp: boolean;
+	disabled?: boolean;
 }
 
 export const knownTokens: { [name in KnownToken]: KnownTokenData } = {
@@ -101,6 +102,7 @@ export const knownTokens: { [name in KnownToken]: KnownTokenData } = {
 		},
 		order: 3,
 		lp: false,
+		disabled: true
 	},
 	"eth-dai": {
 		symbol: "ETH-DAI",
@@ -223,6 +225,9 @@ export const getTokensByNetwork = (
 		.sort((a, b) => (a.order > b.order ? 1 : -1))
 		.filter((kt: KnownTokenData) => {
 			return kt.lp === lp;
+		})
+		.filter((kt: KnownTokenData) => {
+			return !kt.disabled
 		})
 		.map(token => {
 			const address = token.addresses[networkId];

@@ -1,7 +1,7 @@
 import { BigNumber, Contract, ethers, Wallet } from "ethers";
 import { format } from "path";
 import { getLogger } from "../util/logger";
-import { formatBigNumber, isAddress, nullAddress } from "../util/tools";
+import { formatBigNumber, isAddress, nullAddress, parseBigNumber } from "../util/tools";
 import { createTransactionInfo, TransactionInfo } from "../util/types";
 
 const contractABI = [
@@ -45,7 +45,17 @@ export class StableCoinWarpVaultService {
   }
 
   lendToVault = async (amount: BigNumber): Promise<TransactionInfo> => {
-    const transactionObject = await this.contract.lendToWarpVault(amount, { gasLimit: 150000 });
+    let estimatedGas = 200000;
+
+    try {
+      estimatedGas = parseBigNumber(await this.contract.estimateGas.lendToWarpVault(amount), 0);
+      console.log(`Estimated gas at ${estimatedGas}`);
+    }
+    catch (e) {
+      logger.error(`Failed to estimate gas, defaulting to ${estimatedGas}: ${e}`)
+    }
+
+    const transactionObject = await this.contract.lendToWarpVault(amount, { gasLimit: 200000 });
 
     logger.log("lendToWarpVault: " + transactionObject.hash);
     
