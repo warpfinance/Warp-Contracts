@@ -14,6 +14,8 @@ const WarpControl = artifacts.require("WarpControl");
 module.exports = async (deployer, network, accounts) => {
   const ownerAddress = accounts[0];
 
+  const locktime = 644400; // 7.45 days or 179 hours
+
   const UNI = await UniswapV2Factory.at(
     "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f"
   );
@@ -70,7 +72,7 @@ module.exports = async (deployer, network, accounts) => {
 
   ///////////////////////////pairs retrieved///////////
   let receipt = await WarpC.createNewLPVault(
-    0, //time lock
+    locktime, //time lock
     WETH_DAI_ADD,
     WrappedEthereum,
     DAI,
@@ -80,7 +82,7 @@ module.exports = async (deployer, network, accounts) => {
   console.log("WETH-DAI Vault setup successful");
   console.log("Creating WBTC-WETH Warp Vault");
   receipt = await WarpC.createNewLPVault(
-    0, //time lock
+    locktime, //time lock
     WBTC_WETH_ADD,
     WrappedBitcoin,
     WrappedEthereum,
@@ -90,7 +92,7 @@ module.exports = async (deployer, network, accounts) => {
   console.log("WBTC-WETH Vault setup successful");
   console.log("Creating USDT-WETH Warp Vault");
   receipt = await WarpC.createNewLPVault(
-    0, //time lock
+    locktime, //time lock
     WETH_USDT_ADD,
     USDT,
     WrappedEthereum,
@@ -100,7 +102,7 @@ module.exports = async (deployer, network, accounts) => {
   console.log("USDT-WETH Vault setup successful");
   console.log("Creating USDC-WETH Warp Vault");
   receipt = await WarpC.createNewLPVault(
-    0, //time lock
+    locktime, //time lock
     WETH_USDC_ADD,
     USDC,
     WrappedEthereum,
@@ -111,7 +113,7 @@ module.exports = async (deployer, network, accounts) => {
   ////////////////////////////////////////////////////////////////////////////////////////////
   console.log("Creating DAI StableCoin Warp Vault");
   receipt = await WarpC.createNewSCVault(
-    0, //time lock
+    locktime, //time lock
     "20000000000000000", //base rate per year(approx target base APR)
     "22222222222200000", //multiplier per year(rate of increase in interest w/ utilizastion)
     "40", //Jump Multiplier Per Year(the multiplier per block after hitting a specific utilizastion point)
@@ -126,7 +128,7 @@ module.exports = async (deployer, network, accounts) => {
   /////////////////////////////////////////////////////////////////////////
   console.log("Creating USDC StableCoin Warp Vault");
   receipt = await WarpC.createNewSCVault(
-    0,
+    locktime,
     "20000000000000000", //base rate per year(approx target base APR)
     "22222222222200000", //multiplier per year(rate of increase in interest w/ utilizastion)
     "40", //Jump Multiplier Per Year(the multiplier per block after hitting a specific utilizastion point)
@@ -141,7 +143,7 @@ module.exports = async (deployer, network, accounts) => {
   /////////////////////////////////////////////////////////////////////////
   console.log("Creating USDT StableCoin Warp Vault");
   receipt = await WarpC.createNewSCVault(
-    0,
+    locktime,
     "20000000000000000", //base rate per year(approx target base APR)
     "22222222222200000", //multiplier per year(rate of increase in interest w/ utilizastion)
     "40", //Jump Multiplier Per Year(the multiplier per block after hitting a specific utilizastion point)
