@@ -87,12 +87,12 @@ module.exports = {
           mnemonic,
           `https://mainnet.infura.io/v3/` + infuraKey
         ),
-      network_id: 1, // 
+      network_id: 1, //
       gas: 5512481,
-      gasPrice: '51000000000',
+      gasPrice: "51000000000",
       confirmations: 1, // # of confs to wait between deployments. (default: 0)
-      timeoutBlocks: 500, // # of blocks before a deployment times out  (minimum/default: 50)
-      skipDryRun: true // Skip dry run before migrations? (default: false for public nets )
+      timeoutBlocks: 500 // # of blocks before a deployment times out  (minimum/default: 50)
+      //  skipDryRun: true // Skip dry run before migrations? (default: false for public nets )
     }
   },
   // Set default mocha options here, use special reporters etc.
