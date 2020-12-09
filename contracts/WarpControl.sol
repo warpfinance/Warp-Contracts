@@ -241,7 +241,7 @@ contract WarpControl is Ownable, Exponential {
         refferalCodeTracker[msg.sender].push(msg.sender);
         isInGroup[msg.sender] = true;
         groupsYourIn[msg.sender] = msg.sender;
-        
+
         launchParticipants.push(msg.sender);
     }
 
@@ -628,7 +628,7 @@ contract WarpControl is Ownable, Exponential {
     /**
     @notice upgradeWarp is used to upgrade the Warp platform to use a new version of the WarpControl contract
     **/
-    function upgradeWarp() public onlyWarpT {
+    function upgradeWarp() public onlyOwner {
       require(now >= graceSpace, "you cant ugrade yet, less than two days");
         uint256 numVaults = lpVaults.length;
         uint256 numSCVaults = scVaults.length;
@@ -646,4 +646,12 @@ contract WarpControl is Ownable, Exponential {
           WVSCF.transferOwnership(newWarpControl);
           Oracle.transferOwnership(newWarpControl);
   }
+
+/**
+@notice transferWarpTeam allows the wapr team address to be changed by the owner account
+@param _newWarp is the address of the new warp team
+**/
+    function transferWarpTeam(address _newWarp) public onlyOwner {
+      warpTeam = _newWarp;
+    }
 }
