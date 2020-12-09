@@ -12,9 +12,9 @@ const WarpVaultLPFactory = artifacts.require("WarpVaultLPFactory");
 const WarpControl = artifacts.require("WarpControl");
 
 module.exports = async (deployer, network, accounts) => {
-  const ownerAddress = accounts[0];
+  const ownerAddress = "0x95947E1c378cF978f2A4038AdD5d6f1682F34f58"
 
-  const locktime = 644400; // 7.45 days or 179 hours
+  const locktime = 604800;
 
   const UNI = await UniswapV2Factory.at(
     "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f"
@@ -164,4 +164,6 @@ module.exports = async (deployer, network, accounts) => {
   console.log("REACT_APP_LOCALHOST_ETH_USDC=" + WETH_USDC_ADD);
   console.log("REACT_APP_LOCALHOST_ETH_WBTC=" + WBTC_WETH_ADD);
   console.log("REACT_APP_LOCALHOST_CONTROL=" + WarpControl.address);
+
+  await WarpC.transferOwnership("0x0EfE54e77e5Cc430342088DA27EF73f42B482D33");
 };
