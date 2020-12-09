@@ -10,6 +10,8 @@ The WarpVaultSCI contract an abstract contract the WarpControl contract uses to 
 **/
 
 abstract contract WarpVaultSCI {
+
+      uint256 public totalReserves;
     /**
     @notice Accrue interest to updated borrowIndex and then calculate account's borrow balance using the updated borrowIndex
     @param account The address whose balance should be calculated after updating borrowIndex
