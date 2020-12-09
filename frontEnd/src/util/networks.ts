@@ -34,7 +34,7 @@ const networks: { [K in NetworkId]: Network } = {
 		label: "Mainnet",
 		uri: "https://mainnet.infura.io/v3/f30a8e726a8c4851bfc92a44a04bc889",
 		contracts: {
-			warpControl: "",
+			warpControl: "0xe8fA7010fad24f1aE42D30431BCFD578F59079b5",
 		},
 	},
 	[networkIds.KOVAN]: {
