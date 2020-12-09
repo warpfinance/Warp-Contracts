@@ -68,5 +68,6 @@ abstract contract WarpVaultSCI {
     function getSCAddress() public view virtual returns(address);
 
     function upgrade(address _warpControl) public virtual;
+    function updateTeam(address _warpTeam) public virtual;
 
 }

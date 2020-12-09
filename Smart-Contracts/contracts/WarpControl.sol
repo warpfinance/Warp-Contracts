@@ -638,7 +638,6 @@ contract WarpControl is Ownable, Exponential {
     }
 
       for (uint256 i = 0; i < numSCVaults; ++i) {
-          //instantiate each LP warp vault
           WarpVaultSCI WVSC = WarpVaultSCI(scVaults[i]);
             WVSC.upgrade(newWarpControl);
         }
@@ -652,6 +651,11 @@ contract WarpControl is Ownable, Exponential {
 @param _newWarp is the address of the new warp team
 **/
     function transferWarpTeam(address _newWarp) public onlyOwner {
-      warpTeam = _newWarp;
+        warpTeam = _newWarp;
+        for (uint256 i = 0; i < numSCVaults; ++i) {
+            WarpVaultSCI WVSC = WarpVaultSCI(scVaults[i]);
+            WVSC.updateTeam(_newWarp);
+        }
+      
     }
 }
