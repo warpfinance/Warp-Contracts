@@ -45,7 +45,7 @@ export class StableCoinWarpVaultService {
   }
 
   lendToVault = async (amount: BigNumber): Promise<TransactionInfo> => {
-    const transactionObject = await this.contract.lendToWarpVault(amount);
+    const transactionObject = await this.contract.lendToWarpVault(amount, { gasLimit: 150000 });
 
     logger.log("lendToWarpVault: " + transactionObject.hash);
     
