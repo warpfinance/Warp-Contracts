@@ -11,7 +11,7 @@ const MetaMask = new InjectedConnector({
 });
 
 const Coinbase = new WalletLinkConnector({
-    url: "https://kovan.infura.io/v3/f30a8e726a8c4851bfc92a44a04bc889", // replace with mainnet
+    url: "https://mainnet.infura.io/v3/f30a8e726a8c4851bfc92a44a04bc889", // replace with mainnet
     appName: "Warp",
     appLogoUrl: undefined //"https://warpfinance-warp.herokuapp.com/warp_ext_logo.jpg"
 })
@@ -32,9 +32,9 @@ const Infura = new NetworkConnector({
     // urls: infuraNetworks,
     // defaultChainId: 1
     urls: {
-        42: "https://kovan.infura.io/v3/f30a8e726a8c4851bfc92a44a04bc889"
+        1: "https://mainnet.infura.io/v3/f30a8e726a8c4851bfc92a44a04bc889"
     },
-    defaultChainId: 42
+    defaultChainId: 1
 });
 
 const WalletConnect = new WalletConnectConnector({
