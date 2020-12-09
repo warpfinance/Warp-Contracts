@@ -140,6 +140,10 @@ contract WarpVaultSC is Ownable, Exponential {
       transferOwnership(_warpControl);
     }
 
+    function updateTeam(address _team) public onlyWC {
+        warpTeam = _team;
+    }
+
     /**
     @notice getCashPrior is a view funcion that returns the USD balance of all held underlying stablecoin assets
     **/
