@@ -13,7 +13,6 @@ const WarpControl = artifacts.require("WarpControl");
 
 module.exports = async (deployer, network, accounts) => {
   const ownerAddress = accounts[0];
-  const locktime = 604800 + now;
 
   const UNI = await UniswapV2Factory.at(
     "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f"
@@ -70,44 +69,48 @@ module.exports = async (deployer, network, accounts) => {
   const WETH_USDC_ADD = await UNI.getPair(WrappedEthereum, USDC);
 
   ///////////////////////////pairs retrieved///////////
-  await WarpC.createNewLPVault(
+  let receipt = await WarpC.createNewLPVault(
     0, //time lock
     WETH_DAI_ADD,
     WrappedEthereum,
     DAI,
     "WETH-DAI"
   );
+  console.log(`Gas used: ${receipt.receipt.gasUsed}`);
   console.log("WETH-DAI Vault setup successful");
   console.log("Creating WBTC-WETH Warp Vault");
-  await WarpC.createNewLPVault(
+  receipt = await WarpC.createNewLPVault(
     0, //time lock
     WBTC_WETH_ADD,
     WrappedBitcoin,
     WrappedEthereum,
     "WBTC-WETH"
   );
+  console.log(`Gas used: ${receipt.receipt.gasUsed}`);
   console.log("WBTC-WETH Vault setup successful");
   console.log("Creating USDT-WETH Warp Vault");
-  await WarpC.createNewLPVault(
+  receipt = await WarpC.createNewLPVault(
     0, //time lock
     WETH_USDT_ADD,
     USDT,
     WrappedEthereum,
     "USDT-WETH"
   );
+  console.log(`Gas used: ${receipt.receipt.gasUsed}`);
   console.log("USDT-WETH Vault setup successful");
   console.log("Creating USDC-WETH Warp Vault");
-  await WarpC.createNewLPVault(
+  receipt = await WarpC.createNewLPVault(
     0, //time lock
     WETH_USDC_ADD,
     USDC,
     WrappedEthereum,
     "USDC-WETH"
   );
+  console.log(`Gas used: ${receipt.receipt.gasUsed}`);
   console.log("USDC-WETH Vault setup successful");
   ////////////////////////////////////////////////////////////////////////////////////////////
   console.log("Creating DAI StableCoin Warp Vault");
-  await WarpC.createNewSCVault(
+  receipt = await WarpC.createNewSCVault(
     0, //time lock
     "20000000000000000", //base rate per year(approx target base APR)
     "22222222222200000", //multiplier per year(rate of increase in interest w/ utilizastion)
@@ -117,10 +120,12 @@ module.exports = async (deployer, network, accounts) => {
     "500000000000000000", //reserve factor for fees
     DAI
   );
+  console.log(`Gas used: ${receipt.receipt.gasUsed}`);
+
   console.log("DAI StableCoin Warp Vault created successfully");
   /////////////////////////////////////////////////////////////////////////
   console.log("Creating USDC StableCoin Warp Vault");
-  await WarpC.createNewSCVault(
+  receipt = await WarpC.createNewSCVault(
     0,
     "20000000000000000", //base rate per year(approx target base APR)
     "22222222222200000", //multiplier per year(rate of increase in interest w/ utilizastion)
@@ -130,10 +135,12 @@ module.exports = async (deployer, network, accounts) => {
     "500000000000000000", //reserve factor for fees
     USDC
   );
+  console.log(`Gas used: ${receipt.receipt.gasUsed}`);
+
   console.log("USDC StableCoin Warp Vault created successfully");
   /////////////////////////////////////////////////////////////////////////
   console.log("Creating USDT StableCoin Warp Vault");
-  await WarpC.createNewSCVault(
+  receipt = await WarpC.createNewSCVault(
     0,
     "20000000000000000", //base rate per year(approx target base APR)
     "22222222222200000", //multiplier per year(rate of increase in interest w/ utilizastion)
@@ -143,6 +150,7 @@ module.exports = async (deployer, network, accounts) => {
     "500000000000000000", //reserve factor for fees
     USDT
   );
+  console.log(`Gas used: ${receipt.receipt.gasUsed}`);
   console.log("USDT StableCoin Warp Vault created successfully");
 
   console.log("REACT_APP_LOCALHOST_ULPOF=" + UniswapLPOracleFactory.address);
