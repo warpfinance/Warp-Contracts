@@ -8,6 +8,14 @@ import { parseBigNumber } from "./tools";
 
 const logger = getLogger("Utils::calculateTeamMetrics");
 
+
+export interface TeamMember {
+  address: string;
+  tvl: string;
+  lp: string;
+  sc: string;
+}
+
 export interface Team {
   name: string;
   code: string;
@@ -15,7 +23,7 @@ export interface Team {
   lp: string;
   sc: string;
   numMembers: number;
-  members: string[];
+  members: TeamMember[];
 }
 
 export interface TeamMetrics {
@@ -68,6 +76,7 @@ export const calculateTeamMetrics = async (provider: any, networkId: number): Pr
   for (const code of teamCodes) {
     const name = await control.getTeamName(code);
     const members = await control.getTeamMembers(code);
+    const memberData: TeamMember[] = [];
 
     let teamSCTVL = 0;
     let teamLPTVL = 0;
@@ -95,17 +104,29 @@ export const calculateTeamMetrics = async (provider: any, networkId: number): Pr
 
       memberLPTVL += value;
 
-      logger.log(`${member} has $${(memberSCTVL + memberLPTVL).toFixed(2)} of TVL`);
+      const memberTVL = (memberSCTVL + memberLPTVL).toFixed(2);
+      logger.log(`${member} has $${memberTVL} of TVL`);
+
+      memberData.push({
+        address: member,
+        tvl: memberTVL,
+        sc: memberSCTVL.toFixed(2),
+        lp: memberLPTVL.toFixed(2)
+      })
 
       teamSCTVL += memberSCTVL;
       teamLPTVL += memberLPTVL;
     }
 
+    memberData.sort((a: TeamMember, b: TeamMember) => {
+      return parseFloat(b.tvl) - parseFloat(a.tvl);
+    });
+
     calculatedTeams.push({
       name,
       code,
       numMembers: members.length,
-      members: members,
+      members: memberData,
       tvl: (teamSCTVL + teamLPTVL).toFixed(2),
       lp: teamLPTVL.toFixed(2),
       sc: teamSCTVL.toFixed(2)
