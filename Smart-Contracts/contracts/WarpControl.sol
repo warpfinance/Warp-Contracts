@@ -249,7 +249,7 @@ contract WarpControl is Ownable, Exponential {
         isVault[_scVault] = true;
         // track vault -> token
         getAssetByVault[_scVault] = _token;
-        emit ImportedSCVault(_WarpVault);
+        emit ImportedSCVault(_scVault);
     }
 
     /**
@@ -690,6 +690,6 @@ contract WarpControl is Ownable, Exponential {
             WarpVaultSCI WVSC = WarpVaultSCI(scVaults[i]);
             WVSC.updateTeam(_newWarp);
         }
-      
+
     }
 }
