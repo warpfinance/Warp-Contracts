@@ -38,7 +38,7 @@ export const LeaderboardTable: React.FC<Props> = (props: Props) => {
                         ).map((team: Team, index: number) => {
                             return (
                                 <LeaderboardRow
-                                    rank={index}
+                                    rank={index + rowsPerPage * page}
                                     team={team}
                                 />
                             )

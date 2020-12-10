@@ -10,9 +10,9 @@ interface Props {
 }
 
 export const LeaderboardRow: React.FC<Props> = (props: Props) => {
-    const place = props.rank + 1 === 1 ? "st" :
-        props.rank + 1 === 2 ? "nd" :
-            props.rank + 1 === 3 ? "rd" :
+    const place = props.rank + 1 === 1 || (props.rank >= 20 && (props.rank + 1) % 10 === 1)? "st" :
+        props.rank + 1 === 2 || (props.rank >= 20 && (props.rank + 1) % 10 === 2)? "nd" :
+            props.rank + 1 === 3 || (props.rank >= 20 && (props.rank + 1) % 10 === 3)? "rd" :
                 "th";
 
     return (
