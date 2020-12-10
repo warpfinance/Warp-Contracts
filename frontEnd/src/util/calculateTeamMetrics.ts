@@ -18,7 +18,12 @@ export interface Team {
   members: string[];
 }
 
-export const calculateTeamMetrics = async (provider: any, networkId: number) => {
+export interface TeamMetrics {
+  teams: Team[];
+  timestamp: Date
+}
+
+export const calculateTeamMetrics = async (provider: any, networkId: number): Promise<TeamMetrics> => {
   const defaultTokens = getTokensByNetwork(networkId, false);
 
   const allTokens = getTokensByNetwork(networkId, false);
@@ -107,5 +112,8 @@ export const calculateTeamMetrics = async (provider: any, networkId: number) => 
     return parseFloat(b.tvl) - parseFloat(a.tvl);
   });
 
-  return calculatedTeams;
+  return {
+    teams: calculatedTeams,
+    timestamp: new Date()
+  }
 }

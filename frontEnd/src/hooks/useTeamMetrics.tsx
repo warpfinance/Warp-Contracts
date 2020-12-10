@@ -5,7 +5,7 @@ import { string } from 'yargs';
 import { ERC20Service } from '../services/erc20';
 import { StableCoinWarpVaultService } from '../services/stableCoinWarpVault';
 import { WarpControlService } from '../services/warpControl';
-import { calculateTeamMetrics, Team } from '../util/calculateTeamMetrics';
+import { calculateTeamMetrics, Team, TeamMetrics } from '../util/calculateTeamMetrics';
 
 import { getLogger } from '../util/logger'
 import { getContractAddress, getTokensByNetwork } from '../util/networks';
@@ -19,6 +19,7 @@ const logger = getLogger('Hooks::useTeamMetrics');
 
 export interface TeamMetricsContext {
   teams: Team[];
+  timestamp: Date;
   firstLoad: boolean;
   refresh: Function;
   manuallyCalculate: Function;
@@ -26,6 +27,7 @@ export interface TeamMetricsContext {
 
 const TeamMetricsContext = React.createContext<TeamMetricsContext>({
   teams: [],
+  timestamp: new Date(0),
   firstLoad: true,
   refresh: () => {},
   manuallyCalculate: () => {},
@@ -42,6 +44,7 @@ export const TeamMetricsProvider: React.FC = props => {
 
   const { cachedTeams, attemptedToLoad } = useTeamMetricsCache();
   const [teamList, setTeamList] = useState<Team[]>([]);
+  const [timestamp, setTimeStamp] = useState(new Date(0));
   const [firstLoad, setFirstLoad] = useState(true);
   const [shouldCalculate, setShouldCalculate] = useState(false);
   const {refreshToken, refresh} = useRefreshToken();
@@ -100,8 +103,9 @@ export const TeamMetricsProvider: React.FC = props => {
       const networkId = context.chainId;
       const provider = context.library;
 
-      const calculatedTeams = await calculateTeamMetrics(provider, networkId);
-      setTeamList(calculatedTeams);
+      const teamMetrics = await calculateTeamMetrics(provider, networkId);
+      setTeamList(teamMetrics.teams);
+      setTimeStamp(teamMetrics.timestamp);
       setFirstLoad(false);
     }
 
@@ -114,6 +118,7 @@ export const TeamMetricsProvider: React.FC = props => {
 
   const value = React.useMemo(() => ({
     teams: teamList,
+    timestamp,
     firstLoad,
     refresh,
     manuallyCalculate
