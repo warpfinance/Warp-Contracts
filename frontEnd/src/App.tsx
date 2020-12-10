@@ -21,14 +21,14 @@ import { ConnectedWeb3 } from "./hooks/connectedWeb3";
 import {
 	CssBaseline,
 } from "@material-ui/core";
+import { Leadboard } from "./pages/App/Leaderboard";
+import { TeamContextProvider } from "./hooks/useTeams";
+import { TeamMetricsProvider } from "./hooks/useTeamMetrics";
 import { ThemeProvider } from "@material-ui/styles";
 import { Web3AccountRequired } from "./pages/Web3AccountRequired";
 import { Web3ReactProvider } from '@web3-react/core'
 import { ethers } from "ethers";
 import { useState } from "react";
-import { TeamContextProvider } from "./hooks/useTeams";
-import { TeamMetricsProvider } from "./hooks/useTeamMetrics";
-import { LeadboardTest } from "./pages/LeaderboardTest";
 
 const outerTheme = createMuiTheme({
 	palette: {
@@ -136,7 +136,7 @@ const App: React.FC = () => {
 											<Route exact={true} path="/markets"
 												render={() => <ConnectedWeb3><Markets /></ConnectedWeb3>} />
 											<Route exact={true} path="/leaderboard"
-												render={() => <ConnectedWeb3><LeadboardTest /></ConnectedWeb3>} />
+												render={() => <ConnectedWeb3><Leadboard /></ConnectedWeb3>} />
 										</Switch>
 									</div>
 								</CssBaseline>
