@@ -24,3 +24,5 @@ export * from "./uiElements/InformationCard";
 export * from "./uiElements/DashboardTable";
 export * from "./uiElements/LenderTable";
 export * from "./uiElements/BorrowerTable";
+export * from "./uiElements/LeaderboardRow";
+export * from "./uiElements/LeaderboardTable";
