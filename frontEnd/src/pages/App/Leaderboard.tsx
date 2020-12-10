@@ -19,7 +19,8 @@ const useStyles = makeStyles(theme => ({
 
 export const Leaderboard: React.FC<Props> = (props: Props) => {
     const classes = useStyles();
-    const { teams, firstLoad, refresh } = useTeamMetrics();
+    const { teams, timestamp } = useTeamMetrics();
+    console.log(timestamp)
 
     return (
         <Grid
@@ -70,7 +71,7 @@ export const Leaderboard: React.FC<Props> = (props: Props) => {
                                 Rewards will be distributed on average TVL to reward early contributors.
                             </Typography>
                             <Typography variant="subtitle1">
-                                The leaderboard is cached and updated periodically.
+                                {"The leaderboard is cached and was last updated on " + timestamp.toString()}
                             </Typography>
                         </Grid>
                     </CardContent>
