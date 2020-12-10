@@ -15,28 +15,18 @@ export const LeaderboardRow: React.FC<Props> = (props: Props) => {
             <TableCell>
                 <Grid
                     container
-                    direction="row"
-                    justify="flex-start"
-                    alignItems="center"
-                    spacing={2}
-                >
-                    <Typography variant="subtitle1">
-                    </Typography>
-                </Grid>
-            </TableCell>
-            <TableCell>
-                <Grid
-                    container
                     direction="column"
                     justify="center"
                     alignItems="flex-start"
                 >
                     <Grid item>
                         <Typography variant="subtitle1">
+                            {"1st place"}
                         </Typography>
                     </Grid>
                     <Grid item>
                         <Typography variant="subtitle1" color="textSecondary">
+                            {props.team.name}
                         </Typography>
                     </Grid>
                 </Grid>
@@ -49,7 +39,12 @@ export const LeaderboardRow: React.FC<Props> = (props: Props) => {
                     alignItems="flex-start"
                     spacing={1}
                 >
-
+                    <Typography variant="subtitle1" color="textSecondary">
+                        TVL: 
+                    </Typography>
+                    <Typography variant="subtitle1">
+                        {props.team.tvl}
+                    </Typography>
                 </Grid>
             </TableCell>
         </TableRow>);
