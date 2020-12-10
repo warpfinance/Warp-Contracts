@@ -19,7 +19,7 @@
  */
 
 const HDWalletProvider = require("@truffle/hdwallet-provider");
-const infuraKey = "0e6434f252a949719227b5d68caa2657";
+const infuraKey = "5e079c09b6f74d2b862e028673a08346";
 const mnemonic =
   "life extend whale clown walnut leopard nut purse frame dwarf ecology inherit";
 
