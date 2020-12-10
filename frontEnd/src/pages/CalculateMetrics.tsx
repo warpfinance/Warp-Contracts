@@ -1,12 +1,13 @@
 import * as React from "react";
 
-import { BorrowerMarketCard, LenderMarketCard, MarketTable } from "../components";
+import { BorrowerMarketCard, CustomButton, LenderMarketCard, MarketTable } from "../components";
 
 import { Grid, Typography } from "@material-ui/core";
 import { Header } from "../components";
 import { useWeb3React } from "@web3-react/core";
 import { getLogger } from "../util/logger";
 import { calculateTeamMetrics } from "../util/calculateTeamMetrics";
+import connectors from "../util/connectors";
 
 interface Props { }
 
@@ -16,13 +17,27 @@ const logger = getLogger('Pages::CalculateMetrics');
 export const CalculateMetrics: React.FC<Props> = (props: Props) => {
     const context = useWeb3React();
 
+    const [isConnected, setIsConnected] = React.useState(false);
     const [isCalculating, setIsCalculating] = React.useState(false);
+    const [isDone, setIsDone] = React.useState(false);
+
+    const tryConnectToMetaMask = async () => {
+        try {
+            await context.activate(connectors.MetaMask);
+            setIsConnected(true);
+        } catch (e) {
+            console.error(`Failed to connect: ${e}`);
+        }
+    }
     
     React.useEffect(() => {
         const alreadyCalculating = isCalculating;
-        setIsCalculating(true);
 
         const calculate = async () => {
+            if (!isConnected) {
+                logger.log(`Not connected to metamask yet`);
+                return;
+            }
             if (!context.chainId || !context.library) {
                 logger.log("not ready to calculate team metrics");
                 setIsCalculating(false);
@@ -32,12 +47,12 @@ export const CalculateMetrics: React.FC<Props> = (props: Props) => {
             const networkId = context.chainId;
             const provider = context.library;
 
-            if (!alreadyCalculating) {
+            if (alreadyCalculating) {
                 logger.log(`Cancelled calculating. already doing it....`)
                 return;
             }
             logger.log("Calculating team metrics");
-            
+            setIsCalculating(true);
 
             const calculatedTeams = await calculateTeamMetrics(provider, networkId);
 
@@ -51,16 +66,31 @@ export const CalculateMetrics: React.FC<Props> = (props: Props) => {
             document.body.appendChild(link);
             link.click();
             link.parentNode?.removeChild(link);
+
+            setIsDone(true);
         }
 
         calculate();
-    }, [context.library, context.chainId])
+    }, [context.library, context.chainId, isConnected])
 
     return (
         <React.Fragment>
-            <Typography>
-                Generating the leaderboard... hang tight this might take awhile. You can press F12 to open the console and watch the matrix.
-            </Typography>
+            {
+                isDone ? 
+                <Typography>
+                    Calculating finished, your browser should have downloaded a file.
+                </Typography>
+                    : isCalculating ?
+                    <Typography>
+                    Generating the leaderboard... hang tight this might take awhile. You can press F12 to open the console and watch the matrix.
+                    </Typography> :
+                    <CustomButton 
+                        text={"Click to connect Metamask and start"}
+                        type={"long"}
+                        onClick={tryConnectToMetaMask}
+                    />
+            }
+            
         </React.Fragment>
     )
 }
