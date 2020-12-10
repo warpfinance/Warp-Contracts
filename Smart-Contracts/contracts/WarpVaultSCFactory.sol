@@ -30,18 +30,17 @@ contract WarpVaultSCFactory is Ownable {
         uint256 _timelock,
         uint256 _reserveFactorMantissa
     ) public onlyOwner returns (address) {
-        address _WVSC = address(
-            new WarpVaultSC(
-                _InterestRate,
-                _StableCoin,
-                msg.sender,
-                _warpTeam,
-                _initialExchangeRate,
-                _timelock,
-                _reserveFactorMantissa
-            )
-        );
+        WarpVaultSC vault = new WarpVaultSC(
+            _InterestRate,
+            _StableCoin,
+            msg.sender,
+            _warpTeam,
+            _initialExchangeRate,
+            _timelock,
+            _reserveFactorMantissa
+        )
+        vault.transferOwnership(msg.sender);
 
-        return _WVSC;
+        return address(vault);
     }
 }

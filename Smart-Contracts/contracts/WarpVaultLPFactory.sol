@@ -25,8 +25,9 @@ contract WarpVaultLPFactory is Ownable {
         onlyOwner
         returns (address)
     {
-        address _WVLP = address(new WarpVaultLP(_timelock, _lp, msg.sender, _lpName));
+        WarpVaultLP vault = new WarpVaultLP(_timelock, _lp, msg.sender, _lpName);
+        vault.transferOwnership(msg.sender);
 
-        return _WVLP;
+        return address(vault);
     }
 }
