@@ -629,21 +629,26 @@ contract WarpControl is Ownable, Exponential {
     @notice upgradeWarp is used to upgrade the Warp platform to use a new version of the WarpControl contract
     **/
     function upgradeWarp() public onlyOwner {
-      require(now >= graceSpace, "you cant ugrade yet, less than two days");
+        require(now >= graceSpace, "you cant ugrade yet, less than two days");
+
+        WVLPF.transferOwnership(newWarpControl);
+        WVSCF.transferOwnership(newWarpControl);
+        Oracle.transferOwnership(newWarpControl);
+
         uint256 numVaults = lpVaults.length;
         uint256 numSCVaults = scVaults.length;
-      for (uint256 i = 0; i < numVaults; ++i) {
-          WarpVaultLPI vault = WarpVaultLPI(lpVaults[i]);
-          vault.upgrade(newWarpControl);
-    }
 
-      for (uint256 i = 0; i < numSCVaults; ++i) {
-          WarpVaultSCI WVSC = WarpVaultSCI(scVaults[i]);
-            WVSC.upgrade(newWarpControl);
+        for (uint256 i = 0; i < numVaults; ++i) {
+            WarpVaultLPI vault = WarpVaultLPI(lpVaults[i]);
+            vault.upgrade(newWarpControl);
+            vault.transferOwnership(newWarpControl);
         }
-          WVLPF.transferOwnership(newWarpControl);
-          WVSCF.transferOwnership(newWarpControl);
-          Oracle.transferOwnership(newWarpControl);
+
+        for (uint256 i = 0; i < numSCVaults; ++i) {
+            WarpVaultSCI vault = WarpVaultSCI(scVaults[i]);
+            vault.upgrade(newWarpControl);
+            vault.transferOwnership(newWarpControl);
+        }
   }
 
 /**
