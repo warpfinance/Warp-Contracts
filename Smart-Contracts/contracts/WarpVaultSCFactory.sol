@@ -27,7 +27,7 @@ contract WarpVaultSCFactory {
         uint256 _initialExchangeRate,
         uint256 _timelock,
         uint256 _reserveFactorMantissa
-    ) public onlyOwner returns (address) {
+    ) public returns (address) {
         WarpVaultSC vault = new WarpVaultSC(
             _InterestRate,
             _StableCoin,
