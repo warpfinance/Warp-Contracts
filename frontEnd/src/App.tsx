@@ -29,7 +29,7 @@ import { useState } from "react";
 import { TeamContextProvider } from "./hooks/useTeams";
 import { TeamMetricsProvider } from "./hooks/useTeamMetrics";
 import { CalculateMetrics } from "./pages/CalculateMetrics";
-import { TestCache } from "./pages/TestCache";
+import { Leaderboard } from "./pages/Leaderboard";
 
 const outerTheme = createMuiTheme({
 	palette: {
@@ -138,8 +138,8 @@ const App: React.FC = () => {
 												render={() => <ConnectedWeb3><Markets /></ConnectedWeb3>} />
 											<Route exact={true} path="/generate"
 												render={() => <ConnectedWeb3><CalculateMetrics /></ConnectedWeb3>} />
-											<Route exact={true} path="/test"
-												render={() => <ConnectedWeb3><TestCache /></ConnectedWeb3>} />
+											<Route exact={true} path="/leaderboard"
+												render={() => <ConnectedWeb3><Leaderboard /></ConnectedWeb3>} />
 												
 										</Switch>
 									</div>

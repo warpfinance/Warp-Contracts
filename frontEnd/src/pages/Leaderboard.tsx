@@ -10,18 +10,19 @@ import { useTeamMetrics } from "../hooks/useTeamMetrics";
 
 interface Props { }
 
-const logger = getLogger('Pages::TestCache');
+const logger = getLogger('Pages::Leaderboard');
 
-
-export const TestCache: React.FC<Props> = (props: Props) => {
-    const context = useWeb3React();
+export const Leaderboard: React.FC<Props> = (props: Props) => {
     const {teams, firstLoad, refresh } = useTeamMetrics();
+
+
 
     return (
         <React.Fragment>
             <Typography>
-                Testing cache
+                Leaderboard
             </Typography>
+            {JSON.stringify(teams, undefined, 4)}
         </React.Fragment>
     )
 }
