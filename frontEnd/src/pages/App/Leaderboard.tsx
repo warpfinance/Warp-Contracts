@@ -12,141 +12,125 @@ interface Props { }
 
 const logger = getLogger('Pages::Leaderboard');
 
-const useStyles = makeStyles(theme => ({
-    leaderboardCard: {
-        minHeight: "281px",
-        minWidth: "362px",
-    },
-}));
-
 export const Leaderboard: React.FC<Props> = (props: Props) => {
-    const classes = useStyles();
     const { teams, timestamp } = useTeamMetrics();
     console.log(timestamp)
 
     return (
-        <Grid
-            alignItems="center"
-            container
-            direction="row"
-            justify="space-around"
-            spacing={1}
-        >
+        <React.Fragment>
+            <Header />
             <Grid
-                item
-                lg={12}
-            >
-                <Header />
-            </Grid>
-            <Grid
-                item
-                container
-                direction="column"
-                justify="space-evenly"
                 alignItems="center"
-                lg={3}
+                container
+                direction="row"
             >
-                <Typography variant="h5">
-                    Information
+                <Grid
+                    alignItems="center"
+                    container
+                    direction="column"
+                    item
+                    md={3}
+                >
+                    <Typography variant="h5">
+                        Information
                 </Typography>
-                <Card className={classes.leaderboardCard}>
-                    <CardContent>
-                        <Grid
-                            container
-                            direction="column"
-                            justify="space-around"
-                            alignItems="flex-start"
-                        >
-                            <Typography variant="subtitle1" color="textSecondary">
-                                TVL
+                    <Card>
+                        <CardContent>
+                            <Grid
+                                container
+                                direction="column"
+                                justify="space-around"
+                                alignItems="flex-start"
+                            >
+                                <Typography variant="subtitle1" color="textSecondary">
+                                    TVL
                             </Typography>
-                            <Typography variant="subtitle1">
-                                Total Value in USD of deposited LP tokens and stablecoin
+                                <Typography variant="subtitle1">
+                                    Total Value in USD of deposited LP tokens and stablecoin
                             </Typography>
-                            <Typography variant="subtitle1" color="textSecondary">
-                                NFT campaign
+                                <Typography variant="subtitle1" color="textSecondary">
+                                    NFT campaign
                             </Typography>
-                            <Typography variant="subtitle1">
-                                The leaderboard shows the current team TVL.
+                                <Typography variant="subtitle1">
+                                    The leaderboard shows the current team TVL.
                             </Typography>
-                            <Typography variant="subtitle1">
-                                Rewards will be distributed on average TVL to reward early contributors.
+                                <Typography variant="subtitle1">
+                                    Rewards will be distributed on average TVL to reward early contributors.
                             </Typography>
-                            <Typography variant="subtitle1">
-                                {`The leaderboard is cached and was last updated ${lowercaseFirstLetter(moment(timestamp).calendar())}.`}
-                            </Typography>
-                        </Grid>
-                    </CardContent>
-                </Card>
-            </Grid>
-            <Grid
-                item
-                container
-                direction="column"
-                justify="space-evenly"
-                alignItems="center"
-                lg={6}
-            >
-                <Grid item>
-                    <Typography variant="h4">
-                        NFT Campaign
+                                <Typography variant="subtitle1">
+                                    {`The leaderboard is cached and was last updated ${lowercaseFirstLetter(moment(timestamp).calendar())}.`}
+                                </Typography>
+                            </Grid>
+                        </CardContent>
+                    </Card>
+                </Grid>
+                <Grid
+                    alignItems="center"
+                    container
+                    direction="column"
+                    item
+                    md={6}
+                >
+                    <Grid item>
+                        <Typography variant="h4">
+                            NFT Campaign
                     </Typography>
-                </Grid>
-                <Grid item>
-                    <Typography variant="subtitle1" color="textSecondary">
-                        Users are competing for Warp NFTs for 1 week that
+                    </Grid>
+                    <Grid item>
+                        <Typography variant="subtitle1" color="textSecondary">
+                            Users are competing for Warp NFTs for 1 week that
                     </Typography>
-                </Grid>
-                <Grid item>
-                    <Typography variant="subtitle1" color="textSecondary">
-                        give them access to additional Warp Rewards!
+                    </Grid>
+                    <Grid item>
+                        <Typography variant="subtitle1" color="textSecondary">
+                            give them access to additional Warp Rewards!
                     </Typography>
+                    </Grid>
+                    <Grid item>
+                        <LeaderboardTable teams={teams} />
+                    </Grid>
                 </Grid>
-                <Grid item>
-                    <LeaderboardTable teams={teams} />
-                </Grid>
-            </Grid>
-            <Grid
-                item
-                container
-                direction="column"
-                justify="space-evenly"
-                alignItems="center"
-                lg={3}
-            >
-                <Typography variant="h5">
-                    Team NFTs classification
+                <Grid
+                    alignItems="center"
+                    container
+                    direction="column"
+                    item
+                    md={3}
+                >
+                    <Typography variant="h5">
+                        Team NFTs classification
                 </Typography>
-                <Card className={classes.leaderboardCard}>
-                    <CardContent>
-                        <Grid
-                            container
-                            direction="column"
-                            justify="space-around"
-                            alignItems="flex-start"
-                        >
-                            <Typography variant="subtitle1" color="textSecondary">
-                                Top 5 Teams
+                    <Card>
+                        <CardContent>
+                            <Grid
+                                container
+                                direction="column"
+                                justify="space-around"
+                                alignItems="flex-start"
+                            >
+                                <Typography variant="subtitle1" color="textSecondary">
+                                    Top 5 Teams
                             </Typography>
-                            <Typography variant="subtitle1">
-                                Legendary NFTs
+                                <Typography variant="subtitle1">
+                                    Legendary NFTs
                             </Typography>
-                            <Typography variant="subtitle1" color="textSecondary">
-                                Top 25 Teams
+                                <Typography variant="subtitle1" color="textSecondary">
+                                    Top 25 Teams
                             </Typography>
-                            <Typography variant="subtitle1">
-                                Rare NFTs
+                                <Typography variant="subtitle1">
+                                    Rare NFTs
                             </Typography>
-                            <Typography variant="subtitle1" color="textSecondary">
-                                NFT campaign
+                                <Typography variant="subtitle1" color="textSecondary">
+                                    NFT campaign
                             </Typography>
-                            <Typography variant="subtitle1">
-                                Team Participation NFT
+                                <Typography variant="subtitle1">
+                                    Team Participation NFT
                             </Typography>
-                        </Grid>
-                    </CardContent>
-                </Card>
+                            </Grid>
+                        </CardContent>
+                    </Card>
+                </Grid>
             </Grid>
-        </Grid >
+        </React.Fragment>
     )
 }
