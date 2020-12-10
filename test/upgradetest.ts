@@ -39,7 +39,7 @@ const getCreatedPair = async txResult => {
     });
   });
 
-  return UniswapV2Pair.at(await pairAddress);
+  return await UniswapV2Pair.at(await pairAddress);
 };
 
 //await usdcToken.mint(usdcBTCPair.address, conversionRates.usdc.btc * minimumLiquidity);
@@ -75,9 +75,9 @@ contract("Upgrade test", function(accounts) {
     const wbtcToken = await TestToken.new("WBTC", "WBTC");
     const daiToken = await TestToken.new("DAI", "DAI");
     const usdtToken = await TestToken.new("USDT", "USDT");
-    usdtToken.setDecimals(6);
+    await usdtToken.setDecimals(6);
     const usdcToken = await TestToken.new("USDC", "USDC");
-    usdcToken.setDecimals(6);
+    await usdcToken.setDecimals(6);
     const wethToken = await TestToken.new("WETH", "WETH");
 
     // Give root some tokens to get things started
@@ -153,6 +153,7 @@ contract("Upgrade test", function(accounts) {
       minimumLiquidity
     );
     await ethCPair.mint(accounts[0]);
+    await ethCPair.sync();
 
     const uniRouter = await UniswapV2Router02.new(
       uniFactory.address,
@@ -171,9 +172,10 @@ contract("Upgrade test", function(accounts) {
       oracleFactory.address,
       lpFactory.address,
       scFactory.address,
-      accounts[0]
+      accounts[2]
     );
     await oracleFactory.transferOwnership(warpControl.address);
+
 
     // Create LP Vaults
     await warpControl.createNewLPVault(
