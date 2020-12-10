@@ -26,3 +26,4 @@ export * from "./uiElements/LenderTable";
 export * from "./uiElements/BorrowerTable";
 export * from "./uiElements/LeaderboardRow";
 export * from "./uiElements/LeaderboardTable";
+export * from "./uiElements/TablePaginationActions";

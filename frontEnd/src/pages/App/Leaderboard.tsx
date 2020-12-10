@@ -31,7 +31,7 @@ export const Leaderboard: React.FC<Props> = (props: Props) => {
         >
             <Grid
                 item
-                xs={12}
+                lg={12}
             >
                 <Header />
             </Grid>
@@ -41,7 +41,7 @@ export const Leaderboard: React.FC<Props> = (props: Props) => {
                 direction="column"
                 justify="space-evenly"
                 alignItems="center"
-                xs={3}
+                lg={3}
             >
                 <Typography variant="h5">
                     Information
@@ -76,7 +76,7 @@ export const Leaderboard: React.FC<Props> = (props: Props) => {
                 direction="column"
                 justify="space-evenly"
                 alignItems="center"
-                xs={6}
+                lg={6}
             >
                 <Grid item>
                     <Typography variant="h4">
@@ -103,7 +103,7 @@ export const Leaderboard: React.FC<Props> = (props: Props) => {
                 direction="column"
                 justify="space-evenly"
                 alignItems="center"
-                xs={3}
+                lg={3}
             >
                 <Typography variant="h5">
                     Team NFTs classification
