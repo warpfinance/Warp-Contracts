@@ -48,7 +48,9 @@ contract WarpControl is Ownable, Exponential {
     mapping(address => address) public groupsYourIn;
 
     event NewLPVault(address _newVault);
+    event ImportedLPVault(address _vault);
     event NewSCVault(address _newVault, address _interestRateModel);
+    event ImportedSCVault(address _vault);
     event NewBorrow(address _borrower, address _StableCoin, uint _amountBorrowed);
     event NotCompliant(address _account, uint _time);
     event Liquidation(address _account, address liquidator);
@@ -174,6 +176,17 @@ contract WarpControl is Ownable, Exponential {
         emit NewLPVault(_WarpVault);
     }
 
+    function importLPVault(address _lpVault) public onlyOwner {
+        WarpVaultLPI _vault = WarpVaultLPI(_lpVault);
+        address _lp = _vault.getAssetAdd();
+
+        instanceLPTracker[_lp] = _lpVault;
+        lpVaults.push(_lpVault);
+        isVault[_lpVault] = true;
+        getAssetByVault[_lpVault] = _lp;
+        emit ImportedLPVault(_lpVault);
+    }
+
     /**
     @notice createNewSCVault allows the contract owner to create a new WarpVaultLP contract for a specific LP token
     @param _timelock is a variable representing the number of seconds the timeWizard will prevent withdraws and borrows from a contracts(one week is 605800 seconds)
@@ -222,6 +235,21 @@ contract WarpControl is Ownable, Exponential {
         //track vault to asset
         getVaultByAsset[_WarpVault] = _StableCoin;
         emit NewSCVault(_WarpVault, IR);
+    }
+
+    function importSCVault(address _scVault) public onlyOwner {
+        WarpVaultSCI _vault = WarpVaultSCI(_scVault);
+        address _token = _vault.getSCAddress();
+
+        // track token -> vault
+        instanceSCTracker[_token] = _scVault;
+        // vault list
+        scVaults.push(_scVault);
+        // register vault in mapping
+        isVault[_scVault] = true;
+        // track vault -> token
+        getAssetByVault[_scVault] = _token;
+        emit ImportedSCVault(_WarpVault);
     }
 
     /**
