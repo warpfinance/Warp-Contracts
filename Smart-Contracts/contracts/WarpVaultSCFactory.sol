@@ -9,11 +9,9 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 ////////////////////////////////////////////////////////////////////////////////////////////
 /**
 The WarpVaultSCFactory contract is designed to produce individual WarpVaultLP contracts
-This contract uses the OpenZeppelin contract Library to inherit functions from
-  Ownable.sol
 **/
 
-contract WarpVaultSCFactory is Ownable {
+contract WarpVaultSCFactory {
     /**
 @notice createNewWarpVaultSC is used to create new WarpVaultSC contract instances
 @param _InterestRate is the address of the InterestRateModel contract created for this Warp Vault
@@ -39,8 +37,6 @@ contract WarpVaultSCFactory is Ownable {
             _timelock,
             _reserveFactorMantissa
         );
-        vault.transferOwnership(msg.sender);
-
         return address(vault);
     }
 }

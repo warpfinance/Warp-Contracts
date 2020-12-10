@@ -6,8 +6,6 @@ pragma solidity ^0.6.0;
 ////////////////////////////////////////////////////////////////////////////////////////////
 /**
 The WarpVaultSCFactoryI contract is used by the Warp Control contract to interface with the WarpVaultSCFactory contract
-This contract uses the OpenZeppelin contract Library to inherit functions from
-  Ownable.sol
 **/
 
 abstract contract WarpVaultSCFactoryI {
@@ -27,7 +25,4 @@ abstract contract WarpVaultSCFactoryI {
         uint256 _timelock,
         uint256 _reserveFactorMantissa
     ) public virtual returns (address);
-
-    function transferOwnership(address _newOwner) public virtual;
-
 }
