@@ -3,6 +3,8 @@ pragma solidity ^0.6.2;
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/math/SafeMath.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
+
 import "./compound/Exponential.sol";
 import "./compound/InterestRateModel.sol";
 import "./interfaces/UniswapLPOracleFactoryI.sol";
@@ -23,6 +25,7 @@ from the coumpound protocol.
 
 contract WarpVaultSC is Ownable, Exponential {
     using SafeMath for uint256;
+    using SafeERC20 for ERC20;
 
     uint256 internal initialExchangeRateMantissa;
     uint256 public reserveFactorMantissa;
@@ -136,8 +139,7 @@ contract WarpVaultSC is Ownable, Exponential {
     @dev this is a protected function that can only be called by the WarpControl contract
     **/
     function upgrade(address _warpControl) public onlyWC {
-      WC = WarpControlI(_warpControl);
-      transferOwnership(_warpControl);
+        WC = WarpControlI(_warpControl);
     }
 
     function updateTeam(address _team) public onlyWC {
@@ -168,7 +170,7 @@ contract WarpVaultSC is Ownable, Exponential {
     function withdrawReserves(uint _amount) public onlyWarpT{
       require(totalReserves >= _amount, "You are trying to withdraw too much");
       totalReserves = totalReserves.sub(_amount);
-      stablecoin.transfer(warpTeam, _amount);
+      stablecoin.safeTransfer(warpTeam, _amount);
       emit ReserveWithdraw(_amount);
     }
 
@@ -441,7 +443,7 @@ contract WarpVaultSC is Ownable, Exponential {
         );
 
         //transfer appropriate amount of DAI from msg.sender to the Vault
-        stablecoin.transferFrom(msg.sender, address(this), _amount);
+        stablecoin.safeTransferFrom(msg.sender, address(this), _amount);
 
         principalBalance[msg.sender] = principalBalance[msg.sender] + _amount;
 
@@ -531,7 +533,7 @@ contract WarpVaultSC is Ownable, Exponential {
 
     /**
     @notice viewHistoricalReward is used to view the total gains of an account
-    @param _account is the account whos gains are being viewed 
+    @param _account is the account whos gains are being viewed
     **/
     function viewHistoricalReward(address _account) public view returns (uint256) {
         uint256 exchangeRate = exchangeRatePrior();
@@ -590,7 +592,7 @@ contract WarpVaultSC is Ownable, Exponential {
         accountBorrows[_borrower].interestIndex = borrowIndex;
         totalBorrows = vars.totalBorrowsNew;
         //send them their loaned asset
-        stablecoin.transfer(_borrower, _borrowAmount);
+        stablecoin.safeTransfer(_borrower, _borrowAmount);
     }
 
     struct RepayBorrowLocalVars {
@@ -627,7 +629,7 @@ contract WarpVaultSC is Ownable, Exponential {
 
         require(stablecoin.balanceOf(msg.sender) >= vars.repayAmount, "Not enough stablecoin to repay");
         //transfer the stablecoin from the borrower
-        stablecoin.transferFrom(msg.sender, address(this), vars.repayAmount);
+        stablecoin.safeTransferFrom(msg.sender, address(this), vars.repayAmount);
 
         //We calculate the new borrower and total borrow balances
         //accountBorrowsNew = accountBorrows - actualRepayAmount
@@ -665,7 +667,7 @@ contract WarpVaultSC is Ownable, Exponential {
         address _liquidator,
         uint256 _amount
     ) public onlyWC angryWizard{
-      stablecoin.transferFrom(_liquidator, address(this), _amount);
+      stablecoin.safeTransferFrom(_liquidator, address(this), _amount);
         //calculate the fee on the principle received
         uint256 fee = calculateFee(_amount);
         //transfer fee amount to Warp team
