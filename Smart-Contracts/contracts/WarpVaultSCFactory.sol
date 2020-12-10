@@ -38,7 +38,7 @@ contract WarpVaultSCFactory is Ownable {
             _initialExchangeRate,
             _timelock,
             _reserveFactorMantissa
-        )
+        );
         vault.transferOwnership(msg.sender);
 
         return address(vault);
