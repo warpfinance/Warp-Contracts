@@ -92,3 +92,7 @@ export const dateReviver = (key: any, value: any): any =>  {
 
   return value;
 }
+
+export function lowercaseFirstLetter(value: string){
+  return value[0].toLowerCase() + value.slice(1);
+}

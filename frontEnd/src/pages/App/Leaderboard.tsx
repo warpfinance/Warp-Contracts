@@ -4,6 +4,8 @@ import { Card, CardContent, Grid, Typography, makeStyles } from "@material-ui/co
 import { Header, LeaderboardTable } from "../../components";
 
 import { getLogger } from "../../util/logger";
+import { lowercaseFirstLetter } from "../../util/tools";
+import moment from "moment";
 import { useTeamMetrics } from "../../hooks/useTeamMetrics";
 
 interface Props { }
@@ -71,7 +73,7 @@ export const Leaderboard: React.FC<Props> = (props: Props) => {
                                 Rewards will be distributed on average TVL to reward early contributors.
                             </Typography>
                             <Typography variant="subtitle1">
-                                {"The leaderboard is cached and was last updated on " + timestamp.toString()}
+                                {`The leaderboard is cached and was last updated ${lowercaseFirstLetter(moment(timestamp).calendar())}.`}
                             </Typography>
                         </Grid>
                     </CardContent>
