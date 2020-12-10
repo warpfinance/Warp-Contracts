@@ -17,6 +17,7 @@ import { JumpRateModelV2Contract } from "./JumpRateModelV2";
 import { MigrationsContract } from "./Migrations";
 import { OwnableContract } from "./Ownable";
 import { TesterTokenContract } from "./TesterToken";
+import { TetherTokenContract } from "./TetherToken";
 import { UniswapLpOracleFactoryContract } from "./UniswapLpOracleFactory";
 import { UniswapLpOracleFactoryIContract } from "./UniswapLpOracleFactoryI";
 import { UniswapLpOracleInstanceContract } from "./UniswapLpOracleInstance";
@@ -58,6 +59,7 @@ declare global {
       require(name: "Migrations"): MigrationsContract;
       require(name: "Ownable"): OwnableContract;
       require(name: "TesterToken"): TesterTokenContract;
+      require(name: "TetherToken"): TetherTokenContract;
       require(name: "UniswapLPOracleFactory"): UniswapLpOracleFactoryContract;
       require(name: "UniswapLPOracleFactoryI"): UniswapLpOracleFactoryIContract;
       require(name: "UniswapLPOracleInstance"): UniswapLpOracleInstanceContract;
@@ -123,6 +125,7 @@ export {
 export { MigrationsContract, MigrationsInstance } from "./Migrations";
 export { OwnableContract, OwnableInstance } from "./Ownable";
 export { TesterTokenContract, TesterTokenInstance } from "./TesterToken";
+export { TetherTokenContract, TetherTokenInstance } from "./TetherToken";
 export {
   UniswapLpOracleFactoryContract,
   UniswapLpOracleFactoryInstance

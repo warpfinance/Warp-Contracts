@@ -13,6 +13,7 @@ export interface WarpVaultScContract
     _warpTeam: string,
     _initialExchangeRate: number | BN | string,
     _timelock: number | BN | string,
+    _reserveFactorMantissa: number | BN | string,
     meta?: Truffle.TransactionDetails
   ): Promise<WarpVaultScInstance>;
 }
@@ -45,13 +46,11 @@ export interface LoanRepayed {
   };
 }
 
-export interface OwnershipTransferred {
-  name: "OwnershipTransferred";
+export interface ReserveWithdraw {
+  name: "ReserveWithdraw";
   args: {
-    previousOwner: string;
-    newOwner: string;
-    0: string;
-    1: string;
+    _amount: BN;
+    0: BN;
   };
 }
 
@@ -82,14 +81,12 @@ export interface StableCoinWithdraw {
 type AllEvents =
   | InterestAccrued
   | LoanRepayed
-  | OwnershipTransferred
+  | ReserveWithdraw
   | StableCoinLent
   | StableCoinWithdraw;
 
 export interface WarpVaultScInstance extends Truffle.ContractInstance {
   InterestRate(txDetails?: Truffle.TransactionDetails): Promise<string>;
-
-  WC(txDetails?: Truffle.TransactionDetails): Promise<string>;
 
   accountBorrows(
     arg0: string,
@@ -107,31 +104,12 @@ export interface WarpVaultScInstance extends Truffle.ContractInstance {
     txDetails?: Truffle.TransactionDetails
   ): Promise<BN>;
 
-  /**
-   * Returns the address of the current owner.
-   */
-  owner(txDetails?: Truffle.TransactionDetails): Promise<string>;
-
-  percentA(txDetails?: Truffle.TransactionDetails): Promise<BN>;
-
-  percentB(txDetails?: Truffle.TransactionDetails): Promise<BN>;
+  percent(txDetails?: Truffle.TransactionDetails): Promise<BN>;
 
   principalBalance(
     arg0: string,
     txDetails?: Truffle.TransactionDetails
   ): Promise<BN>;
-
-  /**
-   * Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner.     * NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.
-   */
-  renounceOwnership: {
-    (txDetails?: Truffle.TransactionDetails): Promise<
-      Truffle.TransactionResponse<AllEvents>
-    >;
-    call(txDetails?: Truffle.TransactionDetails): Promise<void>;
-    sendTransaction(txDetails?: Truffle.TransactionDetails): Promise<string>;
-    estimateGas(txDetails?: Truffle.TransactionDetails): Promise<number>;
-  };
 
   reserveFactorMantissa(txDetails?: Truffle.TransactionDetails): Promise<BN>;
 
@@ -143,41 +121,142 @@ export interface WarpVaultScInstance extends Truffle.ContractInstance {
 
   totalReserves(txDetails?: Truffle.TransactionDetails): Promise<BN>;
 
-  /**
-   * Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.
-   */
-  transferOwnership: {
-    (newOwner: string, txDetails?: Truffle.TransactionDetails): Promise<
-      Truffle.TransactionResponse<AllEvents>
-    >;
-    call(
-      newOwner: string,
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<void>;
-    sendTransaction(
-      newOwner: string,
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<string>;
-    estimateGas(
-      newOwner: string,
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<number>;
-  };
-
   wStableCoin(txDetails?: Truffle.TransactionDetails): Promise<string>;
+
+  warpControl(txDetails?: Truffle.TransactionDetails): Promise<string>;
 
   warpTeam(txDetails?: Truffle.TransactionDetails): Promise<string>;
 
   /**
+   * getSCDecimals allows for easy retrieval of the vaults stablecoin decimals*
+   */
+  getSCDecimals(txDetails?: Truffle.TransactionDetails): Promise<BN>;
+
+  /**
+   * getSCAddress allows for the easy retrieval of the vaults stablecoin address*
+   */
+  getSCAddress(txDetails?: Truffle.TransactionDetails): Promise<string>;
+
+  /**
+   * this is a protected function that can only be called by the WarpControl contract*
+   * upgrade is used when upgrading to a new version of the WarpControl contracts
+   */
+  updateWarpControl: {
+    (_warpControl: string, txDetails?: Truffle.TransactionDetails): Promise<
+      Truffle.TransactionResponse<AllEvents>
+    >;
+    call(
+      _warpControl: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<void>;
+    sendTransaction(
+      _warpControl: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<string>;
+    estimateGas(
+      _warpControl: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<number>;
+  };
+
+  updateTeam: {
+    (_team: string, txDetails?: Truffle.TransactionDetails): Promise<
+      Truffle.TransactionResponse<AllEvents>
+    >;
+    call(_team: string, txDetails?: Truffle.TransactionDetails): Promise<void>;
+    sendTransaction(
+      _team: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<string>;
+    estimateGas(
+      _team: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<number>;
+  };
+
+  /**
+   * getCashPrior is a view funcion that returns the USD balance of all held underlying stablecoin assets*
+   */
+  getCashPrior(txDetails?: Truffle.TransactionDetails): Promise<BN>;
+
+  /**
    * calculateFee is used to calculate the fee earned by the Warp Platform
-   * @param _isLiquidation is a bool representing whether of not a fee is being calculated for a liquidation*
-   * @param _payedAmount is a uint representing the full amount of stablecoin earned as interest
+   * @param _payedAmount is a uint representing the full amount of stablecoin earned as interest*
    */
   calculateFee(
     _payedAmount: number | BN | string,
-    _isLiquidation: boolean,
     txDetails?: Truffle.TransactionDetails
   ): Promise<BN>;
+
+  /**
+   * this is a protected function that can only be called by the warpTeam address*
+   * withdrawReserves allows the warp team to withdraw the reserves earned by fees
+   * @param _amount is the amount of a stablecoin being withdrawn
+   */
+  withdrawReserves: {
+    (
+      _amount: number | BN | string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<Truffle.TransactionResponse<AllEvents>>;
+    call(
+      _amount: number | BN | string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<void>;
+    sendTransaction(
+      _amount: number | BN | string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<string>;
+    estimateGas(
+      _amount: number | BN | string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<number>;
+  };
+
+  /**
+   * this is a protected function that can only be called by the WarpControl contract*
+   * setNewInterestModel allows for a new interest rate model to be set for this vault
+   * @param _newModel is the address of the new interest rate model contract
+   */
+  setNewInterestModel: {
+    (_newModel: string, txDetails?: Truffle.TransactionDetails): Promise<
+      Truffle.TransactionResponse<AllEvents>
+    >;
+    call(
+      _newModel: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<void>;
+    sendTransaction(
+      _newModel: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<string>;
+    estimateGas(
+      _newModel: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<number>;
+  };
+
+  /**
+   * updateReserve allows for a new reserv percentage to be set
+   * @param _newReserveMantissa is the reserve percentage scaled by 1e18*
+   */
+  updateReserve: {
+    (
+      _newReserveMantissa: number | BN | string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<Truffle.TransactionResponse<AllEvents>>;
+    call(
+      _newReserveMantissa: number | BN | string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<void>;
+    sendTransaction(
+      _newReserveMantissa: number | BN | string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<string>;
+    estimateGas(
+      _newReserveMantissa: number | BN | string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<number>;
+  };
 
   /**
    * This calculates interest accrued from the last checkpointed block up to the current block and writes new checkpoint to storage.*
@@ -272,22 +351,18 @@ export interface WarpVaultScInstance extends Truffle.ContractInstance {
   lendToWarpVault: {
     (
       _amount: number | BN | string,
-      _refferalCode: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<Truffle.TransactionResponse<AllEvents>>;
     call(
       _amount: number | BN | string,
-      _refferalCode: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<void>;
     sendTransaction(
       _amount: number | BN | string,
-      _refferalCode: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<string>;
     estimateGas(
       _amount: number | BN | string,
-      _refferalCode: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<number>;
   };
@@ -315,11 +390,19 @@ export interface WarpVaultScInstance extends Truffle.ContractInstance {
     ): Promise<number>;
   };
 
+  /**
+   * viewAccountBalance is used to view the current balance of an account
+   * @param _account is the account whos balance is being viewed*
+   */
   viewAccountBalance(
     _account: string,
     txDetails?: Truffle.TransactionDetails
   ): Promise<BN>;
 
+  /**
+   * viewHistoricalReward is used to view the total gains of an account
+   * @param _account is the account whos gains are being viewed*
+   */
   viewHistoricalReward(
     _account: string,
     txDetails?: Truffle.TransactionDetails
@@ -376,7 +459,7 @@ export interface WarpVaultScInstance extends Truffle.ContractInstance {
   };
 
   /**
-   * this function uses the onlyWC modifier which means it can only be called by the Warp Control contract*
+   * this function uses the onlyWarpControl modifier which means it can only be called by the Warp Control contract*
    * repayLiquidatedLoan is a function used by the Warp Control contract to repay a loan on behalf of a liquidator
    * @param _amount is the amount of StableCoin being repayed
    * @param _borrower is the address of the borrower who took out the loan
@@ -412,8 +495,6 @@ export interface WarpVaultScInstance extends Truffle.ContractInstance {
   methods: {
     InterestRate(txDetails?: Truffle.TransactionDetails): Promise<string>;
 
-    WC(txDetails?: Truffle.TransactionDetails): Promise<string>;
-
     accountBorrows(
       arg0: string,
       txDetails?: Truffle.TransactionDetails
@@ -430,31 +511,12 @@ export interface WarpVaultScInstance extends Truffle.ContractInstance {
       txDetails?: Truffle.TransactionDetails
     ): Promise<BN>;
 
-    /**
-     * Returns the address of the current owner.
-     */
-    owner(txDetails?: Truffle.TransactionDetails): Promise<string>;
-
-    percentA(txDetails?: Truffle.TransactionDetails): Promise<BN>;
-
-    percentB(txDetails?: Truffle.TransactionDetails): Promise<BN>;
+    percent(txDetails?: Truffle.TransactionDetails): Promise<BN>;
 
     principalBalance(
       arg0: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<BN>;
-
-    /**
-     * Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner.     * NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.
-     */
-    renounceOwnership: {
-      (txDetails?: Truffle.TransactionDetails): Promise<
-        Truffle.TransactionResponse<AllEvents>
-      >;
-      call(txDetails?: Truffle.TransactionDetails): Promise<void>;
-      sendTransaction(txDetails?: Truffle.TransactionDetails): Promise<string>;
-      estimateGas(txDetails?: Truffle.TransactionDetails): Promise<number>;
-    };
 
     reserveFactorMantissa(txDetails?: Truffle.TransactionDetails): Promise<BN>;
 
@@ -466,41 +528,145 @@ export interface WarpVaultScInstance extends Truffle.ContractInstance {
 
     totalReserves(txDetails?: Truffle.TransactionDetails): Promise<BN>;
 
-    /**
-     * Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.
-     */
-    transferOwnership: {
-      (newOwner: string, txDetails?: Truffle.TransactionDetails): Promise<
-        Truffle.TransactionResponse<AllEvents>
-      >;
-      call(
-        newOwner: string,
-        txDetails?: Truffle.TransactionDetails
-      ): Promise<void>;
-      sendTransaction(
-        newOwner: string,
-        txDetails?: Truffle.TransactionDetails
-      ): Promise<string>;
-      estimateGas(
-        newOwner: string,
-        txDetails?: Truffle.TransactionDetails
-      ): Promise<number>;
-    };
-
     wStableCoin(txDetails?: Truffle.TransactionDetails): Promise<string>;
+
+    warpControl(txDetails?: Truffle.TransactionDetails): Promise<string>;
 
     warpTeam(txDetails?: Truffle.TransactionDetails): Promise<string>;
 
     /**
+     * getSCDecimals allows for easy retrieval of the vaults stablecoin decimals*
+     */
+    getSCDecimals(txDetails?: Truffle.TransactionDetails): Promise<BN>;
+
+    /**
+     * getSCAddress allows for the easy retrieval of the vaults stablecoin address*
+     */
+    getSCAddress(txDetails?: Truffle.TransactionDetails): Promise<string>;
+
+    /**
+     * this is a protected function that can only be called by the WarpControl contract*
+     * upgrade is used when upgrading to a new version of the WarpControl contracts
+     */
+    updateWarpControl: {
+      (_warpControl: string, txDetails?: Truffle.TransactionDetails): Promise<
+        Truffle.TransactionResponse<AllEvents>
+      >;
+      call(
+        _warpControl: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<void>;
+      sendTransaction(
+        _warpControl: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<string>;
+      estimateGas(
+        _warpControl: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<number>;
+    };
+
+    updateTeam: {
+      (_team: string, txDetails?: Truffle.TransactionDetails): Promise<
+        Truffle.TransactionResponse<AllEvents>
+      >;
+      call(
+        _team: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<void>;
+      sendTransaction(
+        _team: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<string>;
+      estimateGas(
+        _team: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<number>;
+    };
+
+    /**
+     * getCashPrior is a view funcion that returns the USD balance of all held underlying stablecoin assets*
+     */
+    getCashPrior(txDetails?: Truffle.TransactionDetails): Promise<BN>;
+
+    /**
      * calculateFee is used to calculate the fee earned by the Warp Platform
-     * @param _isLiquidation is a bool representing whether of not a fee is being calculated for a liquidation*
-     * @param _payedAmount is a uint representing the full amount of stablecoin earned as interest
+     * @param _payedAmount is a uint representing the full amount of stablecoin earned as interest*
      */
     calculateFee(
       _payedAmount: number | BN | string,
-      _isLiquidation: boolean,
       txDetails?: Truffle.TransactionDetails
     ): Promise<BN>;
+
+    /**
+     * this is a protected function that can only be called by the warpTeam address*
+     * withdrawReserves allows the warp team to withdraw the reserves earned by fees
+     * @param _amount is the amount of a stablecoin being withdrawn
+     */
+    withdrawReserves: {
+      (
+        _amount: number | BN | string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<Truffle.TransactionResponse<AllEvents>>;
+      call(
+        _amount: number | BN | string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<void>;
+      sendTransaction(
+        _amount: number | BN | string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<string>;
+      estimateGas(
+        _amount: number | BN | string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<number>;
+    };
+
+    /**
+     * this is a protected function that can only be called by the WarpControl contract*
+     * setNewInterestModel allows for a new interest rate model to be set for this vault
+     * @param _newModel is the address of the new interest rate model contract
+     */
+    setNewInterestModel: {
+      (_newModel: string, txDetails?: Truffle.TransactionDetails): Promise<
+        Truffle.TransactionResponse<AllEvents>
+      >;
+      call(
+        _newModel: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<void>;
+      sendTransaction(
+        _newModel: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<string>;
+      estimateGas(
+        _newModel: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<number>;
+    };
+
+    /**
+     * updateReserve allows for a new reserv percentage to be set
+     * @param _newReserveMantissa is the reserve percentage scaled by 1e18*
+     */
+    updateReserve: {
+      (
+        _newReserveMantissa: number | BN | string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<Truffle.TransactionResponse<AllEvents>>;
+      call(
+        _newReserveMantissa: number | BN | string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<void>;
+      sendTransaction(
+        _newReserveMantissa: number | BN | string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<string>;
+      estimateGas(
+        _newReserveMantissa: number | BN | string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<number>;
+    };
 
     /**
      * This calculates interest accrued from the last checkpointed block up to the current block and writes new checkpoint to storage.*
@@ -598,22 +764,18 @@ export interface WarpVaultScInstance extends Truffle.ContractInstance {
     lendToWarpVault: {
       (
         _amount: number | BN | string,
-        _refferalCode: string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<Truffle.TransactionResponse<AllEvents>>;
       call(
         _amount: number | BN | string,
-        _refferalCode: string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<void>;
       sendTransaction(
         _amount: number | BN | string,
-        _refferalCode: string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<string>;
       estimateGas(
         _amount: number | BN | string,
-        _refferalCode: string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<number>;
     };
@@ -641,11 +803,19 @@ export interface WarpVaultScInstance extends Truffle.ContractInstance {
       ): Promise<number>;
     };
 
+    /**
+     * viewAccountBalance is used to view the current balance of an account
+     * @param _account is the account whos balance is being viewed*
+     */
     viewAccountBalance(
       _account: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<BN>;
 
+    /**
+     * viewHistoricalReward is used to view the total gains of an account
+     * @param _account is the account whos gains are being viewed*
+     */
     viewHistoricalReward(
       _account: string,
       txDetails?: Truffle.TransactionDetails
@@ -702,7 +872,7 @@ export interface WarpVaultScInstance extends Truffle.ContractInstance {
     };
 
     /**
-     * this function uses the onlyWC modifier which means it can only be called by the Warp Control contract*
+     * this function uses the onlyWarpControl modifier which means it can only be called by the Warp Control contract*
      * repayLiquidatedLoan is a function used by the Warp Control contract to repay a loan on behalf of a liquidator
      * @param _amount is the amount of StableCoin being repayed
      * @param _borrower is the address of the borrower who took out the loan

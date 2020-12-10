@@ -64,14 +64,6 @@ contract WarpControl is Ownable, Exponential {
     }
 
     /**
-    @dev Throws if a function is called by anyone but the warp team
-    **/
-    modifier onlyWarpT() {
-        require(msg.sender == warpTeam);
-        _;
-    }
-
-    /**
     @notice the constructor function is fired during the contract deployment process. The constructor can only be fired once and
             is used to set up Oracle variables for the MoneyMarketFactory contract.
     @param _oracle is the address for the UniswapOracleFactorycontract
@@ -629,7 +621,7 @@ contract WarpControl is Ownable, Exponential {
         uint256 _multiplierPerYear,
         uint256 _jumpMultiplierPerYear,
         uint256 _optimal
-      ) public onlyWarpT {
+      ) public onlyOwner {
       address IR = address(
           new JumpRateModelV2(
               _baseRatePerYear,
@@ -648,9 +640,9 @@ contract WarpControl is Ownable, Exponential {
     @notice startUpgradeTimer starts a two day timer signaling that this contract will soon be updated to a new version
     @param _newWarpControl is the address of the new Warp control contract being upgraded to
     **/
-    function startUpgradeTimer(address _newWarpControl) public onlyWarpT{
-      newWarpControl = _newWarpControl;
-      graceSpace = now.add(172800);
+    function startUpgradeTimer(address _newWarpControl) public onlyOwner {
+        newWarpControl = _newWarpControl;
+        graceSpace = now.add(172800);
     }
 
     /**
@@ -658,6 +650,7 @@ contract WarpControl is Ownable, Exponential {
     **/
     function upgradeWarp() public onlyOwner {
         require(now >= graceSpace, "you cant ugrade yet, less than two days");
+        require(newWarpControl != address(0), "no new warp control set");
 
         Oracle.transferOwnership(newWarpControl);
 
