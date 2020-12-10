@@ -3,6 +3,7 @@
 import React from 'react';
 import { Team, TeamMetrics } from '../util/calculateTeamMetrics';
 import { getLogger } from '../util/logger';
+import { dateReviver } from '../util/tools';
 
 
 const logger = getLogger('Hooks::useTeamMetricsCache');
@@ -33,9 +34,10 @@ export const useTeamMetricsCache = () => {
           setAttemptedToLoad(true);
           return;
         }
+        const responseText = await res.text();
   
-        const jsonResponse = await res.json();
-        logger.log(`Parsed JSON response: ${JSON.stringify(jsonResponse)}`);
+        const jsonResponse = JSON.parse(responseText, dateReviver);
+        logger.log(`Parsed JSON response: ${responseText}`);
         if (isSubscribed) {
           setCache(jsonResponse);
           setAttemptedToLoad(true);
