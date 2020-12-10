@@ -16,9 +16,9 @@ npm install -g @zeplin/cli-connect-react-plugin
 
 ## Test Deploy
 
-Update testDeploy branch with just frontEnd directory from master
+Update testDeploy branch with just frontEnd directory from develop
 ```bash
-git checkout master
+git checkout develop
 git pull
 git subtree split --prefix frontEnd -b testDeploy
 git checkout testDeploy
