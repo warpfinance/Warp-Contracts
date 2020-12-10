@@ -18,14 +18,14 @@ This contract inherits Ownership and ERC20 functionality from the Open Zeppelin 
 from the coumpound protocol.
 **/
 
-contract WarpVaultLP is Ownable {
+contract WarpVaultLP {
     using SafeMath for uint256;
 
     uint256 public timeWizard;
     string public lpName;
 
     IERC20 public LPtoken;
-    WarpControlI public WC;
+    WarpControlI public warpControl;
 
     mapping(address => uint256) public collateralizedLP;
 
@@ -34,8 +34,8 @@ contract WarpVaultLP is Ownable {
     /**
      * @dev Throws if called by any account other than a warp control
      */
-    modifier onlyWC() {
-        require(msg.sender == address(WC));
+    modifier onlyWarpControl() {
+        require(msg.sender == address(warpControl));
         _;
     }
 
@@ -63,12 +63,12 @@ contract WarpVaultLP is Ownable {
     ) public {
         lpName = _lpName;
         LPtoken = IERC20(_lp);
-        WC = WarpControlI(_WarpControl);
+        warpControl = WarpControlI(_WarpControl);
         timeWizard = now.add(_timelock);
     }
 
-    function upgrade(address _warpControl) public onlyWC {
-      WC = WarpControlI(_warpControl);
+    function updateWarpControl(address _warpControl) public onlyWarpControl {
+      warpControl = WarpControlI(_warpControl);
     }
 
     /**
@@ -92,7 +92,7 @@ contract WarpVaultLP is Ownable {
     **/
     function withdrawCollateral(uint256 _amount) public {
         uint256 amount;
-        uint256 maxAmount = WC.getMaxWithdrawAllowed(msg.sender, address(LPtoken));
+        uint256 maxAmount = warpControl.getMaxWithdrawAllowed(msg.sender, address(LPtoken));
         if(_amount == 0) {
             amount = maxAmount;
           } else {
@@ -140,11 +140,11 @@ contract WarpVaultLP is Ownable {
 @notice _liquidateAccount is a function to liquidate the LP tokens of the input account
 @param _account is the address of the account being liquidated
 @param _liquidator is the address of the account doing the liquidating who receives the liquidated LP's
-@dev this function uses the onlyWC modifier meaning that only the Warp Control contract can call it
+@dev this function uses the onlyWarpControl modifier meaning that only the Warp Control contract can call it
 **/
     function _liquidateAccount(address _account, address _liquidator)
         public
-        onlyWC
+        onlyWarpControl
         angryWizard
     {
         //transfer the LP tokens to the liquidator
@@ -154,7 +154,7 @@ contract WarpVaultLP is Ownable {
     }
 
     function valueOfAccountCollateral(address _account) external view returns(uint256) {
-        uint256 collateralPrice = WC.viewPriceOfCollateral(address(LPtoken));
+        uint256 collateralPrice = warpControl.viewPriceOfCollateral(address(LPtoken));
         uint256 collateralValue = collateralizedLP[_account].mul(collateralPrice);
         return collateralValue;
     }

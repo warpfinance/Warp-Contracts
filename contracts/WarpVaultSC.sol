@@ -23,7 +23,7 @@ This contract inherits Ownership and ERC20 functionality from the Open Zeppelin 
 from the coumpound protocol.
 **/
 
-contract WarpVaultSC is Ownable, Exponential {
+contract WarpVaultSC is Exponential {
     using SafeMath for uint256;
     using SafeERC20 for ERC20;
 
@@ -41,7 +41,7 @@ contract WarpVaultSC is Ownable, Exponential {
 
     ERC20 public stablecoin;
     WarpWrapperToken public wStableCoin;
-    WarpControlI public WC;
+    WarpControlI public warpControl;
     InterestRateModel public InterestRate;
 
     mapping(address => BorrowSnapshot) public accountBorrows;
@@ -67,8 +67,8 @@ contract WarpVaultSC is Ownable, Exponential {
     /**
     @dev Throws if called by any account other than a warp control
     **/
-    modifier onlyWC() {
-        require(msg.sender == address(WC));
+    modifier onlyWarpControl() {
+        require(msg.sender == address(warpControl));
         _;
     }
 
@@ -105,7 +105,7 @@ contract WarpVaultSC is Ownable, Exponential {
         uint256 _timelock,
         uint256 _reserveFactorMantissa
     ) public {
-        WC = WarpControlI(_warpControl);
+        warpControl = WarpControlI(_warpControl);
         stablecoin = ERC20(_StableCoin);
         InterestRate = InterestRateModel(_InterestRate);
         accrualBlockNumber = getBlockNumber();
@@ -138,11 +138,11 @@ contract WarpVaultSC is Ownable, Exponential {
     @notice upgrade is used when upgrading to a new version of the WarpControl contracts
     @dev this is a protected function that can only be called by the WarpControl contract
     **/
-    function upgrade(address _warpControl) public onlyWC {
-        WC = WarpControlI(_warpControl);
+    function updateWarpControl(address _warpControl) public onlyWarpControl {
+        warpControl = WarpControlI(_warpControl);
     }
 
-    function updateTeam(address _team) public onlyWC {
+    function updateTeam(address _team) public onlyWarpControl {
         warpTeam = _team;
     }
 
@@ -179,7 +179,7 @@ contract WarpVaultSC is Ownable, Exponential {
     @param _newModel is the address of the new interest rate model contract
     @dev this is a protected function that can only be called by the WarpControl contract
     **/
-    function setNewInterestModel(address _newModel) public onlyWC {
+    function setNewInterestModel(address _newModel) public onlyWarpControl {
       InterestRate = InterestRateModel(_newModel);
     }
 
@@ -569,7 +569,7 @@ contract WarpVaultSC is Ownable, Exponential {
     @notice Sender borrows stablecoin assets from the protocol to their own address
     @param _borrowAmount The amount of the underlying asset to borrow
     */
-    function _borrow(uint256 _borrowAmount, address _borrower) external onlyWC angryWizard{
+    function _borrow(uint256 _borrowAmount, address _borrower) external onlyWarpControl angryWizard{
         //create local vars storage
         BorrowLocalVars memory vars;
 
@@ -660,14 +660,14 @@ contract WarpVaultSC is Ownable, Exponential {
     @param _borrower is the address of the borrower who took out the loan
     @param _liquidator is the address of the account who is liquidating the loan
     @param _amount is the amount of StableCoin being repayed
-    @dev this function uses the onlyWC modifier which means it can only be called by the Warp Control contract
+    @dev this function uses the onlyWarpControl modifier which means it can only be called by the Warp Control contract
     **/
     function _repayLiquidatedLoan(
         address _borrower,
         address _liquidator,
         uint256 _amount
-    ) public onlyWC angryWizard{
-      stablecoin.safeTransferFrom(_liquidator, address(this), _amount);
+    ) public onlyWarpControl angryWizard{
+        stablecoin.safeTransferFrom(_liquidator, address(this), _amount);
         //calculate the fee on the principle received
         uint256 fee = calculateFee(_amount);
         //transfer fee amount to Warp team

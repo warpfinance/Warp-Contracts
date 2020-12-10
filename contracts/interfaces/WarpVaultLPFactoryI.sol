@@ -6,8 +6,6 @@ pragma solidity ^0.6.0;
 ////////////////////////////////////////////////////////////////////////////////////////////
 /**
 The WarpVaultLPFactory contract is designed to produce individual WarpVaultLP contracts
-This contract uses the OpenZeppelin contract Library to inherit functions from
-  Ownable.sol
 **/
 
 abstract contract WarpVaultLPFactoryI {
@@ -21,7 +19,5 @@ abstract contract WarpVaultLPFactoryI {
         public
         virtual
         returns (address);
-
-    function transferOwnership(address _newOwner) public virtual;
 
 }

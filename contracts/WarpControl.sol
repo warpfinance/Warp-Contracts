@@ -659,8 +659,6 @@ contract WarpControl is Ownable, Exponential {
     function upgradeWarp() public onlyOwner {
         require(now >= graceSpace, "you cant ugrade yet, less than two days");
 
-        WVLPF.transferOwnership(newWarpControl);
-        WVSCF.transferOwnership(newWarpControl);
         Oracle.transferOwnership(newWarpControl);
 
         uint256 numVaults = lpVaults.length;
@@ -668,14 +666,12 @@ contract WarpControl is Ownable, Exponential {
 
         for (uint256 i = 0; i < numVaults; ++i) {
             WarpVaultLPI vault = WarpVaultLPI(lpVaults[i]);
-            vault.upgrade(newWarpControl);
-            vault.transferOwnership(newWarpControl);
+            vault.updateWarpControl(newWarpControl);
         }
 
         for (uint256 i = 0; i < numSCVaults; ++i) {
             WarpVaultSCI vault = WarpVaultSCI(scVaults[i]);
-            vault.upgrade(newWarpControl);
-            vault.transferOwnership(newWarpControl);
+            vault.updateWarpControl(newWarpControl);
         }
   }
 
