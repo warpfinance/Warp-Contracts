@@ -15,7 +15,7 @@ interface Props { }
 const imgSrcs = [
     { hover: "twitterHover.svg", unHover: "twitter.svg", href: "https://twitter.com/warpfinance", alt: "Twitter" },
     { hover: "mediumHover.svg", unHover: "medium.svg", href: "https://medium.com/@warpfinance", alt: "Medium" },
-    { hover: "telegramHover.svg", unHover: "telegram.svg", href: "https://t.me/warpfinance", alt: "Telegram" },
+    { hover: "telegramHover.svg", unHover: "telegram.svg", href: "https://t.me/warp_official", alt: "Telegram" },
     { hover: "discordHover.svg", unHover: "discord.svg", href: "https://discord.com/invite/TYuz9yV", alt: "Discord" },
 ]
 
