@@ -69,7 +69,6 @@ contract WarpVaultLP is Ownable {
 
     function upgrade(address _warpControl) public onlyWC {
       WC = WarpControlI(_warpControl);
-      transferOwnership(_warpControl);
     }
 
     /**
