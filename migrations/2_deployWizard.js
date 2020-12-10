@@ -94,16 +94,12 @@ module.exports = async (deployer, network) => {
   ////////////////////////////////////////////////////////////////////////////////////////////
   console.log("Listing ETH-USDT");
   await UNI.createPair(WrappedEthereum.address, usdt.address);
-  const ETH_USDT = await UNI.getPair(
-    WrappedEthereum.address,
-    usdt.address
-  );
+  const ETH_USDT = await UNI.getPair(WrappedEthereum.address, usdt.address);
   console.log("ETH-USDT pair created");
   console.log(ETH_USDT);
 
   await weth.approve(UNI_R.address, "10000000000000000000000000000");
   console.log("wETH Approved");
-  await usdt.approve(UNI_R.address, "1000");
   console.log("Transfer Approvals Approved!");
   await UNI_R.addLiquidity(
     usdt.address,
