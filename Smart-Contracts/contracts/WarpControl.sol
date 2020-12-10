@@ -37,7 +37,7 @@ contract WarpControl is Ownable, Exponential {
 
     mapping(address => address) public instanceLPTracker; //maps LP token address to the assets WarpVault
     mapping(address => address) public instanceSCTracker;
-    mapping(address => address) public getVaultByAsset;
+    mapping(address => address) public getAssetByVault;
     mapping(address => uint) public lockedLPValue;
     mapping(address => bool) public isVault;
     mapping(address => address[]) public refferalCodeTracker;
@@ -172,7 +172,7 @@ contract WarpControl is Ownable, Exponential {
         //set Warp vault address as an approved vault
         isVault[_WarpVault] = true;
         //track vault to asset
-        getVaultByAsset[_WarpVault] = _lp;
+        getAssetByVault[_WarpVault] = _lp;
         emit NewLPVault(_WarpVault);
     }
 
@@ -233,7 +233,7 @@ contract WarpControl is Ownable, Exponential {
         //set Warp vault address as an approved vault
         isVault[_WarpVault] = true;
         //track vault to asset
-        getVaultByAsset[_WarpVault] = _StableCoin;
+        getAssetByVault[_WarpVault] = _StableCoin;
         emit NewSCVault(_WarpVault, IR);
     }
 
@@ -583,7 +583,7 @@ contract WarpControl is Ownable, Exponential {
             WarpVaultSCI scVault = WarpVaultSCI(scVaults[i]);
             //retreive the borrowers borrow balance from this vault and add it to the scBalances array
             scBalances[i] = scVault.borrowBalanceCurrent(_borrower);
-            uint256 borrowedAmountInUSDC = viewPriceOfToken(getVaultByAsset[address(scVault)], scBalances[i]);
+            uint256 borrowedAmountInUSDC = viewPriceOfToken(getAssetByVault[address(scVault)], scBalances[i]);
 
             //add the borrowed amount to the total borrowed balance
             borrowedAmount = borrowedAmount.add(borrowedAmountInUSDC);
