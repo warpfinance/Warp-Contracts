@@ -48,7 +48,6 @@ export const LeaderboardTable: React.FC<Props> = (props: Props) => {
                         <TablePagination
                             component={TableRow}
                             rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
-                            colSpan={3}
                             count={props.teams.length}
                             rowsPerPage={rowsPerPage}
                             page={page}
@@ -60,6 +59,7 @@ export const LeaderboardTable: React.FC<Props> = (props: Props) => {
                             onChangeRowsPerPage={handleChangeRowsPerPage}
                             //@ts-ignore
                             ActionsComponent={TablePaginationActions}
+                            style={{ width: 600 }}
                         />
                     </TableFooter>
                 </Table>

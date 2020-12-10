@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { Grid, IconButton, useTheme } from "@material-ui/core";
+import { Grid, IconButton, makeStyles, useTheme } from "@material-ui/core";
 import { KeyboardArrowLeft, KeyboardArrowRight } from "@material-ui/icons";
 
 import FirstPageIcon from '@material-ui/icons/FirstPage';
@@ -13,7 +13,15 @@ interface Props {
     rowsPerPage: number,
 };
 
+const useStyles = makeStyles((theme) => ({
+    paginationActions: {
+        flexShrink: 0,
+        marginLeft: theme.spacing(2.5),
+    },
+}));
+
 export const TablePaginationActions: React.FC<Props> = (props: Props) => {
+    const classes = useStyles();
     const theme = useTheme();
     const { count, page, rowsPerPage, onChangePage } = props;
 
@@ -34,9 +42,7 @@ export const TablePaginationActions: React.FC<Props> = (props: Props) => {
     };
 
     return (
-        <Grid
-            direction="row"
-        >
+        <div className={classes.paginationActions}>
             <IconButton
                 onClick={handleFirstPageButtonClick}
                 disabled={page === 0}
@@ -61,6 +67,6 @@ export const TablePaginationActions: React.FC<Props> = (props: Props) => {
             >
                 {theme.direction === "rtl" ? <FirstPageIcon /> : <LastPageIcon />}
             </IconButton>
-        </Grid>
+        </div>
     );
 }

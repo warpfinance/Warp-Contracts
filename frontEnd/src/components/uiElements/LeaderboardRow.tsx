@@ -16,8 +16,10 @@ export const LeaderboardRow: React.FC<Props> = (props: Props) => {
                 "th";
 
     return (
-        <TableRow>
-            <TableCell>
+        <TableRow key={props.team.code}>
+            <TableCell
+                style={{ width: 400 }}
+            >
                 <Grid
                     container
                     direction="column"
@@ -36,13 +38,14 @@ export const LeaderboardRow: React.FC<Props> = (props: Props) => {
                     </Grid>
                 </Grid>
             </TableCell>
-            <TableCell>
+            <TableCell
+                style={{ width: 200 }}
+            >
                 <Grid
                     container
                     direction="row"
                     justify="center"
-                    alignItems="flex-start"
-                    spacing={1}
+                    alignItems="center"
                 >
                     <Typography variant="subtitle1" color="textSecondary">
                         TVL:
