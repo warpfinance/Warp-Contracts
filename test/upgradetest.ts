@@ -70,8 +70,8 @@ const giveLPTokens = async (
   await lpToken.mint(account);
 };
 
-contract("Setup Test Env", function(accounts) {
-  it("Demo", async () => {
+contract("Upgrade test", function(accounts) {
+  it("testing upgrade", async () => {
     const wbtcToken = await TestToken.new("WBTC", "WBTC");
     const daiToken = await TestToken.new("DAI", "DAI");
     const usdtToken = await TestToken.new("USDT", "USDT");
@@ -213,6 +213,18 @@ contract("Setup Test Env", function(accounts) {
 
     await utils.increaseTime(ONE_DAY * 3);
 
+    const daiVault = await WarpVaultSC.at(await warpControl.instanceSCTracker(daiToken.address));
+    const lpVault = await WarpVaultLP.at(await warpControl.instanceLPTracker(ethBtcPair.address));
+
+    assert(await oracleFactory.owner() == warpControl.address);
+    assert(await lpVault.warpControl() == warpControl.address);
+    assert(await daiVault.warpControl() == warpControl.address);
+
     await warpControl.upgradeWarp();
+
+    assert(await oracleFactory.owner() == upgradedWarpControl.address);
+    assert(await lpVault.warpControl() == upgradedWarpControl.address);
+    assert(await daiVault.warpControl() == upgradedWarpControl.address);
+
   });
 });
