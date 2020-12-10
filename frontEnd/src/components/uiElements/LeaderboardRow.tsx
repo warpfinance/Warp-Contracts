@@ -5,10 +5,15 @@ import { Grid, TableCell, TableRow, Typography } from "@material-ui/core";
 import { Team, } from "../../util/calculateTeamMetrics";
 
 interface Props {
+    rank: number,
     team: Team,
 }
 
 export const LeaderboardRow: React.FC<Props> = (props: Props) => {
+    const place = props.rank + 1 === 1 ? "st" :
+        props.rank + 1 === 2 ? "nd" :
+            props.rank + 1 === 3 ? "rd" :
+                "th";
 
     return (
         <TableRow>
@@ -20,12 +25,12 @@ export const LeaderboardRow: React.FC<Props> = (props: Props) => {
                     alignItems="flex-start"
                 >
                     <Grid item>
-                        <Typography variant="subtitle1">
-                            {"1st place"}
+                        <Typography variant="subtitle1" color="textSecondary">
+                            {(props.rank + 1) + `${place} place`}
                         </Typography>
                     </Grid>
                     <Grid item>
-                        <Typography variant="subtitle1" color="textSecondary">
+                        <Typography variant="subtitle1">
                             {props.team.name}
                         </Typography>
                     </Grid>
@@ -40,7 +45,7 @@ export const LeaderboardRow: React.FC<Props> = (props: Props) => {
                     spacing={1}
                 >
                     <Typography variant="subtitle1" color="textSecondary">
-                        TVL: 
+                        TVL:
                     </Typography>
                     <Typography variant="subtitle1">
                         {props.team.tvl}

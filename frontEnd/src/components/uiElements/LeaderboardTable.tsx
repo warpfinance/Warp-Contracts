@@ -20,9 +20,10 @@ export const LeaderboardTable: React.FC<Props> = (props: Props) => {
             <TableContainer>
                 <Table>
                     <TableBody>
-                        {props.teams.map((team: Team) => {
+                        {props.teams.map((team: Team, index: number) => {
                             return (
                                 <LeaderboardRow
+                                    rank={index}
                                     team={team}
                                 />
                             )
