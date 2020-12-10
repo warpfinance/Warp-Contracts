@@ -64,7 +64,13 @@ export const Leaderboard: React.FC<Props> = (props: Props) => {
                                 NFT campaign
                             </Typography>
                             <Typography variant="subtitle1">
-                                League table is updated 2x a day
+                                The leaderboard shows the current team TVL.
+                            </Typography>
+                            <Typography variant="subtitle1">
+                                Rewards will be distributed on average TVL to reward early contributors.
+                            </Typography>
+                            <Typography variant="subtitle1">
+                                The leaderboard is cached and updated periodically.
                             </Typography>
                         </Grid>
                     </CardContent>
