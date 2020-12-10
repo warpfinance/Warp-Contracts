@@ -16,20 +16,20 @@ import {
 import { createMuiTheme, makeStyles } from "@material-ui/core/styles";
 
 import { BorrowerCountdownContext } from "./hooks/borrowerCountdown";
+import { CalculateMetrics } from "./pages/CalculateMetrics";
 import { ConnectedWeb3 } from "./hooks/connectedWeb3";
 // prettier-ignore
 import {
 	CssBaseline,
 } from "@material-ui/core";
+import { Leaderboard } from "./pages/App/Leaderboard";
+import { TeamContextProvider } from "./hooks/useTeams";
+import { TeamMetricsProvider } from "./hooks/useTeamMetrics";
 import { ThemeProvider } from "@material-ui/styles";
 import { Web3AccountRequired } from "./pages/Web3AccountRequired";
 import { Web3ReactProvider } from '@web3-react/core'
 import { ethers } from "ethers";
 import { useState } from "react";
-import { TeamContextProvider } from "./hooks/useTeams";
-import { TeamMetricsProvider } from "./hooks/useTeamMetrics";
-import { CalculateMetrics } from "./pages/CalculateMetrics";
-import { Leaderboard } from "./pages/Leaderboard";
 
 const outerTheme = createMuiTheme({
 	palette: {
@@ -140,7 +140,6 @@ const App: React.FC = () => {
 												render={() => <ConnectedWeb3><CalculateMetrics /></ConnectedWeb3>} />
 											<Route exact={true} path="/leaderboard"
 												render={() => <ConnectedWeb3><Leaderboard /></ConnectedWeb3>} />
-												
 										</Switch>
 									</div>
 								</CssBaseline>
