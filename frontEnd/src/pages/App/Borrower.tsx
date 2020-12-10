@@ -15,12 +15,12 @@ import { useBorrowLimit } from "../../hooks/useBorrowLimit";
 import { useCombinedBorrowRate } from "../../hooks/useCombinedBorrowRate";
 import { useConnectedWeb3Context } from "../../hooks/connectedWeb3";
 import { useLPTokens } from "../../hooks/useLPTokens";
+import { useNotificationModal } from "../../hooks/useNotificationModal";
 import { useRefreshToken } from "../../hooks/useRefreshToken";
 import { useStableCoinTokens } from "../../hooks/useStableCoins";
 import { useState } from "react";
 import { useUSDCToken } from "../../hooks/useUSDC";
 import { useWarpControl } from "../../hooks/useWarpControl";
-import { useNotificationModal } from "../../hooks/useNotificationModal";
 
 interface Props {
 }

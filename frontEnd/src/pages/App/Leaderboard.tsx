@@ -3,16 +3,16 @@ import * as React from "react";
 import { Grid, Typography } from "@material-ui/core";
 import { Header, LeaderboardTable } from "../../components";
 
-import { teams } from "../../util/teams"
-import { useRefreshToken } from "../../hooks/useRefreshToken";
+import { getLogger } from "../../util/logger";
 import { useTeamMetrics } from "../../hooks/useTeamMetrics";
 
 interface Props { }
 
-export const Leadboard: React.FC<Props> = (props: Props) => {
+const logger = getLogger('Pages::Leaderboard');
 
-    const metrics = useTeamMetrics();
-    const { refreshToken, refresh } = useRefreshToken();
+export const Leaderboard: React.FC<Props> = (props: Props) => {
+
+    const {teams, firstLoad, refresh } = useTeamMetrics();
 
     return (
         <Grid
@@ -32,7 +32,7 @@ export const Leadboard: React.FC<Props> = (props: Props) => {
             <Typography variant="subtitle1" color="textSecondary">
                 give them access to additional Warp Rewards!
             </Typography>
-            <LeaderboardTable refreshToken={refreshToken} teams={teams}/>
+            <LeaderboardTable teams={teams}/>
         </Grid >
     )
 }

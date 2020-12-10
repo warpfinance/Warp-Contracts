@@ -2,12 +2,10 @@ import * as React from "react";
 
 import { Grid, TableCell, TableRow, Typography } from "@material-ui/core";
 
-import { RefreshToken } from "../../hooks/useRefreshToken";
-import { Team } from "../../util/teams";
+import { Team, } from "../../util/calculateTeamMetrics";
 
 interface Props {
     team: Team,
-    refreshToken: RefreshToken
 }
 
 export const LeaderboardRow: React.FC<Props> = (props: Props) => {

@@ -16,12 +16,13 @@ import {
 import { createMuiTheme, makeStyles } from "@material-ui/core/styles";
 
 import { BorrowerCountdownContext } from "./hooks/borrowerCountdown";
+import { CalculateMetrics } from "./pages/CalculateMetrics";
 import { ConnectedWeb3 } from "./hooks/connectedWeb3";
 // prettier-ignore
 import {
 	CssBaseline,
 } from "@material-ui/core";
-import { Leadboard } from "./pages/App/Leaderboard";
+import { Leaderboard } from "./pages/App/Leaderboard";
 import { TeamContextProvider } from "./hooks/useTeams";
 import { TeamMetricsProvider } from "./hooks/useTeamMetrics";
 import { ThemeProvider } from "@material-ui/styles";
@@ -135,8 +136,10 @@ const App: React.FC = () => {
 												render={() => <Web3AccountRequired><Lender /></Web3AccountRequired>} />
 											<Route exact={true} path="/markets"
 												render={() => <ConnectedWeb3><Markets /></ConnectedWeb3>} />
+											<Route exact={true} path="/generate"
+												render={() => <ConnectedWeb3><CalculateMetrics /></ConnectedWeb3>} />
 											<Route exact={true} path="/leaderboard"
-												render={() => <ConnectedWeb3><Leadboard /></ConnectedWeb3>} />
+												render={() => <ConnectedWeb3><Leaderboard /></ConnectedWeb3>} />
 										</Switch>
 									</div>
 								</CssBaseline>

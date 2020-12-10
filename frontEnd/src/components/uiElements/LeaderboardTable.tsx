@@ -4,11 +4,10 @@ import { Grid, Table, TableBody, TableContainer } from "@material-ui/core";
 
 import { LeaderboardRow } from "../../components/uiElements/LeaderboardRow";
 import { RefreshToken } from "../../hooks/useRefreshToken";
-import { Team } from "../../util/teams";
+import { Team, } from "../../util/calculateTeamMetrics";
 
 interface Props {
     teams: Team[],
-    refreshToken: RefreshToken
 }
 
 export const LeaderboardTable: React.FC<Props> = (props: Props) => {
@@ -25,7 +24,6 @@ export const LeaderboardTable: React.FC<Props> = (props: Props) => {
                             return (
                                 <LeaderboardRow
                                     team={team}
-                                    refreshToken={props.refreshToken}
                                 />
                             )
                         })}
