@@ -72,6 +72,8 @@ export const calculateTeamMetrics = async (provider: any, networkId: number): Pr
     let teamSCTVL = 0;
     let teamLPTVL = 0;
 
+    logger.log(`Calculating TVL for team ${name} (${code})`);
+
     for (const member of members) {
       let memberSCTVL = 0;
       let memberLPTVL = 0;
@@ -81,7 +83,7 @@ export const calculateTeamMetrics = async (provider: any, networkId: number): Pr
         const numTokens = parseBigNumber(await vault.service.getBalance(member), vault.decimals);
         const valueOfTokens = numTokens * vault.conversion;
 
-        logger.log(`${member} has ${numTokens} or $${valueOfTokens.toFixed(2)} worth of ${vault.token.symbol}`);
+        //logger.log(`${member} has ${numTokens} or $${valueOfTokens.toFixed(2)} worth of ${vault.token.symbol}`);
 
         memberSCTVL += valueOfTokens;
       }
@@ -89,9 +91,11 @@ export const calculateTeamMetrics = async (provider: any, networkId: number): Pr
       // Calculate TVL from LP
       const value = parseBigNumber(await control.getTotalCollateralValue(member), usdcToken.decimals);
       
-      logger.log(`${member} has $${value.toFixed(2)} worth of locked LP`);
+      //logger.log(`${member} has $${value.toFixed(2)} worth of locked LP`);
 
       memberLPTVL += value;
+
+      logger.log(`${member} has $${(memberSCTVL + memberLPTVL).toFixed(2)} of TVL`);
 
       teamSCTVL += memberSCTVL;
       teamLPTVL += memberLPTVL;

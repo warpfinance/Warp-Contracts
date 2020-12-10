@@ -1,7 +1,7 @@
 
 
 import React from 'react';
-import { Team } from '../util/calculateTeamMetrics';
+import { Team, TeamMetrics } from '../util/calculateTeamMetrics';
 import { getLogger } from '../util/logger';
 
 
@@ -9,7 +9,7 @@ const logger = getLogger('Hooks::useTeamMetricsCache');
 const cacheURL = "https://warpfinancelaunch.s3-us-west-2.amazonaws.com/team_cache.json";
 
 export const useTeamMetricsCache = () => {
-  const [cachedTeams, setCacheTeams] = React.useState<Team[]>([]);
+  const [cache, setCache] = React.useState<Maybe<TeamMetrics>>(null);
   const [attemptedToLoad, setAttemptedToLoad] = React.useState(false);
 
   React.useEffect(() => {
@@ -37,7 +37,7 @@ export const useTeamMetricsCache = () => {
         const jsonResponse = await res.json();
         logger.log(`Parsed JSON response: ${JSON.stringify(jsonResponse)}`);
         if (isSubscribed) {
-          setCacheTeams(jsonResponse);
+          setCache(jsonResponse);
           setAttemptedToLoad(true);
         }
       } catch (e) {
@@ -57,7 +57,7 @@ export const useTeamMetricsCache = () => {
   }, [])
 
   return {
-    cachedTeams,
+    cache,
     attemptedToLoad
   }
 }

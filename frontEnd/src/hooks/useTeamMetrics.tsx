@@ -42,7 +42,7 @@ export const useTeamMetrics = () => {
 export const TeamMetricsProvider: React.FC = props => {
   const context = useWeb3React();
 
-  const { cachedTeams, attemptedToLoad } = useTeamMetricsCache();
+  const { cache, attemptedToLoad } = useTeamMetricsCache();
   const [teamList, setTeamList] = useState<Team[]>([]);
   const [timestamp, setTimeStamp] = useState(new Date(0));
   const [firstLoad, setFirstLoad] = useState(true);
@@ -60,7 +60,13 @@ export const TeamMetricsProvider: React.FC = props => {
 
     const fetchTeamMetrics = async () => {
 
-      const validCache = cachedTeams && cachedTeams.length > 0;
+      let validCache = false; 
+      
+      try {
+        validCache = !!cache && cache.teams.length > 0;
+      } catch (e) {
+        logger.log(`Failed to validate cache`);
+      }
 
       if (!validCache) {
         if (!attemptedToLoad) {
@@ -79,8 +85,14 @@ export const TeamMetricsProvider: React.FC = props => {
         logger.log(`Would like to use cache if it's available.`);
 
         if (isSubscribed) {
+          if (!cache) {
+            logger.log(`Tried to use cache but it was null`);
+            return;
+          }
+
           logger.log("Using cached team metrics");
-          setTeamList(cachedTeams);
+          setTeamList(cache.teams);
+          setTimeStamp(cache.timestamp);
           setFirstLoad(false);
 
           if (!shouldCalculate) {
@@ -114,7 +126,7 @@ export const TeamMetricsProvider: React.FC = props => {
     return () => {
       isSubscribed = false;
     }
-  }, [context.library, context.chainId, context.account, refreshToken, cachedTeams, attemptedToLoad]);
+  }, [context.library, context.chainId, context.account, refreshToken, cache, attemptedToLoad]);
 
   const value = React.useMemo(() => ({
     teams: teamList,
