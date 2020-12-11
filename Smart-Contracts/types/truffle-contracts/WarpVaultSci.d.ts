@@ -174,6 +174,11 @@ export interface WarpVaultSciInstance extends Truffle.ContractInstance {
     ): Promise<number>;
   };
 
+  viewAccountBalance(
+    _account: string,
+    txDetails?: Truffle.TransactionDetails
+  ): Promise<BN>;
+
   methods: {
     totalReserves(txDetails?: Truffle.TransactionDetails): Promise<BN>;
 
@@ -339,6 +344,11 @@ export interface WarpVaultSciInstance extends Truffle.ContractInstance {
         txDetails?: Truffle.TransactionDetails
       ): Promise<number>;
     };
+
+    viewAccountBalance(
+      _account: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<BN>;
   };
 
   getPastEvents(event: string): Promise<EventData[]>;
