@@ -72,7 +72,7 @@ export const Leaderboard: React.FC<Props> = (props: Props) => {
                 >
                     <Grid item>
                         <Typography variant="h4">
-                            NFT Campaign
+                            Team NFT Campaign
                     </Typography>
                     </Grid>
                     <Grid item>
@@ -108,22 +108,22 @@ export const Leaderboard: React.FC<Props> = (props: Props) => {
                                 alignItems="flex-start"
                             >
                                 <Typography variant="subtitle1" color="textSecondary">
-                                    Top 5 Teams
+                                    Top 1–3 Teams
                             </Typography>
                                 <Typography variant="subtitle1">
-                                    Legendary NFTs
+                                    Legendary 150% booster
                             </Typography>
                                 <Typography variant="subtitle1" color="textSecondary">
-                                    Top 25 Teams
+                                    Top 4–10 Teams
                             </Typography>
                                 <Typography variant="subtitle1">
-                                    Rare NFTs
+                                    Epic 75% booster
                             </Typography>
                                 <Typography variant="subtitle1" color="textSecondary">
-                                    NFT campaign
+                                    Remaining Participating Teams
                             </Typography>
                                 <Typography variant="subtitle1">
-                                    Team Participation NFT
+                                    Rare 15% booster
                             </Typography>
                             </Grid>
                         </CardContent>
