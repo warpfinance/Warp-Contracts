@@ -55,6 +55,24 @@ export interface WarpVaultLpiInstance extends Truffle.ContractInstance {
     ): Promise<number>;
   };
 
+  updateWarpControl: {
+    (_warpControl: string, txDetails?: Truffle.TransactionDetails): Promise<
+      Truffle.TransactionResponse<AllEvents>
+    >;
+    call(
+      _warpControl: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<void>;
+    sendTransaction(
+      _warpControl: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<string>;
+    estimateGas(
+      _warpControl: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<number>;
+  };
+
   methods: {
     /**
      * getAssetAdd allows for easy retrieval of a WarpVaults LP token Adress*
@@ -95,6 +113,24 @@ export interface WarpVaultLpiInstance extends Truffle.ContractInstance {
       estimateGas(
         _account: string,
         _liquidator: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<number>;
+    };
+
+    updateWarpControl: {
+      (_warpControl: string, txDetails?: Truffle.TransactionDetails): Promise<
+        Truffle.TransactionResponse<AllEvents>
+      >;
+      call(
+        _warpControl: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<void>;
+      sendTransaction(
+        _warpControl: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<string>;
+      estimateGas(
+        _warpControl: string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<number>;
     };

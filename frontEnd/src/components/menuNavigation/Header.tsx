@@ -14,10 +14,10 @@ import { getLogger } from "../../util/logger";
 import { isAddress } from "ethers/lib/utils";
 import { makeStyles } from "@material-ui/core/styles";
 import { useLocation } from 'react-router-dom'
+import { useNotificationModal } from "../../hooks/useNotificationModal";
 import { useState } from "react";
 import { useTeams } from "../../hooks/useTeams";
 import { useWeb3React } from "@web3-react/core";
-import { useNotificationModal } from "../../hooks/useNotificationModal";
 
 const useStyles = makeStyles(theme => ({
     content: {
@@ -242,35 +242,17 @@ export const Header: React.FC<Props> = (props: Props) => {
                 <React.Fragment>
                     {connected === true ?
                         <React.Fragment>
-                            <BorrowerCountdownContext.Consumer>
-                                {value =>
-                                    value.countdown === true ?
-                                        <Grid
-                                            item
-                                            sm
-                                        >
-                                            <Typography color="textSecondary">
-                                                Warp borrowing starts in
-                                    </Typography>
-                                            <Typography>
-                                                {value.countdownText}
-                                            </Typography>
-                                        </Grid>
-                                        :
-                                        null
-                                }
-                            </BorrowerCountdownContext.Consumer>
                             {(!onTeam && !tryingToJoinTeam) ?
                                 <React.Fragment>
                                     <Grid
                                         item
-                                        sm
+                                        xs
                                     >
                                         <CustomButton text={"Join a team"} type={"short"} onClick={handleTeamJoinOpen} />
                                     </Grid>
                                     <Grid
                                         item
-                                        sm
+                                        xs
                                     >
                                         <CustomButton text={"Create team"} onClick={handleTeamCreateOpen} type={"short"} />
                                     </Grid>
@@ -278,7 +260,7 @@ export const Header: React.FC<Props> = (props: Props) => {
                                 :
                                 <Grid
                                     item
-                                    sm
+                                    xs
                                 >
                                     <Card className={classes.teamCard}>
                                         <CardContent>
@@ -309,7 +291,7 @@ export const Header: React.FC<Props> = (props: Props) => {
                     }
                     <Grid
                         item
-                        sm={2}
+                        xs
                     >
                         {connected === true ?
                             <Typography>
@@ -330,7 +312,7 @@ export const Header: React.FC<Props> = (props: Props) => {
                     </Grid>
                     <Grid
                         item
-                        sm={2}
+                        xs
                     >
                         {connected === true ?
                             <Typography>
@@ -351,7 +333,7 @@ export const Header: React.FC<Props> = (props: Props) => {
                     </Grid>
                     <Grid
                         item
-                        sm={connected === true ? 2 : 4}
+                        xs
                     >
                         {connected === true ?
                             <Typography>
@@ -367,6 +349,27 @@ export const Header: React.FC<Props> = (props: Props) => {
                             </Typography> :
                             <Typography className={classes.link} color="textSecondary">
                                 Borrower
+                            </Typography>
+                        }
+                    </Grid>
+                    <Grid
+                        item
+                        xs
+                    >
+                        {connected === true ?
+                            <Typography>
+                                <RouterLink className={classes.routerLink} to={"/leaderboard"}>
+                                    <Link
+                                        className={pathName === "/leaderboard" ? classes.selectedLink : classes.link}
+                                        color="textSecondary"
+                                        href=""
+                                        underline="none">
+                                        NFTs
+                                    </Link>
+                                </RouterLink>
+                            </Typography> :
+                            <Typography className={classes.link} color="textSecondary">
+                                NFTs
                             </Typography>
                         }
                     </Grid>

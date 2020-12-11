@@ -35,6 +35,12 @@ export const Connect: React.FC<Props> = (props: Props) => {
         history.push("/dashboard");
     }
 
+    React.useEffect(() => {
+        if (context.account) {
+            history.push("/dashboard");
+        }
+    }, []);
+
     const connectToWallet = async (type: WalletType) => {
         if (type === WalletType.MetaMask) {
             await context.activate(connectors.MetaMask)

@@ -5,7 +5,73 @@ import BN from "bn.js";
 import { EventData, PastEventOptions } from "web3-eth-contract";
 
 export interface UsdtContract extends Truffle.Contract<UsdtInstance> {
-  "new"(meta?: Truffle.TransactionDetails): Promise<UsdtInstance>;
+  "new"(
+    _initialSupply: number | BN | string,
+    _name: string,
+    _symbol: string,
+    _decimals: number | BN | string,
+    meta?: Truffle.TransactionDetails
+  ): Promise<UsdtInstance>;
+}
+
+export interface Issue {
+  name: "Issue";
+  args: {
+    amount: BN;
+    0: BN;
+  };
+}
+
+export interface Redeem {
+  name: "Redeem";
+  args: {
+    amount: BN;
+    0: BN;
+  };
+}
+
+export interface Deprecate {
+  name: "Deprecate";
+  args: {
+    newAddress: string;
+    0: string;
+  };
+}
+
+export interface Params {
+  name: "Params";
+  args: {
+    feeBasisPoints: BN;
+    maxFee: BN;
+    0: BN;
+    1: BN;
+  };
+}
+
+export interface DestroyedBlackFunds {
+  name: "DestroyedBlackFunds";
+  args: {
+    _blackListedUser: string;
+    _balance: BN;
+    0: string;
+    1: BN;
+  };
+}
+
+export interface AddedBlackList {
+  name: "AddedBlackList";
+  args: {
+    _user: string;
+    0: string;
+  };
+}
+
+export interface RemovedBlackList {
+  name: "RemovedBlackList";
+  args: {
+    _user: string;
+    0: string;
+  };
 }
 
 export interface Approval {
@@ -17,16 +83,6 @@ export interface Approval {
     0: string;
     1: string;
     2: BN;
-  };
-}
-
-export interface OwnershipTransferred {
-  name: "OwnershipTransferred";
-  args: {
-    previousOwner: string;
-    newOwner: string;
-    0: string;
-    1: string;
   };
 }
 
@@ -42,123 +98,66 @@ export interface Transfer {
   };
 }
 
-type AllEvents = Approval | OwnershipTransferred | Transfer;
+export interface Pause {
+  name: "Pause";
+  args: {};
+}
+
+export interface Unpause {
+  name: "Unpause";
+  args: {};
+}
+
+type AllEvents =
+  | Issue
+  | Redeem
+  | Deprecate
+  | Params
+  | DestroyedBlackFunds
+  | AddedBlackList
+  | RemovedBlackList
+  | Approval
+  | Transfer
+  | Pause
+  | Unpause;
 
 export interface UsdtInstance extends Truffle.ContractInstance {
-  /**
-   * See {IERC20-allowance}.
-   */
-  allowance(
-    owner: string,
-    spender: string,
-    txDetails?: Truffle.TransactionDetails
-  ): Promise<BN>;
-
-  /**
-   * See {IERC20-approve}.     * Requirements:     * - `spender` cannot be the zero address.
-   */
-  approve: {
-    (
-      spender: string,
-      amount: number | BN | string,
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<Truffle.TransactionResponse<AllEvents>>;
-    call(
-      spender: string,
-      amount: number | BN | string,
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<boolean>;
-    sendTransaction(
-      spender: string,
-      amount: number | BN | string,
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<string>;
-    estimateGas(
-      spender: string,
-      amount: number | BN | string,
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<number>;
-  };
-
-  /**
-   * See {IERC20-balanceOf}.
-   */
-  balanceOf(
-    account: string,
-    txDetails?: Truffle.TransactionDetails
-  ): Promise<BN>;
-
-  /**
-   * Returns the number of decimals used to get its user representation. For example, if `decimals` equals `2`, a balance of `505` tokens should be displayed to a user as `5,05` (`505 / 10 ** 2`).     * Tokens usually opt for a value of 18, imitating the relationship between Ether and Wei. This is the value {ERC20} uses, unless {_setupDecimals} is called.     * NOTE: This information is only used for _display_ purposes: it in no way affects any of the arithmetic of the contract, including {IERC20-balanceOf} and {IERC20-transfer}.
-   */
-  decimals(txDetails?: Truffle.TransactionDetails): Promise<BN>;
-
-  /**
-   * Atomically decreases the allowance granted to `spender` by the caller.     * This is an alternative to {approve} that can be used as a mitigation for problems described in {IERC20-approve}.     * Emits an {Approval} event indicating the updated allowance.     * Requirements:     * - `spender` cannot be the zero address. - `spender` must have allowance for the caller of at least `subtractedValue`.
-   */
-  decreaseAllowance: {
-    (
-      spender: string,
-      subtractedValue: number | BN | string,
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<Truffle.TransactionResponse<AllEvents>>;
-    call(
-      spender: string,
-      subtractedValue: number | BN | string,
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<boolean>;
-    sendTransaction(
-      spender: string,
-      subtractedValue: number | BN | string,
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<string>;
-    estimateGas(
-      spender: string,
-      subtractedValue: number | BN | string,
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<number>;
-  };
-
-  /**
-   * Atomically increases the allowance granted to `spender` by the caller.     * This is an alternative to {approve} that can be used as a mitigation for problems described in {IERC20-approve}.     * Emits an {Approval} event indicating the updated allowance.     * Requirements:     * - `spender` cannot be the zero address.
-   */
-  increaseAllowance: {
-    (
-      spender: string,
-      addedValue: number | BN | string,
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<Truffle.TransactionResponse<AllEvents>>;
-    call(
-      spender: string,
-      addedValue: number | BN | string,
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<boolean>;
-    sendTransaction(
-      spender: string,
-      addedValue: number | BN | string,
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<string>;
-    estimateGas(
-      spender: string,
-      addedValue: number | BN | string,
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<number>;
-  };
-
-  /**
-   * Returns the name of the token.
-   */
   name(txDetails?: Truffle.TransactionDetails): Promise<string>;
 
-  /**
-   * Returns the address of the current owner.
-   */
-  owner(txDetails?: Truffle.TransactionDetails): Promise<string>;
+  deprecated(txDetails?: Truffle.TransactionDetails): Promise<boolean>;
+
+  addBlackList: {
+    (_evilUser: string, txDetails?: Truffle.TransactionDetails): Promise<
+      Truffle.TransactionResponse<AllEvents>
+    >;
+    call(
+      _evilUser: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<void>;
+    sendTransaction(
+      _evilUser: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<string>;
+    estimateGas(
+      _evilUser: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<number>;
+  };
+
+  upgradedAddress(txDetails?: Truffle.TransactionDetails): Promise<string>;
+
+  balances(arg0: string, txDetails?: Truffle.TransactionDetails): Promise<BN>;
+
+  decimals(txDetails?: Truffle.TransactionDetails): Promise<BN>;
+
+  maximumFee(txDetails?: Truffle.TransactionDetails): Promise<BN>;
+
+  _totalSupply(txDetails?: Truffle.TransactionDetails): Promise<BN>;
 
   /**
-   * Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner.     * NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.
+   * called by the owner to unpause, returns to normal state
    */
-  renounceOwnership: {
+  unpause: {
     (txDetails?: Truffle.TransactionDetails): Promise<
       Truffle.TransactionResponse<AllEvents>
     >;
@@ -168,73 +167,69 @@ export interface UsdtInstance extends Truffle.ContractInstance {
   };
 
   /**
-   * Returns the symbol of the token, usually a shorter version of the name.
+   * //// Getters to allow the same blacklist to be used also by other contracts (including upgraded Tether) ///////
    */
+  getBlackListStatus(
+    _maker: string,
+    txDetails?: Truffle.TransactionDetails
+  ): Promise<boolean>;
+
+  allowed(
+    arg0: string,
+    arg1: string,
+    txDetails?: Truffle.TransactionDetails
+  ): Promise<BN>;
+
+  paused(txDetails?: Truffle.TransactionDetails): Promise<boolean>;
+
+  /**
+   * called by the owner to pause, triggers stopped state
+   */
+  pause: {
+    (txDetails?: Truffle.TransactionDetails): Promise<
+      Truffle.TransactionResponse<AllEvents>
+    >;
+    call(txDetails?: Truffle.TransactionDetails): Promise<void>;
+    sendTransaction(txDetails?: Truffle.TransactionDetails): Promise<string>;
+    estimateGas(txDetails?: Truffle.TransactionDetails): Promise<number>;
+  };
+
+  getOwner(txDetails?: Truffle.TransactionDetails): Promise<string>;
+
+  owner(txDetails?: Truffle.TransactionDetails): Promise<string>;
+
   symbol(txDetails?: Truffle.TransactionDetails): Promise<string>;
 
-  /**
-   * See {IERC20-totalSupply}.
-   */
-  totalSupply(txDetails?: Truffle.TransactionDetails): Promise<BN>;
+  basisPointsRate(txDetails?: Truffle.TransactionDetails): Promise<BN>;
 
-  /**
-   * See {IERC20-transfer}.     * Requirements:     * - `recipient` cannot be the zero address. - the caller must have a balance of at least `amount`.
-   */
-  transfer: {
-    (
-      recipient: string,
-      amount: number | BN | string,
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<Truffle.TransactionResponse<AllEvents>>;
+  isBlackListed(
+    arg0: string,
+    txDetails?: Truffle.TransactionDetails
+  ): Promise<boolean>;
+
+  removeBlackList: {
+    (_clearedUser: string, txDetails?: Truffle.TransactionDetails): Promise<
+      Truffle.TransactionResponse<AllEvents>
+    >;
     call(
-      recipient: string,
-      amount: number | BN | string,
+      _clearedUser: string,
       txDetails?: Truffle.TransactionDetails
-    ): Promise<boolean>;
+    ): Promise<void>;
     sendTransaction(
-      recipient: string,
-      amount: number | BN | string,
+      _clearedUser: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<string>;
     estimateGas(
-      recipient: string,
-      amount: number | BN | string,
+      _clearedUser: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<number>;
   };
 
-  /**
-   * See {IERC20-transferFrom}.     * Emits an {Approval} event indicating the updated allowance. This is not required by the EIP. See the note at the beginning of {ERC20};     * Requirements: - `sender` and `recipient` cannot be the zero address. - `sender` must have a balance of at least `amount`. - the caller must have allowance for ``sender``'s tokens of at least `amount`.
-   */
-  transferFrom: {
-    (
-      sender: string,
-      recipient: string,
-      amount: number | BN | string,
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<Truffle.TransactionResponse<AllEvents>>;
-    call(
-      sender: string,
-      recipient: string,
-      amount: number | BN | string,
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<boolean>;
-    sendTransaction(
-      sender: string,
-      recipient: string,
-      amount: number | BN | string,
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<string>;
-    estimateGas(
-      sender: string,
-      recipient: string,
-      amount: number | BN | string,
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<number>;
-  };
+  MAX_UINT(txDetails?: Truffle.TransactionDetails): Promise<BN>;
 
   /**
-   * Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.
+   * Allows the current owner to transfer control of the contract to a newOwner.
+   * @param newOwner The address to transfer ownership to.
    */
   transferOwnership: {
     (newOwner: string, txDetails?: Truffle.TransactionDetails): Promise<
@@ -254,167 +249,223 @@ export interface UsdtInstance extends Truffle.ContractInstance {
     ): Promise<number>;
   };
 
-  _Mint: {
-    (
-      _to: string,
-      _amount: number | BN | string,
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<Truffle.TransactionResponse<AllEvents>>;
+  destroyBlackFunds: {
+    (_blackListedUser: string, txDetails?: Truffle.TransactionDetails): Promise<
+      Truffle.TransactionResponse<AllEvents>
+    >;
     call(
-      _to: string,
-      _amount: number | BN | string,
+      _blackListedUser: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<void>;
     sendTransaction(
-      _to: string,
-      _amount: number | BN | string,
+      _blackListedUser: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<string>;
     estimateGas(
-      _to: string,
-      _amount: number | BN | string,
+      _blackListedUser: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<number>;
   };
 
-  _Burn: {
+  transfer: {
+    (
+      _to: string,
+      _value: number | BN | string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<Truffle.TransactionResponse<AllEvents>>;
+    call(
+      _to: string,
+      _value: number | BN | string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<void>;
+    sendTransaction(
+      _to: string,
+      _value: number | BN | string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<string>;
+    estimateGas(
+      _to: string,
+      _value: number | BN | string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<number>;
+  };
+
+  transferFrom: {
     (
       _from: string,
-      _amount: number | BN | string,
+      _to: string,
+      _value: number | BN | string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<Truffle.TransactionResponse<AllEvents>>;
     call(
       _from: string,
-      _amount: number | BN | string,
+      _to: string,
+      _value: number | BN | string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<void>;
     sendTransaction(
       _from: string,
-      _amount: number | BN | string,
+      _to: string,
+      _value: number | BN | string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<string>;
     estimateGas(
       _from: string,
-      _amount: number | BN | string,
+      _to: string,
+      _value: number | BN | string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<number>;
+  };
+
+  balanceOf(who: string, txDetails?: Truffle.TransactionDetails): Promise<BN>;
+
+  approve: {
+    (
+      _spender: string,
+      _value: number | BN | string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<Truffle.TransactionResponse<AllEvents>>;
+    call(
+      _spender: string,
+      _value: number | BN | string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<void>;
+    sendTransaction(
+      _spender: string,
+      _value: number | BN | string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<string>;
+    estimateGas(
+      _spender: string,
+      _value: number | BN | string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<number>;
+  };
+
+  allowance(
+    _owner: string,
+    _spender: string,
+    txDetails?: Truffle.TransactionDetails
+  ): Promise<BN>;
+
+  deprecate: {
+    (_upgradedAddress: string, txDetails?: Truffle.TransactionDetails): Promise<
+      Truffle.TransactionResponse<AllEvents>
+    >;
+    call(
+      _upgradedAddress: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<void>;
+    sendTransaction(
+      _upgradedAddress: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<string>;
+    estimateGas(
+      _upgradedAddress: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<number>;
+  };
+
+  totalSupply(txDetails?: Truffle.TransactionDetails): Promise<BN>;
+
+  issue: {
+    (
+      amount: number | BN | string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<Truffle.TransactionResponse<AllEvents>>;
+    call(
+      amount: number | BN | string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<void>;
+    sendTransaction(
+      amount: number | BN | string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<string>;
+    estimateGas(
+      amount: number | BN | string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<number>;
+  };
+
+  redeem: {
+    (
+      amount: number | BN | string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<Truffle.TransactionResponse<AllEvents>>;
+    call(
+      amount: number | BN | string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<void>;
+    sendTransaction(
+      amount: number | BN | string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<string>;
+    estimateGas(
+      amount: number | BN | string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<number>;
+  };
+
+  setParams: {
+    (
+      newBasisPoints: number | BN | string,
+      newMaxFee: number | BN | string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<Truffle.TransactionResponse<AllEvents>>;
+    call(
+      newBasisPoints: number | BN | string,
+      newMaxFee: number | BN | string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<void>;
+    sendTransaction(
+      newBasisPoints: number | BN | string,
+      newMaxFee: number | BN | string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<string>;
+    estimateGas(
+      newBasisPoints: number | BN | string,
+      newMaxFee: number | BN | string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<number>;
   };
 
   methods: {
-    /**
-     * See {IERC20-allowance}.
-     */
-    allowance(
-      owner: string,
-      spender: string,
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<BN>;
-
-    /**
-     * See {IERC20-approve}.     * Requirements:     * - `spender` cannot be the zero address.
-     */
-    approve: {
-      (
-        spender: string,
-        amount: number | BN | string,
-        txDetails?: Truffle.TransactionDetails
-      ): Promise<Truffle.TransactionResponse<AllEvents>>;
-      call(
-        spender: string,
-        amount: number | BN | string,
-        txDetails?: Truffle.TransactionDetails
-      ): Promise<boolean>;
-      sendTransaction(
-        spender: string,
-        amount: number | BN | string,
-        txDetails?: Truffle.TransactionDetails
-      ): Promise<string>;
-      estimateGas(
-        spender: string,
-        amount: number | BN | string,
-        txDetails?: Truffle.TransactionDetails
-      ): Promise<number>;
-    };
-
-    /**
-     * See {IERC20-balanceOf}.
-     */
-    balanceOf(
-      account: string,
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<BN>;
-
-    /**
-     * Returns the number of decimals used to get its user representation. For example, if `decimals` equals `2`, a balance of `505` tokens should be displayed to a user as `5,05` (`505 / 10 ** 2`).     * Tokens usually opt for a value of 18, imitating the relationship between Ether and Wei. This is the value {ERC20} uses, unless {_setupDecimals} is called.     * NOTE: This information is only used for _display_ purposes: it in no way affects any of the arithmetic of the contract, including {IERC20-balanceOf} and {IERC20-transfer}.
-     */
-    decimals(txDetails?: Truffle.TransactionDetails): Promise<BN>;
-
-    /**
-     * Atomically decreases the allowance granted to `spender` by the caller.     * This is an alternative to {approve} that can be used as a mitigation for problems described in {IERC20-approve}.     * Emits an {Approval} event indicating the updated allowance.     * Requirements:     * - `spender` cannot be the zero address. - `spender` must have allowance for the caller of at least `subtractedValue`.
-     */
-    decreaseAllowance: {
-      (
-        spender: string,
-        subtractedValue: number | BN | string,
-        txDetails?: Truffle.TransactionDetails
-      ): Promise<Truffle.TransactionResponse<AllEvents>>;
-      call(
-        spender: string,
-        subtractedValue: number | BN | string,
-        txDetails?: Truffle.TransactionDetails
-      ): Promise<boolean>;
-      sendTransaction(
-        spender: string,
-        subtractedValue: number | BN | string,
-        txDetails?: Truffle.TransactionDetails
-      ): Promise<string>;
-      estimateGas(
-        spender: string,
-        subtractedValue: number | BN | string,
-        txDetails?: Truffle.TransactionDetails
-      ): Promise<number>;
-    };
-
-    /**
-     * Atomically increases the allowance granted to `spender` by the caller.     * This is an alternative to {approve} that can be used as a mitigation for problems described in {IERC20-approve}.     * Emits an {Approval} event indicating the updated allowance.     * Requirements:     * - `spender` cannot be the zero address.
-     */
-    increaseAllowance: {
-      (
-        spender: string,
-        addedValue: number | BN | string,
-        txDetails?: Truffle.TransactionDetails
-      ): Promise<Truffle.TransactionResponse<AllEvents>>;
-      call(
-        spender: string,
-        addedValue: number | BN | string,
-        txDetails?: Truffle.TransactionDetails
-      ): Promise<boolean>;
-      sendTransaction(
-        spender: string,
-        addedValue: number | BN | string,
-        txDetails?: Truffle.TransactionDetails
-      ): Promise<string>;
-      estimateGas(
-        spender: string,
-        addedValue: number | BN | string,
-        txDetails?: Truffle.TransactionDetails
-      ): Promise<number>;
-    };
-
-    /**
-     * Returns the name of the token.
-     */
     name(txDetails?: Truffle.TransactionDetails): Promise<string>;
 
-    /**
-     * Returns the address of the current owner.
-     */
-    owner(txDetails?: Truffle.TransactionDetails): Promise<string>;
+    deprecated(txDetails?: Truffle.TransactionDetails): Promise<boolean>;
+
+    addBlackList: {
+      (_evilUser: string, txDetails?: Truffle.TransactionDetails): Promise<
+        Truffle.TransactionResponse<AllEvents>
+      >;
+      call(
+        _evilUser: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<void>;
+      sendTransaction(
+        _evilUser: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<string>;
+      estimateGas(
+        _evilUser: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<number>;
+    };
+
+    upgradedAddress(txDetails?: Truffle.TransactionDetails): Promise<string>;
+
+    balances(arg0: string, txDetails?: Truffle.TransactionDetails): Promise<BN>;
+
+    decimals(txDetails?: Truffle.TransactionDetails): Promise<BN>;
+
+    maximumFee(txDetails?: Truffle.TransactionDetails): Promise<BN>;
+
+    _totalSupply(txDetails?: Truffle.TransactionDetails): Promise<BN>;
 
     /**
-     * Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner.     * NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.
+     * called by the owner to unpause, returns to normal state
      */
-    renounceOwnership: {
+    unpause: {
       (txDetails?: Truffle.TransactionDetails): Promise<
         Truffle.TransactionResponse<AllEvents>
       >;
@@ -424,73 +475,69 @@ export interface UsdtInstance extends Truffle.ContractInstance {
     };
 
     /**
-     * Returns the symbol of the token, usually a shorter version of the name.
+     * //// Getters to allow the same blacklist to be used also by other contracts (including upgraded Tether) ///////
      */
+    getBlackListStatus(
+      _maker: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<boolean>;
+
+    allowed(
+      arg0: string,
+      arg1: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<BN>;
+
+    paused(txDetails?: Truffle.TransactionDetails): Promise<boolean>;
+
+    /**
+     * called by the owner to pause, triggers stopped state
+     */
+    pause: {
+      (txDetails?: Truffle.TransactionDetails): Promise<
+        Truffle.TransactionResponse<AllEvents>
+      >;
+      call(txDetails?: Truffle.TransactionDetails): Promise<void>;
+      sendTransaction(txDetails?: Truffle.TransactionDetails): Promise<string>;
+      estimateGas(txDetails?: Truffle.TransactionDetails): Promise<number>;
+    };
+
+    getOwner(txDetails?: Truffle.TransactionDetails): Promise<string>;
+
+    owner(txDetails?: Truffle.TransactionDetails): Promise<string>;
+
     symbol(txDetails?: Truffle.TransactionDetails): Promise<string>;
 
-    /**
-     * See {IERC20-totalSupply}.
-     */
-    totalSupply(txDetails?: Truffle.TransactionDetails): Promise<BN>;
+    basisPointsRate(txDetails?: Truffle.TransactionDetails): Promise<BN>;
 
-    /**
-     * See {IERC20-transfer}.     * Requirements:     * - `recipient` cannot be the zero address. - the caller must have a balance of at least `amount`.
-     */
-    transfer: {
-      (
-        recipient: string,
-        amount: number | BN | string,
-        txDetails?: Truffle.TransactionDetails
-      ): Promise<Truffle.TransactionResponse<AllEvents>>;
+    isBlackListed(
+      arg0: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<boolean>;
+
+    removeBlackList: {
+      (_clearedUser: string, txDetails?: Truffle.TransactionDetails): Promise<
+        Truffle.TransactionResponse<AllEvents>
+      >;
       call(
-        recipient: string,
-        amount: number | BN | string,
+        _clearedUser: string,
         txDetails?: Truffle.TransactionDetails
-      ): Promise<boolean>;
+      ): Promise<void>;
       sendTransaction(
-        recipient: string,
-        amount: number | BN | string,
+        _clearedUser: string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<string>;
       estimateGas(
-        recipient: string,
-        amount: number | BN | string,
+        _clearedUser: string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<number>;
     };
 
-    /**
-     * See {IERC20-transferFrom}.     * Emits an {Approval} event indicating the updated allowance. This is not required by the EIP. See the note at the beginning of {ERC20};     * Requirements: - `sender` and `recipient` cannot be the zero address. - `sender` must have a balance of at least `amount`. - the caller must have allowance for ``sender``'s tokens of at least `amount`.
-     */
-    transferFrom: {
-      (
-        sender: string,
-        recipient: string,
-        amount: number | BN | string,
-        txDetails?: Truffle.TransactionDetails
-      ): Promise<Truffle.TransactionResponse<AllEvents>>;
-      call(
-        sender: string,
-        recipient: string,
-        amount: number | BN | string,
-        txDetails?: Truffle.TransactionDetails
-      ): Promise<boolean>;
-      sendTransaction(
-        sender: string,
-        recipient: string,
-        amount: number | BN | string,
-        txDetails?: Truffle.TransactionDetails
-      ): Promise<string>;
-      estimateGas(
-        sender: string,
-        recipient: string,
-        amount: number | BN | string,
-        txDetails?: Truffle.TransactionDetails
-      ): Promise<number>;
-    };
+    MAX_UINT(txDetails?: Truffle.TransactionDetails): Promise<BN>;
 
     /**
-     * Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.
+     * Allows the current owner to transfer control of the contract to a newOwner.
+     * @param newOwner The address to transfer ownership to.
      */
     transferOwnership: {
       (newOwner: string, txDetails?: Truffle.TransactionDetails): Promise<
@@ -510,48 +557,184 @@ export interface UsdtInstance extends Truffle.ContractInstance {
       ): Promise<number>;
     };
 
-    _Mint: {
+    destroyBlackFunds: {
       (
-        _to: string,
-        _amount: number | BN | string,
+        _blackListedUser: string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<Truffle.TransactionResponse<AllEvents>>;
       call(
-        _to: string,
-        _amount: number | BN | string,
+        _blackListedUser: string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<void>;
       sendTransaction(
-        _to: string,
-        _amount: number | BN | string,
+        _blackListedUser: string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<string>;
       estimateGas(
-        _to: string,
-        _amount: number | BN | string,
+        _blackListedUser: string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<number>;
     };
 
-    _Burn: {
+    transfer: {
+      (
+        _to: string,
+        _value: number | BN | string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<Truffle.TransactionResponse<AllEvents>>;
+      call(
+        _to: string,
+        _value: number | BN | string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<void>;
+      sendTransaction(
+        _to: string,
+        _value: number | BN | string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<string>;
+      estimateGas(
+        _to: string,
+        _value: number | BN | string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<number>;
+    };
+
+    transferFrom: {
       (
         _from: string,
-        _amount: number | BN | string,
+        _to: string,
+        _value: number | BN | string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<Truffle.TransactionResponse<AllEvents>>;
       call(
         _from: string,
-        _amount: number | BN | string,
+        _to: string,
+        _value: number | BN | string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<void>;
       sendTransaction(
         _from: string,
-        _amount: number | BN | string,
+        _to: string,
+        _value: number | BN | string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<string>;
       estimateGas(
         _from: string,
-        _amount: number | BN | string,
+        _to: string,
+        _value: number | BN | string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<number>;
+    };
+
+    balanceOf(who: string, txDetails?: Truffle.TransactionDetails): Promise<BN>;
+
+    approve: {
+      (
+        _spender: string,
+        _value: number | BN | string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<Truffle.TransactionResponse<AllEvents>>;
+      call(
+        _spender: string,
+        _value: number | BN | string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<void>;
+      sendTransaction(
+        _spender: string,
+        _value: number | BN | string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<string>;
+      estimateGas(
+        _spender: string,
+        _value: number | BN | string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<number>;
+    };
+
+    allowance(
+      _owner: string,
+      _spender: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<BN>;
+
+    deprecate: {
+      (
+        _upgradedAddress: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<Truffle.TransactionResponse<AllEvents>>;
+      call(
+        _upgradedAddress: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<void>;
+      sendTransaction(
+        _upgradedAddress: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<string>;
+      estimateGas(
+        _upgradedAddress: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<number>;
+    };
+
+    totalSupply(txDetails?: Truffle.TransactionDetails): Promise<BN>;
+
+    issue: {
+      (
+        amount: number | BN | string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<Truffle.TransactionResponse<AllEvents>>;
+      call(
+        amount: number | BN | string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<void>;
+      sendTransaction(
+        amount: number | BN | string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<string>;
+      estimateGas(
+        amount: number | BN | string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<number>;
+    };
+
+    redeem: {
+      (
+        amount: number | BN | string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<Truffle.TransactionResponse<AllEvents>>;
+      call(
+        amount: number | BN | string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<void>;
+      sendTransaction(
+        amount: number | BN | string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<string>;
+      estimateGas(
+        amount: number | BN | string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<number>;
+    };
+
+    setParams: {
+      (
+        newBasisPoints: number | BN | string,
+        newMaxFee: number | BN | string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<Truffle.TransactionResponse<AllEvents>>;
+      call(
+        newBasisPoints: number | BN | string,
+        newMaxFee: number | BN | string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<void>;
+      sendTransaction(
+        newBasisPoints: number | BN | string,
+        newMaxFee: number | BN | string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<string>;
+      estimateGas(
+        newBasisPoints: number | BN | string,
+        newMaxFee: number | BN | string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<number>;
     };

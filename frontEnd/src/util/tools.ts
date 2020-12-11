@@ -82,3 +82,17 @@ export const countDecimals = function (num: number | string) {
   
   return splitOnDecimal[1].length || 0; 
 }
+
+const dateFormat = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/;
+
+export const dateReviver = (key: any, value: any): any =>  {
+  if (typeof value === "string" && dateFormat.test(value)) {
+    return new Date(value);
+  }
+
+  return value;
+}
+
+export function lowercaseFirstLetter(value: string){
+  return value[0].toLowerCase() + value.slice(1);
+}

@@ -61,13 +61,10 @@ abstract contract WarpVaultSCI {
 
     function setNewInterestModel(address _newModel) public virtual;
 
-
-    function transferOwnership(address _newOwner) public virtual;
-
     function getSCDecimals() public view virtual returns(uint8);
     function getSCAddress() public view virtual returns(address);
 
-    function upgrade(address _warpControl) public virtual;
+    function updateWarpControl(address _warpControl) public virtual;
     function updateTeam(address _warpTeam) public virtual;
 
 }

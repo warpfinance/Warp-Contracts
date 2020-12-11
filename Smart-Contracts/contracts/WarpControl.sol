@@ -37,7 +37,7 @@ contract WarpControl is Ownable, Exponential {
 
     mapping(address => address) public instanceLPTracker; //maps LP token address to the assets WarpVault
     mapping(address => address) public instanceSCTracker;
-    mapping(address => address) public getVaultByAsset;
+    mapping(address => address) public getAssetByVault;
     mapping(address => uint) public lockedLPValue;
     mapping(address => bool) public isVault;
     mapping(address => address[]) public refferalCodeTracker;
@@ -48,7 +48,9 @@ contract WarpControl is Ownable, Exponential {
     mapping(address => address) public groupsYourIn;
 
     event NewLPVault(address _newVault);
+    event ImportedLPVault(address _vault);
     event NewSCVault(address _newVault, address _interestRateModel);
+    event ImportedSCVault(address _vault);
     event NewBorrow(address _borrower, address _StableCoin, uint _amountBorrowed);
     event NotCompliant(address _account, uint _time);
     event Liquidation(address _account, address liquidator);
@@ -57,15 +59,7 @@ contract WarpControl is Ownable, Exponential {
       @dev Throws if called by any account other than a warp vault
      */
     modifier onlyVault() {
-        require(isVault[msg.sender] == true);
-        _;
-    }
-
-    /**
-    @dev Throws if a function is called by anyone but the warp team
-    **/
-    modifier onlyWarpT() {
-        require(msg.sender == warpTeam);
+        require(isVault[msg.sender] == true, "Only a vault may call this");
         _;
     }
 
@@ -170,8 +164,19 @@ contract WarpControl is Ownable, Exponential {
         //set Warp vault address as an approved vault
         isVault[_WarpVault] = true;
         //track vault to asset
-        getVaultByAsset[_WarpVault] = _lp;
+        getAssetByVault[_WarpVault] = _lp;
         emit NewLPVault(_WarpVault);
+    }
+
+    function importLPVault(address _lpVault) public onlyOwner {
+        WarpVaultLPI _vault = WarpVaultLPI(_lpVault);
+        address _lp = _vault.getAssetAdd();
+
+        instanceLPTracker[_lp] = _lpVault;
+        lpVaults.push(_lpVault);
+        isVault[_lpVault] = true;
+        getAssetByVault[_lpVault] = _lp;
+        emit ImportedLPVault(_lpVault);
     }
 
     /**
@@ -220,8 +225,23 @@ contract WarpControl is Ownable, Exponential {
         //set Warp vault address as an approved vault
         isVault[_WarpVault] = true;
         //track vault to asset
-        getVaultByAsset[_WarpVault] = _StableCoin;
+        getAssetByVault[_WarpVault] = _StableCoin;
         emit NewSCVault(_WarpVault, IR);
+    }
+
+    function importSCVault(address _scVault) public onlyOwner {
+        WarpVaultSCI _vault = WarpVaultSCI(_scVault);
+        address _token = _vault.getSCAddress();
+
+        // track token -> vault
+        instanceSCTracker[_token] = _scVault;
+        // vault list
+        scVaults.push(_scVault);
+        // register vault in mapping
+        isVault[_scVault] = true;
+        // track vault -> token
+        getAssetByVault[_scVault] = _token;
+        emit ImportedSCVault(_scVault);
     }
 
     /**
@@ -555,7 +575,7 @@ contract WarpControl is Ownable, Exponential {
             WarpVaultSCI scVault = WarpVaultSCI(scVaults[i]);
             //retreive the borrowers borrow balance from this vault and add it to the scBalances array
             scBalances[i] = scVault.borrowBalanceCurrent(_borrower);
-            uint256 borrowedAmountInUSDC = viewPriceOfToken(getVaultByAsset[address(scVault)], scBalances[i]);
+            uint256 borrowedAmountInUSDC = viewPriceOfToken(getAssetByVault[address(scVault)], scBalances[i]);
 
             //add the borrowed amount to the total borrowed balance
             borrowedAmount = borrowedAmount.add(borrowedAmountInUSDC);
@@ -601,7 +621,7 @@ contract WarpControl is Ownable, Exponential {
         uint256 _multiplierPerYear,
         uint256 _jumpMultiplierPerYear,
         uint256 _optimal
-      ) public onlyWarpT {
+      ) public onlyOwner {
       address IR = address(
           new JumpRateModelV2(
               _baseRatePerYear,
@@ -620,9 +640,9 @@ contract WarpControl is Ownable, Exponential {
     @notice startUpgradeTimer starts a two day timer signaling that this contract will soon be updated to a new version
     @param _newWarpControl is the address of the new Warp control contract being upgraded to
     **/
-    function startUpgradeTimer(address _newWarpControl) public onlyWarpT{
-      newWarpControl = _newWarpControl;
-      graceSpace = now.add(172800);
+    function startUpgradeTimer(address _newWarpControl) public onlyOwner {
+        newWarpControl = _newWarpControl;
+        graceSpace = now.add(172800);
     }
 
     /**
@@ -630,9 +650,8 @@ contract WarpControl is Ownable, Exponential {
     **/
     function upgradeWarp() public onlyOwner {
         require(now >= graceSpace, "you cant ugrade yet, less than two days");
+        require(newWarpControl != address(0), "no new warp control set");
 
-        WVLPF.transferOwnership(newWarpControl);
-        WVSCF.transferOwnership(newWarpControl);
         Oracle.transferOwnership(newWarpControl);
 
         uint256 numVaults = lpVaults.length;
@@ -640,14 +659,12 @@ contract WarpControl is Ownable, Exponential {
 
         for (uint256 i = 0; i < numVaults; ++i) {
             WarpVaultLPI vault = WarpVaultLPI(lpVaults[i]);
-            vault.upgrade(newWarpControl);
-            vault.transferOwnership(newWarpControl);
+            vault.updateWarpControl(newWarpControl);
         }
 
         for (uint256 i = 0; i < numSCVaults; ++i) {
             WarpVaultSCI vault = WarpVaultSCI(scVaults[i]);
-            vault.upgrade(newWarpControl);
-            vault.transferOwnership(newWarpControl);
+            vault.updateWarpControl(newWarpControl);
         }
   }
 
@@ -662,6 +679,6 @@ contract WarpControl is Ownable, Exponential {
             WarpVaultSCI WVSC = WarpVaultSCI(scVaults[i]);
             WVSC.updateTeam(_newWarp);
         }
-      
+
     }
 }

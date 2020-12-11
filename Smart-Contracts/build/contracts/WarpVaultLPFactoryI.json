@@ -29,41 +29,28 @@
       ],
       "stateMutability": "nonpayable",
       "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "_newOwner",
-          "type": "address"
-        }
-      ],
-      "name": "transferOwnership",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
     }
   ],
-  "metadata": "{\"compiler\":{\"version\":\"0.6.6+commit.6c089d02\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_timelock\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"_lp\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"_lpName\",\"type\":\"string\"}],\"name\":\"createWarpVaultLP\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_newOwner\",\"type\":\"address\"}],\"name\":\"transferOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"methods\":{\"createWarpVaultLP(uint256,address,string)\":{\"params\":{\"_lp\":\"is the address for the LP token this Warp Vault will manage\",\"_lpName\":\"is the name of the LP token (ex:wETH-wBTC)*\"}}}},\"userdoc\":{\"methods\":{\"createWarpVaultLP(uint256,address,string)\":{\"notice\":\"createWarpVaultLP allows the contract owner to create a new WarpVaultLP contract for a specific LP token\"}},\"notice\":\"The WarpVaultLPFactory contract is designed to produce individual WarpVaultLP contracts This contract uses the OpenZeppelin contract Library to inherit functions from Ownable.sol*\"}},\"settings\":{\"compilationTarget\":{\"/E/dOrg/warp/Smart-Contracts/contracts/interfaces/WarpVaultLPFactoryI.sol\":\"WarpVaultLPFactoryI\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"/E/dOrg/warp/Smart-Contracts/contracts/interfaces/WarpVaultLPFactoryI.sol\":{\"keccak256\":\"0x29ad7cc33b8824e42640c88a8a311ef98ec97afc51903cbd4ea7de3f1cacfb28\",\"urls\":[\"bzz-raw://b0275b65240406e2f62118fe239581d2b1872475837b5184c6d73f7c5d77eea6\",\"dweb:/ipfs/QmbGGfUNNY7WVD5TQTNFNPstTM8yJ6AsZuyTWfZDpXf85j\"]}},\"version\":1}",
+  "metadata": "{\"compiler\":{\"version\":\"0.6.6+commit.6c089d02\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_timelock\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"_lp\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"_lpName\",\"type\":\"string\"}],\"name\":\"createWarpVaultLP\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"methods\":{\"createWarpVaultLP(uint256,address,string)\":{\"params\":{\"_lp\":\"is the address for the LP token this Warp Vault will manage\",\"_lpName\":\"is the name of the LP token (ex:wETH-wBTC)*\"}}}},\"userdoc\":{\"methods\":{\"createWarpVaultLP(uint256,address,string)\":{\"notice\":\"createWarpVaultLP allows the contract owner to create a new WarpVaultLP contract for a specific LP token\"}},\"notice\":\"The WarpVaultLPFactory contract is designed to produce individual WarpVaultLP contracts*\"}},\"settings\":{\"compilationTarget\":{\"/E/dOrg/warp/Smart-Contracts/contracts/interfaces/WarpVaultLPFactoryI.sol\":\"WarpVaultLPFactoryI\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"/E/dOrg/warp/Smart-Contracts/contracts/interfaces/WarpVaultLPFactoryI.sol\":{\"keccak256\":\"0xf5849fd6b35c18441170679f40d5719e32de944dac71c97d63461b95e3fdb8cc\",\"urls\":[\"bzz-raw://b4253b6d7ac815f83b640c51ead1919f248944b2458e1962a4386e5a18d823ad\",\"dweb:/ipfs/QmVr6ofcPcZYrypSFjjGzA4Fx6THvXHtRRCLErfDRMGppN\"]}},\"version\":1}",
   "bytecode": "0x",
   "deployedBytecode": "0x",
   "immutableReferences": {},
   "sourceMap": "",
   "deployedSourceMap": "",
-  "source": "pragma solidity ^0.6.0;\r\n\r\n////////////////////////////////////////////////////////////////////////////////////////////\r\n/// @title WarpVaultLPFactoryI\r\n/// @author Christopher Dixon\r\n////////////////////////////////////////////////////////////////////////////////////////////\r\n/**\r\nThe WarpVaultLPFactory contract is designed to produce individual WarpVaultLP contracts\r\nThis contract uses the OpenZeppelin contract Library to inherit functions from\r\n  Ownable.sol\r\n**/\r\n\r\nabstract contract WarpVaultLPFactoryI {\r\n    /**\r\n      @notice createWarpVaultLP allows the contract owner to create a new WarpVaultLP contract for a specific LP token\r\n      @param _lp is the address for the LP token this Warp Vault will manage\r\n      @param _lpName is the name of the LP token (ex:wETH-wBTC)\r\n      @param _lpName is the name of the LP token (ex:wETH-wBTC)\r\n      **/\r\n    function createWarpVaultLP(uint256 _timelock, address _lp, string memory _lpName)\r\n        public\r\n        virtual\r\n        returns (address);\r\n\r\n    function transferOwnership(address _newOwner) public virtual;\r\n\r\n}\r\n",
+  "source": "pragma solidity ^0.6.0;\r\n\r\n////////////////////////////////////////////////////////////////////////////////////////////\r\n/// @title WarpVaultLPFactoryI\r\n/// @author Christopher Dixon\r\n////////////////////////////////////////////////////////////////////////////////////////////\r\n/**\r\nThe WarpVaultLPFactory contract is designed to produce individual WarpVaultLP contracts\r\n**/\r\n\r\nabstract contract WarpVaultLPFactoryI {\r\n    /**\r\n      @notice createWarpVaultLP allows the contract owner to create a new WarpVaultLP contract for a specific LP token\r\n      @param _lp is the address for the LP token this Warp Vault will manage\r\n      @param _lpName is the name of the LP token (ex:wETH-wBTC)\r\n      @param _lpName is the name of the LP token (ex:wETH-wBTC)\r\n      **/\r\n    function createWarpVaultLP(uint256 _timelock, address _lp, string memory _lpName)\r\n        public\r\n        virtual\r\n        returns (address);\r\n\r\n}\r\n",
   "sourcePath": "E:\\dOrg\\warp\\Smart-Contracts\\contracts\\interfaces\\WarpVaultLPFactoryI.sol",
   "ast": {
     "absolutePath": "/E/dOrg/warp/Smart-Contracts/contracts/interfaces/WarpVaultLPFactoryI.sol",
     "exportedSymbols": {
       "WarpVaultLPFactoryI": [
-        7070
+        7035
       ]
     },
-    "id": 7071,
+    "id": 7036,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 7051,
+        "id": 7021,
         "literals": [
           "solidity",
           "^",
@@ -71,7 +58,7 @@
           ".0"
         ],
         "nodeType": "PragmaDirective",
-        "src": "0:23:23"
+        "src": "0:23:22"
       },
       {
         "abstract": true,
@@ -79,15 +66,15 @@
         "contractDependencies": [],
         "contractKind": "contract",
         "documentation": {
-          "id": 7052,
+          "id": 7022,
           "nodeType": "StructuredDocumentation",
-          "src": "278:192:23",
-          "text": "The WarpVaultLPFactory contract is designed to produce individual WarpVaultLP contracts\nThis contract uses the OpenZeppelin contract Library to inherit functions from\nOwnable.sol*"
+          "src": "278:97:22",
+          "text": "The WarpVaultLPFactory contract is designed to produce individual WarpVaultLP contracts*"
         },
         "fullyImplemented": false,
-        "id": 7070,
+        "id": 7035,
         "linearizedBaseContracts": [
-          7070
+          7035
         ],
         "name": "WarpVaultLPFactoryI",
         "nodeType": "ContractDefinition",
@@ -95,13 +82,13 @@
           {
             "body": null,
             "documentation": {
-              "id": 7053,
+              "id": 7023,
               "nodeType": "StructuredDocumentation",
-              "src": "519:342:23",
+              "src": "424:342:22",
               "text": "@notice createWarpVaultLP allows the contract owner to create a new WarpVaultLP contract for a specific LP token\n@param _lp is the address for the LP token this Warp Vault will manage\n@param _lpName is the name of the LP token (ex:wETH-wBTC)\n@param _lpName is the name of the LP token (ex:wETH-wBTC)*"
             },
             "functionSelector": "a8edf115",
-            "id": 7064,
+            "id": 7034,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
@@ -109,18 +96,18 @@
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
-              "id": 7060,
+              "id": 7030,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 7055,
+                  "id": 7025,
                   "mutability": "mutable",
                   "name": "_timelock",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 7064,
-                  "src": "894:17:23",
+                  "scope": 7034,
+                  "src": "799:17:22",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -128,10 +115,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 7054,
+                    "id": 7024,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "894:7:23",
+                    "src": "799:7:22",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -142,13 +129,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 7057,
+                  "id": 7027,
                   "mutability": "mutable",
                   "name": "_lp",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 7064,
-                  "src": "913:11:23",
+                  "scope": 7034,
+                  "src": "818:11:22",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -156,10 +143,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 7056,
+                    "id": 7026,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "913:7:23",
+                    "src": "818:7:22",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -171,13 +158,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 7059,
+                  "id": 7029,
                   "mutability": "mutable",
                   "name": "_lpName",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 7064,
-                  "src": "926:21:23",
+                  "scope": 7034,
+                  "src": "831:21:22",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
@@ -185,10 +172,10 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 7058,
+                    "id": 7028,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
-                    "src": "926:6:23",
+                    "src": "831:6:22",
                     "typeDescriptions": {
                       "typeIdentifier": "t_string_storage_ptr",
                       "typeString": "string"
@@ -198,21 +185,21 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "893:55:23"
+              "src": "798:55:22"
             },
             "returnParameters": {
-              "id": 7063,
+              "id": 7033,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 7062,
+                  "id": 7032,
                   "mutability": "mutable",
                   "name": "",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 7064,
-                  "src": "1000:7:23",
+                  "scope": 7034,
+                  "src": "905:7:22",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -220,10 +207,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 7061,
+                    "id": 7031,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1000:7:23",
+                    "src": "905:7:22",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -234,92 +221,33 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "999:9:23"
+              "src": "904:9:22"
             },
-            "scope": 7070,
-            "src": "867:142:23",
-            "stateMutability": "nonpayable",
-            "virtual": true,
-            "visibility": "public"
-          },
-          {
-            "body": null,
-            "documentation": null,
-            "functionSelector": "f2fde38b",
-            "id": 7069,
-            "implemented": false,
-            "kind": "function",
-            "modifiers": [],
-            "name": "transferOwnership",
-            "nodeType": "FunctionDefinition",
-            "overrides": null,
-            "parameters": {
-              "id": 7067,
-              "nodeType": "ParameterList",
-              "parameters": [
-                {
-                  "constant": false,
-                  "id": 7066,
-                  "mutability": "mutable",
-                  "name": "_newOwner",
-                  "nodeType": "VariableDeclaration",
-                  "overrides": null,
-                  "scope": 7069,
-                  "src": "1044:17:23",
-                  "stateVariable": false,
-                  "storageLocation": "default",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_address",
-                    "typeString": "address"
-                  },
-                  "typeName": {
-                    "id": 7065,
-                    "name": "address",
-                    "nodeType": "ElementaryTypeName",
-                    "src": "1044:7:23",
-                    "stateMutability": "nonpayable",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_address",
-                      "typeString": "address"
-                    }
-                  },
-                  "value": null,
-                  "visibility": "internal"
-                }
-              ],
-              "src": "1043:19:23"
-            },
-            "returnParameters": {
-              "id": 7068,
-              "nodeType": "ParameterList",
-              "parameters": [],
-              "src": "1077:0:23"
-            },
-            "scope": 7070,
-            "src": "1017:61:23",
+            "scope": 7035,
+            "src": "772:142:22",
             "stateMutability": "nonpayable",
             "virtual": true,
             "visibility": "public"
           }
         ],
-        "scope": 7071,
-        "src": "474:609:23"
+        "scope": 7036,
+        "src": "379:540:22"
       }
     ],
-    "src": "0:1085:23"
+    "src": "0:921:22"
   },
   "legacyAST": {
     "absolutePath": "/E/dOrg/warp/Smart-Contracts/contracts/interfaces/WarpVaultLPFactoryI.sol",
     "exportedSymbols": {
       "WarpVaultLPFactoryI": [
-        7070
+        7035
       ]
     },
-    "id": 7071,
+    "id": 7036,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 7051,
+        "id": 7021,
         "literals": [
           "solidity",
           "^",
@@ -327,7 +255,7 @@
           ".0"
         ],
         "nodeType": "PragmaDirective",
-        "src": "0:23:23"
+        "src": "0:23:22"
       },
       {
         "abstract": true,
@@ -335,15 +263,15 @@
         "contractDependencies": [],
         "contractKind": "contract",
         "documentation": {
-          "id": 7052,
+          "id": 7022,
           "nodeType": "StructuredDocumentation",
-          "src": "278:192:23",
-          "text": "The WarpVaultLPFactory contract is designed to produce individual WarpVaultLP contracts\nThis contract uses the OpenZeppelin contract Library to inherit functions from\nOwnable.sol*"
+          "src": "278:97:22",
+          "text": "The WarpVaultLPFactory contract is designed to produce individual WarpVaultLP contracts*"
         },
         "fullyImplemented": false,
-        "id": 7070,
+        "id": 7035,
         "linearizedBaseContracts": [
-          7070
+          7035
         ],
         "name": "WarpVaultLPFactoryI",
         "nodeType": "ContractDefinition",
@@ -351,13 +279,13 @@
           {
             "body": null,
             "documentation": {
-              "id": 7053,
+              "id": 7023,
               "nodeType": "StructuredDocumentation",
-              "src": "519:342:23",
+              "src": "424:342:22",
               "text": "@notice createWarpVaultLP allows the contract owner to create a new WarpVaultLP contract for a specific LP token\n@param _lp is the address for the LP token this Warp Vault will manage\n@param _lpName is the name of the LP token (ex:wETH-wBTC)\n@param _lpName is the name of the LP token (ex:wETH-wBTC)*"
             },
             "functionSelector": "a8edf115",
-            "id": 7064,
+            "id": 7034,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
@@ -365,18 +293,18 @@
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
-              "id": 7060,
+              "id": 7030,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 7055,
+                  "id": 7025,
                   "mutability": "mutable",
                   "name": "_timelock",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 7064,
-                  "src": "894:17:23",
+                  "scope": 7034,
+                  "src": "799:17:22",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -384,10 +312,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 7054,
+                    "id": 7024,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "894:7:23",
+                    "src": "799:7:22",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -398,13 +326,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 7057,
+                  "id": 7027,
                   "mutability": "mutable",
                   "name": "_lp",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 7064,
-                  "src": "913:11:23",
+                  "scope": 7034,
+                  "src": "818:11:22",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -412,10 +340,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 7056,
+                    "id": 7026,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "913:7:23",
+                    "src": "818:7:22",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -427,13 +355,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 7059,
+                  "id": 7029,
                   "mutability": "mutable",
                   "name": "_lpName",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 7064,
-                  "src": "926:21:23",
+                  "scope": 7034,
+                  "src": "831:21:22",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
@@ -441,10 +369,10 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 7058,
+                    "id": 7028,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
-                    "src": "926:6:23",
+                    "src": "831:6:22",
                     "typeDescriptions": {
                       "typeIdentifier": "t_string_storage_ptr",
                       "typeString": "string"
@@ -454,21 +382,21 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "893:55:23"
+              "src": "798:55:22"
             },
             "returnParameters": {
-              "id": 7063,
+              "id": 7033,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 7062,
+                  "id": 7032,
                   "mutability": "mutable",
                   "name": "",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 7064,
-                  "src": "1000:7:23",
+                  "scope": 7034,
+                  "src": "905:7:22",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -476,10 +404,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 7061,
+                    "id": 7031,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1000:7:23",
+                    "src": "905:7:22",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -490,79 +418,20 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "999:9:23"
+              "src": "904:9:22"
             },
-            "scope": 7070,
-            "src": "867:142:23",
-            "stateMutability": "nonpayable",
-            "virtual": true,
-            "visibility": "public"
-          },
-          {
-            "body": null,
-            "documentation": null,
-            "functionSelector": "f2fde38b",
-            "id": 7069,
-            "implemented": false,
-            "kind": "function",
-            "modifiers": [],
-            "name": "transferOwnership",
-            "nodeType": "FunctionDefinition",
-            "overrides": null,
-            "parameters": {
-              "id": 7067,
-              "nodeType": "ParameterList",
-              "parameters": [
-                {
-                  "constant": false,
-                  "id": 7066,
-                  "mutability": "mutable",
-                  "name": "_newOwner",
-                  "nodeType": "VariableDeclaration",
-                  "overrides": null,
-                  "scope": 7069,
-                  "src": "1044:17:23",
-                  "stateVariable": false,
-                  "storageLocation": "default",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_address",
-                    "typeString": "address"
-                  },
-                  "typeName": {
-                    "id": 7065,
-                    "name": "address",
-                    "nodeType": "ElementaryTypeName",
-                    "src": "1044:7:23",
-                    "stateMutability": "nonpayable",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_address",
-                      "typeString": "address"
-                    }
-                  },
-                  "value": null,
-                  "visibility": "internal"
-                }
-              ],
-              "src": "1043:19:23"
-            },
-            "returnParameters": {
-              "id": 7068,
-              "nodeType": "ParameterList",
-              "parameters": [],
-              "src": "1077:0:23"
-            },
-            "scope": 7070,
-            "src": "1017:61:23",
+            "scope": 7035,
+            "src": "772:142:22",
             "stateMutability": "nonpayable",
             "virtual": true,
             "visibility": "public"
           }
         ],
-        "scope": 7071,
-        "src": "474:609:23"
+        "scope": 7036,
+        "src": "379:540:22"
       }
     ],
-    "src": "0:1085:23"
+    "src": "0:921:22"
   },
   "compiler": {
     "name": "solc",
@@ -570,7 +439,7 @@
   },
   "networks": {},
   "schemaVersion": "3.3.2",
-  "updatedAt": "2020-12-10T00:48:51.579Z",
+  "updatedAt": "2020-12-11T00:35:02.120Z",
   "devdoc": {
     "methods": {
       "createWarpVaultLP(uint256,address,string)": {
@@ -587,6 +456,6 @@
         "notice": "createWarpVaultLP allows the contract owner to create a new WarpVaultLP contract for a specific LP token"
       }
     },
-    "notice": "The WarpVaultLPFactory contract is designed to produce individual WarpVaultLP contracts This contract uses the OpenZeppelin contract Library to inherit functions from Ownable.sol*"
+    "notice": "The WarpVaultLPFactory contract is designed to produce individual WarpVaultLP contracts*"
   }
 }

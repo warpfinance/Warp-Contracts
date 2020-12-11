@@ -14,7 +14,7 @@ interface Props {
     error: boolean,
     focusedAmountId: string | undefined,
     onButtonClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void,
-    onBlur: (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>)=> void,
+    onBlur: (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void,
     onChange: any,
     onFocus: (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void,
     type: "lend" | "withdraw",
@@ -54,7 +54,7 @@ export const LenderTable: React.FC<Props> = (props: Props) => {
                     </TableHead>
                     <TableBody>
                         {props.data.map((row: any) => (
-                            <LenderStableCoinRow 
+                            <LenderStableCoinRow
                                 token={row}
                                 error={props.error}
                                 focusedAmountId={props.focusedAmountId}
