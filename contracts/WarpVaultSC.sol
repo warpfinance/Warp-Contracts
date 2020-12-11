@@ -53,6 +53,9 @@ contract WarpVaultSC is Exponential {
     event StableCoinWithdraw(address _lender, uint _amountWithdrawn, uint _amountOfWarpBurnt);
     event LoanRepayed(address _borrower, uint _repayAmount, uint remainingPrinciple, uint remainingInterest);
     event ReserveWithdraw(uint _amount);
+    event InterestShortCircuit(uint256 _blockNumber);
+    event WarpControlChanged(address _newControl, address _oldControl);
+    event WarpTeamChanged(address _newTeam, address _newControl);
 
     /**
     @notice struct for borrow balance information
@@ -75,18 +78,18 @@ contract WarpVaultSC is Exponential {
     /**
     @dev Throws if a function is called before the time wizard allows it
     **/
-        modifier angryWizard() {
-            require(now > timeWizard);
-            _;
-        }
+    modifier angryWizard() {
+        require(now > timeWizard);
+        _;
+    }
 
     /**
     @dev Throws if a function is called by anyone but the warp team
     **/
-        modifier onlyWarpT() {
-              require(msg.sender == warpTeam);
-              _;
-          }
+    modifier onlyWarpT() {
+            require(msg.sender == warpTeam);
+            _;
+        }
 
     /**
     @notice constructor sets up token names and symbols for the WarpWrapperToken
@@ -139,10 +142,12 @@ contract WarpVaultSC is Exponential {
     @dev this is a protected function that can only be called by the WarpControl contract
     **/
     function updateWarpControl(address _warpControl) public onlyWarpControl {
+        emit WarpControlChanged(_warpControl, address(warpControl));
         warpControl = WarpControlI(_warpControl);
     }
 
     function updateTeam(address _team) public onlyWarpControl {
+        emit WarpTeamChanged(_team, warpTeam);
         warpTeam = _team;
     }
 
@@ -200,8 +205,13 @@ contract WarpVaultSC is Exponential {
         //Remember the initial block number
         uint256 currentBlockNumber = getBlockNumber();
         uint256 accrualBlockNumberPrior = accrualBlockNumber;
+
         //Short-circuit accumulating 0 interest
-        require(accrualBlockNumberPrior != currentBlockNumber, "Trying to accrue interest twice");
+        if (accrualBlockNumberPrior == currentBlockNumber) {
+            emit InterestShortCircuit(currentBlockNumber);
+            return;
+        }
+
         //Read the previous values out of storage
         uint256 cashPrior = getCashPrior();
         uint256 borrowsPrior = totalBorrows;
