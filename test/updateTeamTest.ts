@@ -167,6 +167,7 @@ contract("Upgrade test", function(accounts) {
     await oracleFactory.transferOwnership(warpControl.address);
 
     await utils.increaseTime(ONE_DAY / 2);
+    await utils.advanceTime(10000);
 
     await warpControl.createNewLPVault(
       0,

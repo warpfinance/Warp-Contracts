@@ -156,6 +156,7 @@ contract("Upgrade test", function(accounts) {
     );
 
     await utils.increaseTime(ONE_DAY / 2);
+    await utils.advanceTime(10000);
 
     const warpControl = await WarpControl.new(
       oracleFactory.address,
