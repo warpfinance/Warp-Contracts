@@ -3,17 +3,18 @@ import * as React from "react";
 import { DashboardTable, Header, InformationCard } from "../../components";
 import { Grid, LinearProgress, Typography } from "@material-ui/core";
 
+import { BorrowerCountdownContext } from "../../hooks/borrowerCountdown";
 import { makeStyles } from "@material-ui/core/styles";
-import { useStableCoinTokens } from "../../hooks/useStableCoins";
-import { useConnectedWeb3Context } from "../../hooks/connectedWeb3";
-import { useLPTokens } from "../../hooks/useLPTokens";
-import { useTotalLentAmount } from "../../hooks/useTotalLentAmount";
-import { useUSDCToken } from "../../hooks/useUSDC";
-import { useWarpControl } from "../../hooks/useWarpControl";
+import { parseBigNumber } from "../../util/tools";
 import { useBorrowLimit } from "../../hooks/useBorrowLimit";
 import { useCombinedBorrowRate } from "../../hooks/useCombinedBorrowRate";
 import { useCombinedSupplyRate } from "../../hooks/useCombinedSupplyRate";
-import { parseBigNumber } from "../../util/tools";
+import { useConnectedWeb3Context } from "../../hooks/connectedWeb3";
+import { useLPTokens } from "../../hooks/useLPTokens";
+import { useStableCoinTokens } from "../../hooks/useStableCoins";
+import { useTotalLentAmount } from "../../hooks/useTotalLentAmount";
+import { useUSDCToken } from "../../hooks/useUSDC";
+import { useWarpControl } from "../../hooks/useWarpControl";
 
 const useStyles = makeStyles(theme => ({
     progress: {
@@ -28,14 +29,14 @@ interface Props { }
 
 export const Dashboard: React.FC<Props> = (props: Props) => {
     const classes = useStyles();
-    
+
     const context = useConnectedWeb3Context();
     const stableCoins = useStableCoinTokens(context);
     const lpTokens = useLPTokens(context);
-    const {control} = useWarpControl(context);
+    const { control } = useWarpControl(context);
     const usdc = useUSDCToken(context);
     const supplyBalance = useTotalLentAmount(context, control, usdc);
-    const {totalBorrowedAmount, borrowLimit} = useBorrowLimit(context, control);
+    const { totalBorrowedAmount, borrowLimit } = useBorrowLimit(context, control);
     const combinedBorrowRate = useCombinedBorrowRate(context, control, stableCoins, usdc);
     const combinedSupplyRate = useCombinedSupplyRate(context, control, stableCoins, usdc);
 
@@ -76,6 +77,27 @@ export const Dashboard: React.FC<Props> = (props: Props) => {
             spacing={5}
         >
             <Header />
+            <BorrowerCountdownContext.Consumer>
+                {value =>
+                    value.countdown === true ?
+                        <Grid
+                            item
+                            container
+                            direction="row"
+                            justify="center"
+                            alignItems="center"
+                        >
+                            <Typography color="textSecondary">
+                                Warp borrowing starts in
+                                    </Typography>
+                            <Typography>
+                                {value.countdownText}
+                            </Typography>
+                        </Grid>
+                        :
+                        null
+                }
+            </BorrowerCountdownContext.Consumer>
             <Grid
                 item
                 container
@@ -87,7 +109,7 @@ export const Dashboard: React.FC<Props> = (props: Props) => {
                     <InformationCard header="Lending balance (in USDC)" text={`$${data.lendingBalance.toFixed(2)}`} />
                 </Grid>
                 <Grid item>
-                    <InformationCard header="Net APY" text={`${data.netApy.toLocaleString(undefined, {maximumFractionDigits: 2})}%`} />
+                    <InformationCard header="Net APY" text={`${data.netApy.toLocaleString(undefined, { maximumFractionDigits: 2 })}%`} />
                 </Grid>
                 <Grid item>
                     <InformationCard header="Borrow balance (in USDC)" text={`$${data.borrowBalance.toFixed(2)}`} />

@@ -1,11 +1,12 @@
 import * as React from "react";
 
 import { AmountModal, AuthorizationModal, BigModal, BorrowerTable, Header, InformationCard, NotificationModal, RowModal, TransactionModal } from "../../components";
+import { Grid, Typography } from "@material-ui/core";
 import { convertNumberToBigNumber, countDecimals, formatBigNumber, isAddress, parseBigNumber } from "../../util/tools";
 
 import { BigNumber } from "ethers";
+import { BorrowerCountdownContext } from "../../hooks/borrowerCountdown";
 import { ERC20Service } from "../../services/erc20";
-import { Grid } from "@material-ui/core";
 import { StableCoinWarpVaultService } from "../../services/stableCoinWarpVault";
 import { Token } from "../../util/token";
 import { TransactionInfo } from "../../util/types";
@@ -37,7 +38,7 @@ export const Borrower: React.FC<Props> = (props: Props) => {
     const { totalBorrowedAmount, borrowLimit } = useBorrowLimit(context, control, refreshToken);
     const combinedBorrowRate = useCombinedBorrowRate(context, control, stableCoins, usdcToken, refreshToken);
     const [newBorrowLimitUsed, setNewBorrowLimitUsed] = useState(0);
-    const [ authType, setAuthType ] = React.useState<"sc" | "lp">("sc");
+    const [authType, setAuthType] = React.useState<"sc" | "lp">("sc");
 
     const data = {
         collateral: parseBigNumber(borrowLimit, usdcToken?.decimals),
@@ -106,7 +107,7 @@ export const Borrower: React.FC<Props> = (props: Props) => {
         }
 
         setRepayError(!repayMax && isRepayError(repayAmountValue, currentToken));
-    
+
         if (!withdrawLpValue.eq(BigNumber.from(0))) {
             setWithdrawError(!withdrawMax && isWithdrawError(withdrawLpValue, currentToken));
         }
@@ -182,7 +183,7 @@ export const Borrower: React.FC<Props> = (props: Props) => {
         const index = lpTokens.findIndex((elem: any) => elem === token);
         if (index < 0) return true;
         if (value.lte(BigNumber.from(0)) ||
-            value.gt(vaultAmount) || value.gt(maxWithdrawAmount)) { 
+            value.gt(vaultAmount) || value.gt(maxWithdrawAmount)) {
             return true;
         }
         return false;
@@ -241,7 +242,7 @@ export const Borrower: React.FC<Props> = (props: Props) => {
         setBorrowModalOpen(true);
         setCurrentToken(token);
         setBorrowTokenAmount(0);
-        
+
     }
 
     const onProvideClick = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, token: Token, walletAmount: BigNumber, vaultAmount: BigNumber) => {
@@ -299,17 +300,17 @@ export const Borrower: React.FC<Props> = (props: Props) => {
 
             await info.finished;
             setTransactionModalOpen(false);
-        } catch(e) {
+        } catch (e) {
             let reason = `${e.message}`;
             if (e.data) {
                 reason += `\n${e.data.message}`;
             }
             logger.error(`\nTransaction Failed!  Reason:\n${reason}`);
-            
+
             notifyError(`Transaction failed to submit. Please try again later.`);
             setTransactionModalOpen(false);
         }
-        
+
     }
 
     const onAuth = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
@@ -357,7 +358,7 @@ export const Borrower: React.FC<Props> = (props: Props) => {
             setTransactionModalOpen(false);
             notifyError("Failed to borrow, please try again later.");
         }
-        
+
     }
 
     const onProvide = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
@@ -427,7 +428,7 @@ export const Borrower: React.FC<Props> = (props: Props) => {
         await handleTransaction(tx);
         refresh();
     }
-    
+
     const onRepayMax = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
         setRepayMax(true);
         logger.log(`Set repay to max of ${parseBigNumber(borrowedAmount, currentToken.decimals).toFixed(currentToken.decimals)} (${borrowedAmount.toString()})`);
@@ -439,7 +440,7 @@ export const Borrower: React.FC<Props> = (props: Props) => {
         const targetVault = await control.getLPVault(currentToken.address);
         const lpVault = new WarpLPVaultService(context.library, context.account, targetVault);
 
-       
+
         let tx: Maybe<Promise<TransactionInfo>> = null;
 
         if (withdrawMax) {
@@ -481,6 +482,27 @@ export const Borrower: React.FC<Props> = (props: Props) => {
                 spacing={5}
             >
                 <Header />
+                <BorrowerCountdownContext.Consumer>
+                    {value =>
+                        value.countdown === true ?
+                            <Grid
+                                item
+                                container
+                                direction="row"
+                                justify="center"
+                                alignItems="center"
+                            >
+                                <Typography color="textSecondary">
+                                    Warp borrowing starts in
+                                    </Typography>
+                                <Typography>
+                                    {value.countdownText}
+                                </Typography>
+                            </Grid>
+                            :
+                            null
+                    }
+                </BorrowerCountdownContext.Consumer>
                 <Grid
                     item
                     container
