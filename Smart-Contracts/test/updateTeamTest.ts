@@ -140,6 +140,7 @@ contract("Upgrade test", function(accounts) {
       minimumLiquidity
     );
     await ethCPair.mint(accounts[0]);
+    await ethCPair.sync();
 
     const uniRouter = await UniswapV2Router02.new(
       uniFactory.address,
@@ -164,6 +165,8 @@ contract("Upgrade test", function(accounts) {
       originalTeam
     );
     await oracleFactory.transferOwnership(warpControl.address);
+
+    await utils.increaseTime(ONE_DAY / 2);
 
     await warpControl.createNewLPVault(
       0,

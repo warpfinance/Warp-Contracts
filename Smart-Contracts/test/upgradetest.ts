@@ -140,6 +140,7 @@ contract("Upgrade test", function(accounts) {
       minimumLiquidity
     );
     await ethCPair.mint(accounts[0]);
+    await ethCPair.sync();
 
     const uniRouter = await UniswapV2Router02.new(
       uniFactory.address,
@@ -153,6 +154,8 @@ contract("Upgrade test", function(accounts) {
       uniFactory.address,
       uniRouter.address
     );
+
+    await utils.increaseTime(ONE_DAY / 2);
 
     const warpControl = await WarpControl.new(
       oracleFactory.address,
