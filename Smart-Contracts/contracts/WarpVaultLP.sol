@@ -30,7 +30,10 @@ contract WarpVaultLP {
     mapping(address => uint256) public collateralizedLP;
 
     event CollateralProvided(address _account, uint _amount);
-    event CollateralWithdraw(address _account, uint amount);
+    event CollateralWithdraw(address _account, uint _amount);
+    event WarpControlChanged(address _newControl, address _oldControl);
+    event AccountLiquidated(address _account, address _liquidator, uint256 _amount);
+
     /**
      * @dev Throws if called by any account other than a warp control
      */
@@ -68,7 +71,8 @@ contract WarpVaultLP {
     }
 
     function updateWarpControl(address _warpControl) public onlyWarpControl {
-      warpControl = WarpControlI(_warpControl);
+        emit WarpControlChanged(_warpControl, address(warpControl));
+        warpControl = WarpControlI(_warpControl);
     }
 
     /**
@@ -147,6 +151,7 @@ contract WarpVaultLP {
         onlyWarpControl
         angryWizard
     {
+        emit AccountLiquidated(_account, _liquidator, collateralizedLP[_account]);
         //transfer the LP tokens to the liquidator
         LPtoken.transfer(_liquidator, collateralizedLP[_account]);
         //reset the borrowers collateral tracker
