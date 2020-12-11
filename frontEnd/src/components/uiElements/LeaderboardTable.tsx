@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { Grid, Table, TableBody, TableContainer, TableFooter, TablePagination, TableRow } from "@material-ui/core";
+import { Grid, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TablePagination, TableRow, Typography } from "@material-ui/core";
 
 import { LeaderboardRow } from "../../components/uiElements/LeaderboardRow";
 import { TablePaginationActions } from "../../components"
@@ -13,6 +13,7 @@ interface Props {
 export const LeaderboardTable: React.FC<Props> = (props: Props) => {
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
+    const emptyRows = rowsPerPage - Math.min(rowsPerPage, props.teams.length - page * rowsPerPage);
 
     const handleChangePage = (event: any, newPage: number) => {
         setPage(newPage);
@@ -31,6 +32,25 @@ export const LeaderboardTable: React.FC<Props> = (props: Props) => {
         >
             <TableContainer>
                 <Table>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell>
+                                <Typography variant="subtitle1" color="textSecondary">
+                                    Rank
+                                </Typography>
+                            </TableCell>
+                            <TableCell >
+                                <Typography variant="subtitle1" color="textSecondary">
+                                    TVL Contribution
+                                </Typography>
+                            </TableCell>
+                            <TableCell>
+                                <Typography variant="subtitle1" color="textSecondary">
+                                    TVL
+                                </Typography>
+                            </TableCell>
+                        </TableRow>
+                    </TableHead>
                     <TableBody>
                         {(rowsPerPage > 0
                             ? props.teams.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
@@ -43,6 +63,11 @@ export const LeaderboardTable: React.FC<Props> = (props: Props) => {
                                 />
                             )
                         })}
+                        {emptyRows > 0 && (
+                            <TableRow style={{ height: 110 * emptyRows }}>
+                                <TableCell colSpan={6} />
+                            </TableRow>
+                        )}
                     </TableBody>
                     <TableFooter>
                         <TablePagination

@@ -14,7 +14,6 @@ const logger = getLogger('Pages::Leaderboard');
 
 export const Leaderboard: React.FC<Props> = (props: Props) => {
     const { teams, timestamp } = useTeamMetrics();
-    console.log(timestamp)
 
     return (
         <React.Fragment>
