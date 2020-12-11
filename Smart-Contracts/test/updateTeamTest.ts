@@ -146,6 +146,8 @@ contract("Upgrade test", function(accounts) {
       wethToken.address
     );
 
+
+
     const lpFactory = await WarpVaultLPFactory.new();
     const scFactory = await WarpVaultSCFactory.new();
     const oracleFactory = await UniswapLPOracleFactory.new(
@@ -154,16 +156,15 @@ contract("Upgrade test", function(accounts) {
       uniRouter.address
     );
 
+    const originalTeam = accounts[2];
     const warpControl = await WarpControl.new(
       oracleFactory.address,
       lpFactory.address,
       scFactory.address,
-      accounts[2]
+      originalTeam
     );
     await oracleFactory.transferOwnership(warpControl.address);
 
-
-    // Create LP Vaults
     await warpControl.createNewLPVault(
       0,
       ethBtcPair.address,
@@ -171,6 +172,7 @@ contract("Upgrade test", function(accounts) {
       wbtcToken.address,
       "ETH-BTC-LP"
     );
+    
 
     // Create Stable Coin Vaults
     await warpControl.createNewSCVault(
@@ -188,31 +190,17 @@ contract("Upgrade test", function(accounts) {
 
     await utils.increaseTime(ONE_DAY);
 
-    const upgradedWarpControl = await WarpControl.new(
-      oracleFactory.address,
-      lpFactory.address,
-      scFactory.address,
-      accounts[0]
-    );
-
-    await warpControl.startUpgradeTimer(upgradedWarpControl.address);
-
-    await truffleAssert.fails(warpControl.upgradeWarp());
-
-    await utils.increaseTime(ONE_DAY * 3);
-
     const daiVault = await WarpVaultSC.at(await warpControl.instanceSCTracker(daiToken.address));
-    const lpVault = await WarpVaultLP.at(await warpControl.instanceLPTracker(ethBtcPair.address));
 
-    assert(await oracleFactory.owner() == warpControl.address);
-    assert(await lpVault.warpControl() == warpControl.address);
-    assert(await daiVault.warpControl() == warpControl.address);
+    const newTeam = accounts[1];
 
-    await warpControl.upgradeWarp();
+    assert(await warpControl.warpTeam() == originalTeam);
+    assert(await daiVault.warpTeam() == originalTeam);
 
-    assert(await oracleFactory.owner() == upgradedWarpControl.address);
-    assert(await lpVault.warpControl() == upgradedWarpControl.address);
-    assert(await daiVault.warpControl() == upgradedWarpControl.address);
+    await warpControl.transferWarpTeam(newTeam);
+
+    assert(await warpControl.warpTeam() == newTeam);
+    assert(await daiVault.warpTeam() == newTeam);
 
   });
 });
