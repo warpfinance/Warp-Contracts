@@ -13,6 +13,7 @@ interface Props {
 export const LeaderboardTable: React.FC<Props> = (props: Props) => {
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
+    const emptyRows = rowsPerPage - Math.min(rowsPerPage, props.teams.length - page * rowsPerPage);
 
     const handleChangePage = (event: any, newPage: number) => {
         setPage(newPage);
@@ -62,6 +63,11 @@ export const LeaderboardTable: React.FC<Props> = (props: Props) => {
                                 />
                             )
                         })}
+                        {emptyRows > 0 && (
+                            <TableRow style={{ height: 110 * emptyRows }}>
+                                <TableCell colSpan={6} />
+                            </TableRow>
+                        )}
                     </TableBody>
                     <TableFooter>
                         <TablePagination
