@@ -242,24 +242,6 @@ export const Header: React.FC<Props> = (props: Props) => {
                 <React.Fragment>
                     {connected === true ?
                         <React.Fragment>
-                            <BorrowerCountdownContext.Consumer>
-                                {value =>
-                                    value.countdown === true ?
-                                        <Grid
-                                            item
-                                            sm
-                                        >
-                                            <Typography color="textSecondary">
-                                                Warp borrowing starts in
-                                    </Typography>
-                                            <Typography>
-                                                {value.countdownText}
-                                            </Typography>
-                                        </Grid>
-                                        :
-                                        null
-                                }
-                            </BorrowerCountdownContext.Consumer>
                             {(!onTeam && !tryingToJoinTeam) ?
                                 <React.Fragment>
                                     <Grid
