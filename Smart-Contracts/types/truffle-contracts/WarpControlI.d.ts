@@ -35,65 +35,36 @@ export interface WarpControlIInstance extends Truffle.ContractInstance {
     ): Promise<number>;
   };
 
+  viewMaxWithdrawAllowed(
+    account: string,
+    lpToken: string,
+    txDetails?: Truffle.TransactionDetails
+  ): Promise<BN>;
+
   viewPriceOfCollateral(
     lpToken: string,
     txDetails?: Truffle.TransactionDetails
   ): Promise<BN>;
 
-  addMemberToGroupSC: {
+  addMemberToGroup: {
     (
       _refferalCode: string,
       _member: string,
-      _amount: number | BN | string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<Truffle.TransactionResponse<AllEvents>>;
     call(
       _refferalCode: string,
       _member: string,
-      _amount: number | BN | string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<void>;
     sendTransaction(
       _refferalCode: string,
       _member: string,
-      _amount: number | BN | string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<string>;
     estimateGas(
       _refferalCode: string,
       _member: string,
-      _amount: number | BN | string,
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<number>;
-  };
-
-  addMemberToGroupLP: {
-    (
-      _refferalCode: string,
-      _member: string,
-      _lp: string,
-      _amount: number | BN | string,
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<Truffle.TransactionResponse<AllEvents>>;
-    call(
-      _refferalCode: string,
-      _member: string,
-      _lp: string,
-      _amount: number | BN | string,
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<void>;
-    sendTransaction(
-      _refferalCode: string,
-      _member: string,
-      _lp: string,
-      _amount: number | BN | string,
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<string>;
-    estimateGas(
-      _refferalCode: string,
-      _member: string,
-      _lp: string,
-      _amount: number | BN | string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<number>;
   };
@@ -102,6 +73,99 @@ export interface WarpControlIInstance extends Truffle.ContractInstance {
     _account: string,
     txDetails?: Truffle.TransactionDetails
   ): Promise<boolean>;
+
+  getTotalAvailableCollateralValue: {
+    (_account: string, txDetails?: Truffle.TransactionDetails): Promise<
+      Truffle.TransactionResponse<AllEvents>
+    >;
+    call(_account: string, txDetails?: Truffle.TransactionDetails): Promise<BN>;
+    sendTransaction(
+      _account: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<string>;
+    estimateGas(
+      _account: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<number>;
+  };
+
+  viewTotalAvailableCollateralValue(
+    _account: string,
+    txDetails?: Truffle.TransactionDetails
+  ): Promise<BN>;
+
+  viewPriceOfToken(
+    token: string,
+    txDetails?: Truffle.TransactionDetails
+  ): Promise<BN>;
+
+  viewTotalBorrowedValue(
+    _account: string,
+    txDetails?: Truffle.TransactionDetails
+  ): Promise<BN>;
+
+  getTotalBorrowedValue: {
+    (_account: string, txDetails?: Truffle.TransactionDetails): Promise<
+      Truffle.TransactionResponse<AllEvents>
+    >;
+    call(_account: string, txDetails?: Truffle.TransactionDetails): Promise<BN>;
+    sendTransaction(
+      _account: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<string>;
+    estimateGas(
+      _account: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<number>;
+  };
+
+  calcBorrowLimit(
+    _collateralValue: number | BN | string,
+    txDetails?: Truffle.TransactionDetails
+  ): Promise<BN>;
+
+  calcCollateralRequired(
+    _borrowAmount: number | BN | string,
+    txDetails?: Truffle.TransactionDetails
+  ): Promise<BN>;
+
+  getBorrowLimit: {
+    (_account: string, txDetails?: Truffle.TransactionDetails): Promise<
+      Truffle.TransactionResponse<AllEvents>
+    >;
+    call(_account: string, txDetails?: Truffle.TransactionDetails): Promise<BN>;
+    sendTransaction(
+      _account: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<string>;
+    estimateGas(
+      _account: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<number>;
+  };
+
+  viewBorrowLimit(
+    _account: string,
+    txDetails?: Truffle.TransactionDetails
+  ): Promise<BN>;
+
+  liquidateAccount: {
+    (_borrower: string, txDetails?: Truffle.TransactionDetails): Promise<
+      Truffle.TransactionResponse<AllEvents>
+    >;
+    call(
+      _borrower: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<void>;
+    sendTransaction(
+      _borrower: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<string>;
+    estimateGas(
+      _borrower: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<number>;
+  };
 
   methods: {
     getMaxWithdrawAllowed: {
@@ -127,65 +191,36 @@ export interface WarpControlIInstance extends Truffle.ContractInstance {
       ): Promise<number>;
     };
 
+    viewMaxWithdrawAllowed(
+      account: string,
+      lpToken: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<BN>;
+
     viewPriceOfCollateral(
       lpToken: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<BN>;
 
-    addMemberToGroupSC: {
+    addMemberToGroup: {
       (
         _refferalCode: string,
         _member: string,
-        _amount: number | BN | string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<Truffle.TransactionResponse<AllEvents>>;
       call(
         _refferalCode: string,
         _member: string,
-        _amount: number | BN | string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<void>;
       sendTransaction(
         _refferalCode: string,
         _member: string,
-        _amount: number | BN | string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<string>;
       estimateGas(
         _refferalCode: string,
         _member: string,
-        _amount: number | BN | string,
-        txDetails?: Truffle.TransactionDetails
-      ): Promise<number>;
-    };
-
-    addMemberToGroupLP: {
-      (
-        _refferalCode: string,
-        _member: string,
-        _lp: string,
-        _amount: number | BN | string,
-        txDetails?: Truffle.TransactionDetails
-      ): Promise<Truffle.TransactionResponse<AllEvents>>;
-      call(
-        _refferalCode: string,
-        _member: string,
-        _lp: string,
-        _amount: number | BN | string,
-        txDetails?: Truffle.TransactionDetails
-      ): Promise<void>;
-      sendTransaction(
-        _refferalCode: string,
-        _member: string,
-        _lp: string,
-        _amount: number | BN | string,
-        txDetails?: Truffle.TransactionDetails
-      ): Promise<string>;
-      estimateGas(
-        _refferalCode: string,
-        _member: string,
-        _lp: string,
-        _amount: number | BN | string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<number>;
     };
@@ -194,6 +229,108 @@ export interface WarpControlIInstance extends Truffle.ContractInstance {
       _account: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<boolean>;
+
+    getTotalAvailableCollateralValue: {
+      (_account: string, txDetails?: Truffle.TransactionDetails): Promise<
+        Truffle.TransactionResponse<AllEvents>
+      >;
+      call(
+        _account: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<BN>;
+      sendTransaction(
+        _account: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<string>;
+      estimateGas(
+        _account: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<number>;
+    };
+
+    viewTotalAvailableCollateralValue(
+      _account: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<BN>;
+
+    viewPriceOfToken(
+      token: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<BN>;
+
+    viewTotalBorrowedValue(
+      _account: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<BN>;
+
+    getTotalBorrowedValue: {
+      (_account: string, txDetails?: Truffle.TransactionDetails): Promise<
+        Truffle.TransactionResponse<AllEvents>
+      >;
+      call(
+        _account: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<BN>;
+      sendTransaction(
+        _account: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<string>;
+      estimateGas(
+        _account: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<number>;
+    };
+
+    calcBorrowLimit(
+      _collateralValue: number | BN | string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<BN>;
+
+    calcCollateralRequired(
+      _borrowAmount: number | BN | string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<BN>;
+
+    getBorrowLimit: {
+      (_account: string, txDetails?: Truffle.TransactionDetails): Promise<
+        Truffle.TransactionResponse<AllEvents>
+      >;
+      call(
+        _account: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<BN>;
+      sendTransaction(
+        _account: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<string>;
+      estimateGas(
+        _account: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<number>;
+    };
+
+    viewBorrowLimit(
+      _account: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<BN>;
+
+    liquidateAccount: {
+      (_borrower: string, txDetails?: Truffle.TransactionDetails): Promise<
+        Truffle.TransactionResponse<AllEvents>
+      >;
+      call(
+        _borrower: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<void>;
+      sendTransaction(
+        _borrower: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<string>;
+      estimateGas(
+        _borrower: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<number>;
+    };
   };
 
   getPastEvents(event: string): Promise<EventData[]>;

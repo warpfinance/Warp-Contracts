@@ -33,6 +33,10 @@ const parseBigNumber = (big, decimals) => {
 module.exports = async (deployer, network) => {
   const ownerAddress = "0x7d4A13FE119C9F36425008a7afCB2737B2bB5C41";
 
+  if (network == "development") {
+    return;
+  }
+
   console.log("Initiate the Token Canon...");
   await deployer.deploy(DAI);
   console.log("Deploying the DAI....");

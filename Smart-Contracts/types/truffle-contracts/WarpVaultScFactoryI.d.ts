@@ -29,6 +29,7 @@ export interface WarpVaultScFactoryIInstance extends Truffle.ContractInstance {
       _warpTeam: string,
       _initialExchangeRate: number | BN | string,
       _timelock: number | BN | string,
+      _reserveFactorMantissa: number | BN | string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<Truffle.TransactionResponse<AllEvents>>;
     call(
@@ -37,6 +38,7 @@ export interface WarpVaultScFactoryIInstance extends Truffle.ContractInstance {
       _warpTeam: string,
       _initialExchangeRate: number | BN | string,
       _timelock: number | BN | string,
+      _reserveFactorMantissa: number | BN | string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<string>;
     sendTransaction(
@@ -45,6 +47,7 @@ export interface WarpVaultScFactoryIInstance extends Truffle.ContractInstance {
       _warpTeam: string,
       _initialExchangeRate: number | BN | string,
       _timelock: number | BN | string,
+      _reserveFactorMantissa: number | BN | string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<string>;
     estimateGas(
@@ -53,6 +56,7 @@ export interface WarpVaultScFactoryIInstance extends Truffle.ContractInstance {
       _warpTeam: string,
       _initialExchangeRate: number | BN | string,
       _timelock: number | BN | string,
+      _reserveFactorMantissa: number | BN | string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<number>;
   };
@@ -73,6 +77,7 @@ export interface WarpVaultScFactoryIInstance extends Truffle.ContractInstance {
         _warpTeam: string,
         _initialExchangeRate: number | BN | string,
         _timelock: number | BN | string,
+        _reserveFactorMantissa: number | BN | string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<Truffle.TransactionResponse<AllEvents>>;
       call(
@@ -81,6 +86,7 @@ export interface WarpVaultScFactoryIInstance extends Truffle.ContractInstance {
         _warpTeam: string,
         _initialExchangeRate: number | BN | string,
         _timelock: number | BN | string,
+        _reserveFactorMantissa: number | BN | string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<string>;
       sendTransaction(
@@ -89,6 +95,7 @@ export interface WarpVaultScFactoryIInstance extends Truffle.ContractInstance {
         _warpTeam: string,
         _initialExchangeRate: number | BN | string,
         _timelock: number | BN | string,
+        _reserveFactorMantissa: number | BN | string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<string>;
       estimateGas(
@@ -97,6 +104,7 @@ export interface WarpVaultScFactoryIInstance extends Truffle.ContractInstance {
         _warpTeam: string,
         _initialExchangeRate: number | BN | string,
         _timelock: number | BN | string,
+        _reserveFactorMantissa: number | BN | string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<number>;
     };

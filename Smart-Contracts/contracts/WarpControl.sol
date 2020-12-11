@@ -59,15 +59,7 @@ contract WarpControl is Ownable, Exponential {
       @dev Throws if called by any account other than a warp vault
      */
     modifier onlyVault() {
-        require(isVault[msg.sender] == true);
-        _;
-    }
-
-    /**
-    @dev Throws if a function is called by anyone but the warp team
-    **/
-    modifier onlyWarpT() {
-        require(msg.sender == warpTeam);
+        require(isVault[msg.sender] == true, "Only a vault may call this");
         _;
     }
 
@@ -629,7 +621,7 @@ contract WarpControl is Ownable, Exponential {
         uint256 _multiplierPerYear,
         uint256 _jumpMultiplierPerYear,
         uint256 _optimal
-      ) public onlyWarpT {
+      ) public onlyOwner {
       address IR = address(
           new JumpRateModelV2(
               _baseRatePerYear,
@@ -648,9 +640,9 @@ contract WarpControl is Ownable, Exponential {
     @notice startUpgradeTimer starts a two day timer signaling that this contract will soon be updated to a new version
     @param _newWarpControl is the address of the new Warp control contract being upgraded to
     **/
-    function startUpgradeTimer(address _newWarpControl) public onlyWarpT{
-      newWarpControl = _newWarpControl;
-      graceSpace = now.add(172800);
+    function startUpgradeTimer(address _newWarpControl) public onlyOwner {
+        newWarpControl = _newWarpControl;
+        graceSpace = now.add(172800);
     }
 
     /**
@@ -658,9 +650,8 @@ contract WarpControl is Ownable, Exponential {
     **/
     function upgradeWarp() public onlyOwner {
         require(now >= graceSpace, "you cant ugrade yet, less than two days");
+        require(newWarpControl != address(0), "no new warp control set");
 
-        WVLPF.transferOwnership(newWarpControl);
-        WVSCF.transferOwnership(newWarpControl);
         Oracle.transferOwnership(newWarpControl);
 
         uint256 numVaults = lpVaults.length;
@@ -668,14 +659,12 @@ contract WarpControl is Ownable, Exponential {
 
         for (uint256 i = 0; i < numVaults; ++i) {
             WarpVaultLPI vault = WarpVaultLPI(lpVaults[i]);
-            vault.upgrade(newWarpControl);
-            vault.transferOwnership(newWarpControl);
+            vault.updateWarpControl(newWarpControl);
         }
 
         for (uint256 i = 0; i < numSCVaults; ++i) {
             WarpVaultSCI vault = WarpVaultSCI(scVaults[i]);
-            vault.upgrade(newWarpControl);
-            vault.transferOwnership(newWarpControl);
+            vault.updateWarpControl(newWarpControl);
         }
   }
 
