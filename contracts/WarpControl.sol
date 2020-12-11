@@ -59,7 +59,7 @@ contract WarpControl is Ownable, Exponential {
       @dev Throws if called by any account other than a warp vault
      */
     modifier onlyVault() {
-        require(isVault[msg.sender] == true);
+        require(isVault[msg.sender] == true, "Only a vault may call this");
         _;
     }
 
