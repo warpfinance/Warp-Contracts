@@ -67,4 +67,6 @@ abstract contract WarpVaultSCI {
     function updateWarpControl(address _warpControl) public virtual;
     function updateTeam(address _warpTeam) public virtual;
 
+    function viewAccountBalance(address _account) public virtual view returns (uint256);
+
 }
