@@ -425,6 +425,32 @@ contract WarpControl is Ownable, Exponential {
     }
 
     /**
+    @notice viewTotalLentValue returns the total lent value for an account in USDC
+    @param _account is the account whos lent value we are calculating
+    **/
+    function viewTotalLentValue(address _account) public view returns (uint256) {
+        uint256 numSCVaults = scVaults.length;
+        uint256 totalValue = 0;
+        
+        // Add up each stable coin vaults value
+        for (uint256 i = 0; i < numSCVaults; ++i) {
+            //instantiate each LP warp vault
+            WarpVaultSCI WVSC = WarpVaultSCI(scVaults[i]);
+            //retreive the amount user has borrowed from each stablecoin vault
+            uint256 lentBalanceInStable = WVSC.viewAccountBalance(_account);
+            if (lentBalanceInStable == 0) {
+                continue;
+            }
+            uint256 usdcLentAmount = viewPriceOfToken(WVSC.getSCAddress(), lentBalanceInStable);
+            totalValue = totalValue.add(
+                usdcLentAmount
+            );
+        }
+
+        return totalValue;
+    }
+
+    /**
     @notice viewTotalBorrowedValue returns the total borrowed value for an account in USDC
     @param _account is the account whos borrowed value we are calculating
     @dev this function returns previously calculated values
