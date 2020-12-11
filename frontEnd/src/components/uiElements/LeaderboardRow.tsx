@@ -3,6 +3,7 @@ import * as React from "react";
 import { Grid, TableCell, TableRow, Typography } from "@material-ui/core";
 
 import { Team, } from "../../util/calculateTeamMetrics";
+import { useWeb3React } from "@web3-react/core";
 
 interface Props {
     rank: number,
@@ -10,16 +11,17 @@ interface Props {
 }
 
 export const LeaderboardRow: React.FC<Props> = (props: Props) => {
+    const context = useWeb3React();
     const place = props.rank + 1 === 1 || (props.rank >= 20 && (props.rank + 1) % 10 === 1) ? "st" :
         props.rank + 1 === 2 || (props.rank >= 20 && (props.rank + 1) % 10 === 2) ? "nd" :
             props.rank + 1 === 3 || (props.rank >= 20 && (props.rank + 1) % 10 === 3) ? "rd" :
                 "th";
 
+    const userTvl = props.team.members.find((member) => member.address === context.account)?.tvl;
+
     return (
         <TableRow key={props.team.code}>
-            <TableCell
-                style={{ width: 400 }}
-            >
+            <TableCell>
                 <Grid
                     container
                     direction="column"
@@ -38,22 +40,20 @@ export const LeaderboardRow: React.FC<Props> = (props: Props) => {
                     </Grid>
                 </Grid>
             </TableCell>
-            <TableCell
-                style={{ width: 200 }}
-            >
-                <Grid
-                    container
-                    direction="row"
-                    justify="center"
-                    alignItems="center"
-                >
-                    <Typography variant="subtitle1" color="textSecondary">
-                        TVL:
-                    </Typography>
+            <TableCell>
+                {userTvl !== undefined ?
                     <Typography variant="subtitle1">
-                        {"$" + Number(props.team.tvl).toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                        {"$" + Number(userTvl).toLocaleString(undefined, { maximumFractionDigits: 0 })}
                     </Typography>
-                </Grid>
+                    :
+                    null
+                }
             </TableCell>
-        </TableRow>);
+            <TableCell>
+                <Typography variant="subtitle1">
+                    {"$" + Number(props.team.tvl).toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                </Typography>
+            </TableCell>
+        </TableRow>
+    );
 }

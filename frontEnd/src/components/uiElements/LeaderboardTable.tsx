@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { Grid, Table, TableBody, TableContainer, TableFooter, TablePagination, TableRow } from "@material-ui/core";
+import { Grid, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TablePagination, TableRow, Typography } from "@material-ui/core";
 
 import { LeaderboardRow } from "../../components/uiElements/LeaderboardRow";
 import { TablePaginationActions } from "../../components"
@@ -31,6 +31,25 @@ export const LeaderboardTable: React.FC<Props> = (props: Props) => {
         >
             <TableContainer>
                 <Table>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell>
+                                <Typography variant="subtitle1" color="textSecondary">
+                                    Rank
+                                </Typography>
+                            </TableCell>
+                            <TableCell >
+                                <Typography variant="subtitle1" color="textSecondary">
+                                    TVL Contribution
+                                </Typography>
+                            </TableCell>
+                            <TableCell>
+                                <Typography variant="subtitle1" color="textSecondary">
+                                    TVL
+                                </Typography>
+                            </TableCell>
+                        </TableRow>
+                    </TableHead>
                     <TableBody>
                         {(rowsPerPage > 0
                             ? props.teams.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
