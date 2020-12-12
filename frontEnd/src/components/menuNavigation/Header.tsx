@@ -242,7 +242,7 @@ export const Header: React.FC<Props> = (props: Props) => {
                 <React.Fragment>
                     {connected === true ?
                         <React.Fragment>
-                            {(false/*!onTeam && !tryingToJoinTeam*/) ?
+                            {(!onTeam && !tryingToJoinTeam) ?
                                 <React.Fragment>
                                     <Grid
                                         item
@@ -277,11 +277,11 @@ export const Header: React.FC<Props> = (props: Props) => {
                                                 </Grid>
                                                 <Grid item>
                                                     <Typography variant="subtitle1">
-                                                        {"Team"/*onTeam ? teamName : teamNameOverride*/}
+                                                        {onTeam ? teamName : teamNameOverride}
                                                     </Typography>
                                                 </Grid>
                                                 <Grid item>
-                                                    <RouterLink className={classes.routerLink} to={`/team/0xA7D862394234C3480a1F3F278fa710e1A0d2D728`/*${teamCodeOverride}`*/}>
+                                                    <RouterLink className={classes.routerLink} to={`/team/${onTeam ? teamCode : teamCodeOverride}`}>
                                                         <IconButton>
                                                             <ArrowForwardIosIcon fontSize="small" />
                                                         </IconButton>
