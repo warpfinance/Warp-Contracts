@@ -1,17 +1,14 @@
 import * as React from "react";
 
-import { CustomButton, Header, MigrateTable, RowModal, WithdrawMigrateModal } from "../../components";
 import { Grid, Typography } from "@material-ui/core";
-import { convertNumberToBigNumber, parseBigNumber } from "../../util/tools";
+import { Header, MigrateTable, RowModal, WithdrawMigrateModal } from "../../components";
 
-import { BigNumber } from "ethers";
+import { MigrateModal } from "../../components/modals/MigrateModal";
 import { Token } from "../../util/token";
 import { getLogger } from "../../util/logger";
 import { useConnectedWeb3Context } from "../../hooks/connectedWeb3";
 import { useLPTokens } from "../../hooks/useLPTokens";
 import { useStableCoinTokens } from "../../hooks/useStableCoins";
-import { useUSDCToken } from "../../hooks/useUSDC";
-import { useWarpControl } from "../../hooks/useWarpControl";
 
 interface Props {
 }
@@ -31,10 +28,17 @@ export const Migrate: React.FC<Props> = (props: Props) => {
     const [withdrawCollateralAmountValue, setWithdrawCollateralAmountValue] = React.useState("");
     const [withdrawCollateralModalOpen, setWithdrawCollateralModalOpen] = React.useState(false);
 
+    const [migrateAmountValue, setMigrateAmountValue] = React.useState("");
+    const [migrateModalOpen, setMigrateModalOpen] = React.useState(false);
+    const [migrateDepositDisabled, setMigrateDepositDisabled] = React.useState(true);
+    const [migrateWithdrawDisabled, setMigrateWithdrawDisabled] = React.useState(true);
+
     // TO-DO: Web3 Integration
     const onMigrateLendingAssetClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+        setMigrateModalOpen(true);
     }
     const onMigrateBorrowAssetClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+        setMigrateModalOpen(true);
     }
     const onWithdrawLendingAssetClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
         setWithdrawModalOpen(true);
@@ -45,9 +49,11 @@ export const Migrate: React.FC<Props> = (props: Props) => {
     const onWithdraw = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
         setWithdrawModalOpen(false);
         setWithdrawAmountValue("");
+        setMigrateWithdrawDisabled(false);
     }
     const handleWithdrawClose = (event: {}, reason: "backdropClick" | "escapeKeyDown") => {
         setWithdrawModalOpen(false);
+        setWithdrawAmountValue("");
     }
     const onWithdrawAmountChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
         setWithdrawAmountValue(event.target.value);
@@ -57,14 +63,35 @@ export const Migrate: React.FC<Props> = (props: Props) => {
     const onWithdrawCollateral = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
         setWithdrawCollateralModalOpen(false);
         setWithdrawCollateralAmountValue("");
+        setMigrateWithdrawDisabled(false);
     }
     const handleWithdrawCollateralClose = (event: {}, reason: "backdropClick" | "escapeKeyDown") => {
         setWithdrawCollateralModalOpen(false);
+        setWithdrawCollateralAmountValue("");
     }
     const onWithdrawCollateralAmountChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
         setWithdrawCollateralAmountValue(event.target.value);
     };
     const onWithdrawMaxCollateral = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+    }
+    const handleMigrateClose = (event: {}, reason: "backdropClick" | "escapeKeyDown") => {
+        setMigrateModalOpen(false);
+        setMigrateAmountValue("");
+    }
+    const onMigrateDeposit = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+        setMigrateAmountValue("");
+        setMigrateDepositDisabled(true);
+        setMigrateWithdrawDisabled(true);
+        setWithdrawModalOpen(false);
+        // TO-DO: Web3 integration: once all deposits are migrated, disable V1
+    }
+    const onMigrateWithdraw = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+        setMigrateAmountValue("");
+        setMigrateDepositDisabled(false);
+        setMigrateWithdrawDisabled(true);
+    }
+    const onMigrateAmountChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+        setMigrateAmountValue(event.target.value);
     }
 
     return (
@@ -136,6 +163,22 @@ export const Migrate: React.FC<Props> = (props: Props) => {
                 poolIconSrcSecondary={currentToken.image2 || ""}
                 token={currentToken}
                 value={withdrawCollateralAmountValue}
+            />
+            <MigrateModal
+                action={"Migrate"}
+                error={false/*withdrawError*/}
+                handleClose={handleMigrateClose}
+                migrateDepositDisabled={migrateDepositDisabled}
+                migrateWithdrawDisabled={migrateWithdrawDisabled}
+                onDepositClick={onMigrateDeposit}
+                onChange={onMigrateAmountChange}
+                onMaxButtonClick={onWithdrawMax}
+                open={migrateModalOpen}
+                onWithdrawClick={onMigrateWithdraw}
+                poolIconSrcPrimary={currentToken.image || ""}
+                poolIconSrcSecondary={currentToken.image2 || ""}
+                token={currentToken}
+                value={migrateAmountValue}
             />
         </React.Fragment>
     )
