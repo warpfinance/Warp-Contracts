@@ -28,6 +28,9 @@ export const Migrate: React.FC<Props> = (props: Props) => {
 
     const [currentToken, setCurrentToken] = React.useState<Token>({} as Token);
 
+    const [withdrawCollateralAmountValue, setWithdrawCollateralAmountValue] = React.useState("");
+    const [withdrawCollateralModalOpen, setWithdrawCollateralModalOpen] = React.useState(false);
+
     // TO-DO: Web3 Integration
     const onMigrateLendingAssetClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
     }
@@ -37,7 +40,7 @@ export const Migrate: React.FC<Props> = (props: Props) => {
         setWithdrawModalOpen(true);
     }
     const onWithdrawBorrowAssetClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-        setWithdrawModalOpen(true);
+        setWithdrawCollateralModalOpen(true);
     }
     const onWithdraw = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
         setWithdrawModalOpen(false);
@@ -50,6 +53,18 @@ export const Migrate: React.FC<Props> = (props: Props) => {
         setWithdrawAmountValue(event.target.value);
     };
     const onWithdrawMax = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+    }
+    const onWithdrawCollateral = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+        setWithdrawCollateralModalOpen(false);
+        setWithdrawCollateralAmountValue("");
+    }
+    const handleWithdrawCollateralClose = (event: {}, reason: "backdropClick" | "escapeKeyDown") => {
+        setWithdrawCollateralModalOpen(false);
+    }
+    const onWithdrawCollateralAmountChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+        setWithdrawCollateralAmountValue(event.target.value);
+    };
+    const onWithdrawMaxCollateral = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
     }
 
     return (
@@ -107,6 +122,20 @@ export const Migrate: React.FC<Props> = (props: Props) => {
                 poolIconSrcSecondary={currentToken.image2 || ""}
                 token={currentToken}
                 value={withdrawAmountValue}
+            />
+            <RowModal
+                action={"Withdraw Collateral"}
+                error={false/*withdrawError*/}
+                handleClose={handleWithdrawCollateralClose}
+                lp={1/*parseBigNumber(withdrawLpValue, currentToken.decimals)*/}
+                onButtonClick={onWithdrawCollateral}
+                onChange={onWithdrawCollateralAmountChange}
+                onMaxButtonClick={onWithdrawMaxCollateral}
+                open={withdrawCollateralModalOpen}
+                poolIconSrcPrimary={currentToken.image || ""}
+                poolIconSrcSecondary={currentToken.image2 || ""}
+                token={currentToken}
+                value={withdrawCollateralAmountValue}
             />
         </React.Fragment>
     )
