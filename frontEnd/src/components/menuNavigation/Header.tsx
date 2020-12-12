@@ -281,7 +281,7 @@ export const Header: React.FC<Props> = (props: Props) => {
                                                     </Typography>
                                                 </Grid>
                                                 <Grid item>
-                                                    <IconButton>
+                                                    <IconButton href={"/team"}>
                                                         <ArrowForwardIosIcon fontSize="small" />
                                                     </IconButton>
                                                 </Grid>
@@ -363,9 +363,9 @@ export const Header: React.FC<Props> = (props: Props) => {
                     >
                         {connected === true ?
                             <Typography>
-                                <RouterLink className={classes.routerLink} to={"/leaderboard"}>
+                                <RouterLink className={classes.routerLink} to={"/teams"}>
                                     <Link
-                                        className={pathName === "/leaderboard" ? classes.selectedLink : classes.link}
+                                        className={pathName === "/teams" ? classes.selectedLink : classes.link}
                                         color="textSecondary"
                                         href=""
                                         underline="none">

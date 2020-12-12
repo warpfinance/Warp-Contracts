@@ -5,8 +5,10 @@ import {
 	Connect,
 	Dashboard,
 	Home,
+	IntraTeamLeaderboard,
 	Lender,
-	Markets
+	Markets,
+	TeamLeaderboard,
 } from "./pages";
 import {
 	Route,
@@ -23,7 +25,6 @@ import {
 	CssBaseline,
 } from "@material-ui/core";
 import { TeamContextProvider } from "./hooks/useTeams";
-import { TeamLeaderboard } from "./pages/App/TeamLeaderboard";
 import { TeamMetricsProvider } from "./hooks/useTeamMetrics";
 import { ThemeProvider } from "@material-ui/styles";
 import { Web3AccountRequired } from "./pages/Web3AccountRequired";
@@ -138,8 +139,10 @@ const App: React.FC = () => {
 												render={() => <ConnectedWeb3><Markets /></ConnectedWeb3>} />
 											<Route exact={true} path="/generate"
 												render={() => <ConnectedWeb3><CalculateMetrics /></ConnectedWeb3>} />
-											<Route exact={true} path="/leaderboard"
+											<Route exact={true} path="/teams"
 												render={() => <ConnectedWeb3><TeamLeaderboard /></ConnectedWeb3>} />
+											<Route exact={true} path="/team"
+												render={() => <ConnectedWeb3><IntraTeamLeaderboard /></ConnectedWeb3>} />
 										</Switch>
 									</div>
 								</CssBaseline>
