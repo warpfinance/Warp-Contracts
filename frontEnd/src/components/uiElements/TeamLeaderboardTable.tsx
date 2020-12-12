@@ -2,15 +2,15 @@ import * as React from "react";
 
 import { Grid, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TablePagination, TableRow, Typography } from "@material-ui/core";
 
-import { LeaderboardRow } from "../../components/uiElements/LeaderboardRow";
-import { TablePaginationActions } from "../../components"
+import { LeaderboardRow } from "./TeamLeaderboardRow";
+import { TablePaginationActions } from ".."
 import { Team, } from "../../util/calculateTeamMetrics";
 
 interface Props {
     teams: Team[],
 }
 
-export const LeaderboardTable: React.FC<Props> = (props: Props) => {
+export const TeamLeaderboardTable: React.FC<Props> = (props: Props) => {
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, props.teams.length - page * rowsPerPage);
