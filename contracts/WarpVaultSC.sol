@@ -86,10 +86,10 @@ contract WarpVaultSC is Exponential {
     /**
     @dev Throws if a function is called by anyone but the warp team
     **/
-    modifier onlyWarpT() {
-            require(msg.sender == warpTeam);
-            _;
-        }
+    modifier onlyWarpTeam() {
+        require(msg.sender == warpTeam);
+        _;
+    }
 
     /**
     @notice constructor sets up token names and symbols for the WarpWrapperToken
@@ -172,7 +172,7 @@ contract WarpVaultSC is Exponential {
     @param _amount is the amount of a stablecoin being withdrawn
     @dev this is a protected function that can only be called by the warpTeam address
     **/
-    function withdrawReserves(uint _amount) public onlyWarpT{
+    function withdrawReserves(uint _amount) public onlyWarpTeam{
       require(totalReserves >= _amount, "You are trying to withdraw too much");
       totalReserves = totalReserves.sub(_amount);
       stablecoin.safeTransfer(warpTeam, _amount);
@@ -192,7 +192,7 @@ contract WarpVaultSC is Exponential {
     @notice updateReserve allows for a new reserv percentage to be set
     @param _newReserveMantissa is the reserve percentage scaled by 1e18
     **/
-    function updateReserve(uint _newReserveMantissa) public onlyWarpT {
+    function updateReserve(uint _newReserveMantissa) public onlyWarpTeam {
       reserveFactorMantissa = _newReserveMantissa;
     }
 

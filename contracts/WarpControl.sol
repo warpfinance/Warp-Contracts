@@ -26,35 +26,26 @@ contract WarpControl is Ownable, Exponential {
     UniswapLPOracleFactoryI public Oracle; //oracle factory contract interface
     WarpVaultLPFactoryI public WVLPF;
     WarpVaultSCFactoryI public WVSCF;
+
     address public warpTeam;
     address public newWarpControl;
     uint public graceSpace;
 
     address[] public lpVaults;
     address[] public scVaults;
-    address[] public launchParticipants;
-    address[] public groups;
 
     mapping(address => address) public instanceLPTracker; //maps LP token address to the assets WarpVault
     mapping(address => address) public instanceSCTracker;
     mapping(address => address) public getAssetByVault;
-    mapping(address => uint) public lockedLPValue;
     mapping(address => bool) public isVault;
-    mapping(address => address[]) public refferalCodeTracker;
-    mapping(address => string) public refferalCodeToGroupName;
-    mapping(address => bool) public isParticipant;
-    mapping(address => bool) public existingRefferalCode;
-    mapping(address => bool) public isInGroup;
-    mapping(address => address) public groupsYourIn;
 
     event NewLPVault(address _newVault);
     event ImportedLPVault(address _vault);
     event NewSCVault(address _newVault, address _interestRateModel);
     event ImportedSCVault(address _vault);
     event NewBorrow(address _borrower, address _StableCoin, uint _amountBorrowed);
-    event NotCompliant(address _account, uint _time);
     event Liquidation(address _account, address liquidator);
-    event complianceReset(address _account, uint _time);
+
     /**
       @dev Throws if called by any account other than a warp vault
      */
@@ -83,58 +74,19 @@ contract WarpControl is Ownable, Exponential {
         WVSCF = WarpVaultSCFactoryI(_WVSCF);
         warpTeam = _warpTeam;
     }
-///view functions for front end /////
 
-  /**
-  @notice viewNumLPVaults returns the number of lp vaults on the warp platform
-  **/
+    /**
+    @notice viewNumLPVaults returns the number of lp vaults on the warp platform
+    **/
     function viewNumLPVaults() external view returns(uint256) {
         return lpVaults.length;
     }
 
-  /**
-  @notice viewNumSCVaults returns the number of stablecoin vaults on the warp platform
-  **/
+    /**
+    @notice viewNumSCVaults returns the number of stablecoin vaults on the warp platform
+    **/
     function viewNumSCVaults() external view returns(uint256) {
         return scVaults.length;
-    }
-
-  /**
-  @notice viewLaunchParticipants returns an array of all launch participant addresses
-  **/
-    function viewLaunchParticipants() public view returns(address[] memory) {
-      return launchParticipants;
-    }
-
-  /**
-  @notice viewAllGroups returns an array of all group addresses
-  **/
-    function viewAllGroups() public view returns(address[] memory) {
-      return groups;
-    }
-
-  /**
-  @notice viewAllMembersOfAGroup returns an array of addresses containing the addresses of every member in a group
-  @param _refferalCode is the address that acts as a referral code for a group
-  **/
-    function viewAllMembersOfAGroup(address _refferalCode) public view returns(address[] memory) {
-      return refferalCodeTracker[_refferalCode];
-    }
-
-  /**
-  @notice getGroupName returns the name of a group
-  @param _refferalCode is the address that acts as a referral code for a group
-  **/
-    function getGroupName(address _refferalCode) public view returns(string memory) {
-      return refferalCodeToGroupName[_refferalCode];
-    }
-
-  /**
-  @notice getAccountsGroup returns the refferal code address of the team an account is on
-  @param _account is the address whos team is being retrieved
-  **/
-    function getAccountsGroup(address _account) public view returns(address) {
-      return groupsYourIn[_account];
     }
 
 
@@ -243,48 +195,6 @@ contract WarpControl is Ownable, Exponential {
         getAssetByVault[_scVault] = _token;
         emit ImportedSCVault(_scVault);
     }
-
-    /**
-    @notice @createGroup is used to create a new group
-    @param _groupName is the name of the group being created
-    @dev the refferal code for this group is the address of the msg.sender
-    **/
-    function createGroup(string memory _groupName) public {
-        require(isInGroup[msg.sender] == false, "Cant create a group once already in one");
-
-        // Create group
-        existingRefferalCode[msg.sender] = true;
-        refferalCodeToGroupName[msg.sender] = _groupName;
-        groups.push(msg.sender);
-
-        // Join Group
-        refferalCodeTracker[msg.sender].push(msg.sender);
-        isInGroup[msg.sender] = true;
-        groupsYourIn[msg.sender] = msg.sender;
-
-        launchParticipants.push(msg.sender);
-    }
-
-    /**
-    @notice addMemberToGroup is used to add an account to a group
-    @param _refferalCode is the address used as a groups refferal code
-    @dev the member being added is the msg.sender
-    **/
-    function addMemberToGroup(address _refferalCode) public {
-        //Require a member is either not in a group OR has entered their groups refferal code
-        require(isInGroup[msg.sender] == false, "Cant join more than one group");
-        require(existingRefferalCode[_refferalCode] == true, "Group doesn't exist.");
-
-        // Join Group
-        refferalCodeTracker[_refferalCode].push(msg.sender);
-        isInGroup[msg.sender] = true;
-        groupsYourIn[msg.sender] = _refferalCode;
-
-        launchParticipants.push(msg.sender);
-    }
-
-
-
 
     /**
     @notice Figures out how much of a given LP token an account is allowed to withdraw
@@ -569,8 +479,7 @@ contract WarpControl is Ownable, Exponential {
 
         //require the amount being borrowed is less than or equal to the amount they are aloud to borrow
         require(borrowAmountAllowedInUSDC >= borrowAmountInUSDC, "Borrowing more than allowed");
-        //track USDC value of locked LP
-        lockedLPValue[msg.sender] = lockedLPValue[msg.sender].add(_amount);
+
         //retreive stablecoin vault address being borrowed from and instantiate it
         WarpVaultSCI WV = WarpVaultSCI(instanceSCTracker[_StableCoin]);
         //call _borrow function on the stablecoin warp vault
