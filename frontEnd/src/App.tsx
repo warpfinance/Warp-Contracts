@@ -24,6 +24,7 @@ import { ConnectedWeb3 } from "./hooks/connectedWeb3";
 import {
 	CssBaseline,
 } from "@material-ui/core";
+import { Migrate } from "./pages/App/Migrate";
 import { TeamContextProvider } from "./hooks/useTeams";
 import { TeamMetricsProvider } from "./hooks/useTeamMetrics";
 import { ThemeProvider } from "@material-ui/styles";
@@ -150,7 +151,8 @@ const App: React.FC = () => {
 																	render={() => <Web3AccountRequired><IntraTeamLeaderboard /></Web3AccountRequired>} />
 															</React.Fragment>
 															:
-															null
+															<Route exact={true} path="/migrate"
+																render={() => <Web3AccountRequired><Migrate /></Web3AccountRequired>} />
 													}
 												</V1Context.Consumer>
 												<Route exact={true} path="/markets"

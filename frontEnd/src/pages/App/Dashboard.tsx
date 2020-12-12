@@ -123,7 +123,7 @@ export const Dashboard: React.FC<Props> = (props: Props) => {
                     justify="center"
                     alignItems="center"
                 >
-                    <CustomButton text="Migrate to V2" type="long"/>
+                    <CustomButton href="/migrate" text="Migrate to V2" type="long"/>
                 </Grid>
                 :
                 null
