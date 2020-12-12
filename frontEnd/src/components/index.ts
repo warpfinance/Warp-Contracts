@@ -16,6 +16,7 @@ export * from "./modals/TeamModal";
 export * from "./modals/TeamJoinModal";
 export * from "./modals/TeamReferralModal";
 export * from "./modals/NotificationModal";
+export * from "./modals/WithdrawMigrateModal";
 export * from "./uiElements/SocialIcons";
 export * from "./uiElements/BorrowerMarketCard";
 export * from "./uiElements/LenderMarketCard";
