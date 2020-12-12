@@ -57,7 +57,7 @@ contract UniswapLPOracleInstance is Ownable {
             (reserve0, reserve1, blockTimestampLast) = _pair.getReserves();
             require(
                 reserve0 != 0 && reserve1 != 0,
-                "ExampleOracleSimple: NO_RESERVES"
+                "NO_RESERVES"
             ); // ensure that there's liquidity in the pair
             firstRun = true;
             update();
