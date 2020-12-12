@@ -1,7 +1,7 @@
 import * as React from "react";
 
 import { Grid, Typography } from "@material-ui/core";
-import { Header, MigrateTable, RowModal, WithdrawMigrateModal } from "../../components";
+import { Header, MigrateTable, RowModal, TransactionModal, WithdrawMigrateModal } from "../../components";
 
 import { MigrateModal } from "../../components/modals/MigrateModal";
 import { Token } from "../../util/token";
@@ -33,6 +33,8 @@ export const Migrate: React.FC<Props> = (props: Props) => {
     const [migrateDepositDisabled, setMigrateDepositDisabled] = React.useState(true);
     const [migrateWithdrawDisabled, setMigrateWithdrawDisabled] = React.useState(true);
 
+    const [transactionModalOpen, setTransactionModalOpen] = React.useState(false);
+
     // TO-DO: Web3 Integration
     const onMigrateLendingAssetClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
         setMigrateModalOpen(true);
@@ -48,6 +50,7 @@ export const Migrate: React.FC<Props> = (props: Props) => {
     }
     const onWithdraw = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
         setWithdrawModalOpen(false);
+        setTransactionModalOpen(true);
         setWithdrawAmountValue("");
         setMigrateWithdrawDisabled(false);
     }
@@ -62,6 +65,7 @@ export const Migrate: React.FC<Props> = (props: Props) => {
     }
     const onWithdrawCollateral = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
         setWithdrawCollateralModalOpen(false);
+        setTransactionModalOpen(true);
         setWithdrawCollateralAmountValue("");
         setMigrateWithdrawDisabled(false);
     }
@@ -80,18 +84,24 @@ export const Migrate: React.FC<Props> = (props: Props) => {
     }
     const onMigrateDeposit = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
         setMigrateAmountValue("");
+        setMigrateModalOpen(false);
+        setTransactionModalOpen(true);
         setMigrateDepositDisabled(true);
         setMigrateWithdrawDisabled(true);
-        setWithdrawModalOpen(false);
         // TO-DO: Web3 integration: once all deposits are migrated, disable V1
     }
     const onMigrateWithdraw = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+        setMigrateModalOpen(false);
+        setTransactionModalOpen(true);
         setMigrateAmountValue("");
         setMigrateDepositDisabled(false);
         setMigrateWithdrawDisabled(true);
     }
     const onMigrateAmountChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
         setMigrateAmountValue(event.target.value);
+    }
+    const handleTransactionModalClose = (event: {}, reason: "backdropClick" | "escapeKeyDown") => {
+        setTransactionModalOpen(false);
     }
 
     return (
@@ -179,6 +189,11 @@ export const Migrate: React.FC<Props> = (props: Props) => {
                 poolIconSrcSecondary={currentToken.image2 || ""}
                 token={currentToken}
                 value={migrateAmountValue}
+            />
+            <TransactionModal
+                action={"Transaction"}
+                handleClose={handleTransactionModalClose}
+                open={transactionModalOpen}
             />
         </React.Fragment>
     )
