@@ -1,9 +1,10 @@
 import * as React from "react";
 
-import { DashboardTable, Header, InformationCard } from "../../components";
+import { CustomButton, DashboardTable, Header, InformationCard } from "../../components";
 import { Grid, LinearProgress, Typography } from "@material-ui/core";
 
 import { BorrowerCountdownContext } from "../../hooks/borrowerCountdown";
+import { V1Context } from "../../hooks/v1";
 import { makeStyles } from "@material-ui/core/styles";
 import { parseBigNumber } from "../../util/tools";
 import { useBorrowLimit } from "../../hooks/useBorrowLimit";
@@ -23,9 +24,6 @@ const useStyles = makeStyles(theme => ({
 }));
 
 interface Props { }
-
-// TO-DO: Web3 integration
-
 
 export const Dashboard: React.FC<Props> = (props: Props) => {
     const classes = useStyles();
@@ -115,6 +113,22 @@ export const Dashboard: React.FC<Props> = (props: Props) => {
                     <InformationCard header="Borrow balance (in USDC)" text={`$${data.borrowBalance.toFixed(2)}`} />
                 </Grid>
             </Grid>
+            <V1Context.Consumer>
+                {value =>
+                    value.v1 === true ?
+                <Grid
+                    item
+                    container
+                    direction="row"
+                    justify="center"
+                    alignItems="center"
+                >
+                    <CustomButton text="Migrate to V2" type="long"/>
+                </Grid>
+                :
+                null
+            }
+            </V1Context.Consumer>
             <Grid
                 item
                 container

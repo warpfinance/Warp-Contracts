@@ -6,6 +6,7 @@ import { BorrowerCountdownContext } from "../../hooks/borrowerCountdown";
 import { CustomButton } from "..";
 import React from "react";
 import { Token } from "../../util/token";
+import { V1Context } from "../../hooks/v1";
 import { formatBigNumber } from "../../util/tools";
 import { useConnectedWeb3Context } from "../../hooks/connectedWeb3";
 import { useTokenBalance } from "../../hooks/useTokenBalance";
@@ -108,13 +109,20 @@ export const DashboardTableRow: React.FC<Props> = (props: Props) => {
                     alignItems="center"
                 >
                     <BorrowerCountdownContext.Consumer>
-                        {value =>
-                            <CustomButton
-                                disabled={props.type === "borrowing" && value.countdown === true}
-                                href={props.buttonHref}
-                                text={props.buttonText}
-                                type={"short"} />
-                        }
+                        {({ countdown }) => (
+                            <React.Fragment>
+                                <V1Context.Consumer>
+                                    {({ v1 }) => (
+                                        <CustomButton
+                                            disabled={(props.type === "borrowing" && countdown === true) ||
+                                                v1 === true}
+                                            href={props.buttonHref}
+                                            text={props.buttonText}
+                                            type={"short"} />
+                                    )}
+                                </V1Context.Consumer>
+                            </React.Fragment>
+                        )}
                     </BorrowerCountdownContext.Consumer>
                 </Grid>
             </TableCell>

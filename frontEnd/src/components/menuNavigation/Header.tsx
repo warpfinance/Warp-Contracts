@@ -6,6 +6,7 @@ import { CustomButton, ErrorCustomButton, NotificationModal, TeamJoinModal, Team
 import FileCopyOutlinedIcon from '@material-ui/icons/FileCopyOutlined';
 import { Link as RouterLink } from 'react-router-dom';
 import { TransactionInfo } from "../../util/types";
+import { V1Context } from "../../hooks/v1";
 import { WarpControlService } from "../../services/warpControl";
 import { copyTextToClipboard } from "../../util/tools"
 import { getContractAddress } from "../../util/networks";
@@ -236,157 +237,161 @@ export const Header: React.FC<Props> = (props: Props) => {
 
         if (!props.home) {
             return (
-                <React.Fragment>
-                    {connected === true ?
+                <V1Context.Consumer>
+                    {({ v1 }) => (
                         <React.Fragment>
-                            {(!onTeam && !tryingToJoinTeam) ?
+                            { connected === true && v1 === false ?
                                 <React.Fragment>
-                                    <Grid
-                                        item
-                                        xs
-                                    >
-                                        <CustomButton text={"Join a team"} type={"short"} onClick={handleTeamJoinOpen} />
-                                    </Grid>
-                                    <Grid
-                                        item
-                                        xs
-                                    >
-                                        <CustomButton text={"Create team"} onClick={handleTeamCreateOpen} type={"short"} />
-                                    </Grid>
+                                    {(!onTeam && !tryingToJoinTeam) ?
+                                        <React.Fragment>
+                                            <Grid
+                                                item
+                                                xs
+                                            >
+                                                <CustomButton text={"Join a team"} type={"short"} onClick={handleTeamJoinOpen} />
+                                            </Grid>
+                                            <Grid
+                                                item
+                                                xs
+                                            >
+                                                <CustomButton text={"Create team"} onClick={handleTeamCreateOpen} type={"short"} />
+                                            </Grid>
+                                        </React.Fragment>
+                                        :
+                                        <Grid
+                                            item
+                                            xs
+                                        >
+                                            <Card className={classes.teamCard}>
+                                                <CardContent>
+                                                    <Grid
+                                                        container
+                                                        direction="row"
+                                                        justify="space-around"
+                                                        alignItems="baseline"
+                                                    >
+                                                        <Grid item>
+                                                            <IconButton onClick={() => copyTextToClipboard(onTeam ? teamCode : teamCodeOverride)}>
+                                                                <FileCopyOutlinedIcon fontSize="small" />
+                                                            </IconButton>
+                                                        </Grid>
+                                                        <Grid item>
+                                                            <Typography variant="subtitle1">
+                                                                {onTeam ? teamName : teamNameOverride}
+                                                            </Typography>
+                                                        </Grid>
+                                                        <Grid item>
+                                                            <RouterLink className={classes.routerLink} to={`/team/${onTeam ? teamCode : teamCodeOverride}`}>
+                                                                <Link
+                                                                    className={pathName.startsWith("/team/") ? classes.selectedLink : classes.link}
+                                                                    color="textSecondary"
+                                                                    href=""
+                                                                    underline="none">
+                                                                    {">"}
+                                                                </Link>
+                                                            </RouterLink>
+                                                        </Grid>
+                                                    </Grid>
+                                                </CardContent>
+                                            </Card>
+                                        </Grid>
+                                    }
                                 </React.Fragment>
                                 :
-                                <Grid
-                                    item
-                                    xs
-                                >
-                                    <Card className={classes.teamCard}>
-                                        <CardContent>
-                                            <Grid
-                                                container
-                                                direction="row"
-                                                justify="space-around"
-                                                alignItems="baseline"
-                                            >
-                                                <Grid item>
-                                                    <IconButton onClick={() => copyTextToClipboard(onTeam ? teamCode : teamCodeOverride)}>
-                                                        <FileCopyOutlinedIcon fontSize="small" />
-                                                    </IconButton>
-                                                </Grid>
-                                                <Grid item>
-                                                    <Typography variant="subtitle1">
-                                                        {onTeam ? teamName : teamNameOverride}
-                                                    </Typography>
-                                                </Grid>
-                                                <Grid item>
-                                                    <RouterLink className={classes.routerLink} to={`/team/${onTeam ? teamCode : teamCodeOverride}`}>
-                                                        <Link
-                                                            className={pathName.startsWith("/team/") ? classes.selectedLink : classes.link}
-                                                            color="textSecondary"
-                                                            href=""
-                                                            underline="none">
-                                                            {">"}
-                                                        </Link>
-                                                    </RouterLink>
-                                                </Grid>
-                                            </Grid>
-                                        </CardContent>
-                                    </Card>
-                                </Grid>
+                                null
                             }
-                        </React.Fragment>
-                        :
-                        null
-                    }
-                    <Grid
-                        item
-                        xs
-                    >
-                        {connected === true ?
-                            <Typography>
-                                <RouterLink className={classes.routerLink} to={"/dashboard"}>
-                                    <Link
-                                        className={pathName === "/dashboard" ? classes.selectedLink : classes.link}
-                                        color="textSecondary"
-                                        href=""
-                                        underline="none">
+                            <Grid
+                                item
+                                xs
+                            >
+                                {connected === true ?
+                                    <Typography>
+                                        <RouterLink className={classes.routerLink} to={"/dashboard"}>
+                                            <Link
+                                                className={pathName === "/dashboard" ? classes.selectedLink : classes.link}
+                                                color="textSecondary"
+                                                href=""
+                                                underline="none">
+                                                Dashboard
+                                    </Link>
+                                        </RouterLink>
+                                    </Typography> :
+                                    <Typography className={classes.link} color="textSecondary">
                                         Dashboard
-                                    </Link>
-                                </RouterLink>
-                            </Typography> :
-                            <Typography className={classes.link} color="textSecondary">
-                                Dashboard
                             </Typography>
-                        }
-                    </Grid>
-                    <Grid
-                        item
-                        xs
-                    >
-                        {connected === true ?
-                            <Typography>
-                                <RouterLink className={classes.routerLink} to={"/lender"}>
-                                    <Link
-                                        className={pathName === "/lender" ? classes.selectedLink : classes.link}
-                                        color="textSecondary"
-                                        href=""
-                                        underline="none">
+                                }
+                            </Grid>
+                            <Grid
+                                item
+                                xs
+                            >
+                                {connected === true && v1 === false ?
+                                    <Typography>
+                                        <RouterLink className={classes.routerLink} to={"/lender"}>
+                                            <Link
+                                                className={pathName === "/lender" ? classes.selectedLink : classes.link}
+                                                color="textSecondary"
+                                                href=""
+                                                underline="none">
+                                                Lender
+                                    </Link>
+                                        </RouterLink>
+                                    </Typography> :
+                                    <Typography className={classes.link} color="textSecondary">
                                         Lender
-                                    </Link>
-                                </RouterLink>
-                            </Typography> :
-                            <Typography className={classes.link} color="textSecondary">
-                                Lender
                             </Typography>
-                        }
-                    </Grid>
-                    <Grid
-                        item
-                        xs
-                    >
-                        {connected === true ?
-                            <Typography>
-                                <RouterLink className={classes.routerLink} to={"/borrower"}>
-                                    <Link
-                                        className={pathName === "/borrower" ? classes.selectedLink : classes.link}
-                                        color="textSecondary"
-                                        href=""
-                                        underline="none">
+                                }
+                            </Grid>
+                            <Grid
+                                item
+                                xs
+                            >
+                                {connected === true && v1 === false ?
+                                    <Typography>
+                                        <RouterLink className={classes.routerLink} to={"/borrower"}>
+                                            <Link
+                                                className={pathName === "/borrower" ? classes.selectedLink : classes.link}
+                                                color="textSecondary"
+                                                href=""
+                                                underline="none">
+                                                Borrower
+                                    </Link>
+                                        </RouterLink>
+                                    </Typography> :
+                                    <Typography className={classes.link} color="textSecondary">
                                         Borrower
-                                    </Link>
-                                </RouterLink>
-                            </Typography> :
-                            <Typography className={classes.link} color="textSecondary">
-                                Borrower
                             </Typography>
-                        }
-                    </Grid>
-                    <Grid
-                        item
-                        xs
-                    >
-                        {connected === true ?
-                            <Typography>
-                                <RouterLink className={classes.routerLink} to={"/teams"}>
-                                    <Link
-                                        className={pathName === "/teams" ? classes.selectedLink : classes.link}
-                                        color="textSecondary"
-                                        href=""
-                                        underline="none">
+                                }
+                            </Grid>
+                            <Grid
+                                item
+                                xs
+                            >
+                                {connected === true && v1 === false ?
+                                    <Typography>
+                                        <RouterLink className={classes.routerLink} to={"/teams"}>
+                                            <Link
+                                                className={pathName === "/teams" ? classes.selectedLink : classes.link}
+                                                color="textSecondary"
+                                                href=""
+                                                underline="none">
+                                                NFTs
+                                    </Link>
+                                        </RouterLink>
+                                    </Typography> :
+                                    <Typography className={classes.link} color="textSecondary">
                                         NFTs
-                                    </Link>
-                                </RouterLink>
-                            </Typography> :
-                            <Typography className={classes.link} color="textSecondary">
-                                NFTs
                             </Typography>
-                        }
-                    </Grid>
-                    <Grid
-                        item
-                    >
-                        {connectButton}
-                    </Grid>
-                </React.Fragment>
+                                }
+                            </Grid>
+                            <Grid
+                                item
+                            >
+                                {connectButton}
+                            </Grid>
+                        </React.Fragment>
+                    )}
+                </V1Context.Consumer>
             );
         }
         else {

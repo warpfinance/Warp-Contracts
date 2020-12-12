@@ -27,6 +27,7 @@ import {
 import { TeamContextProvider } from "./hooks/useTeams";
 import { TeamMetricsProvider } from "./hooks/useTeamMetrics";
 import { ThemeProvider } from "@material-ui/styles";
+import { V1Context } from "./hooks/v1";
 import { Web3AccountRequired } from "./pages/Web3AccountRequired";
 import { Web3ReactProvider } from '@web3-react/core'
 import { ethers } from "ethers";
@@ -98,6 +99,9 @@ function getLibrary(provider?: any, connector?: any): any {
 const App: React.FC = () => {
 	const classes = useStyles();
 
+	// TO-DO: Web3 integration
+	const [userIsV1, setUserToV1] = React.useState(true);
+
 	var maxDate = 8640000000000000;
 	var countDownDate = new Date(process.env.REACT_APP_BORROWING_ENABLED_DATETIME || maxDate).getTime();
 
@@ -121,34 +125,45 @@ const App: React.FC = () => {
 		<Web3ReactProvider getLibrary={getLibrary}>
 			<Router>
 				<ThemeProvider theme={outerTheme}>
-					<BorrowerCountdownContext.Provider value={{ countdown: countdown, countdownText: countdownText }} >
-						<TeamContextProvider>
-							<TeamMetricsProvider>
-								<CssBaseline>
-									<div className={classes.root}>
-										<Switch>
-											<Route exact={true} path="/" component={Home} />
-											<Route exact={true} path="/connect" component={Connect} />
-											<Route exact={true} path="/borrower"
-												render={() => <Web3AccountRequired><Borrower /></Web3AccountRequired>} />
-											<Route exact={true} path="/dashboard"
-												render={() => <Web3AccountRequired><Dashboard /></Web3AccountRequired>} />
-											<Route exact={true} path="/lender"
-												render={() => <Web3AccountRequired><Lender /></Web3AccountRequired>} />
-											<Route exact={true} path="/markets"
-												render={() => <ConnectedWeb3><Markets /></ConnectedWeb3>} />
-											<Route exact={true} path="/generate"
-												render={() => <ConnectedWeb3><CalculateMetrics /></ConnectedWeb3>} />
-											<Route exact={true} path="/teams"
-												render={() => <ConnectedWeb3><TeamLeaderboard /></ConnectedWeb3>} />
-											<Route exact={true} path="/team/:code"
-												render={() => <ConnectedWeb3><IntraTeamLeaderboard /></ConnectedWeb3>} />
-										</Switch>
-									</div>
-								</CssBaseline>
-							</TeamMetricsProvider>
-						</TeamContextProvider>
-					</BorrowerCountdownContext.Provider>
+					<V1Context.Provider value={{ v1: userIsV1 }}>
+						<BorrowerCountdownContext.Provider value={{ countdown: countdown, countdownText: countdownText }} >
+							<TeamContextProvider>
+								<TeamMetricsProvider>
+									<CssBaseline>
+										<div className={classes.root}>
+											<Switch>
+												<Route exact={true} path="/" component={Home} />
+												<Route exact={true} path="/connect" component={Connect} />
+												<Route exact={true} path="/dashboard"
+													render={() => <Web3AccountRequired><Dashboard /></Web3AccountRequired>} />
+												<V1Context.Consumer>
+													{value =>
+														value.v1 === false ?
+															<React.Fragment>
+																<Route exact={true} path="/borrower"
+																	render={() => <Web3AccountRequired><Borrower /></Web3AccountRequired>} />
+																<Route exact={true} path="/lender"
+																	render={() => <Web3AccountRequired><Lender /></Web3AccountRequired>} />
+																<Route exact={true} path="/teams"
+																	render={() => <Web3AccountRequired><TeamLeaderboard /></Web3AccountRequired>} />
+																<Route exact={true} path="/team/:code"
+																	render={() => <Web3AccountRequired><IntraTeamLeaderboard /></Web3AccountRequired>} />
+															</React.Fragment>
+															:
+															null
+													}
+												</V1Context.Consumer>
+												<Route exact={true} path="/markets"
+													render={() => <ConnectedWeb3><Markets /></ConnectedWeb3>} />
+												<Route exact={true} path="/generate"
+													render={() => <ConnectedWeb3><CalculateMetrics /></ConnectedWeb3>} />
+											</Switch>
+										</div>
+									</CssBaseline>
+								</TeamMetricsProvider>
+							</TeamContextProvider>
+						</BorrowerCountdownContext.Provider>
+					</V1Context.Provider>
 				</ThemeProvider>
 			</Router>
 		</Web3ReactProvider>
