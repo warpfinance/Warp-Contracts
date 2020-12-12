@@ -1,7 +1,7 @@
 import * as React from "react";
 
 import { Card, CardContent, Grid, Typography, makeStyles } from "@material-ui/core";
-import { Header, LeaderboardTable } from "../../components";
+import { Header, TeamLeaderboardTable } from "../../components";
 
 import { getLogger } from "../../util/logger";
 import { lowercaseFirstLetter } from "../../util/tools";
@@ -12,7 +12,7 @@ interface Props { }
 
 const logger = getLogger('Pages::Leaderboard');
 
-export const Leaderboard: React.FC<Props> = (props: Props) => {
+export const TeamLeaderboard: React.FC<Props> = (props: Props) => {
     const { teams, timestamp } = useTeamMetrics();
 
     return (
@@ -86,7 +86,7 @@ export const Leaderboard: React.FC<Props> = (props: Props) => {
                     </Typography>
                     </Grid>
                     <Grid item>
-                        <LeaderboardTable teams={teams} />
+                        <TeamLeaderboardTable teams={teams} />
                     </Grid>
                 </Grid>
                 <Grid

@@ -32,6 +32,14 @@ export interface InterestAccrued {
   };
 }
 
+export interface InterestShortCircuit {
+  name: "InterestShortCircuit";
+  args: {
+    _blockNumber: BN;
+    0: BN;
+  };
+}
+
 export interface LoanRepayed {
   name: "LoanRepayed";
   args: {
@@ -78,12 +86,35 @@ export interface StableCoinWithdraw {
   };
 }
 
+export interface WarpControlChanged {
+  name: "WarpControlChanged";
+  args: {
+    _newControl: string;
+    _oldControl: string;
+    0: string;
+    1: string;
+  };
+}
+
+export interface WarpTeamChanged {
+  name: "WarpTeamChanged";
+  args: {
+    _newTeam: string;
+    _newControl: string;
+    0: string;
+    1: string;
+  };
+}
+
 type AllEvents =
   | InterestAccrued
+  | InterestShortCircuit
   | LoanRepayed
   | ReserveWithdraw
   | StableCoinLent
-  | StableCoinWithdraw;
+  | StableCoinWithdraw
+  | WarpControlChanged
+  | WarpTeamChanged;
 
 export interface WarpVaultScInstance extends Truffle.ContractInstance {
   InterestRate(txDetails?: Truffle.TransactionDetails): Promise<string>;

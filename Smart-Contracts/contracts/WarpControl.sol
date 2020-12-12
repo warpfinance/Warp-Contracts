@@ -26,35 +26,30 @@ contract WarpControl is Ownable, Exponential {
     UniswapLPOracleFactoryI public Oracle; //oracle factory contract interface
     WarpVaultLPFactoryI public WVLPF;
     WarpVaultSCFactoryI public WVSCF;
+
     address public warpTeam;
     address public newWarpControl;
-    uint public graceSpace;
+    uint256 public graceSpace;
 
     address[] public lpVaults;
     address[] public scVaults;
-    address[] public launchParticipants;
-    address[] public groups;
 
     mapping(address => address) public instanceLPTracker; //maps LP token address to the assets WarpVault
     mapping(address => address) public instanceSCTracker;
     mapping(address => address) public getAssetByVault;
-    mapping(address => uint) public lockedLPValue;
     mapping(address => bool) public isVault;
-    mapping(address => address[]) public refferalCodeTracker;
-    mapping(address => string) public refferalCodeToGroupName;
-    mapping(address => bool) public isParticipant;
-    mapping(address => bool) public existingRefferalCode;
-    mapping(address => bool) public isInGroup;
-    mapping(address => address) public groupsYourIn;
 
     event NewLPVault(address _newVault);
     event ImportedLPVault(address _vault);
     event NewSCVault(address _newVault, address _interestRateModel);
     event ImportedSCVault(address _vault);
-    event NewBorrow(address _borrower, address _StableCoin, uint _amountBorrowed);
-    event NotCompliant(address _account, uint _time);
+    event NewBorrow(
+        address _borrower,
+        address _StableCoin,
+        uint256 _amountBorrowed
+    );
     event Liquidation(address _account, address liquidator);
-    event complianceReset(address _account, uint _time);
+
     /**
       @dev Throws if called by any account other than a warp vault
      */
@@ -83,60 +78,20 @@ contract WarpControl is Ownable, Exponential {
         WVSCF = WarpVaultSCFactoryI(_WVSCF);
         warpTeam = _warpTeam;
     }
-///view functions for front end /////
 
-  /**
-  @notice viewNumLPVaults returns the number of lp vaults on the warp platform
-  **/
-    function viewNumLPVaults() external view returns(uint256) {
+    /**
+    @notice viewNumLPVaults returns the number of lp vaults on the warp platform
+    **/
+    function viewNumLPVaults() external view returns (uint256) {
         return lpVaults.length;
     }
 
-  /**
-  @notice viewNumSCVaults returns the number of stablecoin vaults on the warp platform
-  **/
-    function viewNumSCVaults() external view returns(uint256) {
+    /**
+    @notice viewNumSCVaults returns the number of stablecoin vaults on the warp platform
+    **/
+    function viewNumSCVaults() external view returns (uint256) {
         return scVaults.length;
     }
-
-  /**
-  @notice viewLaunchParticipants returns an array of all launch participant addresses
-  **/
-    function viewLaunchParticipants() public view returns(address[] memory) {
-      return launchParticipants;
-    }
-
-  /**
-  @notice viewAllGroups returns an array of all group addresses
-  **/
-    function viewAllGroups() public view returns(address[] memory) {
-      return groups;
-    }
-
-  /**
-  @notice viewAllMembersOfAGroup returns an array of addresses containing the addresses of every member in a group
-  @param _refferalCode is the address that acts as a referral code for a group
-  **/
-    function viewAllMembersOfAGroup(address _refferalCode) public view returns(address[] memory) {
-      return refferalCodeTracker[_refferalCode];
-    }
-
-  /**
-  @notice getGroupName returns the name of a group
-  @param _refferalCode is the address that acts as a referral code for a group
-  **/
-    function getGroupName(address _refferalCode) public view returns(string memory) {
-      return refferalCodeToGroupName[_refferalCode];
-    }
-
-  /**
-  @notice getAccountsGroup returns the refferal code address of the team an account is on
-  @param _account is the address whos team is being retrieved
-  **/
-    function getAccountsGroup(address _account) public view returns(address) {
-      return groupsYourIn[_account];
-    }
-
 
     /**
     @notice createNewLPVault allows the contract owner to create a new WarpVaultLP contract for a specific LP token
@@ -245,54 +200,15 @@ contract WarpControl is Ownable, Exponential {
     }
 
     /**
-    @notice @createGroup is used to create a new group
-    @param _groupName is the name of the group being created
-    @dev the refferal code for this group is the address of the msg.sender
-    **/
-    function createGroup(string memory _groupName) public {
-        require(isInGroup[msg.sender] == false, "Cant create a group once already in one");
-
-        // Create group
-        existingRefferalCode[msg.sender] = true;
-        refferalCodeToGroupName[msg.sender] = _groupName;
-        groups.push(msg.sender);
-
-        // Join Group
-        refferalCodeTracker[msg.sender].push(msg.sender);
-        isInGroup[msg.sender] = true;
-        groupsYourIn[msg.sender] = msg.sender;
-
-        launchParticipants.push(msg.sender);
-    }
-
-    /**
-    @notice addMemberToGroup is used to add an account to a group
-    @param _refferalCode is the address used as a groups refferal code
-    @dev the member being added is the msg.sender
-    **/
-    function addMemberToGroup(address _refferalCode) public {
-        //Require a member is either not in a group OR has entered their groups refferal code
-        require(isInGroup[msg.sender] == false, "Cant join more than one group");
-        require(existingRefferalCode[_refferalCode] == true, "Group doesn't exist.");
-
-        // Join Group
-        refferalCodeTracker[_refferalCode].push(msg.sender);
-        isInGroup[msg.sender] = true;
-        groupsYourIn[msg.sender] = _refferalCode;
-
-        launchParticipants.push(msg.sender);
-    }
-
-
-
-
-    /**
     @notice Figures out how much of a given LP token an account is allowed to withdraw
     @param account is the account being checked
     @param lpToken is the address of the lpToken the user wishes to withdraw
     @dev this function runs calculations to accrue interest for an up to date amount
      */
-    function getMaxWithdrawAllowed(address account, address lpToken) public returns (uint256) {
+    function getMaxWithdrawAllowed(address account, address lpToken)
+        public
+        returns (uint256)
+    {
         uint256 borrowedTotal = getTotalBorrowedValue(account);
         uint256 collateralValue = getTotalAvailableCollateralValue(account);
         uint256 requiredCollateral = calcCollateralRequired(borrowedTotal);
@@ -307,7 +223,11 @@ contract WarpControl is Ownable, Exponential {
     @param lpToken is the address of the lpToken the user wishes to withdraw
     @dev this function does not run calculations to accrue interest and returns the previously calculated amount
      */
-    function viewMaxWithdrawAllowed(address account, address lpToken) public view returns (uint256) {
+    function viewMaxWithdrawAllowed(address account, address lpToken)
+        public
+        view
+        returns (uint256)
+    {
         uint256 borrowedTotal = viewTotalBorrowedValue(account);
         uint256 collateralValue = viewTotalAvailableCollateralValue(account);
         uint256 requiredCollateral = calcCollateralRequired(borrowedTotal);
@@ -387,7 +307,10 @@ contract WarpControl is Ownable, Exponential {
     @param lpToken is the address of the lp token
     @dev this function runs calculations to retrieve the current price
     **/
-    function viewPriceOfCollateral(address lpToken) public view returns(uint256)
+    function viewPriceOfCollateral(address lpToken)
+        public
+        view
+        returns (uint256)
     {
         return Oracle.viewUnderlyingPrice(lpToken);
     }
@@ -397,8 +320,7 @@ contract WarpControl is Ownable, Exponential {
     @param lpToken is the address of the lp token
     @dev this function does not run calculations amd returns the previously calculated price
     **/
-    function getPriceOfCollateral(address lpToken) public returns(uint256)
-    {
+    function getPriceOfCollateral(address lpToken) public returns (uint256) {
         return Oracle.getUnderlyingPrice(lpToken);
     }
 
@@ -408,7 +330,10 @@ contract WarpControl is Ownable, Exponential {
     @param amount is the amount of stablecoin
     @dev this function runs calculations to retrieve the current price
     **/
-    function viewPriceOfToken(address token, uint256 amount) public view returns(uint256)
+    function viewPriceOfToken(address token, uint256 amount)
+        public
+        view
+        returns (uint256)
     {
         return Oracle.viewPriceOfToken(token, amount);
     }
@@ -419,9 +344,42 @@ contract WarpControl is Ownable, Exponential {
     @param amount is the amount of stablecoin
     @dev this function does not run calculations amd returns the previously calculated price
     **/
-    function getPriceOfToken(address token, uint256 amount) public returns(uint256)
+    function getPriceOfToken(address token, uint256 amount)
+        public
+        returns (uint256)
     {
         return Oracle.getPriceOfToken(token, amount);
+    }
+
+    /**
+    @notice viewTotalLentValue returns the total lent value for an account in USDC
+    @param _account is the account whos lent value we are calculating
+    **/
+    function viewTotalLentValue(address _account)
+        public
+        view
+        returns (uint256)
+    {
+        uint256 numSCVaults = scVaults.length;
+        uint256 totalValue = 0;
+
+        // Add up each stable coin vaults value
+        for (uint256 i = 0; i < numSCVaults; ++i) {
+            //instantiate each LP warp vault
+            WarpVaultSCI WVSC = WarpVaultSCI(scVaults[i]);
+            //retreive the amount user has borrowed from each stablecoin vault
+            uint256 lentBalanceInStable = WVSC.viewAccountBalance(_account);
+            if (lentBalanceInStable == 0) {
+                continue;
+            }
+            uint256 usdcLentAmount = viewPriceOfToken(
+                WVSC.getSCAddress(),
+                lentBalanceInStable
+            );
+            totalValue = totalValue.add(usdcLentAmount);
+        }
+
+        return totalValue;
     }
 
     /**
@@ -429,7 +387,11 @@ contract WarpControl is Ownable, Exponential {
     @param _account is the account whos borrowed value we are calculating
     @dev this function returns previously calculated values
     **/
-    function viewTotalBorrowedValue(address _account) public view returns (uint256) {
+    function viewTotalBorrowedValue(address _account)
+        public
+        view
+        returns (uint256)
+    {
         uint256 numSCVaults = scVaults.length;
         //initialize the totalBorrowedValue variable to zero
         uint256 totalBorrowedValue = 0;
@@ -442,10 +404,11 @@ contract WarpControl is Ownable, Exponential {
             if (borrowBalanceInStable == 0) {
                 continue;
             }
-            uint256 usdcBorrowedAmount = viewPriceOfToken(WVSC.getSCAddress(), borrowBalanceInStable);
-            totalBorrowedValue = totalBorrowedValue.add(
-                usdcBorrowedAmount
+            uint256 usdcBorrowedAmount = viewPriceOfToken(
+                WVSC.getSCAddress(),
+                borrowBalanceInStable
             );
+            totalBorrowedValue = totalBorrowedValue.add(usdcBorrowedAmount);
         }
         //return total Borrowed Value
         return totalBorrowedValue;
@@ -465,14 +428,15 @@ contract WarpControl is Ownable, Exponential {
             //instantiate each LP warp vault
             WarpVaultSCI WVSC = WarpVaultSCI(scVaults[i]);
             //retreive the amount user has borrowed from each stablecoin vault
-            uint borrowBalanceInStable = WVSC.borrowBalanceCurrent(_account);
+            uint256 borrowBalanceInStable = WVSC.borrowBalanceCurrent(_account);
             if (borrowBalanceInStable == 0) {
                 continue;
             }
-            uint256 usdcBorrowedAmount = getPriceOfToken(WVSC.getSCAddress(), borrowBalanceInStable);
-            totalBorrowedValue = totalBorrowedValue.add(
-                usdcBorrowedAmount
+            uint256 usdcBorrowedAmount = getPriceOfToken(
+                WVSC.getSCAddress(),
+                borrowBalanceInStable
             );
+            totalBorrowedValue = totalBorrowedValue.add(usdcBorrowedAmount);
         }
         //return total Borrowed Value
         return totalBorrowedValue;
@@ -499,7 +463,11 @@ contract WarpControl is Ownable, Exponential {
     @notice calcCollateralRequired returns the amount of collateral needed for an input borrow value
     @param _borrowAmount is the input borrow amount
     **/
-    function calcCollateralRequired(uint256 _borrowAmount) public pure returns (uint256) {
+    function calcCollateralRequired(uint256 _borrowAmount)
+        public
+        pure
+        returns (uint256)
+    {
         return _borrowAmount.mul(3).div(2);
     }
 
@@ -537,14 +505,18 @@ contract WarpControl is Ownable, Exponential {
     function borrowSC(address _StableCoin, uint256 _amount) public {
         uint256 borrowedTotalInUSDC = getTotalBorrowedValue(msg.sender);
         uint256 borrowLimitInUSDC = getBorrowLimit(msg.sender);
-        uint256 borrowAmountAllowedInUSDC = borrowLimitInUSDC.sub(borrowedTotalInUSDC);
+        uint256 borrowAmountAllowedInUSDC = borrowLimitInUSDC.sub(
+            borrowedTotalInUSDC
+        );
 
         uint256 borrowAmountInUSDC = getPriceOfToken(_StableCoin, _amount);
 
         //require the amount being borrowed is less than or equal to the amount they are aloud to borrow
-        require(borrowAmountAllowedInUSDC >= borrowAmountInUSDC, "Borrowing more than allowed");
-        //track USDC value of locked LP
-        lockedLPValue[msg.sender] = lockedLPValue[msg.sender].add(_amount);
+        require(
+            borrowAmountAllowedInUSDC >= borrowAmountInUSDC,
+            "Borrowing more than allowed"
+        );
+
         //retreive stablecoin vault address being borrowed from and instantiate it
         WarpVaultSCI WV = WarpVaultSCI(instanceSCTracker[_StableCoin]);
         //call _borrow function on the stablecoin warp vault
@@ -552,14 +524,12 @@ contract WarpControl is Ownable, Exponential {
         emit NewBorrow(msg.sender, _StableCoin, _amount);
     }
 
-
-
     /**
     @notice liquidateAccount is used to liquidate a non-compliant loan after it has reached its 30 minute grace period
     @param _borrower is the address of the borrower whos loan is non-compliant
     **/
     function liquidateAccount(address _borrower) public {
-         //require the liquidator is not also the borrower
+        //require the liquidator is not also the borrower
         require(msg.sender != _borrower, "you cant liquidate yourself");
         //retreive the number of stablecoin vaults in the warp platform
         uint256 numSCVaults = scVaults.length;
@@ -575,7 +545,10 @@ contract WarpControl is Ownable, Exponential {
             WarpVaultSCI scVault = WarpVaultSCI(scVaults[i]);
             //retreive the borrowers borrow balance from this vault and add it to the scBalances array
             scBalances[i] = scVault.borrowBalanceCurrent(_borrower);
-            uint256 borrowedAmountInUSDC = viewPriceOfToken(getAssetByVault[address(scVault)], scBalances[i]);
+            uint256 borrowedAmountInUSDC = viewPriceOfToken(
+                getAssetByVault[address(scVault)],
+                scBalances[i]
+            );
 
             //add the borrowed amount to the total borrowed balance
             borrowedAmount = borrowedAmount.add(borrowedAmountInUSDC);
@@ -621,19 +594,19 @@ contract WarpControl is Ownable, Exponential {
         uint256 _multiplierPerYear,
         uint256 _jumpMultiplierPerYear,
         uint256 _optimal
-      ) public onlyOwner {
-      address IR = address(
-          new JumpRateModelV2(
-              _baseRatePerYear,
-              _multiplierPerYear,
-              _jumpMultiplierPerYear,
-              _optimal,
-              address(this)
-          )
-      );
-      address vault = instanceSCTracker[_token];
-      WarpVaultSCI WV = WarpVaultSCI(vault);
-      WV.setNewInterestModel(IR);
+    ) public onlyOwner {
+        address IR = address(
+            new JumpRateModelV2(
+                _baseRatePerYear,
+                _multiplierPerYear,
+                _jumpMultiplierPerYear,
+                _optimal,
+                address(this)
+            )
+        );
+        address vault = instanceSCTracker[_token];
+        WarpVaultSCI WV = WarpVaultSCI(vault);
+        WV.setNewInterestModel(IR);
     }
 
     /**
@@ -666,12 +639,12 @@ contract WarpControl is Ownable, Exponential {
             WarpVaultSCI vault = WarpVaultSCI(scVaults[i]);
             vault.updateWarpControl(newWarpControl);
         }
-  }
+    }
 
-/**
-@notice transferWarpTeam allows the wapr team address to be changed by the owner account
-@param _newWarp is the address of the new warp team
-**/
+    /**
+    @notice transferWarpTeam allows the wapr team address to be changed by the owner account
+    @param _newWarp is the address of the new warp team
+    **/
     function transferWarpTeam(address _newWarp) public onlyOwner {
         uint256 numSCVaults = scVaults.length;
         warpTeam = _newWarp;
@@ -679,6 +652,5 @@ contract WarpControl is Ownable, Exponential {
             WarpVaultSCI WVSC = WarpVaultSCI(scVaults[i]);
             WVSC.updateTeam(_newWarp);
         }
-
     }
 }

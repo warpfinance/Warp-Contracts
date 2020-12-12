@@ -613,6 +613,15 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
   };
 
   /**
+   * viewTotalLentValue returns the total lent value for an account in USDC
+   * @param _account is the account whos lent value we are calculating*
+   */
+  viewTotalLentValue(
+    _account: string,
+    txDetails?: Truffle.TransactionDetails
+  ): Promise<BN>;
+
+  /**
    * this function returns previously calculated values*
    * viewTotalBorrowedValue returns the total borrowed value for an account in USDC
    * @param _account is the account whos borrowed value we are calculating
@@ -1345,6 +1354,15 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
         txDetails?: Truffle.TransactionDetails
       ): Promise<number>;
     };
+
+    /**
+     * viewTotalLentValue returns the total lent value for an account in USDC
+     * @param _account is the account whos lent value we are calculating*
+     */
+    viewTotalLentValue(
+      _account: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<BN>;
 
     /**
      * this function returns previously calculated values*

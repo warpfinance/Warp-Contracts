@@ -15,6 +15,18 @@ export interface WarpVaultLpContract
   ): Promise<WarpVaultLpInstance>;
 }
 
+export interface AccountLiquidated {
+  name: "AccountLiquidated";
+  args: {
+    _account: string;
+    _liquidator: string;
+    _amount: BN;
+    0: string;
+    1: string;
+    2: BN;
+  };
+}
+
 export interface CollateralProvided {
   name: "CollateralProvided";
   args: {
@@ -29,13 +41,27 @@ export interface CollateralWithdraw {
   name: "CollateralWithdraw";
   args: {
     _account: string;
-    amount: BN;
+    _amount: BN;
     0: string;
     1: BN;
   };
 }
 
-type AllEvents = CollateralProvided | CollateralWithdraw;
+export interface WarpControlChanged {
+  name: "WarpControlChanged";
+  args: {
+    _newControl: string;
+    _oldControl: string;
+    0: string;
+    1: string;
+  };
+}
+
+type AllEvents =
+  | AccountLiquidated
+  | CollateralProvided
+  | CollateralWithdraw
+  | WarpControlChanged;
 
 export interface WarpVaultLpInstance extends Truffle.ContractInstance {
   LPtoken(txDetails?: Truffle.TransactionDetails): Promise<string>;
