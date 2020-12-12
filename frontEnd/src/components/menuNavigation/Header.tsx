@@ -1,9 +1,8 @@
 import * as React from "react";
 
-import { Card, CardContent, Grid, IconButton, Link, Typography } from "@material-ui/core";
+import { Card, CardContent, Grid, IconButton, Link, SvgIcon, Typography } from "@material-ui/core";
 import { CustomButton, ErrorCustomButton, NotificationModal, TeamJoinModal, TeamModal, TeamReferralModal } from "../../components"
 
-import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import FileCopyOutlinedIcon from '@material-ui/icons/FileCopyOutlined';
 import { Link as RouterLink } from 'react-router-dom';
 import { TransactionInfo } from "../../util/types";
@@ -282,9 +281,13 @@ export const Header: React.FC<Props> = (props: Props) => {
                                                 </Grid>
                                                 <Grid item>
                                                     <RouterLink className={classes.routerLink} to={`/team/${onTeam ? teamCode : teamCodeOverride}`}>
-                                                        <IconButton>
-                                                            <ArrowForwardIosIcon fontSize="small" />
-                                                        </IconButton>
+                                                        <Link
+                                                            className={pathName.startsWith("/team/") ? classes.selectedLink : classes.link}
+                                                            color="textSecondary"
+                                                            href=""
+                                                            underline="none">
+                                                            {">"}
+                                                        </Link>
                                                     </RouterLink>
                                                 </Grid>
                                             </Grid>
