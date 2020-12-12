@@ -10,7 +10,7 @@ interface Props {
     team: Team,
 }
 
-export const TeamLeaderboardRow: React.FC<Props> = (props: Props) => {
+export const IntraTeamLeaderboardRow: React.FC<Props> = (props: Props) => {
     const context = useWeb3React();
     const place = props.rank + 1 === 1 || (props.rank >= 20 && (props.rank + 1) % 10 === 1) ? "st" :
         props.rank + 1 === 2 || (props.rank >= 20 && (props.rank + 1) % 10 === 2) ? "nd" :

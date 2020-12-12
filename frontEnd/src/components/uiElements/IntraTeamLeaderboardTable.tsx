@@ -1,7 +1,7 @@
 import * as React from "react";
 
 import { Grid, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TablePagination, TableRow, Typography } from "@material-ui/core";
-import { TablePaginationActions, TeamLeaderboardRow } from "../../components";
+import { IntraTeamLeaderboardRow, TablePaginationActions } from "../../components";
 
 import { Team, } from "../../util/calculateTeamMetrics";
 
@@ -9,7 +9,7 @@ interface Props {
     teams: Team[],
 }
 
-export const TeamLeaderboardTable: React.FC<Props> = (props: Props) => {
+export const IntraTeamLeaderboardTable: React.FC<Props> = (props: Props) => {
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, props.teams.length - page * rowsPerPage);
@@ -56,7 +56,7 @@ export const TeamLeaderboardTable: React.FC<Props> = (props: Props) => {
                             : props.teams
                         ).map((team: Team, index: number) => {
                             return (
-                                <TeamLeaderboardRow
+                                <IntraTeamLeaderboardRow
                                     rank={index + rowsPerPage * page}
                                     team={team}
                                 />

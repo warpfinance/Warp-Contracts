@@ -27,3 +27,6 @@ export * from "./uiElements/BorrowerTable";
 export * from "./uiElements/TeamLeaderboardRow";
 export * from "./uiElements/TeamLeaderboardTable";
 export * from "./uiElements/TablePaginationActions";
+export * from "./uiElements/IntraTeamLeaderboardRow";
+export * from "./uiElements/IntraTeamLeaderboardTable";
+export * from "./uiElements/TablePaginationActions";
