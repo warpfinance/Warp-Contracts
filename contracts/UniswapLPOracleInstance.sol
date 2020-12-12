@@ -29,12 +29,11 @@ contract UniswapLPOracleInstance is Ownable {
     FixedPoint.uq112x112 public price1Average;
 
     /**
-@notice the constructor function is fired once during token creation to initialize the oracle contract to a specific token pair
-@param _factory is the address of the Uniswap factory contract
-@param _tokenA is the address of the asset being looked up
-@param _tokenB is the address of the USDC token
-**/
-
+    @notice the constructor function is fired once during token creation to initialize the oracle contract to a specific token pair
+    @param _factory is the address of the Uniswap factory contract
+    @param _tokenA is the address of the asset being looked up
+    @param _tokenB is the address of the USDC token
+    **/
     constructor(
         address _factory,
         address _tokenA,
@@ -55,10 +54,7 @@ contract UniswapLPOracleInstance is Ownable {
             uint112 reserve0;
             uint112 reserve1;
             (reserve0, reserve1, blockTimestampLast) = _pair.getReserves();
-            require(
-                reserve0 != 0 && reserve1 != 0,
-                "NO_RESERVES"
-            ); // ensure that there's liquidity in the pair
+            require(reserve0 != 0 && reserve1 != 0, "NO_RESERVES"); // ensure that there's liquidity in the pair
             firstRun = true;
             update();
             firstRun = false;
@@ -66,9 +62,9 @@ contract UniswapLPOracleInstance is Ownable {
     }
 
     /**
-@notice update updates the prices for the input token pair over a set 24hour period
-@dev this is an internal function called by consult if the timeElapsed is greater than 24 hours
-**/
+    @notice update updates the prices for the input token pair over a set 24hour period
+    @dev this is an internal function called by consult if the timeElapsed is greater than 24 hours
+    **/
     function update() public {
         (
             uint256 price0Cumulative,
@@ -95,10 +91,13 @@ contract UniswapLPOracleInstance is Ownable {
     }
 
     /**
-@notice consult returns the price of a token in USDC
-@return price is the price of one asset in USDC(example 1WETH in USDC)
-**/
-    function consult(address token, uint amount) external returns (uint256 price) {
+    @notice consult returns the price of a token in USDC
+    @return price is the price of one asset in USDC(example 1WETH in USDC)
+    **/
+    function consult(address token, uint256 amount)
+        external
+        returns (uint256 price)
+    {
         if (token0 == address(0)) {
             return amount;
         }
@@ -113,10 +112,14 @@ contract UniswapLPOracleInstance is Ownable {
     }
 
     /**
-@notice viewPrice is a view function that retreives the current price without having to run the update function
-@return price is the price of one asset in USDC(example 1WETH in USDC)
-**/
-    function viewPrice(address token, uint amount) external view returns (uint256 price) {
+    @notice viewPrice is a view function that retreives the current price without having to run the update function
+    @return price is the price of one asset in USDC(example 1WETH in USDC)
+    **/
+    function viewPrice(address token, uint256 amount)
+        external
+        view
+        returns (uint256 price)
+    {
         if (token0 == address(0)) {
             return amount;
         }
