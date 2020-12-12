@@ -37,9 +37,7 @@ const useStyles = makeStyles(theme => ({
         color: "#FFFFFF",
     },
     teamCard: {
-        maxHeight: "70px",
-        maxWidth: "250px",
-        paddingTop: "0px",
+        padding: "0px",
     }
 }));
 
