@@ -3,7 +3,7 @@ import * as React from "react";
 import { Card, CardContent, Grid, IconButton, Link, Typography } from "@material-ui/core";
 import { CustomButton, ErrorCustomButton, NotificationModal, TeamJoinModal, TeamModal, TeamReferralModal } from "../../components"
 
-import { BorrowerCountdownContext } from "../../hooks/borrowerCountdown";
+import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import FileCopyOutlinedIcon from '@material-ui/icons/FileCopyOutlined';
 import { Link as RouterLink } from 'react-router-dom';
 import { TransactionInfo } from "../../util/types";
@@ -197,7 +197,7 @@ export const Header: React.FC<Props> = (props: Props) => {
                 reason += `\n${e.data.message}`;
             }
             logger.error(`\nTransaction Failed!  Reason:\n${reason}`);
-            
+
             notifyError("Transaction failed. Please try again later.");
             return;
         }
@@ -242,7 +242,7 @@ export const Header: React.FC<Props> = (props: Props) => {
                 <React.Fragment>
                     {connected === true ?
                         <React.Fragment>
-                            {(!onTeam && !tryingToJoinTeam) ?
+                            {(false/*!onTeam && !tryingToJoinTeam*/) ?
                                 <React.Fragment>
                                     <Grid
                                         item
@@ -267,17 +267,22 @@ export const Header: React.FC<Props> = (props: Props) => {
                                             <Grid
                                                 container
                                                 direction="row"
-                                                justify="center"
-                                                alignItems="flex-start"
+                                                justify="space-around"
+                                                alignItems="baseline"
                                             >
-                                                <Grid item>
-                                                    <Typography variant="subtitle1">
-                                                        {onTeam ? teamName : teamNameOverride}
-                                                    </Typography>
-                                                </Grid>
                                                 <Grid item>
                                                     <IconButton onClick={() => copyTextToClipboard(onTeam ? teamCode : teamCodeOverride)}>
                                                         <FileCopyOutlinedIcon fontSize="small" />
+                                                    </IconButton>
+                                                </Grid>
+                                                <Grid item>
+                                                    <Typography variant="subtitle1">
+                                                        {"Team"/*onTeam ? teamName : teamNameOverride*/}
+                                                    </Typography>
+                                                </Grid>
+                                                <Grid item>
+                                                    <IconButton>
+                                                        <ArrowForwardIosIcon fontSize="small" />
                                                     </IconButton>
                                                 </Grid>
                                             </Grid>
