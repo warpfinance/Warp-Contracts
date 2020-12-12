@@ -281,9 +281,11 @@ export const Header: React.FC<Props> = (props: Props) => {
                                                     </Typography>
                                                 </Grid>
                                                 <Grid item>
-                                                    <IconButton href={"/team"}>
-                                                        <ArrowForwardIosIcon fontSize="small" />
-                                                    </IconButton>
+                                                    <RouterLink className={classes.routerLink} to={`/team/0xA7D862394234C3480a1F3F278fa710e1A0d2D728`/*${teamCodeOverride}`*/}>
+                                                        <IconButton>
+                                                            <ArrowForwardIosIcon fontSize="small" />
+                                                        </IconButton>
+                                                    </RouterLink>
                                                 </Grid>
                                             </Grid>
                                         </CardContent>
@@ -477,7 +479,7 @@ export const Header: React.FC<Props> = (props: Props) => {
                     xs
                 >
                     <RouterLink to={"/"}>
-                        <img className={classes.logo} src={"warp logo.svg"} alt={"Warp"}></img>
+                        <img className={classes.logo} src={"/warp logo.svg"} alt={"Warp"}></img>
                     </RouterLink>
                 </Grid>
                 {getHeaderContent(isConnected || false)}

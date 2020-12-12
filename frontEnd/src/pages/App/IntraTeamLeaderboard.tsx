@@ -3,9 +3,11 @@ import * as React from "react";
 import { Card, CardContent, Grid, Typography } from "@material-ui/core";
 import { Header, IntraTeamLeaderboardTable } from "../../components";
 
+import { Team } from "../../util/calculateTeamMetrics";
 import { getLogger } from "../../util/logger";
 import { lowercaseFirstLetter } from "../../util/tools";
 import moment from "moment";
+import { useParams } from "react-router-dom";
 import { useTeamMetrics } from "../../hooks/useTeamMetrics";
 
 interface Props { }
@@ -14,7 +16,8 @@ const logger = getLogger('Pages::Leaderboard');
 
 export const IntraTeamLeaderboard: React.FC<Props> = (props: Props) => {
     const { teams, timestamp } = useTeamMetrics();
-    const team = teams[0];
+    const { code } = useParams<{ code: string }>();
+    const team = teams.find((team) => team.code === code);
 
     return (
         <React.Fragment>

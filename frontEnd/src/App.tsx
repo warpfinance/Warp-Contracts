@@ -141,7 +141,7 @@ const App: React.FC = () => {
 												render={() => <ConnectedWeb3><CalculateMetrics /></ConnectedWeb3>} />
 											<Route exact={true} path="/teams"
 												render={() => <ConnectedWeb3><TeamLeaderboard /></ConnectedWeb3>} />
-											<Route exact={true} path="/team"
+											<Route exact={true} path="/team/:code"
 												render={() => <ConnectedWeb3><IntraTeamLeaderboard /></ConnectedWeb3>} />
 										</Switch>
 									</div>
