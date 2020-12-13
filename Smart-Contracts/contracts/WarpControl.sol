@@ -134,6 +134,14 @@ contract WarpControl is Ownable, Exponential {
         emit ImportedLPVault(_lpVault);
     }
 
+    function manuallyCreateOracles(
+        address _token0,
+        address _token1,
+        address _lpToken
+    ) public onlyOwner {
+        Oracle.createNewOracles(_token0, _token1, _lpToken);
+    }
+
     /**
     @notice createNewSCVault allows the contract owner to create a new WarpVaultLP contract for a specific LP token
     @param _timelock is a variable representing the number of seconds the timeWizard will prevent withdraws and borrows from a contracts(one week is 605800 seconds)
