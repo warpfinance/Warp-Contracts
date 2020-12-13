@@ -191,25 +191,32 @@
       "type": "function"
     }
   ],
-  "metadata": "{\"compiler\":{\"version\":\"0.6.6+commit.6c089d02\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_borrowAmount\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"_borrower\",\"type\":\"address\"}],\"name\":\"_borrow\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_borrower\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"_liquidator\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"_amount\",\"type\":\"uint256\"}],\"name\":\"_repayLiquidatedLoan\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"borrowBalanceCurrent\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"borrowBalancePrior\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"exchangeRateCurrent\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getSCAddress\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getSCDecimals\",\"outputs\":[{\"internalType\":\"uint8\",\"name\":\"\",\"type\":\"uint8\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_newModel\",\"type\":\"address\"}],\"name\":\"setNewInterestModel\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"totalReserves\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_warpTeam\",\"type\":\"address\"}],\"name\":\"updateTeam\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_warpControl\",\"type\":\"address\"}],\"name\":\"updateWarpControl\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_account\",\"type\":\"address\"}],\"name\":\"viewAccountBalance\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"methods\":{\"_borrow(uint256,address)\":{\"params\":{\"_borrowAmount\":\"The amount of the underlying asset to borrow\",\"_borrower\":\"The borrower\"}},\"_repayLiquidatedLoan(address,address,uint256)\":{\"details\":\"this function uses the onlyWC modifier which means it can only be called by the Warp Control contract*\",\"params\":{\"_amount\":\"is the amount of StableCoin being repayed\",\"_borrower\":\"is the address of the borrower who took out the loan\",\"_liquidator\":\"is the address of the account who is liquidating the loan\"}},\"borrowBalanceCurrent(address)\":{\"params\":{\"account\":\"The address whose balance should be calculated after updating borrowIndex\"},\"returns\":{\"_0\":\"The calculated balance*\"}},\"borrowBalancePrior(address)\":{\"params\":{\"account\":\"The address whose balance should be calculated after updating borrowIndex\"},\"returns\":{\"_0\":\"The calculated balance*\"}}}},\"userdoc\":{\"methods\":{\"_borrow(uint256,address)\":{\"notice\":\"Sender borrows stablecoin assets from the protocol to their own address\"},\"_repayLiquidatedLoan(address,address,uint256)\":{\"notice\":\"repayLiquidatedLoan is a function used by the Warp Control contract to repay a loan on behalf of a liquidator\"},\"borrowBalanceCurrent(address)\":{\"notice\":\"Accrue interest to updated borrowIndex and then calculate account's borrow balance using the updated borrowIndex\"},\"borrowBalancePrior(address)\":{\"notice\":\"returns last calculated account's borrow balance using the prior borrowIndex\"},\"exchangeRateCurrent()\":{\"notice\":\"Accrue interest then return the up-to-date exchange rate\"}},\"notice\":\"The WarpVaultSCI contract an abstract contract the WarpControl contract uses to interface with a WarpVaultSC contract.*\"}},\"settings\":{\"compilationTarget\":{\"/E/dOrg/warp/Smart-Contracts/contracts/interfaces/WarpVaultSCI.sol\":\"WarpVaultSCI\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"/E/dOrg/warp/Smart-Contracts/contracts/interfaces/WarpVaultSCI.sol\":{\"keccak256\":\"0x0b75857453f6a30b36dd55ad68ad9fd765f528b71b3a8ffcf190022a13f92745\",\"urls\":[\"bzz-raw://0b083476355f7b008906b083b7398ee5ae80ceceff7e9219350f68f5158ce32e\",\"dweb:/ipfs/QmcH6u3fYdwrmD5ptfBAmPBr9uuybWB5cAffFfFigpPD1C\"]}},\"version\":1}",
+  "metadata": "{\"compiler\":{\"version\":\"0.6.6+commit.6c089d02\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_borrowAmount\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"_borrower\",\"type\":\"address\"}],\"name\":\"_borrow\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_borrower\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"_liquidator\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"_amount\",\"type\":\"uint256\"}],\"name\":\"_repayLiquidatedLoan\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"borrowBalanceCurrent\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"borrowBalancePrior\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"exchangeRateCurrent\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getSCAddress\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getSCDecimals\",\"outputs\":[{\"internalType\":\"uint8\",\"name\":\"\",\"type\":\"uint8\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_newModel\",\"type\":\"address\"}],\"name\":\"setNewInterestModel\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"totalReserves\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_warpTeam\",\"type\":\"address\"}],\"name\":\"updateTeam\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_warpControl\",\"type\":\"address\"}],\"name\":\"updateWarpControl\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_account\",\"type\":\"address\"}],\"name\":\"viewAccountBalance\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{},\"notice\":\"The WarpVaultSCI contract an abstract contract the WarpControl contract uses to interface with a WarpVaultSC contract.*\"}},\"settings\":{\"compilationTarget\":{\"/home/stan36/repos/Warp/Smart-Contracts/contracts/interfaces/WarpVaultSCI.sol\":\"WarpVaultSCI\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"/home/stan36/repos/Warp/Smart-Contracts/contracts/interfaces/WarpVaultSCI.sol\":{\"keccak256\":\"0xff1a2b4f5e4cc947d7cde34bcf8d5be47ae6c06190bfbdfb71f89a4ccb6e9cb5\",\"urls\":[\"bzz-raw://da15b6399892fc8d453208b1d2745080eabdcdb6d3ef35d26f2088ac780c47e6\",\"dweb:/ipfs/QmWCowUPXKwzuJhGKn2SgqFMioXkfXS3BFcYTF3zPUAkLs\"]}},\"version\":1}",
   "bytecode": "0x",
   "deployedBytecode": "0x",
   "immutableReferences": {},
   "sourceMap": "",
   "deployedSourceMap": "",
-  "source": "pragma solidity ^0.6.0;\r\n\r\n////////////////////////////////////////////////////////////////////////////////////////////\r\n/// @title WarpVaultSCI\r\n/// @author Christopher Dixon\r\n////////////////////////////////////////////////////////////////////////////////////////////\r\n/**\r\nThe WarpVaultSCI contract an abstract contract the WarpControl contract uses to interface\r\n    with a WarpVaultSC contract.\r\n**/\r\n\r\nabstract contract WarpVaultSCI {\r\n\r\n      uint256 public totalReserves;\r\n    /**\r\n    @notice Accrue interest to updated borrowIndex and then calculate account's borrow balance using the updated borrowIndex\r\n    @param account The address whose balance should be calculated after updating borrowIndex\r\n    @return The calculated balance\r\n    **/\r\n    function borrowBalanceCurrent(address account)\r\n        public\r\n        virtual\r\n        returns (uint256);\r\n\r\n    /**\r\n    @notice returns last calculated account's borrow balance using the prior borrowIndex\r\n    @param account The address whose balance should be calculated after updating borrowIndex\r\n    @return The calculated balance\r\n    **/\r\n    function borrowBalancePrior(address account)\r\n        public\r\n        view\r\n        virtual\r\n        returns (uint256);\r\n\r\n    /**\r\n     @notice Accrue interest then return the up-to-date exchange rate\r\n     @return Calculated exchange rate scaled by 1e18\r\n     **/\r\n    function exchangeRateCurrent() public virtual returns (uint256);\r\n\r\n    /**\r\n    @notice Sender borrows stablecoin assets from the protocol to their own address\r\n    @param _borrowAmount The amount of the underlying asset to borrow\r\n    @param _borrower The borrower\r\n    */\r\n    function _borrow(uint256 _borrowAmount, address _borrower) external virtual;\r\n\r\n    /**\r\n    @notice repayLiquidatedLoan is a function used by the Warp Control contract to repay a loan on behalf of a liquidator\r\n    @param _borrower is the address of the borrower who took out the loan\r\n    @param _liquidator is the address of the account who is liquidating the loan\r\n    @param _amount is the amount of StableCoin being repayed\r\n    @dev this function uses the onlyWC modifier which means it can only be called by the Warp Control contract\r\n    **/\r\n    function _repayLiquidatedLoan(\r\n        address _borrower,\r\n        address _liquidator,\r\n        uint256 _amount\r\n    ) public virtual;\r\n\r\n    function setNewInterestModel(address _newModel) public virtual;\r\n\r\n    function getSCDecimals() public view virtual returns(uint8);\r\n    function getSCAddress() public view virtual returns(address);\r\n\r\n    function updateWarpControl(address _warpControl) public virtual;\r\n    function updateTeam(address _warpTeam) public virtual;\r\n\r\n    function viewAccountBalance(address _account) public virtual view returns (uint256);\r\n\r\n}\r\n",
-  "sourcePath": "E:\\dOrg\\warp\\Smart-Contracts\\contracts\\interfaces\\WarpVaultSCI.sol",
+  "source": "pragma solidity ^0.6.0;\n\n////////////////////////////////////////////////////////////////////////////////////////////\n/// @title WarpVaultSCI\n/// @author Christopher Dixon\n////////////////////////////////////////////////////////////////////////////////////////////\n/**\nThe WarpVaultSCI contract an abstract contract the WarpControl contract uses to interface\n    with a WarpVaultSC contract.\n**/\n\nabstract contract WarpVaultSCI {\n    uint256 public totalReserves;\n\n    function borrowBalanceCurrent(address account)\n        public\n        virtual\n        returns (uint256);\n\n    function borrowBalancePrior(address account)\n        public\n        virtual\n        view\n        returns (uint256);\n\n    function exchangeRateCurrent() public virtual returns (uint256);\n\n    function _borrow(uint256 _borrowAmount, address _borrower) external virtual;\n\n    function _repayLiquidatedLoan(\n        address _borrower,\n        address _liquidator,\n        uint256 _amount\n    ) public virtual;\n\n    function setNewInterestModel(address _newModel) public virtual;\n\n    function getSCDecimals() public virtual view returns (uint8);\n\n    function getSCAddress() public virtual view returns (address);\n\n    function updateWarpControl(address _warpControl) public virtual;\n\n    function updateTeam(address _warpTeam) public virtual;\n\n    function viewAccountBalance(address _account)\n        public\n        virtual\n        view\n        returns (uint256);\n}\n",
+  "sourcePath": "/home/stan36/repos/Warp/Smart-Contracts/contracts/interfaces/WarpVaultSCI.sol",
   "ast": {
-    "absolutePath": "/E/dOrg/warp/Smart-Contracts/contracts/interfaces/WarpVaultSCI.sol",
+    "absolutePath": "/home/stan36/repos/Warp/Smart-Contracts/contracts/interfaces/WarpVaultSCI.sol",
     "exportedSymbols": {
-      "WarpVaultSCI": [7044]
+      "WarpVaultSCI": [
+        7096
+      ]
     },
-    "id": 7045,
+    "id": 7097,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 6968,
-        "literals": ["solidity", "^", "0.6", ".0"],
+        "id": 7025,
+        "literals": [
+          "solidity",
+          "^",
+          "0.6",
+          ".0"
+        ],
         "nodeType": "PragmaDirective",
         "src": "0:23:25"
       },
@@ -219,27 +226,29 @@
         "contractDependencies": [],
         "contractKind": "contract",
         "documentation": {
-          "id": 6969,
+          "id": 7026,
           "nodeType": "StructuredDocumentation",
-          "src": "271:133:25",
+          "src": "265:130:25",
           "text": "The WarpVaultSCI contract an abstract contract the WarpControl contract uses to interface\nwith a WarpVaultSC contract.*"
         },
         "fullyImplemented": false,
-        "id": 7044,
-        "linearizedBaseContracts": [7044],
+        "id": 7096,
+        "linearizedBaseContracts": [
+          7096
+        ],
         "name": "WarpVaultSCI",
         "nodeType": "ContractDefinition",
         "nodes": [
           {
             "constant": false,
             "functionSelector": "8f840ddd",
-            "id": 6971,
+            "id": 7028,
             "mutability": "mutable",
             "name": "totalReserves",
             "nodeType": "VariableDeclaration",
             "overrides": null,
-            "scope": 7044,
-            "src": "450:28:25",
+            "scope": 7096,
+            "src": "434:28:25",
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
@@ -247,10 +256,10 @@
               "typeString": "uint256"
             },
             "typeName": {
-              "id": 6970,
+              "id": 7027,
               "name": "uint256",
               "nodeType": "ElementaryTypeName",
-              "src": "450:7:25",
+              "src": "434:7:25",
               "typeDescriptions": {
                 "typeIdentifier": "t_uint256",
                 "typeString": "uint256"
@@ -261,14 +270,9 @@
           },
           {
             "body": null,
-            "documentation": {
-              "id": 6972,
-              "nodeType": "StructuredDocumentation",
-              "src": "485:268:25",
-              "text": "@notice Accrue interest to updated borrowIndex and then calculate account's borrow balance using the updated borrowIndex\n@param account The address whose balance should be calculated after updating borrowIndex\n@return The calculated balance*"
-            },
+            "documentation": null,
             "functionSelector": "17bfdfbc",
-            "id": 6979,
+            "id": 7035,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
@@ -276,18 +280,18 @@
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
-              "id": 6975,
+              "id": 7031,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6974,
+                  "id": 7030,
                   "mutability": "mutable",
                   "name": "account",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 6979,
-                  "src": "789:15:25",
+                  "scope": 7035,
+                  "src": "499:15:25",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -295,10 +299,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 6973,
+                    "id": 7029,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "789:7:25",
+                    "src": "499:7:25",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -309,21 +313,21 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "788:17:25"
+              "src": "498:17:25"
             },
             "returnParameters": {
-              "id": 6978,
+              "id": 7034,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6977,
+                  "id": 7033,
                   "mutability": "mutable",
                   "name": "",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 6979,
-                  "src": "857:7:25",
+                  "scope": 7035,
+                  "src": "564:7:25",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -331,10 +335,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 6976,
+                    "id": 7032,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "857:7:25",
+                    "src": "564:7:25",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -344,24 +348,19 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "856:9:25"
+              "src": "563:9:25"
             },
-            "scope": 7044,
-            "src": "759:107:25",
+            "scope": 7096,
+            "src": "469:104:25",
             "stateMutability": "nonpayable",
             "virtual": true,
             "visibility": "public"
           },
           {
             "body": null,
-            "documentation": {
-              "id": 6980,
-              "nodeType": "StructuredDocumentation",
-              "src": "874:232:25",
-              "text": "@notice returns last calculated account's borrow balance using the prior borrowIndex\n@param account The address whose balance should be calculated after updating borrowIndex\n@return The calculated balance*"
-            },
+            "documentation": null,
             "functionSelector": "7746efab",
-            "id": 6987,
+            "id": 7042,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
@@ -369,18 +368,18 @@
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
-              "id": 6983,
+              "id": 7038,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6982,
+                  "id": 7037,
                   "mutability": "mutable",
                   "name": "account",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 6987,
-                  "src": "1140:15:25",
+                  "scope": 7042,
+                  "src": "607:15:25",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -388,10 +387,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 6981,
+                    "id": 7036,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1140:7:25",
+                    "src": "607:7:25",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -402,21 +401,21 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1139:17:25"
+              "src": "606:17:25"
             },
             "returnParameters": {
-              "id": 6986,
+              "id": 7041,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6985,
+                  "id": 7040,
                   "mutability": "mutable",
                   "name": "",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 6987,
-                  "src": "1222:7:25",
+                  "scope": 7042,
+                  "src": "685:7:25",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -424,10 +423,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 6984,
+                    "id": 7039,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1222:7:25",
+                    "src": "685:7:25",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -437,24 +436,19 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1221:9:25"
+              "src": "684:9:25"
             },
-            "scope": 7044,
-            "src": "1112:119:25",
+            "scope": 7096,
+            "src": "579:115:25",
             "stateMutability": "view",
             "virtual": true,
             "visibility": "public"
           },
           {
             "body": null,
-            "documentation": {
-              "id": 6988,
-              "nodeType": "StructuredDocumentation",
-              "src": "1239:138:25",
-              "text": "@notice Accrue interest then return the up-to-date exchange rate\n@return Calculated exchange rate scaled by 1e18*"
-            },
+            "documentation": null,
             "functionSelector": "bd6d894d",
-            "id": 6993,
+            "id": 7047,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
@@ -462,24 +456,24 @@
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
-              "id": 6989,
+              "id": 7043,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "1411:2:25"
+              "src": "728:2:25"
             },
             "returnParameters": {
-              "id": 6992,
+              "id": 7046,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6991,
+                  "id": 7045,
                   "mutability": "mutable",
                   "name": "",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 6993,
-                  "src": "1438:7:25",
+                  "scope": 7047,
+                  "src": "755:7:25",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -487,10 +481,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 6990,
+                    "id": 7044,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1438:7:25",
+                    "src": "755:7:25",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -500,24 +494,19 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1437:9:25"
+              "src": "754:9:25"
             },
-            "scope": 7044,
-            "src": "1383:64:25",
+            "scope": 7096,
+            "src": "700:64:25",
             "stateMutability": "nonpayable",
             "virtual": true,
             "visibility": "public"
           },
           {
             "body": null,
-            "documentation": {
-              "id": 6994,
-              "nodeType": "StructuredDocumentation",
-              "src": "1455:202:25",
-              "text": "@notice Sender borrows stablecoin assets from the protocol to their own address\n@param _borrowAmount The amount of the underlying asset to borrow\n@param _borrower The borrower"
-            },
+            "documentation": null,
             "functionSelector": "232d46d2",
-            "id": 7001,
+            "id": 7054,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
@@ -525,18 +514,18 @@
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
-              "id": 6999,
+              "id": 7052,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6996,
+                  "id": 7049,
                   "mutability": "mutable",
                   "name": "_borrowAmount",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 7001,
-                  "src": "1680:21:25",
+                  "scope": 7054,
+                  "src": "787:21:25",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -544,10 +533,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 6995,
+                    "id": 7048,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1680:7:25",
+                    "src": "787:7:25",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -558,13 +547,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 6998,
+                  "id": 7051,
                   "mutability": "mutable",
                   "name": "_borrower",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 7001,
-                  "src": "1703:17:25",
+                  "scope": 7054,
+                  "src": "810:17:25",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -572,10 +561,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 6997,
+                    "id": 7050,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1703:7:25",
+                    "src": "810:7:25",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -586,30 +575,25 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1679:42:25"
+              "src": "786:42:25"
             },
             "returnParameters": {
-              "id": 7000,
+              "id": 7053,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "1738:0:25"
+              "src": "845:0:25"
             },
-            "scope": 7044,
-            "src": "1663:76:25",
+            "scope": 7096,
+            "src": "770:76:25",
             "stateMutability": "nonpayable",
             "virtual": true,
             "visibility": "external"
           },
           {
             "body": null,
-            "documentation": {
-              "id": 7002,
-              "nodeType": "StructuredDocumentation",
-              "src": "1747:466:25",
-              "text": "@notice repayLiquidatedLoan is a function used by the Warp Control contract to repay a loan on behalf of a liquidator\n@param _borrower is the address of the borrower who took out the loan\n@param _liquidator is the address of the account who is liquidating the loan\n@param _amount is the amount of StableCoin being repayed\n@dev this function uses the onlyWC modifier which means it can only be called by the Warp Control contract*"
-            },
+            "documentation": null,
             "functionSelector": "ab292f9b",
-            "id": 7011,
+            "id": 7063,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
@@ -617,18 +601,18 @@
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
-              "id": 7009,
+              "id": 7061,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 7004,
+                  "id": 7056,
                   "mutability": "mutable",
                   "name": "_borrower",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 7011,
-                  "src": "2259:17:25",
+                  "scope": 7063,
+                  "src": "891:17:25",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -636,10 +620,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 7003,
+                    "id": 7055,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2259:7:25",
+                    "src": "891:7:25",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -651,13 +635,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 7006,
+                  "id": 7058,
                   "mutability": "mutable",
                   "name": "_liquidator",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 7011,
-                  "src": "2287:19:25",
+                  "scope": 7063,
+                  "src": "918:19:25",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -665,10 +649,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 7005,
+                    "id": 7057,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2287:7:25",
+                    "src": "918:7:25",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -680,13 +664,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 7008,
+                  "id": 7060,
                   "mutability": "mutable",
                   "name": "_amount",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 7011,
-                  "src": "2317:15:25",
+                  "scope": 7063,
+                  "src": "947:15:25",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -694,10 +678,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 7007,
+                    "id": 7059,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2317:7:25",
+                    "src": "947:7:25",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -707,16 +691,16 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2248:91:25"
+              "src": "881:87:25"
             },
             "returnParameters": {
-              "id": 7010,
+              "id": 7062,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "2354:0:25"
+              "src": "983:0:25"
             },
-            "scope": 7044,
-            "src": "2219:136:25",
+            "scope": 7096,
+            "src": "852:132:25",
             "stateMutability": "nonpayable",
             "virtual": true,
             "visibility": "public"
@@ -725,7 +709,7 @@
             "body": null,
             "documentation": null,
             "functionSelector": "b1be82f1",
-            "id": 7016,
+            "id": 7068,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
@@ -733,18 +717,18 @@
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
-              "id": 7014,
+              "id": 7066,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 7013,
+                  "id": 7065,
                   "mutability": "mutable",
                   "name": "_newModel",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 7016,
-                  "src": "2392:17:25",
+                  "scope": 7068,
+                  "src": "1019:17:25",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -752,10 +736,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 7012,
+                    "id": 7064,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2392:7:25",
+                    "src": "1019:7:25",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -766,16 +750,16 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2391:19:25"
+              "src": "1018:19:25"
             },
             "returnParameters": {
-              "id": 7015,
+              "id": 7067,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "2425:0:25"
+              "src": "1052:0:25"
             },
-            "scope": 7044,
-            "src": "2363:63:25",
+            "scope": 7096,
+            "src": "990:63:25",
             "stateMutability": "nonpayable",
             "virtual": true,
             "visibility": "public"
@@ -784,7 +768,7 @@
             "body": null,
             "documentation": null,
             "functionSelector": "94d35990",
-            "id": 7021,
+            "id": 7073,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
@@ -792,24 +776,24 @@
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
-              "id": 7017,
+              "id": 7069,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "2456:2:25"
+              "src": "1081:2:25"
             },
             "returnParameters": {
-              "id": 7020,
+              "id": 7072,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 7019,
+                  "id": 7071,
                   "mutability": "mutable",
                   "name": "",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 7021,
-                  "src": "2487:5:25",
+                  "scope": 7073,
+                  "src": "1113:5:25",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -817,10 +801,10 @@
                     "typeString": "uint8"
                   },
                   "typeName": {
-                    "id": 7018,
+                    "id": 7070,
                     "name": "uint8",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2487:5:25",
+                    "src": "1113:5:25",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint8",
                       "typeString": "uint8"
@@ -830,10 +814,10 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2486:7:25"
+              "src": "1112:7:25"
             },
-            "scope": 7044,
-            "src": "2434:60:25",
+            "scope": 7096,
+            "src": "1059:61:25",
             "stateMutability": "view",
             "virtual": true,
             "visibility": "public"
@@ -842,7 +826,7 @@
             "body": null,
             "documentation": null,
             "functionSelector": "591cec86",
-            "id": 7026,
+            "id": 7078,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
@@ -850,24 +834,24 @@
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
-              "id": 7022,
+              "id": 7074,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "2521:2:25"
+              "src": "1147:2:25"
             },
             "returnParameters": {
-              "id": 7025,
+              "id": 7077,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 7024,
+                  "id": 7076,
                   "mutability": "mutable",
                   "name": "",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 7026,
-                  "src": "2552:7:25",
+                  "scope": 7078,
+                  "src": "1179:7:25",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -875,10 +859,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 7023,
+                    "id": 7075,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2552:7:25",
+                    "src": "1179:7:25",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -889,10 +873,10 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2551:9:25"
+              "src": "1178:9:25"
             },
-            "scope": 7044,
-            "src": "2500:61:25",
+            "scope": 7096,
+            "src": "1126:62:25",
             "stateMutability": "view",
             "virtual": true,
             "visibility": "public"
@@ -901,7 +885,7 @@
             "body": null,
             "documentation": null,
             "functionSelector": "4cf3e784",
-            "id": 7031,
+            "id": 7083,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
@@ -909,18 +893,18 @@
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
-              "id": 7029,
+              "id": 7081,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 7028,
+                  "id": 7080,
                   "mutability": "mutable",
                   "name": "_warpControl",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 7031,
-                  "src": "2596:20:25",
+                  "scope": 7083,
+                  "src": "1221:20:25",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -928,10 +912,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 7027,
+                    "id": 7079,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2596:7:25",
+                    "src": "1221:7:25",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -942,16 +926,16 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2595:22:25"
+              "src": "1220:22:25"
             },
             "returnParameters": {
-              "id": 7030,
+              "id": 7082,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "2632:0:25"
+              "src": "1257:0:25"
             },
-            "scope": 7044,
-            "src": "2569:64:25",
+            "scope": 7096,
+            "src": "1194:64:25",
             "stateMutability": "nonpayable",
             "virtual": true,
             "visibility": "public"
@@ -960,7 +944,7 @@
             "body": null,
             "documentation": null,
             "functionSelector": "b23f3594",
-            "id": 7036,
+            "id": 7088,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
@@ -968,18 +952,18 @@
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
-              "id": 7034,
+              "id": 7086,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 7033,
+                  "id": 7085,
                   "mutability": "mutable",
                   "name": "_warpTeam",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 7036,
-                  "src": "2659:17:25",
+                  "scope": 7088,
+                  "src": "1284:17:25",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -987,10 +971,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 7032,
+                    "id": 7084,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2659:7:25",
+                    "src": "1284:7:25",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -1001,16 +985,16 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2658:19:25"
+              "src": "1283:19:25"
             },
             "returnParameters": {
-              "id": 7035,
+              "id": 7087,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "2692:0:25"
+              "src": "1317:0:25"
             },
-            "scope": 7044,
-            "src": "2639:54:25",
+            "scope": 7096,
+            "src": "1264:54:25",
             "stateMutability": "nonpayable",
             "virtual": true,
             "visibility": "public"
@@ -1019,7 +1003,7 @@
             "body": null,
             "documentation": null,
             "functionSelector": "8f7bf4fd",
-            "id": 7043,
+            "id": 7095,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
@@ -1027,18 +1011,18 @@
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
-              "id": 7039,
+              "id": 7091,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 7038,
+                  "id": 7090,
                   "mutability": "mutable",
                   "name": "_account",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 7043,
-                  "src": "2729:16:25",
+                  "scope": 7095,
+                  "src": "1352:16:25",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1046,10 +1030,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 7037,
+                    "id": 7089,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2729:7:25",
+                    "src": "1352:7:25",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -1060,21 +1044,21 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2728:18:25"
+              "src": "1351:18:25"
             },
             "returnParameters": {
-              "id": 7042,
+              "id": 7094,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 7041,
+                  "id": 7093,
                   "mutability": "mutable",
                   "name": "",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 7043,
-                  "src": "2776:7:25",
+                  "scope": 7095,
+                  "src": "1431:7:25",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1082,10 +1066,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 7040,
+                    "id": 7092,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2776:7:25",
+                    "src": "1431:7:25",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -1095,32 +1079,39 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2775:9:25"
+              "src": "1430:9:25"
             },
-            "scope": 7044,
-            "src": "2701:84:25",
+            "scope": 7096,
+            "src": "1324:116:25",
             "stateMutability": "view",
             "virtual": true,
             "visibility": "public"
           }
         ],
-        "scope": 7045,
-        "src": "408:2382:25"
+        "scope": 7097,
+        "src": "397:1045:25"
       }
     ],
-    "src": "0:2792:25"
+    "src": "0:1443:25"
   },
   "legacyAST": {
-    "absolutePath": "/E/dOrg/warp/Smart-Contracts/contracts/interfaces/WarpVaultSCI.sol",
+    "absolutePath": "/home/stan36/repos/Warp/Smart-Contracts/contracts/interfaces/WarpVaultSCI.sol",
     "exportedSymbols": {
-      "WarpVaultSCI": [7044]
+      "WarpVaultSCI": [
+        7096
+      ]
     },
-    "id": 7045,
+    "id": 7097,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 6968,
-        "literals": ["solidity", "^", "0.6", ".0"],
+        "id": 7025,
+        "literals": [
+          "solidity",
+          "^",
+          "0.6",
+          ".0"
+        ],
         "nodeType": "PragmaDirective",
         "src": "0:23:25"
       },
@@ -1130,27 +1121,29 @@
         "contractDependencies": [],
         "contractKind": "contract",
         "documentation": {
-          "id": 6969,
+          "id": 7026,
           "nodeType": "StructuredDocumentation",
-          "src": "271:133:25",
+          "src": "265:130:25",
           "text": "The WarpVaultSCI contract an abstract contract the WarpControl contract uses to interface\nwith a WarpVaultSC contract.*"
         },
         "fullyImplemented": false,
-        "id": 7044,
-        "linearizedBaseContracts": [7044],
+        "id": 7096,
+        "linearizedBaseContracts": [
+          7096
+        ],
         "name": "WarpVaultSCI",
         "nodeType": "ContractDefinition",
         "nodes": [
           {
             "constant": false,
             "functionSelector": "8f840ddd",
-            "id": 6971,
+            "id": 7028,
             "mutability": "mutable",
             "name": "totalReserves",
             "nodeType": "VariableDeclaration",
             "overrides": null,
-            "scope": 7044,
-            "src": "450:28:25",
+            "scope": 7096,
+            "src": "434:28:25",
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
@@ -1158,10 +1151,10 @@
               "typeString": "uint256"
             },
             "typeName": {
-              "id": 6970,
+              "id": 7027,
               "name": "uint256",
               "nodeType": "ElementaryTypeName",
-              "src": "450:7:25",
+              "src": "434:7:25",
               "typeDescriptions": {
                 "typeIdentifier": "t_uint256",
                 "typeString": "uint256"
@@ -1172,14 +1165,9 @@
           },
           {
             "body": null,
-            "documentation": {
-              "id": 6972,
-              "nodeType": "StructuredDocumentation",
-              "src": "485:268:25",
-              "text": "@notice Accrue interest to updated borrowIndex and then calculate account's borrow balance using the updated borrowIndex\n@param account The address whose balance should be calculated after updating borrowIndex\n@return The calculated balance*"
-            },
+            "documentation": null,
             "functionSelector": "17bfdfbc",
-            "id": 6979,
+            "id": 7035,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
@@ -1187,18 +1175,18 @@
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
-              "id": 6975,
+              "id": 7031,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6974,
+                  "id": 7030,
                   "mutability": "mutable",
                   "name": "account",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 6979,
-                  "src": "789:15:25",
+                  "scope": 7035,
+                  "src": "499:15:25",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1206,10 +1194,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 6973,
+                    "id": 7029,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "789:7:25",
+                    "src": "499:7:25",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -1220,21 +1208,21 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "788:17:25"
+              "src": "498:17:25"
             },
             "returnParameters": {
-              "id": 6978,
+              "id": 7034,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6977,
+                  "id": 7033,
                   "mutability": "mutable",
                   "name": "",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 6979,
-                  "src": "857:7:25",
+                  "scope": 7035,
+                  "src": "564:7:25",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1242,10 +1230,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 6976,
+                    "id": 7032,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "857:7:25",
+                    "src": "564:7:25",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -1255,24 +1243,19 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "856:9:25"
+              "src": "563:9:25"
             },
-            "scope": 7044,
-            "src": "759:107:25",
+            "scope": 7096,
+            "src": "469:104:25",
             "stateMutability": "nonpayable",
             "virtual": true,
             "visibility": "public"
           },
           {
             "body": null,
-            "documentation": {
-              "id": 6980,
-              "nodeType": "StructuredDocumentation",
-              "src": "874:232:25",
-              "text": "@notice returns last calculated account's borrow balance using the prior borrowIndex\n@param account The address whose balance should be calculated after updating borrowIndex\n@return The calculated balance*"
-            },
+            "documentation": null,
             "functionSelector": "7746efab",
-            "id": 6987,
+            "id": 7042,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
@@ -1280,18 +1263,18 @@
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
-              "id": 6983,
+              "id": 7038,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6982,
+                  "id": 7037,
                   "mutability": "mutable",
                   "name": "account",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 6987,
-                  "src": "1140:15:25",
+                  "scope": 7042,
+                  "src": "607:15:25",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1299,10 +1282,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 6981,
+                    "id": 7036,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1140:7:25",
+                    "src": "607:7:25",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -1313,21 +1296,21 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1139:17:25"
+              "src": "606:17:25"
             },
             "returnParameters": {
-              "id": 6986,
+              "id": 7041,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6985,
+                  "id": 7040,
                   "mutability": "mutable",
                   "name": "",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 6987,
-                  "src": "1222:7:25",
+                  "scope": 7042,
+                  "src": "685:7:25",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1335,10 +1318,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 6984,
+                    "id": 7039,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1222:7:25",
+                    "src": "685:7:25",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -1348,24 +1331,19 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1221:9:25"
+              "src": "684:9:25"
             },
-            "scope": 7044,
-            "src": "1112:119:25",
+            "scope": 7096,
+            "src": "579:115:25",
             "stateMutability": "view",
             "virtual": true,
             "visibility": "public"
           },
           {
             "body": null,
-            "documentation": {
-              "id": 6988,
-              "nodeType": "StructuredDocumentation",
-              "src": "1239:138:25",
-              "text": "@notice Accrue interest then return the up-to-date exchange rate\n@return Calculated exchange rate scaled by 1e18*"
-            },
+            "documentation": null,
             "functionSelector": "bd6d894d",
-            "id": 6993,
+            "id": 7047,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
@@ -1373,24 +1351,24 @@
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
-              "id": 6989,
+              "id": 7043,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "1411:2:25"
+              "src": "728:2:25"
             },
             "returnParameters": {
-              "id": 6992,
+              "id": 7046,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6991,
+                  "id": 7045,
                   "mutability": "mutable",
                   "name": "",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 6993,
-                  "src": "1438:7:25",
+                  "scope": 7047,
+                  "src": "755:7:25",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1398,10 +1376,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 6990,
+                    "id": 7044,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1438:7:25",
+                    "src": "755:7:25",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -1411,24 +1389,19 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1437:9:25"
+              "src": "754:9:25"
             },
-            "scope": 7044,
-            "src": "1383:64:25",
+            "scope": 7096,
+            "src": "700:64:25",
             "stateMutability": "nonpayable",
             "virtual": true,
             "visibility": "public"
           },
           {
             "body": null,
-            "documentation": {
-              "id": 6994,
-              "nodeType": "StructuredDocumentation",
-              "src": "1455:202:25",
-              "text": "@notice Sender borrows stablecoin assets from the protocol to their own address\n@param _borrowAmount The amount of the underlying asset to borrow\n@param _borrower The borrower"
-            },
+            "documentation": null,
             "functionSelector": "232d46d2",
-            "id": 7001,
+            "id": 7054,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
@@ -1436,18 +1409,18 @@
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
-              "id": 6999,
+              "id": 7052,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6996,
+                  "id": 7049,
                   "mutability": "mutable",
                   "name": "_borrowAmount",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 7001,
-                  "src": "1680:21:25",
+                  "scope": 7054,
+                  "src": "787:21:25",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1455,10 +1428,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 6995,
+                    "id": 7048,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1680:7:25",
+                    "src": "787:7:25",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -1469,13 +1442,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 6998,
+                  "id": 7051,
                   "mutability": "mutable",
                   "name": "_borrower",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 7001,
-                  "src": "1703:17:25",
+                  "scope": 7054,
+                  "src": "810:17:25",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1483,10 +1456,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 6997,
+                    "id": 7050,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1703:7:25",
+                    "src": "810:7:25",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -1497,30 +1470,25 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1679:42:25"
+              "src": "786:42:25"
             },
             "returnParameters": {
-              "id": 7000,
+              "id": 7053,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "1738:0:25"
+              "src": "845:0:25"
             },
-            "scope": 7044,
-            "src": "1663:76:25",
+            "scope": 7096,
+            "src": "770:76:25",
             "stateMutability": "nonpayable",
             "virtual": true,
             "visibility": "external"
           },
           {
             "body": null,
-            "documentation": {
-              "id": 7002,
-              "nodeType": "StructuredDocumentation",
-              "src": "1747:466:25",
-              "text": "@notice repayLiquidatedLoan is a function used by the Warp Control contract to repay a loan on behalf of a liquidator\n@param _borrower is the address of the borrower who took out the loan\n@param _liquidator is the address of the account who is liquidating the loan\n@param _amount is the amount of StableCoin being repayed\n@dev this function uses the onlyWC modifier which means it can only be called by the Warp Control contract*"
-            },
+            "documentation": null,
             "functionSelector": "ab292f9b",
-            "id": 7011,
+            "id": 7063,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
@@ -1528,18 +1496,18 @@
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
-              "id": 7009,
+              "id": 7061,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 7004,
+                  "id": 7056,
                   "mutability": "mutable",
                   "name": "_borrower",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 7011,
-                  "src": "2259:17:25",
+                  "scope": 7063,
+                  "src": "891:17:25",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1547,10 +1515,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 7003,
+                    "id": 7055,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2259:7:25",
+                    "src": "891:7:25",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -1562,13 +1530,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 7006,
+                  "id": 7058,
                   "mutability": "mutable",
                   "name": "_liquidator",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 7011,
-                  "src": "2287:19:25",
+                  "scope": 7063,
+                  "src": "918:19:25",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1576,10 +1544,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 7005,
+                    "id": 7057,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2287:7:25",
+                    "src": "918:7:25",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -1591,13 +1559,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 7008,
+                  "id": 7060,
                   "mutability": "mutable",
                   "name": "_amount",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 7011,
-                  "src": "2317:15:25",
+                  "scope": 7063,
+                  "src": "947:15:25",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1605,10 +1573,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 7007,
+                    "id": 7059,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2317:7:25",
+                    "src": "947:7:25",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -1618,16 +1586,16 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2248:91:25"
+              "src": "881:87:25"
             },
             "returnParameters": {
-              "id": 7010,
+              "id": 7062,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "2354:0:25"
+              "src": "983:0:25"
             },
-            "scope": 7044,
-            "src": "2219:136:25",
+            "scope": 7096,
+            "src": "852:132:25",
             "stateMutability": "nonpayable",
             "virtual": true,
             "visibility": "public"
@@ -1636,7 +1604,7 @@
             "body": null,
             "documentation": null,
             "functionSelector": "b1be82f1",
-            "id": 7016,
+            "id": 7068,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
@@ -1644,18 +1612,18 @@
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
-              "id": 7014,
+              "id": 7066,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 7013,
+                  "id": 7065,
                   "mutability": "mutable",
                   "name": "_newModel",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 7016,
-                  "src": "2392:17:25",
+                  "scope": 7068,
+                  "src": "1019:17:25",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1663,10 +1631,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 7012,
+                    "id": 7064,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2392:7:25",
+                    "src": "1019:7:25",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -1677,16 +1645,16 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2391:19:25"
+              "src": "1018:19:25"
             },
             "returnParameters": {
-              "id": 7015,
+              "id": 7067,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "2425:0:25"
+              "src": "1052:0:25"
             },
-            "scope": 7044,
-            "src": "2363:63:25",
+            "scope": 7096,
+            "src": "990:63:25",
             "stateMutability": "nonpayable",
             "virtual": true,
             "visibility": "public"
@@ -1695,7 +1663,7 @@
             "body": null,
             "documentation": null,
             "functionSelector": "94d35990",
-            "id": 7021,
+            "id": 7073,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
@@ -1703,24 +1671,24 @@
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
-              "id": 7017,
+              "id": 7069,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "2456:2:25"
+              "src": "1081:2:25"
             },
             "returnParameters": {
-              "id": 7020,
+              "id": 7072,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 7019,
+                  "id": 7071,
                   "mutability": "mutable",
                   "name": "",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 7021,
-                  "src": "2487:5:25",
+                  "scope": 7073,
+                  "src": "1113:5:25",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1728,10 +1696,10 @@
                     "typeString": "uint8"
                   },
                   "typeName": {
-                    "id": 7018,
+                    "id": 7070,
                     "name": "uint8",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2487:5:25",
+                    "src": "1113:5:25",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint8",
                       "typeString": "uint8"
@@ -1741,10 +1709,10 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2486:7:25"
+              "src": "1112:7:25"
             },
-            "scope": 7044,
-            "src": "2434:60:25",
+            "scope": 7096,
+            "src": "1059:61:25",
             "stateMutability": "view",
             "virtual": true,
             "visibility": "public"
@@ -1753,7 +1721,7 @@
             "body": null,
             "documentation": null,
             "functionSelector": "591cec86",
-            "id": 7026,
+            "id": 7078,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
@@ -1761,24 +1729,24 @@
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
-              "id": 7022,
+              "id": 7074,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "2521:2:25"
+              "src": "1147:2:25"
             },
             "returnParameters": {
-              "id": 7025,
+              "id": 7077,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 7024,
+                  "id": 7076,
                   "mutability": "mutable",
                   "name": "",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 7026,
-                  "src": "2552:7:25",
+                  "scope": 7078,
+                  "src": "1179:7:25",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1786,10 +1754,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 7023,
+                    "id": 7075,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2552:7:25",
+                    "src": "1179:7:25",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -1800,10 +1768,10 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2551:9:25"
+              "src": "1178:9:25"
             },
-            "scope": 7044,
-            "src": "2500:61:25",
+            "scope": 7096,
+            "src": "1126:62:25",
             "stateMutability": "view",
             "virtual": true,
             "visibility": "public"
@@ -1812,7 +1780,7 @@
             "body": null,
             "documentation": null,
             "functionSelector": "4cf3e784",
-            "id": 7031,
+            "id": 7083,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
@@ -1820,18 +1788,18 @@
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
-              "id": 7029,
+              "id": 7081,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 7028,
+                  "id": 7080,
                   "mutability": "mutable",
                   "name": "_warpControl",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 7031,
-                  "src": "2596:20:25",
+                  "scope": 7083,
+                  "src": "1221:20:25",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1839,10 +1807,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 7027,
+                    "id": 7079,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2596:7:25",
+                    "src": "1221:7:25",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -1853,16 +1821,16 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2595:22:25"
+              "src": "1220:22:25"
             },
             "returnParameters": {
-              "id": 7030,
+              "id": 7082,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "2632:0:25"
+              "src": "1257:0:25"
             },
-            "scope": 7044,
-            "src": "2569:64:25",
+            "scope": 7096,
+            "src": "1194:64:25",
             "stateMutability": "nonpayable",
             "virtual": true,
             "visibility": "public"
@@ -1871,7 +1839,7 @@
             "body": null,
             "documentation": null,
             "functionSelector": "b23f3594",
-            "id": 7036,
+            "id": 7088,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
@@ -1879,18 +1847,18 @@
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
-              "id": 7034,
+              "id": 7086,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 7033,
+                  "id": 7085,
                   "mutability": "mutable",
                   "name": "_warpTeam",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 7036,
-                  "src": "2659:17:25",
+                  "scope": 7088,
+                  "src": "1284:17:25",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1898,10 +1866,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 7032,
+                    "id": 7084,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2659:7:25",
+                    "src": "1284:7:25",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -1912,16 +1880,16 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2658:19:25"
+              "src": "1283:19:25"
             },
             "returnParameters": {
-              "id": 7035,
+              "id": 7087,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "2692:0:25"
+              "src": "1317:0:25"
             },
-            "scope": 7044,
-            "src": "2639:54:25",
+            "scope": 7096,
+            "src": "1264:54:25",
             "stateMutability": "nonpayable",
             "virtual": true,
             "visibility": "public"
@@ -1930,7 +1898,7 @@
             "body": null,
             "documentation": null,
             "functionSelector": "8f7bf4fd",
-            "id": 7043,
+            "id": 7095,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
@@ -1938,18 +1906,18 @@
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
-              "id": 7039,
+              "id": 7091,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 7038,
+                  "id": 7090,
                   "mutability": "mutable",
                   "name": "_account",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 7043,
-                  "src": "2729:16:25",
+                  "scope": 7095,
+                  "src": "1352:16:25",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1957,10 +1925,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 7037,
+                    "id": 7089,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2729:7:25",
+                    "src": "1352:7:25",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -1971,21 +1939,21 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2728:18:25"
+              "src": "1351:18:25"
             },
             "returnParameters": {
-              "id": 7042,
+              "id": 7094,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 7041,
+                  "id": 7093,
                   "mutability": "mutable",
                   "name": "",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 7043,
-                  "src": "2776:7:25",
+                  "scope": 7095,
+                  "src": "1431:7:25",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1993,10 +1961,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 7040,
+                    "id": 7092,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2776:7:25",
+                    "src": "1431:7:25",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -2006,20 +1974,20 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2775:9:25"
+              "src": "1430:9:25"
             },
-            "scope": 7044,
-            "src": "2701:84:25",
+            "scope": 7096,
+            "src": "1324:116:25",
             "stateMutability": "view",
             "virtual": true,
             "visibility": "public"
           }
         ],
-        "scope": 7045,
-        "src": "408:2382:25"
+        "scope": 7097,
+        "src": "397:1045:25"
       }
     ],
-    "src": "0:2792:25"
+    "src": "0:1443:25"
   },
   "compiler": {
     "name": "solc",
@@ -2027,59 +1995,12 @@
   },
   "networks": {},
   "schemaVersion": "3.3.2",
-  "updatedAt": "2020-12-12T00:59:37.894Z",
+  "updatedAt": "2020-12-13T23:33:48.441Z",
   "devdoc": {
-    "methods": {
-      "_borrow(uint256,address)": {
-        "params": {
-          "_borrowAmount": "The amount of the underlying asset to borrow",
-          "_borrower": "The borrower"
-        }
-      },
-      "_repayLiquidatedLoan(address,address,uint256)": {
-        "details": "this function uses the onlyWC modifier which means it can only be called by the Warp Control contract*",
-        "params": {
-          "_amount": "is the amount of StableCoin being repayed",
-          "_borrower": "is the address of the borrower who took out the loan",
-          "_liquidator": "is the address of the account who is liquidating the loan"
-        }
-      },
-      "borrowBalanceCurrent(address)": {
-        "params": {
-          "account": "The address whose balance should be calculated after updating borrowIndex"
-        },
-        "returns": {
-          "_0": "The calculated balance*"
-        }
-      },
-      "borrowBalancePrior(address)": {
-        "params": {
-          "account": "The address whose balance should be calculated after updating borrowIndex"
-        },
-        "returns": {
-          "_0": "The calculated balance*"
-        }
-      }
-    }
+    "methods": {}
   },
   "userdoc": {
-    "methods": {
-      "_borrow(uint256,address)": {
-        "notice": "Sender borrows stablecoin assets from the protocol to their own address"
-      },
-      "_repayLiquidatedLoan(address,address,uint256)": {
-        "notice": "repayLiquidatedLoan is a function used by the Warp Control contract to repay a loan on behalf of a liquidator"
-      },
-      "borrowBalanceCurrent(address)": {
-        "notice": "Accrue interest to updated borrowIndex and then calculate account's borrow balance using the updated borrowIndex"
-      },
-      "borrowBalancePrior(address)": {
-        "notice": "returns last calculated account's borrow balance using the prior borrowIndex"
-      },
-      "exchangeRateCurrent()": {
-        "notice": "Accrue interest then return the up-to-date exchange rate"
-      }
-    },
+    "methods": {},
     "notice": "The WarpVaultSCI contract an abstract contract the WarpControl contract uses to interface with a WarpVaultSC contract.*"
   }
 }
