@@ -21,7 +21,7 @@ export const getBlockByTime = async (provider: ethers.providers.Provider, target
   // get current block number
   const currentBlockNumber = await provider.getBlockNumber();
   let block = await provider.getBlock(currentBlockNumber);
-  console.log(`${currentBlockNumber} ${block.timestamp}`);
+  //console.log(`${currentBlockNumber} ${block.timestamp}`);
 
   let requestsMade = 0
 
@@ -39,7 +39,7 @@ export const getBlockByTime = async (provider: ethers.providers.Provider, target
     blockNumber -= decreaseBlocks
 
     block = await provider.getBlock(blockNumber);
-    console.log(`1: ${blockNumber} ${block.timestamp}`);
+    //console.log(`1: ${blockNumber} ${block.timestamp}`);
     requestsMade += 1
   }
 
@@ -49,7 +49,7 @@ export const getBlockByTime = async (provider: ethers.providers.Provider, target
       blockNumber += 1
 
       block = await provider.getBlock(blockNumber);
-      console.log(`2: ${blockNumber} ${block.timestamp}`);
+      //console.log(`2: ${blockNumber} ${block.timestamp}`);
       requestsMade += 1
     }
   }
@@ -63,7 +63,7 @@ export const getBlockByTime = async (provider: ethers.providers.Provider, target
         blockNumber -= 1
 
         block = await provider.getBlock(blockNumber);
-        console.log(`3: ${blockNumber} ${block.timestamp}`);
+        //console.log(`3: ${blockNumber} ${block.timestamp}`);
         requestsMade += 1
       }
     }
@@ -78,7 +78,7 @@ export const getBlockByTime = async (provider: ethers.providers.Provider, target
         if(blockNumber > blockNumber) break;
 
         const tempBlock = await provider.getBlock(blockNumber);
-        console.log(`4: ${blockNumber} ${tempBlock.timestamp}`);
+        //console.log(`4: ${blockNumber} ${tempBlock.timestamp}`);
 
         // can't be equal or higher than upper limit as we want
         // to find the last block before that limit
