@@ -23,8 +23,8 @@ const useStyles = makeStyles(theme => ({
 }));
 
 interface Props {
-    onMigrateClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void,
-    onWithdrawClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void,
+    onMigrateClick: (vault: MigrationVault) => void,
+    onWithdrawClick: (vault: MigrationVault) => void,
     type: "lending" | "borrowing"
     vaults: MigrationVault[]
 }

@@ -1,21 +1,13 @@
 import { Avatar, Grid, TableCell, TableRow, Typography } from "@material-ui/core";
 
 import { AvatarGroup } from "@material-ui/lab";
-import { BigNumber } from "ethers";
-import { BorrowerCountdownContext } from "../../hooks/borrowerCountdown";
 import { CustomButton } from "..";
 import React from "react";
-import { Token } from "../../util/token";
-import { formatBigNumber, parseBigNumber } from "../../util/tools";
-import { useConnectedWeb3Context } from "../../hooks/connectedWeb3";
-import { useTokenBalance } from "../../hooks/useTokenBalance";
-import { useTokenInterest } from "../../hooks/useTokenInterest";
-import { useWarpControl } from "../../hooks/useWarpControl";
 import { MigrationVault } from "../../hooks/useMigrations";
 
 interface Props {
-    onMigrateClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void,
-    onWithdrawClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void,
+    onMigrateClick: (vault: MigrationVault) => void,
+    onWithdrawClick: (vault: MigrationVault) => void,
     vault: MigrationVault
 }
 
@@ -31,6 +23,14 @@ export const MigrateTableRow: React.FC<Props> = (props: Props) => {
             <Avatar alt={props.vault.token.image} src={props.vault.token.image} />;
       <Avatar alt={props.vault.token.image2} src={props.vault.token.image2} />;
     </AvatarGroup>
+    }
+
+    const handleMigrateClick = () => {
+        props.onMigrateClick(props.vault);
+    }
+
+    const handleWithdrawClick = () => {
+        props.onWithdrawClick(props.vault);
     }
 
     return (
@@ -95,13 +95,13 @@ export const MigrateTableRow: React.FC<Props> = (props: Props) => {
                 >
                     <Grid item>
                         <CustomButton
-                            onClick={props.onWithdrawClick}
+                            onClick={handleWithdrawClick}
                             text={"Withdraw"}
                             type={"short"} />
                     </Grid>
                     <Grid item>
                         <CustomButton
-                            onClick={props.onMigrateClick}
+                            onClick={handleMigrateClick}
                             text={"Migrate"}
                             type={"short"} />
                     </Grid>

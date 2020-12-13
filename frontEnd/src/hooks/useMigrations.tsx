@@ -20,7 +20,6 @@ export interface MigrationStatusContext {
 }
 
 export interface MigrationVault {
-  vaultAddress: string;
   token: Token;
   amount: string;
   value: number; // value of vault in USDC
@@ -87,7 +86,6 @@ export const MigrationStatusProvider: React.FC = props => {
           const value = parseBigNumber(await control.getStableCoinPrice(scToken.address, vaultBalance), usdcToken.decimals);
           hasAssetsToMigrate = true;
           scVaults.push({
-            vaultAddress,
             amount: vaultBalance.toString(),
             token: scToken,
             value
@@ -109,7 +107,6 @@ export const MigrationStatusProvider: React.FC = props => {
 
           hasAssetsToMigrate = true;
           lpVaults.push({
-            vaultAddress,
             amount: vaultBalance.toString(),
             token: lpToken,
             value
