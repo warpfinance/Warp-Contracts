@@ -1,7 +1,7 @@
 import * as React from "react";
 
 import { Grid, Typography } from "@material-ui/core";
-import { Header, MigrateTable, RowModal, SimpleModal, TransactionModal, WithdrawMigrateModal } from "../../components";
+import { Header, MigrateTable, RowModal, SimpleModal, TransactionModal } from "../../components";
 import { MigrationVault, useMigrationStatus } from "../../hooks/useMigrations";
 
 import { BigNumber } from "ethers";
@@ -299,28 +299,25 @@ export const Migrate: React.FC<Props> = (props: Props) => {
             </Grid>
             <SimpleModal
                 action="Withdraw"
-                amount={0/*withdrawAmountValue*/}
+                amount={"0"/*withdrawAmountValue*/}
                 currency={"token"/*withdrawAmountCurrency*/}
                 iconSrc={"token"/*`${withdrawAmountCurrency.toLowerCase()}.png`*/}
                 onButtonClick={onWithdraw}
                 handleClose={handleWithdrawClose}
                 open={withdrawModalOpen} />
-            {/* 
-                action={"Migrate"}
+            <MigrateModal
+                action="Migrate"
+                currency={"token"/*migrateWithdrawAmountCurrency*/}
                 error={false}
                 handleClose={handleMigrateClose}
+                iconSrc={"token"/*`${migrateWithdrawAmountCurrency.toLowerCase()}.png`*/}
+                onDepositClick={onMigrateDeposit}
+                onWithdrawClick={onMigrateWithdraw}
+                open={migrateModalOpen}
                 migrateDepositDisabled={migrateDepositDisabled}
                 migrateWithdrawDisabled={migrateWithdrawDisabled}
-                onDepositClick={onMigrateDeposit}
-                onChange={onMigrateAmountChange}
-                onMaxButtonClick={onWithdrawMax}
-                open={migrateModalOpen}
-                onWithdrawClick={onMigrateWithdraw}
-                poolIconSrcPrimary={currentToken.image || ""}
-                poolIconSrcSecondary={currentToken.image2 || ""}
-                token={currentToken}
-                value={migrateAmountValue}
-            /> */}
+                value={"0"/*migrateWithdrawAmountValue*/}
+            />
             <TransactionModal
                 action={"Transaction"}
                 handleClose={handleTransactionModalClose}

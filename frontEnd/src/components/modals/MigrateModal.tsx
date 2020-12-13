@@ -1,7 +1,7 @@
 import * as React from "react";
 
 import { Amount, CustomButton, CustomDialogTitle, Text } from "../../components";
-import { Avatar, Card, CardContent, Dialog, DialogContent, Grid, Typography } from "@material-ui/core";
+import { Avatar, Card, CardContent, Checkbox, Dialog, DialogContent, Grid, Typography } from "@material-ui/core";
 
 import { AvatarGroup } from "@material-ui/lab";
 import { Token } from "../../util/token";
@@ -26,23 +26,25 @@ const useStyles = makeStyles(theme => ({
 
 interface Props {
     action: string,
+    currency: string,
     error: boolean,
     handleClose: (event: {}, reason: "backdropClick" | "escapeKeyDown") => void,
+    iconSrc: string,
     migrateDepositDisabled: boolean,
     migrateWithdrawDisabled: boolean,
     onDepositClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void,
-    onChange: (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void,
-    onMaxButtonClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void,
     open: boolean,
     onWithdrawClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void,
-    poolIconSrcPrimary: string,
-    poolIconSrcSecondary: string,
-    token: Token
     value: string
 }
 
 export const MigrateModal: React.FC<Props> = (props: Props) => {
     const classes = useStyles();
+    const [checked, setChecked] = React.useState(false);
+
+    const handleCheck = (event: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
+        setChecked(event.target.checked);
+    };
 
     return (
         <Dialog
@@ -61,48 +63,37 @@ export const MigrateModal: React.FC<Props> = (props: Props) => {
                     <CustomDialogTitle onClose={props.handleClose} >{props.action}</CustomDialogTitle>
                     <Grid
                         container
-                        direction="row"
-                        justify="center"
-                        alignItems="center"
-                    >
-                        <AvatarGroup max={2}>
-                            <Avatar alt={props.poolIconSrcPrimary} className={classes.smallIcon} src={props.poolIconSrcPrimary} />
-                            <Avatar alt={props.poolIconSrcSecondary} className={classes.smallIcon} src={props.poolIconSrcSecondary} />
-                        </AvatarGroup>
-                        <Typography>
-                            {props.token.symbol}
-                        </Typography>
-                    </Grid>
-                    <Grid
-                        container
                         direction="column"
                         justify="center"
                         alignItems="stretch"
                     >
-                        <Typography variant="subtitle2" color="textSecondary" >
-                            {props.action.split(" ")[0]}
-                        </Typography>
-                        <Grid
-                            container
-                            item
-                            direction="row"
-                            justify="space-around"
-                            alignItems="center"
-                        >
-                            <Grid item xs={9}>
-                                <Amount fullWidth={true} adornment="USD" value={props.value} onChange={props.onChange} error={props.error} />
-                            </Grid>
-                            <Grid item>
-                                <Typography
-                                    className={classes.maxButton}
-                                    onClick={props.onMaxButtonClick}
-                                    color="textSecondary"
-                                    variant="subtitle1"
+                        <Card>
+                            <CardContent>
+                                <Grid
+                                    container
+                                    direction="row"
+                                    justify="space-around"
+                                    alignItems="center"
                                 >
-                                    max
-                            </Typography>
-                            </Grid>
-                        </Grid>
+                                    <Grid item xs={3}>
+                                        <Checkbox
+                                            checked={checked}
+                                            onChange={handleCheck}
+                                        />
+                                    </Grid>
+                                    <Grid item>
+                                        <Avatar alt={props.iconSrc} className={classes.smallIcon} src={props.iconSrc} />
+                                    </Grid>
+                                    <Grid item xs={5}>
+                                        <Typography variant="subtitle1">
+                                            {props.value + " " + props.currency}
+                                        </Typography>
+                                    </Grid>
+                                    <Grid item>
+                                    </Grid>
+                                </Grid>
+                            </CardContent>
+                        </Card>
                         <Grid
                             container
                             item
@@ -111,12 +102,12 @@ export const MigrateModal: React.FC<Props> = (props: Props) => {
                             alignItems="center"
                         >
                             <CustomButton
-                                disabled={props.error === true || props.migrateWithdrawDisabled === true}
+                                disabled={props.error === true || props.migrateWithdrawDisabled === true || checked !== true}
                                 onClick={props.onWithdrawClick}
                                 text={"Withdraw"}
                                 type="short" />
                             <CustomButton
-                                disabled={props.error === true || props.migrateDepositDisabled === true}
+                                disabled={props.error === true || props.migrateDepositDisabled === true || checked !== true}
                                 onClick={props.onDepositClick}
                                 text={"Deposit"}
                                 type="short" />
