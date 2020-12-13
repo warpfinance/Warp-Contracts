@@ -1,9 +1,8 @@
 import * as React from "react";
 
-import { Card, CardContent, Grid, IconButton, Link, Typography } from "@material-ui/core";
+import { Card, CardContent, Grid, IconButton, Link, SvgIcon, Typography } from "@material-ui/core";
 import { CustomButton, ErrorCustomButton, NotificationModal, TeamJoinModal, TeamModal, TeamReferralModal } from "../../components"
 
-import { BorrowerCountdownContext } from "../../hooks/borrowerCountdown";
 import FileCopyOutlinedIcon from '@material-ui/icons/FileCopyOutlined';
 import { Link as RouterLink } from 'react-router-dom';
 import { TransactionInfo } from "../../util/types";
@@ -38,9 +37,7 @@ const useStyles = makeStyles(theme => ({
         color: "#FFFFFF",
     },
     teamCard: {
-        maxHeight: "70px",
-        maxWidth: "250px",
-        paddingTop: "0px",
+        padding: "0px",
     }
 }));
 
@@ -197,7 +194,7 @@ export const Header: React.FC<Props> = (props: Props) => {
                 reason += `\n${e.data.message}`;
             }
             logger.error(`\nTransaction Failed!  Reason:\n${reason}`);
-            
+
             notifyError("Transaction failed. Please try again later.");
             return;
         }
@@ -242,24 +239,6 @@ export const Header: React.FC<Props> = (props: Props) => {
                 <React.Fragment>
                     {connected === true ?
                         <React.Fragment>
-                            <BorrowerCountdownContext.Consumer>
-                                {value =>
-                                    value.countdown === true ?
-                                        <Grid
-                                            item
-                                            sm
-                                        >
-                                            <Typography color="textSecondary">
-                                                Warp borrowing starts in
-                                    </Typography>
-                                            <Typography>
-                                                {value.countdownText}
-                                            </Typography>
-                                        </Grid>
-                                        :
-                                        null
-                                }
-                            </BorrowerCountdownContext.Consumer>
                             {(!onTeam && !tryingToJoinTeam) ?
                                 <React.Fragment>
                                     <Grid
@@ -285,18 +264,29 @@ export const Header: React.FC<Props> = (props: Props) => {
                                             <Grid
                                                 container
                                                 direction="row"
-                                                justify="center"
-                                                alignItems="flex-start"
+                                                justify="space-around"
+                                                alignItems="baseline"
                                             >
+                                                <Grid item>
+                                                    <IconButton onClick={() => copyTextToClipboard(onTeam ? teamCode : teamCodeOverride)}>
+                                                        <FileCopyOutlinedIcon fontSize="small" />
+                                                    </IconButton>
+                                                </Grid>
                                                 <Grid item>
                                                     <Typography variant="subtitle1">
                                                         {onTeam ? teamName : teamNameOverride}
                                                     </Typography>
                                                 </Grid>
                                                 <Grid item>
-                                                    <IconButton onClick={() => copyTextToClipboard(onTeam ? teamCode : teamCodeOverride)}>
-                                                        <FileCopyOutlinedIcon fontSize="small" />
-                                                    </IconButton>
+                                                    <RouterLink className={classes.routerLink} to={`/team/${onTeam ? teamCode : teamCodeOverride}`}>
+                                                        <Link
+                                                            className={pathName.startsWith("/team/") ? classes.selectedLink : classes.link}
+                                                            color="textSecondary"
+                                                            href=""
+                                                            underline="none">
+                                                            {">"}
+                                                        </Link>
+                                                    </RouterLink>
                                                 </Grid>
                                             </Grid>
                                         </CardContent>
@@ -376,9 +366,9 @@ export const Header: React.FC<Props> = (props: Props) => {
                     >
                         {connected === true ?
                             <Typography>
-                                <RouterLink className={classes.routerLink} to={"/leaderboard"}>
+                                <RouterLink className={classes.routerLink} to={"/teams"}>
                                     <Link
-                                        className={pathName === "/leaderboard" ? classes.selectedLink : classes.link}
+                                        className={pathName === "/teams" ? classes.selectedLink : classes.link}
                                         color="textSecondary"
                                         href=""
                                         underline="none">
@@ -490,7 +480,7 @@ export const Header: React.FC<Props> = (props: Props) => {
                     xs
                 >
                     <RouterLink to={"/"}>
-                        <img className={classes.logo} src={"warp logo.svg"} alt={"Warp"}></img>
+                        <img className={classes.logo} src={"/warp logo.svg"} alt={"Warp"}></img>
                     </RouterLink>
                 </Grid>
                 {getHeaderContent(isConnected || false)}

@@ -2,10 +2,11 @@ import * as React from "react";
 
 import { AuthorizationModal, Header, InformationCard, LenderTable, SimpleModal, TransactionModal } from "../../components";
 import { BigNumber, utils } from "ethers";
+import { Grid, Typography, makeStyles } from "@material-ui/core";
 import { countDecimals, formatBigNumber } from "../../util/tools";
 
+import { BorrowerCountdownContext } from "../../hooks/borrowerCountdown";
 import { ERC20Service } from "../../services/erc20";
-import { Grid, makeStyles } from "@material-ui/core";
 import { StableCoinWarpVaultService } from "../../services/stableCoinWarpVault";
 import { Token } from "../../util/token";
 import { TransactionInfo } from "../../util/types";
@@ -13,6 +14,7 @@ import { getLogger } from "../../util/logger";
 import { isAddress } from "ethers/lib/utils";
 import { useCombinedHistoricalReward } from "../../hooks/useCombinedHistoricalReward";
 import { useConnectedWeb3Context } from "../../hooks/connectedWeb3";
+import { useNotificationModal } from "../../hooks/useNotificationModal";
 import { useRefreshToken } from "../../hooks/useRefreshToken";
 import { useStableCoinTokens } from "../../hooks/useStableCoins";
 import { useState } from "react";
@@ -20,7 +22,6 @@ import { useTotalLentAmount } from "../../hooks/useTotalLentAmount";
 import { useTotalWalletBalance } from "../../hooks/useTotalWalletBalance";
 import { useUSDCToken } from "../../hooks/useUSDC";
 import { useWarpControl } from "../../hooks/useWarpControl";
-import { useNotificationModal } from "../../hooks/useNotificationModal";
 
 interface Props {
 }
@@ -50,7 +51,7 @@ export const Lender: React.FC<Props> = (props: Props) => {
     const data = {
         stableCoinDeposit: totalLentAmount,
         stableCoinReward: totalReward,
-        walletBalance: walletBalance.toLocaleString(undefined, {maximumFractionDigits: 2})
+        walletBalance: walletBalance.toLocaleString(undefined, { maximumFractionDigits: 2 })
     }
 
     const {
@@ -86,7 +87,7 @@ export const Lender: React.FC<Props> = (props: Props) => {
 
     React.useEffect(() => {
         if (!lendAmountValue.eq(BigNumber.from(0)) && lendAmountCurrency !== "") {
-            setLendError(isError(lendAmountValue, lendAmountCurrency, tokens,  lendMaxAmount));
+            setLendError(isError(lendAmountValue, lendAmountCurrency, tokens, lendMaxAmount));
         }
         if (!withdrawAmountValue.eq(BigNumber.from(0)) && withdrawAmountCurrency !== "") {
             setWithdrawError(isError(withdrawAmountValue, withdrawAmountCurrency, tokens, withdrawMaxAmount));
@@ -130,7 +131,7 @@ export const Lender: React.FC<Props> = (props: Props) => {
     const onLendAmountChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>, maxAmount: BigNumber, token: Token) => {
         setLendAmountCurrency(event.target.id);
         setLendFocusedAmountId(event.target.id);
-        
+
 
         let amount = event.target.value || "0";
         if (countDecimals(amount) > 3) {
@@ -190,7 +191,7 @@ export const Lender: React.FC<Props> = (props: Props) => {
             setTransactionHash(info.hash);
             await info.finished;
             setTransactionModalOpen(false);
-        } catch(e) {
+        } catch (e) {
             let reason = `${e.message}`;
             if (e.data) {
                 reason += `\n${e.data.message}`;
@@ -297,6 +298,27 @@ export const Lender: React.FC<Props> = (props: Props) => {
                 spacing={5}
             >
                 <Header />
+                <BorrowerCountdownContext.Consumer>
+                    {value =>
+                        value.countdown === true ?
+                            <Grid
+                                item
+                                container
+                                direction="row"
+                                justify="center"
+                                alignItems="center"
+                            >
+                                <Typography color="textSecondary">
+                                    Warp borrowing starts in
+                                    </Typography>
+                                <Typography>
+                                    {value.countdownText}
+                                </Typography>
+                            </Grid>
+                            :
+                            null
+                    }
+                </BorrowerCountdownContext.Consumer>
                 <Grid
                     item
                     container
@@ -308,7 +330,7 @@ export const Lender: React.FC<Props> = (props: Props) => {
                         <InformationCard header="Wallet balance (in USDC)" text={`$${data.walletBalance}`} />
                     </Grid>
                     <Grid item>
-                        <InformationCard header="Stable coin reward (in USDC)" text={`$${data.stableCoinReward.toLocaleString(undefined, {maximumFractionDigits: 2})}`} />
+                        <InformationCard header="Stable coin reward (in USDC)" text={`$${data.stableCoinReward.toLocaleString(undefined, { maximumFractionDigits: 2 })}`} />
                     </Grid>
                     <Grid item>
                         <InformationCard header="Stable coin deposit (in USDC)" text={`$${data.stableCoinDeposit.toFixed(2)}`} />

@@ -28,11 +28,11 @@ contract UniswapLPOracleFactory is Ownable {
     mapping(address => address) public tokenToUSDC;
 
     /**
-@notice constructor function is fired once during contract creation. This constructor initializes uniswapRouter
-        as a usable contract instance within the UniswapLPOracleFactory
-@param usdcAdd is the address of the ERC20 USDC address
-@param _uniFactoryAdd is the address of the uniswap factory contract
-**/
+    @notice constructor function is fired once during contract creation. This constructor initializes uniswapRouter
+            as a usable contract instance within the UniswapLPOracleFactory
+    @param usdcAdd is the address of the ERC20 USDC address
+    @param _uniFactoryAdd is the address of the uniswap factory contract
+    **/
     constructor(
         address usdcAdd,
         address _uniFactoryAdd,
@@ -53,31 +53,36 @@ contract UniswapLPOracleFactory is Ownable {
 
     function OneToken(address token) public view returns (uint256) {
         ExtendedIERC20 ercToken = ExtendedIERC20(token);
-        return uint256(10) ** uint256(ercToken.decimals());
+        return uint256(10)**uint256(ercToken.decimals());
     }
 
-    function sortTokens(address tokenA, address tokenB) internal pure returns (address token0, address token1) {
-        require(tokenA != tokenB, 'IDENTICAL_ADDRESSES');
-        (token0, token1) = tokenA < tokenB ? (tokenA, tokenB) : (tokenB, tokenA);
-        require(token0 != address(0), 'ZERO_ADDRESS');
+    function sortTokens(address tokenA, address tokenB)
+        internal
+        pure
+        returns (address token0, address token1)
+    {
+        require(tokenA != tokenB, "IDENTICAL_ADDRESSES");
+        (token0, token1) = tokenA < tokenB
+            ? (tokenA, tokenB)
+            : (tokenB, tokenA);
+        require(token0 != address(0), "ZERO_ADDRESS");
     }
 
     /**
-  @notice createNewOracle allows the owner of this contract to deploy deploy two new asset oracle contracts
-          when a new LP token is whitelisted. this contract will link the address of an LP token contract to
-          two seperate oracles that are designed to look up the price of their respective assets in USDC. This
-          will allow us to calculate the price of one at LP token token from the prices of their underlying assets
+    @notice createNewOracle allows the owner of this contract to deploy deploy two new asset oracle contracts
+            when a new LP token is whitelisted. this contract will link the address of an LP token contract to
+            two seperate oracles that are designed to look up the price of their respective assets in USDC. This
+            will allow us to calculate the price of one at LP token token from the prices of their underlying assets
 
-  @param _tokenA is the address of the first token in an Liquidity pair
-  @param _tokenB is the address of the second token in a liquidity pair
-  @param _lpToken is the address of the token that this oracle will provide a price feed for
-  **/
+    @param _tokenA is the address of the first token in an Liquidity pair
+    @param _tokenB is the address of the second token in a liquidity pair
+    @param _lpToken is the address of the token that this oracle will provide a price feed for
+    **/
     function createNewOracles(
         address _tokenA,
         address _tokenB,
         address _lpToken
     ) public onlyOwner {
-
         (address token0, address token1) = sortTokens(_tokenA, _tokenB);
 
         address oracle1 = tokenToUSDC[token0];
@@ -102,10 +107,10 @@ contract UniswapLPOracleFactory is Ownable {
     }
 
     /**
-@notice getUnderlyingPrice allows for the price calculation and retrieval of a LP tokens price
-@param _lpToken is the address of the LP token  whos asset price is being retrieved
-@return returns the price of one LP token
-**/
+    @notice getUnderlyingPrice allows for the price calculation and retrieval of a LP tokens price
+    @param _lpToken is the address of the LP token  whos asset price is being retrieved
+    @return returns the price of one LP token
+    **/
     function getUnderlyingPrice(address _lpToken) public returns (uint256) {
         address[] memory oracleAdds = LPAssetTracker[_lpToken];
         //retreives the oracle contract addresses for each asset that makes up a LP
@@ -124,26 +129,37 @@ contract UniswapLPOracleFactory is Ownable {
 
         uint256 priceAsset1 = oracle1.consult(
             instanceTracker[oracleAdds[0]],
-            reserveA);
+            reserveA
+        );
         uint256 priceAsset2 = oracle2.consult(
             instanceTracker[oracleAdds[1]],
-            reserveB);
+            reserveB
+        );
 
         // Get the total supply of the pool
         IERC20 lpToken = IERC20(_lpToken);
         uint256 totalSupplyOfLP = lpToken.totalSupply();
 
-        return _calculatePriceOfLP(totalSupplyOfLP, priceAsset1, priceAsset2, lpToken.decimals());
+        return
+            _calculatePriceOfLP(
+                totalSupplyOfLP,
+                priceAsset1,
+                priceAsset2,
+                lpToken.decimals()
+            );
         //return USDC price of the pool divided by totalSupply of its LPs to get price
         //of one LP
     }
 
-
-    function _calculatePriceOfLP(uint256 supply, uint256 value0, uint256 value1, uint8 supplyDecimals)
-    public pure returns (uint256) {
+    function _calculatePriceOfLP(
+        uint256 supply,
+        uint256 value0,
+        uint256 value1,
+        uint8 supplyDecimals
+    ) public pure returns (uint256) {
         uint256 totalValue = value0 + value1;
         uint16 shiftAmount = supplyDecimals;
-        uint256 valueShifted = totalValue * uint256(10) ** shiftAmount;
+        uint256 valueShifted = totalValue * uint256(10)**shiftAmount;
         uint256 supplyShifted = supply;
         uint256 valuePerSupply = valueShifted / supplyShifted;
 
@@ -151,10 +167,10 @@ contract UniswapLPOracleFactory is Ownable {
     }
 
     /**
-  @notice viewUnderlyingPrice allows for the price retrieval of a LP tokens price
-  @param _lpToken is the address of the LP token  whos asset price is being retrieved
-  @return returns the price of one LP token
-  **/
+    @notice viewUnderlyingPrice allows for the price retrieval of a LP tokens price
+    @param _lpToken is the address of the LP token  whos asset price is being retrieved
+    @return returns the price of one LP token
+    **/
     function viewUnderlyingPrice(address _lpToken)
         public
         view
@@ -177,21 +193,33 @@ contract UniswapLPOracleFactory is Ownable {
 
         uint256 priceAsset1 = oracle1.viewPrice(
             instanceTracker[oracleAdds[0]],
-            reserveA);
+            reserveA
+        );
         uint256 priceAsset2 = oracle2.viewPrice(
             instanceTracker[oracleAdds[1]],
-            reserveB);
+            reserveB
+        );
 
         // Get the total supply of the pool
         IERC20 lpToken = IERC20(_lpToken);
         uint256 totalSupplyOfLP = lpToken.totalSupply();
 
-        return _calculatePriceOfLP(totalSupplyOfLP, priceAsset1, priceAsset2, lpToken.decimals());
+        return
+            _calculatePriceOfLP(
+                totalSupplyOfLP,
+                priceAsset1,
+                priceAsset2,
+                lpToken.decimals()
+            );
         //return USDC price of the pool divided by totalSupply of its LPs to get price
         //of one LP
     }
 
-    function viewPriceOfToken(address _token, uint256 _amount) public view returns (uint256) {
+    function viewPriceOfToken(address _token, uint256 _amount)
+        public
+        view
+        returns (uint256)
+    {
         require(
             tokenToUSDC[_token] != address(0),
             "Token not registered with a USDC pairing"
@@ -206,7 +234,10 @@ contract UniswapLPOracleFactory is Ownable {
         return oracle.viewPrice(_token, _amount);
     }
 
-    function getPriceOfToken(address _token, uint256 _amount) public returns (uint256) {
+    function getPriceOfToken(address _token, uint256 _amount)
+        public
+        returns (uint256)
+    {
         require(
             tokenToUSDC[_token] != address(0),
             "Token not registered with a USDC pairing"

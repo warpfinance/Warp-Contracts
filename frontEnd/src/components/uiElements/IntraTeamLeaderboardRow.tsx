@@ -2,24 +2,24 @@ import * as React from "react";
 
 import { Grid, TableCell, TableRow, Typography } from "@material-ui/core";
 
-import { Team, } from "../../util/calculateTeamMetrics";
+import { TeamMember, } from "../../util/calculateTeamMetrics";
+import { useWeb3React } from "@web3-react/core";
 
 interface Props {
     rank: number,
-    team: Team,
+    member: TeamMember,
 }
 
-export const LeaderboardRow: React.FC<Props> = (props: Props) => {
+export const IntraTeamLeaderboardRow: React.FC<Props> = (props: Props) => {
+    const context = useWeb3React();
     const place = props.rank + 1 === 1 || (props.rank >= 20 && (props.rank + 1) % 10 === 1) ? "st" :
         props.rank + 1 === 2 || (props.rank >= 20 && (props.rank + 1) % 10 === 2) ? "nd" :
             props.rank + 1 === 3 || (props.rank >= 20 && (props.rank + 1) % 10 === 3) ? "rd" :
                 "th";
 
     return (
-        <TableRow key={props.team.code}>
-            <TableCell
-                style={{ width: 400 }}
-            >
+        <TableRow key={props.member.address}>
+            <TableCell>
                 <Grid
                     container
                     direction="column"
@@ -33,27 +33,16 @@ export const LeaderboardRow: React.FC<Props> = (props: Props) => {
                     </Grid>
                     <Grid item>
                         <Typography variant="subtitle1">
-                            {props.team.name}
+                            {props.member.address}
                         </Typography>
                     </Grid>
                 </Grid>
             </TableCell>
-            <TableCell
-                style={{ width: 200 }}
-            >
-                <Grid
-                    container
-                    direction="row"
-                    justify="center"
-                    alignItems="center"
-                >
-                    <Typography variant="subtitle1" color="textSecondary">
-                        TVL:
-                    </Typography>
-                    <Typography variant="subtitle1">
-                        {"$" + Number(props.team.tvl).toLocaleString(undefined, { maximumFractionDigits: 0 })}
-                    </Typography>
-                </Grid>
+            <TableCell>
+                <Typography variant="subtitle1">
+                    {"$" + Number(props.member.tvl).toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                </Typography>
             </TableCell>
-        </TableRow>);
+        </TableRow>
+    );
 }

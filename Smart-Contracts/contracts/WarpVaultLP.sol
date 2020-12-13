@@ -18,34 +18,42 @@ This contract inherits Ownership and ERC20 functionality from the Open Zeppelin 
 from the coumpound protocol.
 **/
 
-contract WarpVaultLP is Ownable {
+contract WarpVaultLP {
     using SafeMath for uint256;
 
     uint256 public timeWizard;
     string public lpName;
 
     IERC20 public LPtoken;
-    WarpControlI public WC;
+    WarpControlI public warpControl;
 
     mapping(address => uint256) public collateralizedLP;
 
-    event CollateralProvided(address _account, uint _amount);
-    event CollateralWithdraw(address _account, uint amount);
+    event CollateralProvided(address _account, uint256 _amount);
+    event CollateralWithdraw(address _account, uint256 _amount);
+    event WarpControlChanged(address _newControl, address _oldControl);
+    event AccountLiquidated(
+        address _account,
+        address _liquidator,
+        uint256 _amount
+    );
+
     /**
      * @dev Throws if called by any account other than a warp control
      */
-    modifier onlyWC() {
-        require(msg.sender == address(WC));
+    modifier onlyWarpControl() {
+        require(msg.sender == address(warpControl));
         _;
     }
 
-/**
+    /**
 @dev Throws if a function is called before the time wizard allows it
 **/
     modifier angryWizard() {
         require(now > timeWizard);
         _;
     }
+
     /**
     @notice constructor sets up token names and symbols for the WarpWrapperToken
     @param _lp is the address of the lp token a specific Warp vault will represent
@@ -63,12 +71,13 @@ contract WarpVaultLP is Ownable {
     ) public {
         lpName = _lpName;
         LPtoken = IERC20(_lp);
-        WC = WarpControlI(_WarpControl);
+        warpControl = WarpControlI(_WarpControl);
         timeWizard = now.add(_timelock);
     }
 
-    function upgrade(address _warpControl) public onlyWC {
-      WC = WarpControlI(_warpControl);
+    function updateWarpControl(address _warpControl) public onlyWarpControl {
+        emit WarpControlChanged(_warpControl, address(warpControl));
+        warpControl = WarpControlI(_warpControl);
     }
 
     /**
@@ -76,8 +85,14 @@ contract WarpVaultLP is Ownable {
     @param _amount is the amount of LP being collateralized
     **/
     function provideCollateral(uint256 _amount) public {
-        require(LPtoken.allowance(msg.sender, address(this)) >= _amount, "Vault must have enough allowance.");
-        require(LPtoken.balanceOf(msg.sender) >= _amount, "Must have enough LP to provide");
+        require(
+            LPtoken.allowance(msg.sender, address(this)) >= _amount,
+            "Vault must have enough allowance."
+        );
+        require(
+            LPtoken.balanceOf(msg.sender) >= _amount,
+            "Must have enough LP to provide"
+        );
         LPtoken.transferFrom(msg.sender, address(this), _amount);
         collateralizedLP[msg.sender] = collateralizedLP[msg.sender].add(
             _amount
@@ -92,26 +107,27 @@ contract WarpVaultLP is Ownable {
     **/
     function withdrawCollateral(uint256 _amount) public {
         uint256 amount;
-        uint256 maxAmount = WC.getMaxWithdrawAllowed(msg.sender, address(LPtoken));
-        if(_amount == 0) {
+        uint256 maxAmount = warpControl.getMaxWithdrawAllowed(
+            msg.sender,
+            address(LPtoken)
+        );
+        if (_amount == 0) {
             amount = maxAmount;
-          } else {
+        } else {
             amount = _amount;
-          }
+        }
 
         //require the availible value of the LP locked in this contract the user has
         //is greater than or equal to the amount being withdrawn
-        require(
-            maxAmount >= amount,
-            "Trying to withdraw too much"
-        );
+        require(maxAmount >= amount, "Trying to withdraw too much");
         //require the user has locked up enough collateral to withdraw this amount
-        require(collateralizedLP[msg.sender] >= amount, "you are trying to withdraw more collateral than you have locked");
+        require(
+            collateralizedLP[msg.sender] >= amount,
+            "you are trying to withdraw more collateral than you have locked"
+        );
 
         //subtract withdrawn amount from amount stored
-        collateralizedLP[msg.sender] = collateralizedLP[msg.sender].sub(
-            amount
-        );
+        collateralizedLP[msg.sender] = collateralizedLP[msg.sender].sub(amount);
         //transfer them their token
         LPtoken.transfer(msg.sender, amount);
         emit CollateralWithdraw(msg.sender, amount);
@@ -125,9 +141,9 @@ contract WarpVaultLP is Ownable {
     }
 
     /**
-@notice collateralOfAccount is a view function to retreive an accounts collateralized LP amount
-@param _account is the address of the account being looked up
-**/
+    @notice collateralOfAccount is a view function to retreive an accounts collateralized LP amount
+    @param _account is the address of the account being looked up
+    **/
     function collateralOfAccount(address _account)
         public
         view
@@ -137,25 +153,38 @@ contract WarpVaultLP is Ownable {
     }
 
     /**
-@notice _liquidateAccount is a function to liquidate the LP tokens of the input account
-@param _account is the address of the account being liquidated
-@param _liquidator is the address of the account doing the liquidating who receives the liquidated LP's
-@dev this function uses the onlyWC modifier meaning that only the Warp Control contract can call it
-**/
+    @notice _liquidateAccount is a function to liquidate the LP tokens of the input account
+    @param _account is the address of the account being liquidated
+    @param _liquidator is the address of the account doing the liquidating who receives the liquidated LP's
+    @dev this function uses the onlyWarpControl modifier meaning that only the Warp Control contract can call it
+    **/
     function _liquidateAccount(address _account, address _liquidator)
         public
-        onlyWC
+        onlyWarpControl
         angryWizard
     {
+        emit AccountLiquidated(
+            _account,
+            _liquidator,
+            collateralizedLP[_account]
+        );
         //transfer the LP tokens to the liquidator
         LPtoken.transfer(_liquidator, collateralizedLP[_account]);
         //reset the borrowers collateral tracker
         collateralizedLP[_account] = 0;
     }
 
-    function valueOfAccountCollateral(address _account) external view returns(uint256) {
-        uint256 collateralPrice = WC.viewPriceOfCollateral(address(LPtoken));
-        uint256 collateralValue = collateralizedLP[_account].mul(collateralPrice);
+    function valueOfAccountCollateral(address _account)
+        external
+        view
+        returns (uint256)
+    {
+        uint256 collateralPrice = warpControl.viewPriceOfCollateral(
+            address(LPtoken)
+        );
+        uint256 collateralValue = collateralizedLP[_account].mul(
+            collateralPrice
+        );
         return collateralValue;
     }
 }

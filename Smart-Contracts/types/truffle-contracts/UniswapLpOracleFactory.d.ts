@@ -146,6 +146,14 @@ export interface UniswapLpOracleFactoryInstance
     ): Promise<number>;
   };
 
+  _calculatePriceOfLP(
+    supply: number | BN | string,
+    value0: number | BN | string,
+    value1: number | BN | string,
+    supplyDecimals: number | BN | string,
+    txDetails?: Truffle.TransactionDetails
+  ): Promise<BN>;
+
   /**
    * viewUnderlyingPrice allows for the price retrieval of a LP tokens price
    * @param _lpToken is the address of the LP token  whos asset price is being retrieved
@@ -157,8 +165,32 @@ export interface UniswapLpOracleFactoryInstance
 
   viewPriceOfToken(
     _token: string,
+    _amount: number | BN | string,
     txDetails?: Truffle.TransactionDetails
   ): Promise<BN>;
+
+  getPriceOfToken: {
+    (
+      _token: string,
+      _amount: number | BN | string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<Truffle.TransactionResponse<AllEvents>>;
+    call(
+      _token: string,
+      _amount: number | BN | string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<BN>;
+    sendTransaction(
+      _token: string,
+      _amount: number | BN | string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<string>;
+    estimateGas(
+      _token: string,
+      _amount: number | BN | string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<number>;
+  };
 
   methods: {
     LPAssetTracker(
@@ -285,6 +317,14 @@ export interface UniswapLpOracleFactoryInstance
       ): Promise<number>;
     };
 
+    _calculatePriceOfLP(
+      supply: number | BN | string,
+      value0: number | BN | string,
+      value1: number | BN | string,
+      supplyDecimals: number | BN | string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<BN>;
+
     /**
      * viewUnderlyingPrice allows for the price retrieval of a LP tokens price
      * @param _lpToken is the address of the LP token  whos asset price is being retrieved
@@ -296,8 +336,32 @@ export interface UniswapLpOracleFactoryInstance
 
     viewPriceOfToken(
       _token: string,
+      _amount: number | BN | string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<BN>;
+
+    getPriceOfToken: {
+      (
+        _token: string,
+        _amount: number | BN | string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<Truffle.TransactionResponse<AllEvents>>;
+      call(
+        _token: string,
+        _amount: number | BN | string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<BN>;
+      sendTransaction(
+        _token: string,
+        _amount: number | BN | string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<string>;
+      estimateGas(
+        _token: string,
+        _amount: number | BN | string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<number>;
+    };
   };
 
   getPastEvents(event: string): Promise<EventData[]>;

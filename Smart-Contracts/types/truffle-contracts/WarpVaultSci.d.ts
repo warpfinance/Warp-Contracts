@@ -12,6 +12,8 @@ export interface WarpVaultSciContract
 type AllEvents = never;
 
 export interface WarpVaultSciInstance extends Truffle.ContractInstance {
+  totalReserves(txDetails?: Truffle.TransactionDetails): Promise<BN>;
+
   /**
    * Accrue interest to updated borrowIndex and then calculate account's borrow balance using the updated borrowIndex
    * @param account The address whose balance should be calculated after updating borrowIndex
@@ -114,7 +116,72 @@ export interface WarpVaultSciInstance extends Truffle.ContractInstance {
     ): Promise<number>;
   };
 
+  setNewInterestModel: {
+    (_newModel: string, txDetails?: Truffle.TransactionDetails): Promise<
+      Truffle.TransactionResponse<AllEvents>
+    >;
+    call(
+      _newModel: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<void>;
+    sendTransaction(
+      _newModel: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<string>;
+    estimateGas(
+      _newModel: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<number>;
+  };
+
+  getSCDecimals(txDetails?: Truffle.TransactionDetails): Promise<BN>;
+
+  getSCAddress(txDetails?: Truffle.TransactionDetails): Promise<string>;
+
+  updateWarpControl: {
+    (_warpControl: string, txDetails?: Truffle.TransactionDetails): Promise<
+      Truffle.TransactionResponse<AllEvents>
+    >;
+    call(
+      _warpControl: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<void>;
+    sendTransaction(
+      _warpControl: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<string>;
+    estimateGas(
+      _warpControl: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<number>;
+  };
+
+  updateTeam: {
+    (_warpTeam: string, txDetails?: Truffle.TransactionDetails): Promise<
+      Truffle.TransactionResponse<AllEvents>
+    >;
+    call(
+      _warpTeam: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<void>;
+    sendTransaction(
+      _warpTeam: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<string>;
+    estimateGas(
+      _warpTeam: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<number>;
+  };
+
+  viewAccountBalance(
+    _account: string,
+    txDetails?: Truffle.TransactionDetails
+  ): Promise<BN>;
+
   methods: {
+    totalReserves(txDetails?: Truffle.TransactionDetails): Promise<BN>;
+
     /**
      * Accrue interest to updated borrowIndex and then calculate account's borrow balance using the updated borrowIndex
      * @param account The address whose balance should be calculated after updating borrowIndex
@@ -219,6 +286,69 @@ export interface WarpVaultSciInstance extends Truffle.ContractInstance {
         txDetails?: Truffle.TransactionDetails
       ): Promise<number>;
     };
+
+    setNewInterestModel: {
+      (_newModel: string, txDetails?: Truffle.TransactionDetails): Promise<
+        Truffle.TransactionResponse<AllEvents>
+      >;
+      call(
+        _newModel: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<void>;
+      sendTransaction(
+        _newModel: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<string>;
+      estimateGas(
+        _newModel: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<number>;
+    };
+
+    getSCDecimals(txDetails?: Truffle.TransactionDetails): Promise<BN>;
+
+    getSCAddress(txDetails?: Truffle.TransactionDetails): Promise<string>;
+
+    updateWarpControl: {
+      (_warpControl: string, txDetails?: Truffle.TransactionDetails): Promise<
+        Truffle.TransactionResponse<AllEvents>
+      >;
+      call(
+        _warpControl: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<void>;
+      sendTransaction(
+        _warpControl: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<string>;
+      estimateGas(
+        _warpControl: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<number>;
+    };
+
+    updateTeam: {
+      (_warpTeam: string, txDetails?: Truffle.TransactionDetails): Promise<
+        Truffle.TransactionResponse<AllEvents>
+      >;
+      call(
+        _warpTeam: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<void>;
+      sendTransaction(
+        _warpTeam: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<string>;
+      estimateGas(
+        _warpTeam: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<number>;
+    };
+
+    viewAccountBalance(
+      _account: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<BN>;
   };
 
   getPastEvents(event: string): Promise<EventData[]>;

@@ -15,6 +15,18 @@ export interface WarpVaultLpContract
   ): Promise<WarpVaultLpInstance>;
 }
 
+export interface AccountLiquidated {
+  name: "AccountLiquidated";
+  args: {
+    _account: string;
+    _liquidator: string;
+    _amount: BN;
+    0: string;
+    1: string;
+    2: BN;
+  };
+}
+
 export interface CollateralProvided {
   name: "CollateralProvided";
   args: {
@@ -29,28 +41,30 @@ export interface CollateralWithdraw {
   name: "CollateralWithdraw";
   args: {
     _account: string;
-    amount: BN;
+    _amount: BN;
     0: string;
     1: BN;
   };
 }
 
-export interface OwnershipTransferred {
-  name: "OwnershipTransferred";
+export interface WarpControlChanged {
+  name: "WarpControlChanged";
   args: {
-    previousOwner: string;
-    newOwner: string;
+    _newControl: string;
+    _oldControl: string;
     0: string;
     1: string;
   };
 }
 
-type AllEvents = CollateralProvided | CollateralWithdraw | OwnershipTransferred;
+type AllEvents =
+  | AccountLiquidated
+  | CollateralProvided
+  | CollateralWithdraw
+  | WarpControlChanged;
 
 export interface WarpVaultLpInstance extends Truffle.ContractInstance {
   LPtoken(txDetails?: Truffle.TransactionDetails): Promise<string>;
-
-  WC(txDetails?: Truffle.TransactionDetails): Promise<string>;
 
   collateralizedLP(
     arg0: string,
@@ -59,42 +73,24 @@ export interface WarpVaultLpInstance extends Truffle.ContractInstance {
 
   lpName(txDetails?: Truffle.TransactionDetails): Promise<string>;
 
-  /**
-   * Returns the address of the current owner.
-   */
-  owner(txDetails?: Truffle.TransactionDetails): Promise<string>;
-
-  /**
-   * Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner.     * NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.
-   */
-  renounceOwnership: {
-    (txDetails?: Truffle.TransactionDetails): Promise<
-      Truffle.TransactionResponse<AllEvents>
-    >;
-    call(txDetails?: Truffle.TransactionDetails): Promise<void>;
-    sendTransaction(txDetails?: Truffle.TransactionDetails): Promise<string>;
-    estimateGas(txDetails?: Truffle.TransactionDetails): Promise<number>;
-  };
-
   timeWizard(txDetails?: Truffle.TransactionDetails): Promise<BN>;
 
-  /**
-   * Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.
-   */
-  transferOwnership: {
-    (newOwner: string, txDetails?: Truffle.TransactionDetails): Promise<
+  warpControl(txDetails?: Truffle.TransactionDetails): Promise<string>;
+
+  updateWarpControl: {
+    (_warpControl: string, txDetails?: Truffle.TransactionDetails): Promise<
       Truffle.TransactionResponse<AllEvents>
     >;
     call(
-      newOwner: string,
+      _warpControl: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<void>;
     sendTransaction(
-      newOwner: string,
+      _warpControl: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<string>;
     estimateGas(
-      newOwner: string,
+      _warpControl: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<number>;
   };
@@ -106,22 +102,18 @@ export interface WarpVaultLpInstance extends Truffle.ContractInstance {
   provideCollateral: {
     (
       _amount: number | BN | string,
-      _refferalCode: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<Truffle.TransactionResponse<AllEvents>>;
     call(
       _amount: number | BN | string,
-      _refferalCode: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<void>;
     sendTransaction(
       _amount: number | BN | string,
-      _refferalCode: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<string>;
     estimateGas(
       _amount: number | BN | string,
-      _refferalCode: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<number>;
   };
@@ -164,7 +156,7 @@ export interface WarpVaultLpInstance extends Truffle.ContractInstance {
   ): Promise<BN>;
 
   /**
-   * this function uses the onlyWC modifier meaning that only the Warp Control contract can call it*
+   * this function uses the onlyWarpControl modifier meaning that only the Warp Control contract can call it*
    * _liquidateAccount is a function to liquidate the LP tokens of the input account
    * @param _account is the address of the account being liquidated
    * @param _liquidator is the address of the account doing the liquidating who receives the liquidated LP's
@@ -200,8 +192,6 @@ export interface WarpVaultLpInstance extends Truffle.ContractInstance {
   methods: {
     LPtoken(txDetails?: Truffle.TransactionDetails): Promise<string>;
 
-    WC(txDetails?: Truffle.TransactionDetails): Promise<string>;
-
     collateralizedLP(
       arg0: string,
       txDetails?: Truffle.TransactionDetails
@@ -209,42 +199,24 @@ export interface WarpVaultLpInstance extends Truffle.ContractInstance {
 
     lpName(txDetails?: Truffle.TransactionDetails): Promise<string>;
 
-    /**
-     * Returns the address of the current owner.
-     */
-    owner(txDetails?: Truffle.TransactionDetails): Promise<string>;
-
-    /**
-     * Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner.     * NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.
-     */
-    renounceOwnership: {
-      (txDetails?: Truffle.TransactionDetails): Promise<
-        Truffle.TransactionResponse<AllEvents>
-      >;
-      call(txDetails?: Truffle.TransactionDetails): Promise<void>;
-      sendTransaction(txDetails?: Truffle.TransactionDetails): Promise<string>;
-      estimateGas(txDetails?: Truffle.TransactionDetails): Promise<number>;
-    };
-
     timeWizard(txDetails?: Truffle.TransactionDetails): Promise<BN>;
 
-    /**
-     * Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.
-     */
-    transferOwnership: {
-      (newOwner: string, txDetails?: Truffle.TransactionDetails): Promise<
+    warpControl(txDetails?: Truffle.TransactionDetails): Promise<string>;
+
+    updateWarpControl: {
+      (_warpControl: string, txDetails?: Truffle.TransactionDetails): Promise<
         Truffle.TransactionResponse<AllEvents>
       >;
       call(
-        newOwner: string,
+        _warpControl: string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<void>;
       sendTransaction(
-        newOwner: string,
+        _warpControl: string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<string>;
       estimateGas(
-        newOwner: string,
+        _warpControl: string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<number>;
     };
@@ -256,22 +228,18 @@ export interface WarpVaultLpInstance extends Truffle.ContractInstance {
     provideCollateral: {
       (
         _amount: number | BN | string,
-        _refferalCode: string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<Truffle.TransactionResponse<AllEvents>>;
       call(
         _amount: number | BN | string,
-        _refferalCode: string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<void>;
       sendTransaction(
         _amount: number | BN | string,
-        _refferalCode: string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<string>;
       estimateGas(
         _amount: number | BN | string,
-        _refferalCode: string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<number>;
     };
@@ -314,7 +282,7 @@ export interface WarpVaultLpInstance extends Truffle.ContractInstance {
     ): Promise<BN>;
 
     /**
-     * this function uses the onlyWC modifier meaning that only the Warp Control contract can call it*
+     * this function uses the onlyWarpControl modifier meaning that only the Warp Control contract can call it*
      * _liquidateAccount is a function to liquidate the LP tokens of the input account
      * @param _account is the address of the account being liquidated
      * @param _liquidator is the address of the account doing the liquidating who receives the liquidated LP's
