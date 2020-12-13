@@ -9,57 +9,9 @@ export interface WarpVaultScFactoryContract
   "new"(meta?: Truffle.TransactionDetails): Promise<WarpVaultScFactoryInstance>;
 }
 
-export interface OwnershipTransferred {
-  name: "OwnershipTransferred";
-  args: {
-    previousOwner: string;
-    newOwner: string;
-    0: string;
-    1: string;
-  };
-}
-
-type AllEvents = OwnershipTransferred;
+type AllEvents = never;
 
 export interface WarpVaultScFactoryInstance extends Truffle.ContractInstance {
-  /**
-   * Returns the address of the current owner.
-   */
-  owner(txDetails?: Truffle.TransactionDetails): Promise<string>;
-
-  /**
-   * Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner.     * NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.
-   */
-  renounceOwnership: {
-    (txDetails?: Truffle.TransactionDetails): Promise<
-      Truffle.TransactionResponse<AllEvents>
-    >;
-    call(txDetails?: Truffle.TransactionDetails): Promise<void>;
-    sendTransaction(txDetails?: Truffle.TransactionDetails): Promise<string>;
-    estimateGas(txDetails?: Truffle.TransactionDetails): Promise<number>;
-  };
-
-  /**
-   * Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.
-   */
-  transferOwnership: {
-    (newOwner: string, txDetails?: Truffle.TransactionDetails): Promise<
-      Truffle.TransactionResponse<AllEvents>
-    >;
-    call(
-      newOwner: string,
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<void>;
-    sendTransaction(
-      newOwner: string,
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<string>;
-    estimateGas(
-      newOwner: string,
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<number>;
-  };
-
   /**
    * createNewWarpVaultSC is used to create new WarpVaultSC contract instances
    * @param _InterestRate is the address of the InterestRateModel contract created for this Warp Vault
@@ -75,6 +27,7 @@ export interface WarpVaultScFactoryInstance extends Truffle.ContractInstance {
       _warpTeam: string,
       _initialExchangeRate: number | BN | string,
       _timelock: number | BN | string,
+      _reserveFactorMantissa: number | BN | string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<Truffle.TransactionResponse<AllEvents>>;
     call(
@@ -83,6 +36,7 @@ export interface WarpVaultScFactoryInstance extends Truffle.ContractInstance {
       _warpTeam: string,
       _initialExchangeRate: number | BN | string,
       _timelock: number | BN | string,
+      _reserveFactorMantissa: number | BN | string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<string>;
     sendTransaction(
@@ -91,6 +45,7 @@ export interface WarpVaultScFactoryInstance extends Truffle.ContractInstance {
       _warpTeam: string,
       _initialExchangeRate: number | BN | string,
       _timelock: number | BN | string,
+      _reserveFactorMantissa: number | BN | string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<string>;
     estimateGas(
@@ -99,49 +54,12 @@ export interface WarpVaultScFactoryInstance extends Truffle.ContractInstance {
       _warpTeam: string,
       _initialExchangeRate: number | BN | string,
       _timelock: number | BN | string,
+      _reserveFactorMantissa: number | BN | string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<number>;
   };
 
   methods: {
-    /**
-     * Returns the address of the current owner.
-     */
-    owner(txDetails?: Truffle.TransactionDetails): Promise<string>;
-
-    /**
-     * Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner.     * NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.
-     */
-    renounceOwnership: {
-      (txDetails?: Truffle.TransactionDetails): Promise<
-        Truffle.TransactionResponse<AllEvents>
-      >;
-      call(txDetails?: Truffle.TransactionDetails): Promise<void>;
-      sendTransaction(txDetails?: Truffle.TransactionDetails): Promise<string>;
-      estimateGas(txDetails?: Truffle.TransactionDetails): Promise<number>;
-    };
-
-    /**
-     * Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.
-     */
-    transferOwnership: {
-      (newOwner: string, txDetails?: Truffle.TransactionDetails): Promise<
-        Truffle.TransactionResponse<AllEvents>
-      >;
-      call(
-        newOwner: string,
-        txDetails?: Truffle.TransactionDetails
-      ): Promise<void>;
-      sendTransaction(
-        newOwner: string,
-        txDetails?: Truffle.TransactionDetails
-      ): Promise<string>;
-      estimateGas(
-        newOwner: string,
-        txDetails?: Truffle.TransactionDetails
-      ): Promise<number>;
-    };
-
     /**
      * createNewWarpVaultSC is used to create new WarpVaultSC contract instances
      * @param _InterestRate is the address of the InterestRateModel contract created for this Warp Vault
@@ -157,6 +75,7 @@ export interface WarpVaultScFactoryInstance extends Truffle.ContractInstance {
         _warpTeam: string,
         _initialExchangeRate: number | BN | string,
         _timelock: number | BN | string,
+        _reserveFactorMantissa: number | BN | string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<Truffle.TransactionResponse<AllEvents>>;
       call(
@@ -165,6 +84,7 @@ export interface WarpVaultScFactoryInstance extends Truffle.ContractInstance {
         _warpTeam: string,
         _initialExchangeRate: number | BN | string,
         _timelock: number | BN | string,
+        _reserveFactorMantissa: number | BN | string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<string>;
       sendTransaction(
@@ -173,6 +93,7 @@ export interface WarpVaultScFactoryInstance extends Truffle.ContractInstance {
         _warpTeam: string,
         _initialExchangeRate: number | BN | string,
         _timelock: number | BN | string,
+        _reserveFactorMantissa: number | BN | string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<string>;
       estimateGas(
@@ -181,6 +102,7 @@ export interface WarpVaultScFactoryInstance extends Truffle.ContractInstance {
         _warpTeam: string,
         _initialExchangeRate: number | BN | string,
         _timelock: number | BN | string,
+        _reserveFactorMantissa: number | BN | string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<number>;
     };

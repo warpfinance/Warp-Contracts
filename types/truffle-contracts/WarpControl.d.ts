@@ -15,6 +15,22 @@ export interface WarpControlContract
   ): Promise<WarpControlInstance>;
 }
 
+export interface ImportedLPVault {
+  name: "ImportedLPVault";
+  args: {
+    _vault: string;
+    0: string;
+  };
+}
+
+export interface ImportedSCVault {
+  name: "ImportedSCVault";
+  args: {
+    _vault: string;
+    0: string;
+  };
+}
+
 export interface Liquidation {
   name: "Liquidation";
   args: {
@@ -86,6 +102,8 @@ export interface complianceReset {
 }
 
 type AllEvents =
+  | ImportedLPVault
+  | ImportedSCVault
   | Liquidation
   | NewBorrow
   | NewLPVault
@@ -101,19 +119,25 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
 
   WVSCF(txDetails?: Truffle.TransactionDetails): Promise<string>;
 
-  amountForUserByGroup(
-    arg0: string,
-    arg1: string,
-    txDetails?: Truffle.TransactionDetails
-  ): Promise<BN>;
-
   existingRefferalCode(
     arg0: string,
     txDetails?: Truffle.TransactionDetails
   ): Promise<boolean>;
 
+  getAssetByVault(
+    arg0: string,
+    txDetails?: Truffle.TransactionDetails
+  ): Promise<string>;
+
+  graceSpace(txDetails?: Truffle.TransactionDetails): Promise<BN>;
+
   groups(
     arg0: number | BN | string,
+    txDetails?: Truffle.TransactionDetails
+  ): Promise<string>;
+
+  groupsYourIn(
+    arg0: string,
     txDetails?: Truffle.TransactionDetails
   ): Promise<string>;
 
@@ -129,7 +153,6 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
 
   isInGroup(
     arg0: string,
-    arg1: string,
     txDetails?: Truffle.TransactionDetails
   ): Promise<boolean>;
 
@@ -153,17 +176,12 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
     txDetails?: Truffle.TransactionDetails
   ): Promise<BN>;
 
-  lpLockedForUserByGroup(
-    arg0: string,
-    arg1: string,
-    arg2: string,
-    txDetails?: Truffle.TransactionDetails
-  ): Promise<BN>;
-
   lpVaults(
     arg0: number | BN | string,
     txDetails?: Truffle.TransactionDetails
   ): Promise<string>;
+
+  newWarpControl(txDetails?: Truffle.TransactionDetails): Promise<string>;
 
   /**
    * Returns the address of the current owner.
@@ -222,38 +240,51 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
   warpTeam(txDetails?: Truffle.TransactionDetails): Promise<string>;
 
   /**
-   * view functions for front end /////
+   * viewNumLPVaults returns the number of lp vaults on the warp platform*
    */
   viewNumLPVaults(txDetails?: Truffle.TransactionDetails): Promise<BN>;
 
+  /**
+   * viewNumSCVaults returns the number of stablecoin vaults on the warp platform*
+   */
   viewNumSCVaults(txDetails?: Truffle.TransactionDetails): Promise<BN>;
 
+  /**
+   * viewLaunchParticipants returns an array of all launch participant addresses*
+   */
   viewLaunchParticipants(
     txDetails?: Truffle.TransactionDetails
   ): Promise<string[]>;
 
+  /**
+   * viewAllGroups returns an array of all group addresses*
+   */
   viewAllGroups(txDetails?: Truffle.TransactionDetails): Promise<string[]>;
 
+  /**
+   * viewAllMembersOfAGroup returns an array of addresses containing the addresses of every member in a group
+   * @param _refferalCode is the address that acts as a referral code for a group*
+   */
   viewAllMembersOfAGroup(
     _refferalCode: string,
     txDetails?: Truffle.TransactionDetails
   ): Promise<string[]>;
 
-  viewSClockedForUserByGroup(
-    _refferalCode: string,
-    _member: string,
-    txDetails?: Truffle.TransactionDetails
-  ): Promise<BN>;
-
-  viewLPlockedForUserByGroup(
-    _refferalCode: string,
-    _member: string,
-    _lp: string,
-    txDetails?: Truffle.TransactionDetails
-  ): Promise<BN>;
-
+  /**
+   * getGroupName returns the name of a group
+   * @param _refferalCode is the address that acts as a referral code for a group*
+   */
   getGroupName(
     _refferalCode: string,
+    txDetails?: Truffle.TransactionDetails
+  ): Promise<string>;
+
+  /**
+   * getAccountsGroup returns the refferal code address of the team an account is on
+   * @param _account is the address whos team is being retrieved*
+   */
+  getAccountsGroup(
+    _account: string,
     txDetails?: Truffle.TransactionDetails
   ): Promise<string>;
 
@@ -300,6 +331,24 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
     ): Promise<number>;
   };
 
+  importLPVault: {
+    (_lpVault: string, txDetails?: Truffle.TransactionDetails): Promise<
+      Truffle.TransactionResponse<AllEvents>
+    >;
+    call(
+      _lpVault: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<void>;
+    sendTransaction(
+      _lpVault: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<string>;
+    estimateGas(
+      _lpVault: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<number>;
+  };
+
   /**
    * createNewSCVault allows the contract owner to create a new WarpVaultLP contract for a specific LP token
    * @param _StableCoin is the address of the StableCoin this Warp Vault will manage*
@@ -318,6 +367,7 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
       _jumpMultiplierPerYear: number | BN | string,
       _optimal: number | BN | string,
       _initialExchangeRate: number | BN | string,
+      _reserveFactorMantissa: number | BN | string,
       _StableCoin: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<Truffle.TransactionResponse<AllEvents>>;
@@ -328,6 +378,7 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
       _jumpMultiplierPerYear: number | BN | string,
       _optimal: number | BN | string,
       _initialExchangeRate: number | BN | string,
+      _reserveFactorMantissa: number | BN | string,
       _StableCoin: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<void>;
@@ -338,6 +389,7 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
       _jumpMultiplierPerYear: number | BN | string,
       _optimal: number | BN | string,
       _initialExchangeRate: number | BN | string,
+      _reserveFactorMantissa: number | BN | string,
       _StableCoin: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<string>;
@@ -348,11 +400,35 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
       _jumpMultiplierPerYear: number | BN | string,
       _optimal: number | BN | string,
       _initialExchangeRate: number | BN | string,
+      _reserveFactorMantissa: number | BN | string,
       _StableCoin: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<number>;
   };
 
+  importSCVault: {
+    (_scVault: string, txDetails?: Truffle.TransactionDetails): Promise<
+      Truffle.TransactionResponse<AllEvents>
+    >;
+    call(
+      _scVault: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<void>;
+    sendTransaction(
+      _scVault: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<string>;
+    estimateGas(
+      _scVault: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<number>;
+  };
+
+  /**
+   * the refferal code for this group is the address of the msg.sender*
+   * @createGroup is used to create a new group
+   * @param _groupName is the name of the group being created
+   */
   createGroup: {
     (_groupName: string, txDetails?: Truffle.TransactionDetails): Promise<
       Truffle.TransactionResponse<AllEvents>
@@ -371,66 +447,34 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
     ): Promise<number>;
   };
 
-  addMemberToGroupSC: {
-    (
-      _refferalCode: string,
-      _member: string,
-      _amount: number | BN | string,
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<Truffle.TransactionResponse<AllEvents>>;
+  /**
+   * the member being added is the msg.sender*
+   * addMemberToGroup is used to add an account to a group
+   * @param _refferalCode is the address used as a groups refferal code
+   */
+  addMemberToGroup: {
+    (_refferalCode: string, txDetails?: Truffle.TransactionDetails): Promise<
+      Truffle.TransactionResponse<AllEvents>
+    >;
     call(
       _refferalCode: string,
-      _member: string,
-      _amount: number | BN | string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<void>;
     sendTransaction(
       _refferalCode: string,
-      _member: string,
-      _amount: number | BN | string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<string>;
     estimateGas(
       _refferalCode: string,
-      _member: string,
-      _amount: number | BN | string,
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<number>;
-  };
-
-  addMemberToGroupLP: {
-    (
-      _refferalCode: string,
-      _member: string,
-      _lp: string,
-      _amount: number | BN | string,
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<Truffle.TransactionResponse<AllEvents>>;
-    call(
-      _refferalCode: string,
-      _member: string,
-      _lp: string,
-      _amount: number | BN | string,
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<void>;
-    sendTransaction(
-      _refferalCode: string,
-      _member: string,
-      _lp: string,
-      _amount: number | BN | string,
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<string>;
-    estimateGas(
-      _refferalCode: string,
-      _member: string,
-      _lp: string,
-      _amount: number | BN | string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<number>;
   };
 
   /**
+   * this function runs calculations to accrue interest for an up to date amount
    * Figures out how much of a given LP token an account is allowed to withdraw
+   * @param account is the account being checked
+   * @param lpToken is the address of the lpToken the user wishes to withdraw
    */
   getMaxWithdrawAllowed: {
     (
@@ -455,12 +499,23 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
     ): Promise<number>;
   };
 
+  /**
+   * this function does not run calculations to accrue interest and returns the previously calculated amount
+   * Figures out how much of a given LP token an account is allowed to withdraw
+   * @param account is the account being checked
+   * @param lpToken is the address of the lpToken the user wishes to withdraw
+   */
   viewMaxWithdrawAllowed(
     account: string,
     lpToken: string,
     txDetails?: Truffle.TransactionDetails
   ): Promise<BN>;
 
+  /**
+   * this function runs calculations to accrue interest for an up to date amount*
+   * getTotalAvailableCollateralValue returns the total availible collaeral value for an account in USDC
+   * @param _account is the address whos collateral is being retreived
+   */
   getTotalAvailableCollateralValue: {
     (_account: string, txDetails?: Truffle.TransactionDetails): Promise<
       Truffle.TransactionResponse<AllEvents>
@@ -476,26 +531,111 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
     ): Promise<number>;
   };
 
+  /**
+   * this function does not run calculations to accrue interest and returns the previously calculated amount*
+   * getTotalAvailableCollateralValue returns the total availible collaeral value for an account in USDC
+   * @param _account is the address whos collateral is being retreived
+   */
   viewTotalAvailableCollateralValue(
     _account: string,
     txDetails?: Truffle.TransactionDetails
   ): Promise<BN>;
 
+  /**
+   * this function runs calculations to retrieve the current price*
+   * viewPriceOfCollateral returns the price of an lpToken
+   * @param lpToken is the address of the lp token
+   */
   viewPriceOfCollateral(
     lpToken: string,
     txDetails?: Truffle.TransactionDetails
   ): Promise<BN>;
 
+  /**
+   * this function does not run calculations amd returns the previously calculated price*
+   * getPriceOfCollateral returns the price of an lpToken
+   * @param lpToken is the address of the lp token
+   */
+  getPriceOfCollateral: {
+    (lpToken: string, txDetails?: Truffle.TransactionDetails): Promise<
+      Truffle.TransactionResponse<AllEvents>
+    >;
+    call(lpToken: string, txDetails?: Truffle.TransactionDetails): Promise<BN>;
+    sendTransaction(
+      lpToken: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<string>;
+    estimateGas(
+      lpToken: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<number>;
+  };
+
+  /**
+   * this function runs calculations to retrieve the current price*
+   * viewPriceOfToken retrieves the price of a stablecoin
+   * @param amount is the amount of stablecoin
+   * @param token is the address of the stablecoin
+   */
   viewPriceOfToken(
     token: string,
+    amount: number | BN | string,
     txDetails?: Truffle.TransactionDetails
   ): Promise<BN>;
 
+  /**
+   * this function does not run calculations amd returns the previously calculated price*
+   * viewPriceOfToken retrieves the price of a stablecoin
+   * @param amount is the amount of stablecoin
+   * @param token is the address of the stablecoin
+   */
+  getPriceOfToken: {
+    (
+      token: string,
+      amount: number | BN | string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<Truffle.TransactionResponse<AllEvents>>;
+    call(
+      token: string,
+      amount: number | BN | string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<BN>;
+    sendTransaction(
+      token: string,
+      amount: number | BN | string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<string>;
+    estimateGas(
+      token: string,
+      amount: number | BN | string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<number>;
+  };
+
+  /**
+   * viewTotalLentValue returns the total lent value for an account in USDC
+   * @param _account is the account whos lent value we are calculating*
+   */
+  viewTotalLentValue(
+    _account: string,
+    txDetails?: Truffle.TransactionDetails
+  ): Promise<BN>;
+
+  /**
+   * this function returns previously calculated values*
+   * viewTotalBorrowedValue returns the total borrowed value for an account in USDC
+   * @param _account is the account whos borrowed value we are calculating
+   */
   viewTotalBorrowedValue(
     _account: string,
     txDetails?: Truffle.TransactionDetails
   ): Promise<BN>;
 
+  /**
+   * this function returns newly calculated values*
+   * viewTotalBorrowedValue returns the total borrowed value for an account in USDC
+   * @param _account is the account whos borrowed value we are calculating
+   */
   getTotalBorrowedValue: {
     (_account: string, txDetails?: Truffle.TransactionDetails): Promise<
       Truffle.TransactionResponse<AllEvents>
@@ -521,11 +661,20 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
     txDetails?: Truffle.TransactionDetails
   ): Promise<BN>;
 
+  /**
+   * calcCollateralRequired returns the amount of collateral needed for an input borrow value
+   * @param _borrowAmount is the input borrow amount*
+   */
   calcCollateralRequired(
     _borrowAmount: number | BN | string,
     txDetails?: Truffle.TransactionDetails
   ): Promise<BN>;
 
+  /**
+   * this calculation uses current values for calculations*
+   * getBorrowLimit returns the borrow limit for an account
+   * @param _account is the input account address
+   */
   getBorrowLimit: {
     (_account: string, txDetails?: Truffle.TransactionDetails): Promise<
       Truffle.TransactionResponse<AllEvents>
@@ -541,6 +690,11 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
     ): Promise<number>;
   };
 
+  /**
+   * this calculation uses previous values for calculations*
+   * getBorrowLimit returns the borrow limit for an account
+   * @param _account is the input account address
+   */
   viewBorrowLimit(
     _account: string,
     txDetails?: Truffle.TransactionDetails
@@ -575,28 +729,6 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
   };
 
   /**
-   * markAccountNonCompliant is used by a potential liquidator to mark an account as non compliant which starts its 30 minute timer
-   * @param _borrower is the address of the non compliant borrower*
-   */
-  markAccountNonCompliant: {
-    (_borrower: string, txDetails?: Truffle.TransactionDetails): Promise<
-      Truffle.TransactionResponse<AllEvents>
-    >;
-    call(
-      _borrower: string,
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<void>;
-    sendTransaction(
-      _borrower: string,
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<string>;
-    estimateGas(
-      _borrower: string,
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<number>;
-  };
-
-  /**
    * liquidateAccount is used to liquidate a non-compliant loan after it has reached its 30 minute grace period
    * @param _borrower is the address of the borrower whos loan is non-compliant*
    */
@@ -618,6 +750,105 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
     ): Promise<number>;
   };
 
+  /**
+   * updateInterestRateModel allows the warp team to update the interest rate model for a stablecoin
+   * @param _baseRatePerYear is the base rate per year(approx target base APR)
+   * @param _jumpMultiplierPerYear is the Jump Multiplier Per Year(the multiplier per block after hitting a specific utilizastion point)
+   * @param _multiplierPerYear is the multiplier per year(rate of increase in interest w/ utilizastion)
+   * @param _optimal is the this is the utilizastion point or "kink" at which the jump multiplier is applied*
+   * @param _token is the address of the stablecoin whos vault is having its interest rate updated
+   */
+  updateInterestRateModel: {
+    (
+      _token: string,
+      _baseRatePerYear: number | BN | string,
+      _multiplierPerYear: number | BN | string,
+      _jumpMultiplierPerYear: number | BN | string,
+      _optimal: number | BN | string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<Truffle.TransactionResponse<AllEvents>>;
+    call(
+      _token: string,
+      _baseRatePerYear: number | BN | string,
+      _multiplierPerYear: number | BN | string,
+      _jumpMultiplierPerYear: number | BN | string,
+      _optimal: number | BN | string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<void>;
+    sendTransaction(
+      _token: string,
+      _baseRatePerYear: number | BN | string,
+      _multiplierPerYear: number | BN | string,
+      _jumpMultiplierPerYear: number | BN | string,
+      _optimal: number | BN | string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<string>;
+    estimateGas(
+      _token: string,
+      _baseRatePerYear: number | BN | string,
+      _multiplierPerYear: number | BN | string,
+      _jumpMultiplierPerYear: number | BN | string,
+      _optimal: number | BN | string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<number>;
+  };
+
+  /**
+   * startUpgradeTimer starts a two day timer signaling that this contract will soon be updated to a new version
+   * @param _newWarpControl is the address of the new Warp control contract being upgraded to*
+   */
+  startUpgradeTimer: {
+    (_newWarpControl: string, txDetails?: Truffle.TransactionDetails): Promise<
+      Truffle.TransactionResponse<AllEvents>
+    >;
+    call(
+      _newWarpControl: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<void>;
+    sendTransaction(
+      _newWarpControl: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<string>;
+    estimateGas(
+      _newWarpControl: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<number>;
+  };
+
+  /**
+   * upgradeWarp is used to upgrade the Warp platform to use a new version of the WarpControl contract*
+   */
+  upgradeWarp: {
+    (txDetails?: Truffle.TransactionDetails): Promise<
+      Truffle.TransactionResponse<AllEvents>
+    >;
+    call(txDetails?: Truffle.TransactionDetails): Promise<void>;
+    sendTransaction(txDetails?: Truffle.TransactionDetails): Promise<string>;
+    estimateGas(txDetails?: Truffle.TransactionDetails): Promise<number>;
+  };
+
+  /**
+   * transferWarpTeam allows the wapr team address to be changed by the owner account
+   * @param _newWarp is the address of the new warp team*
+   */
+  transferWarpTeam: {
+    (_newWarp: string, txDetails?: Truffle.TransactionDetails): Promise<
+      Truffle.TransactionResponse<AllEvents>
+    >;
+    call(
+      _newWarp: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<void>;
+    sendTransaction(
+      _newWarp: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<string>;
+    estimateGas(
+      _newWarp: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<number>;
+  };
+
   methods: {
     Oracle(txDetails?: Truffle.TransactionDetails): Promise<string>;
 
@@ -625,19 +856,25 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
 
     WVSCF(txDetails?: Truffle.TransactionDetails): Promise<string>;
 
-    amountForUserByGroup(
-      arg0: string,
-      arg1: string,
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<BN>;
-
     existingRefferalCode(
       arg0: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<boolean>;
 
+    getAssetByVault(
+      arg0: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<string>;
+
+    graceSpace(txDetails?: Truffle.TransactionDetails): Promise<BN>;
+
     groups(
       arg0: number | BN | string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<string>;
+
+    groupsYourIn(
+      arg0: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<string>;
 
@@ -653,7 +890,6 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
 
     isInGroup(
       arg0: string,
-      arg1: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<boolean>;
 
@@ -677,17 +913,12 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
       txDetails?: Truffle.TransactionDetails
     ): Promise<BN>;
 
-    lpLockedForUserByGroup(
-      arg0: string,
-      arg1: string,
-      arg2: string,
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<BN>;
-
     lpVaults(
       arg0: number | BN | string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<string>;
+
+    newWarpControl(txDetails?: Truffle.TransactionDetails): Promise<string>;
 
     /**
      * Returns the address of the current owner.
@@ -746,38 +977,51 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
     warpTeam(txDetails?: Truffle.TransactionDetails): Promise<string>;
 
     /**
-     * view functions for front end /////
+     * viewNumLPVaults returns the number of lp vaults on the warp platform*
      */
     viewNumLPVaults(txDetails?: Truffle.TransactionDetails): Promise<BN>;
 
+    /**
+     * viewNumSCVaults returns the number of stablecoin vaults on the warp platform*
+     */
     viewNumSCVaults(txDetails?: Truffle.TransactionDetails): Promise<BN>;
 
+    /**
+     * viewLaunchParticipants returns an array of all launch participant addresses*
+     */
     viewLaunchParticipants(
       txDetails?: Truffle.TransactionDetails
     ): Promise<string[]>;
 
+    /**
+     * viewAllGroups returns an array of all group addresses*
+     */
     viewAllGroups(txDetails?: Truffle.TransactionDetails): Promise<string[]>;
 
+    /**
+     * viewAllMembersOfAGroup returns an array of addresses containing the addresses of every member in a group
+     * @param _refferalCode is the address that acts as a referral code for a group*
+     */
     viewAllMembersOfAGroup(
       _refferalCode: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<string[]>;
 
-    viewSClockedForUserByGroup(
-      _refferalCode: string,
-      _member: string,
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<BN>;
-
-    viewLPlockedForUserByGroup(
-      _refferalCode: string,
-      _member: string,
-      _lp: string,
-      txDetails?: Truffle.TransactionDetails
-    ): Promise<BN>;
-
+    /**
+     * getGroupName returns the name of a group
+     * @param _refferalCode is the address that acts as a referral code for a group*
+     */
     getGroupName(
       _refferalCode: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<string>;
+
+    /**
+     * getAccountsGroup returns the refferal code address of the team an account is on
+     * @param _account is the address whos team is being retrieved*
+     */
+    getAccountsGroup(
+      _account: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<string>;
 
@@ -824,6 +1068,24 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
       ): Promise<number>;
     };
 
+    importLPVault: {
+      (_lpVault: string, txDetails?: Truffle.TransactionDetails): Promise<
+        Truffle.TransactionResponse<AllEvents>
+      >;
+      call(
+        _lpVault: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<void>;
+      sendTransaction(
+        _lpVault: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<string>;
+      estimateGas(
+        _lpVault: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<number>;
+    };
+
     /**
      * createNewSCVault allows the contract owner to create a new WarpVaultLP contract for a specific LP token
      * @param _StableCoin is the address of the StableCoin this Warp Vault will manage*
@@ -842,6 +1104,7 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
         _jumpMultiplierPerYear: number | BN | string,
         _optimal: number | BN | string,
         _initialExchangeRate: number | BN | string,
+        _reserveFactorMantissa: number | BN | string,
         _StableCoin: string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<Truffle.TransactionResponse<AllEvents>>;
@@ -852,6 +1115,7 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
         _jumpMultiplierPerYear: number | BN | string,
         _optimal: number | BN | string,
         _initialExchangeRate: number | BN | string,
+        _reserveFactorMantissa: number | BN | string,
         _StableCoin: string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<void>;
@@ -862,6 +1126,7 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
         _jumpMultiplierPerYear: number | BN | string,
         _optimal: number | BN | string,
         _initialExchangeRate: number | BN | string,
+        _reserveFactorMantissa: number | BN | string,
         _StableCoin: string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<string>;
@@ -872,11 +1137,35 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
         _jumpMultiplierPerYear: number | BN | string,
         _optimal: number | BN | string,
         _initialExchangeRate: number | BN | string,
+        _reserveFactorMantissa: number | BN | string,
         _StableCoin: string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<number>;
     };
 
+    importSCVault: {
+      (_scVault: string, txDetails?: Truffle.TransactionDetails): Promise<
+        Truffle.TransactionResponse<AllEvents>
+      >;
+      call(
+        _scVault: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<void>;
+      sendTransaction(
+        _scVault: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<string>;
+      estimateGas(
+        _scVault: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<number>;
+    };
+
+    /**
+     * the refferal code for this group is the address of the msg.sender*
+     * @createGroup is used to create a new group
+     * @param _groupName is the name of the group being created
+     */
     createGroup: {
       (_groupName: string, txDetails?: Truffle.TransactionDetails): Promise<
         Truffle.TransactionResponse<AllEvents>
@@ -895,66 +1184,34 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
       ): Promise<number>;
     };
 
-    addMemberToGroupSC: {
-      (
-        _refferalCode: string,
-        _member: string,
-        _amount: number | BN | string,
-        txDetails?: Truffle.TransactionDetails
-      ): Promise<Truffle.TransactionResponse<AllEvents>>;
+    /**
+     * the member being added is the msg.sender*
+     * addMemberToGroup is used to add an account to a group
+     * @param _refferalCode is the address used as a groups refferal code
+     */
+    addMemberToGroup: {
+      (_refferalCode: string, txDetails?: Truffle.TransactionDetails): Promise<
+        Truffle.TransactionResponse<AllEvents>
+      >;
       call(
         _refferalCode: string,
-        _member: string,
-        _amount: number | BN | string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<void>;
       sendTransaction(
         _refferalCode: string,
-        _member: string,
-        _amount: number | BN | string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<string>;
       estimateGas(
         _refferalCode: string,
-        _member: string,
-        _amount: number | BN | string,
-        txDetails?: Truffle.TransactionDetails
-      ): Promise<number>;
-    };
-
-    addMemberToGroupLP: {
-      (
-        _refferalCode: string,
-        _member: string,
-        _lp: string,
-        _amount: number | BN | string,
-        txDetails?: Truffle.TransactionDetails
-      ): Promise<Truffle.TransactionResponse<AllEvents>>;
-      call(
-        _refferalCode: string,
-        _member: string,
-        _lp: string,
-        _amount: number | BN | string,
-        txDetails?: Truffle.TransactionDetails
-      ): Promise<void>;
-      sendTransaction(
-        _refferalCode: string,
-        _member: string,
-        _lp: string,
-        _amount: number | BN | string,
-        txDetails?: Truffle.TransactionDetails
-      ): Promise<string>;
-      estimateGas(
-        _refferalCode: string,
-        _member: string,
-        _lp: string,
-        _amount: number | BN | string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<number>;
     };
 
     /**
+     * this function runs calculations to accrue interest for an up to date amount
      * Figures out how much of a given LP token an account is allowed to withdraw
+     * @param account is the account being checked
+     * @param lpToken is the address of the lpToken the user wishes to withdraw
      */
     getMaxWithdrawAllowed: {
       (
@@ -979,12 +1236,23 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
       ): Promise<number>;
     };
 
+    /**
+     * this function does not run calculations to accrue interest and returns the previously calculated amount
+     * Figures out how much of a given LP token an account is allowed to withdraw
+     * @param account is the account being checked
+     * @param lpToken is the address of the lpToken the user wishes to withdraw
+     */
     viewMaxWithdrawAllowed(
       account: string,
       lpToken: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<BN>;
 
+    /**
+     * this function runs calculations to accrue interest for an up to date amount*
+     * getTotalAvailableCollateralValue returns the total availible collaeral value for an account in USDC
+     * @param _account is the address whos collateral is being retreived
+     */
     getTotalAvailableCollateralValue: {
       (_account: string, txDetails?: Truffle.TransactionDetails): Promise<
         Truffle.TransactionResponse<AllEvents>
@@ -1003,26 +1271,114 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
       ): Promise<number>;
     };
 
+    /**
+     * this function does not run calculations to accrue interest and returns the previously calculated amount*
+     * getTotalAvailableCollateralValue returns the total availible collaeral value for an account in USDC
+     * @param _account is the address whos collateral is being retreived
+     */
     viewTotalAvailableCollateralValue(
       _account: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<BN>;
 
+    /**
+     * this function runs calculations to retrieve the current price*
+     * viewPriceOfCollateral returns the price of an lpToken
+     * @param lpToken is the address of the lp token
+     */
     viewPriceOfCollateral(
       lpToken: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<BN>;
 
+    /**
+     * this function does not run calculations amd returns the previously calculated price*
+     * getPriceOfCollateral returns the price of an lpToken
+     * @param lpToken is the address of the lp token
+     */
+    getPriceOfCollateral: {
+      (lpToken: string, txDetails?: Truffle.TransactionDetails): Promise<
+        Truffle.TransactionResponse<AllEvents>
+      >;
+      call(
+        lpToken: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<BN>;
+      sendTransaction(
+        lpToken: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<string>;
+      estimateGas(
+        lpToken: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<number>;
+    };
+
+    /**
+     * this function runs calculations to retrieve the current price*
+     * viewPriceOfToken retrieves the price of a stablecoin
+     * @param amount is the amount of stablecoin
+     * @param token is the address of the stablecoin
+     */
     viewPriceOfToken(
       token: string,
+      amount: number | BN | string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<BN>;
 
+    /**
+     * this function does not run calculations amd returns the previously calculated price*
+     * viewPriceOfToken retrieves the price of a stablecoin
+     * @param amount is the amount of stablecoin
+     * @param token is the address of the stablecoin
+     */
+    getPriceOfToken: {
+      (
+        token: string,
+        amount: number | BN | string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<Truffle.TransactionResponse<AllEvents>>;
+      call(
+        token: string,
+        amount: number | BN | string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<BN>;
+      sendTransaction(
+        token: string,
+        amount: number | BN | string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<string>;
+      estimateGas(
+        token: string,
+        amount: number | BN | string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<number>;
+    };
+
+    /**
+     * viewTotalLentValue returns the total lent value for an account in USDC
+     * @param _account is the account whos lent value we are calculating*
+     */
+    viewTotalLentValue(
+      _account: string,
+      txDetails?: Truffle.TransactionDetails
+    ): Promise<BN>;
+
+    /**
+     * this function returns previously calculated values*
+     * viewTotalBorrowedValue returns the total borrowed value for an account in USDC
+     * @param _account is the account whos borrowed value we are calculating
+     */
     viewTotalBorrowedValue(
       _account: string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<BN>;
 
+    /**
+     * this function returns newly calculated values*
+     * viewTotalBorrowedValue returns the total borrowed value for an account in USDC
+     * @param _account is the account whos borrowed value we are calculating
+     */
     getTotalBorrowedValue: {
       (_account: string, txDetails?: Truffle.TransactionDetails): Promise<
         Truffle.TransactionResponse<AllEvents>
@@ -1051,11 +1407,20 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
       txDetails?: Truffle.TransactionDetails
     ): Promise<BN>;
 
+    /**
+     * calcCollateralRequired returns the amount of collateral needed for an input borrow value
+     * @param _borrowAmount is the input borrow amount*
+     */
     calcCollateralRequired(
       _borrowAmount: number | BN | string,
       txDetails?: Truffle.TransactionDetails
     ): Promise<BN>;
 
+    /**
+     * this calculation uses current values for calculations*
+     * getBorrowLimit returns the borrow limit for an account
+     * @param _account is the input account address
+     */
     getBorrowLimit: {
       (_account: string, txDetails?: Truffle.TransactionDetails): Promise<
         Truffle.TransactionResponse<AllEvents>
@@ -1074,6 +1439,11 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
       ): Promise<number>;
     };
 
+    /**
+     * this calculation uses previous values for calculations*
+     * getBorrowLimit returns the borrow limit for an account
+     * @param _account is the input account address
+     */
     viewBorrowLimit(
       _account: string,
       txDetails?: Truffle.TransactionDetails
@@ -1108,10 +1478,10 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
     };
 
     /**
-     * markAccountNonCompliant is used by a potential liquidator to mark an account as non compliant which starts its 30 minute timer
-     * @param _borrower is the address of the non compliant borrower*
+     * liquidateAccount is used to liquidate a non-compliant loan after it has reached its 30 minute grace period
+     * @param _borrower is the address of the borrower whos loan is non-compliant*
      */
-    markAccountNonCompliant: {
+    liquidateAccount: {
       (_borrower: string, txDetails?: Truffle.TransactionDetails): Promise<
         Truffle.TransactionResponse<AllEvents>
       >;
@@ -1130,23 +1500,101 @@ export interface WarpControlInstance extends Truffle.ContractInstance {
     };
 
     /**
-     * liquidateAccount is used to liquidate a non-compliant loan after it has reached its 30 minute grace period
-     * @param _borrower is the address of the borrower whos loan is non-compliant*
+     * updateInterestRateModel allows the warp team to update the interest rate model for a stablecoin
+     * @param _baseRatePerYear is the base rate per year(approx target base APR)
+     * @param _jumpMultiplierPerYear is the Jump Multiplier Per Year(the multiplier per block after hitting a specific utilizastion point)
+     * @param _multiplierPerYear is the multiplier per year(rate of increase in interest w/ utilizastion)
+     * @param _optimal is the this is the utilizastion point or "kink" at which the jump multiplier is applied*
+     * @param _token is the address of the stablecoin whos vault is having its interest rate updated
      */
-    liquidateAccount: {
-      (_borrower: string, txDetails?: Truffle.TransactionDetails): Promise<
-        Truffle.TransactionResponse<AllEvents>
-      >;
+    updateInterestRateModel: {
+      (
+        _token: string,
+        _baseRatePerYear: number | BN | string,
+        _multiplierPerYear: number | BN | string,
+        _jumpMultiplierPerYear: number | BN | string,
+        _optimal: number | BN | string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<Truffle.TransactionResponse<AllEvents>>;
       call(
-        _borrower: string,
+        _token: string,
+        _baseRatePerYear: number | BN | string,
+        _multiplierPerYear: number | BN | string,
+        _jumpMultiplierPerYear: number | BN | string,
+        _optimal: number | BN | string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<void>;
       sendTransaction(
-        _borrower: string,
+        _token: string,
+        _baseRatePerYear: number | BN | string,
+        _multiplierPerYear: number | BN | string,
+        _jumpMultiplierPerYear: number | BN | string,
+        _optimal: number | BN | string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<string>;
       estimateGas(
-        _borrower: string,
+        _token: string,
+        _baseRatePerYear: number | BN | string,
+        _multiplierPerYear: number | BN | string,
+        _jumpMultiplierPerYear: number | BN | string,
+        _optimal: number | BN | string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<number>;
+    };
+
+    /**
+     * startUpgradeTimer starts a two day timer signaling that this contract will soon be updated to a new version
+     * @param _newWarpControl is the address of the new Warp control contract being upgraded to*
+     */
+    startUpgradeTimer: {
+      (
+        _newWarpControl: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<Truffle.TransactionResponse<AllEvents>>;
+      call(
+        _newWarpControl: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<void>;
+      sendTransaction(
+        _newWarpControl: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<string>;
+      estimateGas(
+        _newWarpControl: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<number>;
+    };
+
+    /**
+     * upgradeWarp is used to upgrade the Warp platform to use a new version of the WarpControl contract*
+     */
+    upgradeWarp: {
+      (txDetails?: Truffle.TransactionDetails): Promise<
+        Truffle.TransactionResponse<AllEvents>
+      >;
+      call(txDetails?: Truffle.TransactionDetails): Promise<void>;
+      sendTransaction(txDetails?: Truffle.TransactionDetails): Promise<string>;
+      estimateGas(txDetails?: Truffle.TransactionDetails): Promise<number>;
+    };
+
+    /**
+     * transferWarpTeam allows the wapr team address to be changed by the owner account
+     * @param _newWarp is the address of the new warp team*
+     */
+    transferWarpTeam: {
+      (_newWarp: string, txDetails?: Truffle.TransactionDetails): Promise<
+        Truffle.TransactionResponse<AllEvents>
+      >;
+      call(
+        _newWarp: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<void>;
+      sendTransaction(
+        _newWarp: string,
+        txDetails?: Truffle.TransactionDetails
+      ): Promise<string>;
+      estimateGas(
+        _newWarp: string,
         txDetails?: Truffle.TransactionDetails
       ): Promise<number>;
     };

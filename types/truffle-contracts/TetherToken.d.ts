@@ -4,14 +4,15 @@
 import BN from "bn.js";
 import { EventData, PastEventOptions } from "web3-eth-contract";
 
-export interface UsdtContract extends Truffle.Contract<UsdtInstance> {
+export interface TetherTokenContract
+  extends Truffle.Contract<TetherTokenInstance> {
   "new"(
     _initialSupply: number | BN | string,
     _name: string,
     _symbol: string,
     _decimals: number | BN | string,
     meta?: Truffle.TransactionDetails
-  ): Promise<UsdtInstance>;
+  ): Promise<TetherTokenInstance>;
 }
 
 export interface Issue {
@@ -121,7 +122,7 @@ type AllEvents =
   | Pause
   | Unpause;
 
-export interface UsdtInstance extends Truffle.ContractInstance {
+export interface TetherTokenInstance extends Truffle.ContractInstance {
   name(txDetails?: Truffle.TransactionDetails): Promise<string>;
 
   deprecated(txDetails?: Truffle.TransactionDetails): Promise<boolean>;

@@ -2,7 +2,6 @@
 /* tslint:disable */
 
 import { BaseJumpRateModelV2Contract } from "./BaseJumpRateModelV2";
-import { ContractContract } from "./Contract";
 import { DaiContract } from "./Dai";
 import { Erc20Contract } from "./Erc20";
 import { ExtendedIerc20Contract } from "./ExtendedIerc20";
@@ -17,6 +16,7 @@ import { JumpRateModelV2Contract } from "./JumpRateModelV2";
 import { MigrationsContract } from "./Migrations";
 import { OwnableContract } from "./Ownable";
 import { TesterTokenContract } from "./TesterToken";
+import { TetherTokenContract } from "./TetherToken";
 import { UniswapLpOracleFactoryContract } from "./UniswapLpOracleFactory";
 import { UniswapLpOracleFactoryIContract } from "./UniswapLpOracleFactoryI";
 import { UniswapLpOracleInstanceContract } from "./UniswapLpOracleInstance";
@@ -24,7 +24,6 @@ import { UniswapV2FactoryContract } from "./UniswapV2Factory";
 import { UniswapV2PairContract } from "./UniswapV2Pair";
 import { UniswapV2Router02Contract } from "./UniswapV2Router02";
 import { UsdcContract } from "./Usdc";
-import { UsdtContract } from "./Usdt";
 import { WarpControlContract } from "./WarpControl";
 import { WarpControlIContract } from "./WarpControlI";
 import { WarpVaultLpContract } from "./WarpVaultLp";
@@ -43,7 +42,6 @@ declare global {
   namespace Truffle {
     interface Artifacts {
       require(name: "BaseJumpRateModelV2"): BaseJumpRateModelV2Contract;
-      require(name: "Contract"): ContractContract;
       require(name: "DAI"): DaiContract;
       require(name: "ERC20"): Erc20Contract;
       require(name: "ExtendedIERC20"): ExtendedIerc20Contract;
@@ -58,6 +56,7 @@ declare global {
       require(name: "Migrations"): MigrationsContract;
       require(name: "Ownable"): OwnableContract;
       require(name: "TesterToken"): TesterTokenContract;
+      require(name: "TetherToken"): TetherTokenContract;
       require(name: "UniswapLPOracleFactory"): UniswapLpOracleFactoryContract;
       require(name: "UniswapLPOracleFactoryI"): UniswapLpOracleFactoryIContract;
       require(name: "UniswapLPOracleInstance"): UniswapLpOracleInstanceContract;
@@ -65,7 +64,6 @@ declare global {
       require(name: "UniswapV2Pair"): UniswapV2PairContract;
       require(name: "UniswapV2Router02"): UniswapV2Router02Contract;
       require(name: "USDC"): UsdcContract;
-      require(name: "USDT"): UsdtContract;
       require(name: "WarpControl"): WarpControlContract;
       require(name: "WarpControlI"): WarpControlIContract;
       require(name: "WarpVaultLP"): WarpVaultLpContract;
@@ -87,7 +85,6 @@ export {
   BaseJumpRateModelV2Contract,
   BaseJumpRateModelV2Instance
 } from "./BaseJumpRateModelV2";
-export { ContractContract, ContractInstance } from "./Contract";
 export { DaiContract, DaiInstance } from "./Dai";
 export { Erc20Contract, Erc20Instance } from "./Erc20";
 export {
@@ -123,6 +120,7 @@ export {
 export { MigrationsContract, MigrationsInstance } from "./Migrations";
 export { OwnableContract, OwnableInstance } from "./Ownable";
 export { TesterTokenContract, TesterTokenInstance } from "./TesterToken";
+export { TetherTokenContract, TetherTokenInstance } from "./TetherToken";
 export {
   UniswapLpOracleFactoryContract,
   UniswapLpOracleFactoryInstance
@@ -145,7 +143,6 @@ export {
   UniswapV2Router02Instance
 } from "./UniswapV2Router02";
 export { UsdcContract, UsdcInstance } from "./Usdc";
-export { UsdtContract, UsdtInstance } from "./Usdt";
 export { WarpControlContract, WarpControlInstance } from "./WarpControl";
 export { WarpControlIContract, WarpControlIInstance } from "./WarpControlI";
 export { WarpVaultLpContract, WarpVaultLpInstance } from "./WarpVaultLp";
