@@ -70,7 +70,7 @@ export const CustomButton: React.FC<Props> = (props: Props) => {
         className={classes.button}
         disabled={props.disabled}
         id={props.id}
-        onClick={props.onClick}
+        onClick={props.disabled === true ? undefined: props.onClick}
         startIcon={icon}
         style={{
             border: border,
