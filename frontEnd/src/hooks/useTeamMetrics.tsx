@@ -1,18 +1,9 @@
 import { useWeb3React } from '@web3-react/core';
-import { Web3ReactContextInterface } from '@web3-react/core/dist/types';
-import React, { useEffect, useState } from 'react'
-import { string } from 'yargs';
-import { ERC20Service } from '../services/erc20';
-import { StableCoinWarpVaultService } from '../services/stableCoinWarpVault';
-import { WarpControlService } from '../services/warpControl';
-import { calculateTeamMetrics, Team, TeamMetrics } from '../util/calculateTeamMetrics';
+import React, { useState } from 'react'
+import { calculateTeamMetrics, Team } from '../util/calculateTeamMetrics';
 
 import { getLogger } from '../util/logger'
-import { getContractAddress, getTokensByNetwork } from '../util/networks';
-import { Token } from '../util/token';
-import { parseBigNumber } from '../util/tools';
-import { ConnectedWeb3Context } from './connectedWeb3';
-import { RefreshToken, useRefreshToken } from './useRefreshToken';
+import { useRefreshToken } from './useRefreshToken';
 import { useTeamMetricsCache } from './useTeamMetricsCache';
 
 const logger = getLogger('Hooks::useTeamMetrics');

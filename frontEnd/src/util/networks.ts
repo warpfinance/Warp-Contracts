@@ -24,6 +24,7 @@ interface Network {
 	uri: string;
 	contracts: {
 		warpControl: string;
+		v1Control: string;
 	};
 }
 
@@ -35,6 +36,7 @@ const networks: { [K in NetworkId]: Network } = {
 		uri: "https://mainnet.infura.io/v3/f30a8e726a8c4851bfc92a44a04bc889",
 		contracts: {
 			warpControl: "0xcc8d17feeb20969523f096797c3d5c4a490ed9a8",
+			v1Control: "0xcc8d17feeb20969523f096797c3d5c4a490ed9a8",
 		},
 	},
 	[networkIds.KOVAN]: {
@@ -42,6 +44,7 @@ const networks: { [K in NetworkId]: Network } = {
 		uri: "https://kovan.infura.io/v3/f30a8e726a8c4851bfc92a44a04bc889",
 		contracts: {
 			warpControl: "0xD3C55cB30D1D9c9A879481588C88E5E9ccB04A7B",
+			v1Control: "0xD3C55cB30D1D9c9A879481588C88E5E9ccB04A7B",
 		},
 	},
 	[networkIds.LOCALHOST]: {
@@ -49,6 +52,7 @@ const networks: { [K in NetworkId]: Network } = {
 		uri: "https://localhost:8545",
 		contracts: {
 			warpControl: getEnv("REACT_APP_LOCALHOST_CONTROL"),
+			v1Control: getEnv("REACT_APP_LOCALHOST_CONTROL_V1"),
 		},
 	},
 };
