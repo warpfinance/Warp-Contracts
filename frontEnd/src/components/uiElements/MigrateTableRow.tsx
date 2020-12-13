@@ -6,43 +6,30 @@ import { BorrowerCountdownContext } from "../../hooks/borrowerCountdown";
 import { CustomButton } from "..";
 import React from "react";
 import { Token } from "../../util/token";
-import { V1Context } from "../../hooks/v1";
-import { formatBigNumber } from "../../util/tools";
+import { formatBigNumber, parseBigNumber } from "../../util/tools";
 import { useConnectedWeb3Context } from "../../hooks/connectedWeb3";
 import { useTokenBalance } from "../../hooks/useTokenBalance";
 import { useTokenInterest } from "../../hooks/useTokenInterest";
 import { useWarpControl } from "../../hooks/useWarpControl";
+import { MigrationVault } from "../../hooks/useMigrations";
 
 interface Props {
     onMigrateClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void,
     onWithdrawClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void,
-    token: Token
-    type: "lending" | "borrowing"
+    vault: MigrationVault
 }
 
 export const MigrateTableRow: React.FC<Props> = (props: Props) => {
-
-    const context = useConnectedWeb3Context();
-    const { walletBalance, vaultBalance } = useTokenBalance(props.token, context);
-    const { control } = useWarpControl(context);
-    const { tokenBorrowRate, tokenSupplyRate } = useTokenInterest(control, props.token, context);
-    const uniVersion = props.token.lpType;
-
-    const [availableAmount, setAvailableAmount] = React.useState(BigNumber.from(0));
-
-    React.useEffect(() => {
-        let available = walletBalance ? walletBalance : BigNumber.from(0);
-
-        setAvailableAmount(available);
-    }, [walletBalance, vaultBalance]);
+    
+    const displayedVaultBalance = props.vault.value.toLocaleString(undefined, {maximumFractionDigits: 2});
 
     let icon: any;
-    if (props.type === "lending") {
-        icon = <Avatar alt={props.token.image} src={props.token.image} />;
+    if (!props.vault.token.isLP) {
+        icon = <Avatar alt={props.vault.token.image} src={props.vault.token.image} />;
     } else {
         icon = <AvatarGroup max={2}>
-            <Avatar alt={props.token.image} src={props.token.image} />;
-      <Avatar alt={props.token.image2} src={props.token.image2} />;
+            <Avatar alt={props.vault.token.image} src={props.vault.token.image} />;
+      <Avatar alt={props.vault.token.image2} src={props.vault.token.image2} />;
     </AvatarGroup>
     }
 
@@ -64,10 +51,10 @@ export const MigrateTableRow: React.FC<Props> = (props: Props) => {
                     >
                         <Grid item>
                             <Typography variant="subtitle1">
-                                {props.token.symbol}
+                                {props.vault.token.symbol}
                             </Typography>
                         </Grid>
-                        {
+                        {/* {
                             (props.type === "lending") ? (
                                 <Grid item>
                                     <Typography variant="subtitle1" color="textSecondary">
@@ -75,7 +62,7 @@ export const MigrateTableRow: React.FC<Props> = (props: Props) => {
                                     </Typography>
                                 </Grid>
                             ) : null
-                        }
+                        } */}
                     </Grid>
                 </Grid>
             </TableCell>
@@ -88,17 +75,14 @@ export const MigrateTableRow: React.FC<Props> = (props: Props) => {
                 >
                     <Grid item>
                         <Typography variant="subtitle1">
-                            {formatBigNumber(availableAmount, props.token.decimals) + " " + props.token.symbol}
+                            {"$" + displayedVaultBalance}
                         </Typography>
                     </Grid>
-                    {props.type === "borrowing" ?
-                        <Grid item>
+                    <Grid item>
                             <Typography color="textSecondary">
-                                {uniVersion}
+                                {"in USDC"}
                             </Typography>
-                        </Grid> :
-                        null
-                    }
+                        </Grid>
                 </Grid>
             </TableCell>
             <TableCell>

@@ -1,49 +1,68 @@
 import * as React from "react";
 
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@material-ui/core";
+import { makeStyles, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@material-ui/core";
 
 import { MigrateTableRow } from "../../components";
 import { Token } from "../../util/token";
+import { MigrationVault } from "../../hooks/useMigrations";
+
+
+const useStyles = makeStyles(theme => ({
+    migrationTable: {
+        width: "720px"
+    },
+    cell1: {
+        width: "220px"
+    },
+    cell2: {
+        width: "150px"
+    },
+    cell3: {
+        width: "350px"
+    }
+}));
 
 interface Props {
     onMigrateClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void,
     onWithdrawClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void,
     type: "lending" | "borrowing"
-    tokens: Token[]
+    vaults: MigrationVault[]
 }
 
 export const MigrateTable: React.FC<Props> = (props: Props) => {
-    const liquidityOrCollateral = props.type === "borrowing" ? "Collateral" : "Liquidity";
+    const liquidityOrCollateral = props.type === "borrowing" ? "LP Tokens" : "Stable Coins";
+    const classes = useStyles();
 
     return (
-        <TableContainer>
+        <TableContainer
+            className={classes.migrationTable}
+        >
             <Table>
                 <TableHead>
                     <TableRow>
-                        <TableCell>
-                            <Typography variant="subtitle1" color="textSecondary">
-                                {props.type.charAt(0).toUpperCase() + props.type.slice(1)} assets
-                            </Typography>
-                        </TableCell>
-                        <TableCell>
-                            <Typography variant="subtitle1" color="textSecondary">
-                                Wallet
-                            </Typography>
-                        </TableCell>
-                        <TableCell align="center">
+                        <TableCell className={classes.cell1}>
                             <Typography variant="subtitle1" color="textSecondary">
                                 {liquidityOrCollateral}
+                            </Typography>
+                        </TableCell>
+                        <TableCell className={classes.cell2}>
+                            <Typography variant="subtitle1" color="textSecondary">
+                                Vault
+                            </Typography>
+                        </TableCell>
+                        <TableCell className={classes.cell3} align="center">
+                            <Typography variant="subtitle1" color="textSecondary">
+                                
                             </Typography>
                         </TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {props.tokens.map((token: Token) => (
+                    {props.vaults.map((vault: MigrationVault) => (
                         <MigrateTableRow
                             onMigrateClick={props.onMigrateClick}
                             onWithdrawClick={props.onWithdrawClick}
-                            type={props.type}
-                            token={token}
+                            vault={vault}
                         />
                     ))}
                 </TableBody>

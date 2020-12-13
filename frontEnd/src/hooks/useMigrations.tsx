@@ -7,7 +7,7 @@ import { WarpLPVaultService } from '../services/warpLPVault'
 import { getLogger } from '../util/logger'
 import { getContractAddress, getTokensByNetwork } from '../util/networks'
 import { Token } from '../util/token'
-import { formatBigNumber } from '../util/tools'
+import { formatBigNumber, parseBigNumber } from '../util/tools'
 import { useRefreshToken } from './useRefreshToken'
 
 const logger = getLogger('Hooks::useMigrations')
@@ -22,10 +22,11 @@ export interface MigrationStatusContext {
 export interface MigrationVault {
   vaultAddress: string;
   token: Token;
-  amount: string
+  amount: string;
+  value: number; // value of vault in USDC
 }
 
-const MigrationStatusContext = React.createContext<MigrationStatusContext>({
+export const MigrationStatusContext = React.createContext<MigrationStatusContext>({
   lpVaults: [],
   scVaults: [],
   needsMigration: false,
@@ -57,6 +58,14 @@ export const MigrationStatusProvider: React.FC = props => {
     const stableCoinTokens = getTokensByNetwork(networkId, false);
     const lpTokens = getTokensByNetwork(networkId, true);
 
+    const usdcToken = stableCoinTokens.find((t: Token) => {
+      return t.symbol === "USDC";
+    });
+    if (!usdcToken) {
+      logger.error(`No USDC token registered.`);
+      return;
+    }
+
     const fetchMigrationData = async () => {
       if (!isSubscribed) {
         return;
@@ -75,11 +84,13 @@ export const MigrationStatusProvider: React.FC = props => {
         const vault = new StableCoinWarpVaultService(provider, account, vaultAddress);
         const vaultBalance = await vault.getBalance(account);
         if (vaultBalance.gt(BigNumber.from(0))) {
+          const value = parseBigNumber(await control.getStableCoinPrice(scToken.address, vaultBalance), usdcToken.decimals);
           hasAssetsToMigrate = true;
           scVaults.push({
             vaultAddress,
             amount: vaultBalance.toString(),
-            token: scToken
+            token: scToken,
+            value
           });
 
           logger.log(`${account} needs to migrate ${formatBigNumber(vaultBalance, scToken.decimals)} ${scToken.symbol}`);
@@ -91,11 +102,17 @@ export const MigrationStatusProvider: React.FC = props => {
         const vault = new WarpLPVaultService(provider, account, vaultAddress);
         const vaultBalance = await vault.collateralBalance(account);
         if (vaultBalance.gt(BigNumber.from(0))) {
+          const pricePerLP = await control.getLPPrice(lpToken.address);
+          const lpAmount = parseBigNumber(vaultBalance, lpToken.decimals);
+          const price = parseBigNumber(pricePerLP, usdcToken.decimals);
+          const value = lpAmount * price;
+
           hasAssetsToMigrate = true;
           lpVaults.push({
             vaultAddress,
             amount: vaultBalance.toString(),
-            token: lpToken
+            token: lpToken,
+            value
           });
 
           logger.log(`${account} needs to migrate ${formatBigNumber(vaultBalance, lpToken.decimals)} ${lpToken.symbol}`);

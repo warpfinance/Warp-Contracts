@@ -46,26 +46,26 @@
       "type": "function"
     }
   ],
-  "metadata": "{\"compiler\":{\"version\":\"0.6.6+commit.6c089d02\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_InterestRate\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"_StableCoin\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"_warpTeam\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"_initialExchangeRate\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_timelock\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_reserveFactorMantissa\",\"type\":\"uint256\"}],\"name\":\"createNewWarpVaultSC\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"methods\":{\"createNewWarpVaultSC(address,address,address,uint256,uint256,uint256)\":{\"params\":{\"_InterestRate\":\"is the address of the InterestRateModel contract created for this Warp Vault\",\"_StableCoin\":\"is the address of the stablecoin contract this WarpVault will manage\",\"_initialExchangeRate\":\"is the exchange rate mantissa used to determine the initial exchange rate of stablecoin to warp stablecoin\",\"_timelock\":\"is a variable representing the number of seconds the timeWizard will prevent withdraws and borrows from a contracts(one week is 605800 seconds)*\",\"_warpTeam\":\"is the address of the Warp Team used for fees\"}}}},\"userdoc\":{\"methods\":{\"createNewWarpVaultSC(address,address,address,uint256,uint256,uint256)\":{\"notice\":\"createNewWarpVaultSC is used to create new WarpVaultSC contract instances\"}},\"notice\":\"The WarpVaultSCFactoryI contract is used by the Warp Control contract to interface with the WarpVaultSCFactory contract*\"}},\"settings\":{\"compilationTarget\":{\"/E/dOrg/warp/Smart-Contracts/contracts/interfaces/WarpVaultSCFactoryI.sol\":\"WarpVaultSCFactoryI\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"/E/dOrg/warp/Smart-Contracts/contracts/interfaces/WarpVaultSCFactoryI.sol\":{\"keccak256\":\"0x6724bcccf1e160b1ae79c80ad8f918e342d23e18c0006754f693b7268e613fda\",\"urls\":[\"bzz-raw://346280f6f5eadb7661e771238570924abfaf714df39ee78d62d88d3c9549068d\",\"dweb:/ipfs/QmUgfuVeitxbEjKgSmsphRECfqcTxvcvDFXvb2e9g8Byin\"]}},\"version\":1}",
+  "metadata": "{\"compiler\":{\"version\":\"0.6.6+commit.6c089d02\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_InterestRate\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"_StableCoin\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"_warpTeam\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"_initialExchangeRate\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_timelock\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_reserveFactorMantissa\",\"type\":\"uint256\"}],\"name\":\"createNewWarpVaultSC\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{},\"notice\":\"The WarpVaultSCFactoryI contract is used by the Warp Control contract to interface with the WarpVaultSCFactory contract*\"}},\"settings\":{\"compilationTarget\":{\"/E/dOrg/warp/Smart-Contracts/contracts/interfaces/WarpVaultSCFactoryI.sol\":\"WarpVaultSCFactoryI\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"/E/dOrg/warp/Smart-Contracts/contracts/interfaces/WarpVaultSCFactoryI.sol\":{\"keccak256\":\"0xa095862cca760460ccc0942e2eea3d93b4546645bb836e5def86533576719a30\",\"urls\":[\"bzz-raw://e1c110953760a1ce02c6addd6721c9fce60a4aba10968e495063f5633166f1f5\",\"dweb:/ipfs/QmZH2Wz3xaGAqwZjYp2BJW5tohJHUCCCbnFmdbJxCqcVUB\"]}},\"version\":1}",
   "bytecode": "0x",
   "deployedBytecode": "0x",
   "immutableReferences": {},
   "sourceMap": "",
   "deployedSourceMap": "",
-  "source": "pragma solidity ^0.6.0;\r\n\r\n////////////////////////////////////////////////////////////////////////////////////////////\r\n/// @title WarpVaultSCFactoryI\r\n/// @author Christopher Dixon\r\n////////////////////////////////////////////////////////////////////////////////////////////\r\n/**\r\nThe WarpVaultSCFactoryI contract is used by the Warp Control contract to interface with the WarpVaultSCFactory contract\r\n**/\r\n\r\nabstract contract WarpVaultSCFactoryI {\r\n    /**\r\n  @notice createNewWarpVaultSC is used to create new WarpVaultSC contract instances\r\n  @param _InterestRate is the address of the InterestRateModel contract created for this Warp Vault\r\n  @param _StableCoin is the address of the stablecoin contract this WarpVault will manage\r\n  @param _warpTeam is the address of the Warp Team used for fees\r\n  @param _initialExchangeRate is the exchange rate mantissa used to determine the initial exchange rate of stablecoin to warp stablecoin\r\n  @param _timelock is a variable representing the number of seconds the timeWizard will prevent withdraws and borrows from a contracts(one week is 605800 seconds)\r\n    **/\r\n    function createNewWarpVaultSC(\r\n        address _InterestRate,\r\n        address _StableCoin,\r\n        address _warpTeam,\r\n        uint256 _initialExchangeRate,\r\n        uint256 _timelock,\r\n        uint256 _reserveFactorMantissa\r\n    ) public virtual returns (address);\r\n}\r\n",
+  "source": "pragma solidity ^0.6.0;\r\n\r\n////////////////////////////////////////////////////////////////////////////////////////////\r\n/// @title WarpVaultSCFactoryI\r\n/// @author Christopher Dixon\r\n////////////////////////////////////////////////////////////////////////////////////////////\r\n/**\r\nThe WarpVaultSCFactoryI contract is used by the Warp Control contract to interface with the WarpVaultSCFactory contract\r\n**/\r\n\r\nabstract contract WarpVaultSCFactoryI {\r\n    function createNewWarpVaultSC(\r\n        address _InterestRate,\r\n        address _StableCoin,\r\n        address _warpTeam,\r\n        uint256 _initialExchangeRate,\r\n        uint256 _timelock,\r\n        uint256 _reserveFactorMantissa\r\n    ) public virtual returns (address);\r\n}\r\n",
   "sourcePath": "E:\\dOrg\\warp\\Smart-Contracts\\contracts\\interfaces\\WarpVaultSCFactoryI.sol",
   "ast": {
     "absolutePath": "/E/dOrg/warp/Smart-Contracts/contracts/interfaces/WarpVaultSCFactoryI.sol",
     "exportedSymbols": {
       "WarpVaultSCFactoryI": [
-        6966
+        6959
       ]
     },
-    "id": 6967,
+    "id": 6960,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 6946,
+        "id": 6940,
         "literals": [
           "solidity",
           "^",
@@ -81,29 +81,24 @@
         "contractDependencies": [],
         "contractKind": "contract",
         "documentation": {
-          "id": 6947,
+          "id": 6941,
           "nodeType": "StructuredDocumentation",
           "src": "278:129:24",
           "text": "The WarpVaultSCFactoryI contract is used by the Warp Control contract to interface with the WarpVaultSCFactory contract*"
         },
         "fullyImplemented": false,
-        "id": 6966,
+        "id": 6959,
         "linearizedBaseContracts": [
-          6966
+          6959
         ],
         "name": "WarpVaultSCFactoryI",
         "nodeType": "ContractDefinition",
         "nodes": [
           {
             "body": null,
-            "documentation": {
-              "id": 6948,
-              "nodeType": "StructuredDocumentation",
-              "src": "456:657:24",
-              "text": "@notice createNewWarpVaultSC is used to create new WarpVaultSC contract instances\n@param _InterestRate is the address of the InterestRateModel contract created for this Warp Vault\n@param _StableCoin is the address of the stablecoin contract this WarpVault will manage\n@param _warpTeam is the address of the Warp Team used for fees\n@param _initialExchangeRate is the exchange rate mantissa used to determine the initial exchange rate of stablecoin to warp stablecoin\n@param _timelock is a variable representing the number of seconds the timeWizard will prevent withdraws and borrows from a contracts(one week is 605800 seconds)*"
-            },
+            "documentation": null,
             "functionSelector": "78854a28",
-            "id": 6965,
+            "id": 6958,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
@@ -111,18 +106,18 @@
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
-              "id": 6961,
+              "id": 6954,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6950,
+                  "id": 6943,
                   "mutability": "mutable",
                   "name": "_InterestRate",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 6965,
-                  "src": "1159:21:24",
+                  "scope": 6958,
+                  "src": "496:21:24",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -130,10 +125,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 6949,
+                    "id": 6942,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1159:7:24",
+                    "src": "496:7:24",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -145,13 +140,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 6952,
+                  "id": 6945,
                   "mutability": "mutable",
                   "name": "_StableCoin",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 6965,
-                  "src": "1191:19:24",
+                  "scope": 6958,
+                  "src": "528:19:24",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -159,10 +154,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 6951,
+                    "id": 6944,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1191:7:24",
+                    "src": "528:7:24",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -174,13 +169,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 6954,
+                  "id": 6947,
                   "mutability": "mutable",
                   "name": "_warpTeam",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 6965,
-                  "src": "1221:17:24",
+                  "scope": 6958,
+                  "src": "558:17:24",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -188,10 +183,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 6953,
+                    "id": 6946,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1221:7:24",
+                    "src": "558:7:24",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -203,13 +198,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 6956,
+                  "id": 6949,
                   "mutability": "mutable",
                   "name": "_initialExchangeRate",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 6965,
-                  "src": "1249:28:24",
+                  "scope": 6958,
+                  "src": "586:28:24",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -217,10 +212,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 6955,
+                    "id": 6948,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1249:7:24",
+                    "src": "586:7:24",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -231,13 +226,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 6958,
+                  "id": 6951,
                   "mutability": "mutable",
                   "name": "_timelock",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 6965,
-                  "src": "1288:17:24",
+                  "scope": 6958,
+                  "src": "625:17:24",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -245,10 +240,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 6957,
+                    "id": 6950,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1288:7:24",
+                    "src": "625:7:24",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -259,13 +254,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 6960,
+                  "id": 6953,
                   "mutability": "mutable",
                   "name": "_reserveFactorMantissa",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 6965,
-                  "src": "1316:30:24",
+                  "scope": 6958,
+                  "src": "653:30:24",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -273,10 +268,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 6959,
+                    "id": 6952,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1316:7:24",
+                    "src": "653:7:24",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -286,21 +281,21 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1148:205:24"
+              "src": "485:205:24"
             },
             "returnParameters": {
-              "id": 6964,
+              "id": 6957,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6963,
+                  "id": 6956,
                   "mutability": "mutable",
                   "name": "",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 6965,
-                  "src": "1378:7:24",
+                  "scope": 6958,
+                  "src": "715:7:24",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -308,10 +303,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 6962,
+                    "id": 6955,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1378:7:24",
+                    "src": "715:7:24",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -322,33 +317,33 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1377:9:24"
+              "src": "714:9:24"
             },
-            "scope": 6966,
-            "src": "1119:268:24",
+            "scope": 6959,
+            "src": "456:268:24",
             "stateMutability": "nonpayable",
             "virtual": true,
             "visibility": "public"
           }
         ],
-        "scope": 6967,
-        "src": "411:979:24"
+        "scope": 6960,
+        "src": "411:316:24"
       }
     ],
-    "src": "0:1392:24"
+    "src": "0:729:24"
   },
   "legacyAST": {
     "absolutePath": "/E/dOrg/warp/Smart-Contracts/contracts/interfaces/WarpVaultSCFactoryI.sol",
     "exportedSymbols": {
       "WarpVaultSCFactoryI": [
-        6966
+        6959
       ]
     },
-    "id": 6967,
+    "id": 6960,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 6946,
+        "id": 6940,
         "literals": [
           "solidity",
           "^",
@@ -364,29 +359,24 @@
         "contractDependencies": [],
         "contractKind": "contract",
         "documentation": {
-          "id": 6947,
+          "id": 6941,
           "nodeType": "StructuredDocumentation",
           "src": "278:129:24",
           "text": "The WarpVaultSCFactoryI contract is used by the Warp Control contract to interface with the WarpVaultSCFactory contract*"
         },
         "fullyImplemented": false,
-        "id": 6966,
+        "id": 6959,
         "linearizedBaseContracts": [
-          6966
+          6959
         ],
         "name": "WarpVaultSCFactoryI",
         "nodeType": "ContractDefinition",
         "nodes": [
           {
             "body": null,
-            "documentation": {
-              "id": 6948,
-              "nodeType": "StructuredDocumentation",
-              "src": "456:657:24",
-              "text": "@notice createNewWarpVaultSC is used to create new WarpVaultSC contract instances\n@param _InterestRate is the address of the InterestRateModel contract created for this Warp Vault\n@param _StableCoin is the address of the stablecoin contract this WarpVault will manage\n@param _warpTeam is the address of the Warp Team used for fees\n@param _initialExchangeRate is the exchange rate mantissa used to determine the initial exchange rate of stablecoin to warp stablecoin\n@param _timelock is a variable representing the number of seconds the timeWizard will prevent withdraws and borrows from a contracts(one week is 605800 seconds)*"
-            },
+            "documentation": null,
             "functionSelector": "78854a28",
-            "id": 6965,
+            "id": 6958,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
@@ -394,18 +384,18 @@
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
-              "id": 6961,
+              "id": 6954,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6950,
+                  "id": 6943,
                   "mutability": "mutable",
                   "name": "_InterestRate",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 6965,
-                  "src": "1159:21:24",
+                  "scope": 6958,
+                  "src": "496:21:24",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -413,10 +403,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 6949,
+                    "id": 6942,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1159:7:24",
+                    "src": "496:7:24",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -428,13 +418,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 6952,
+                  "id": 6945,
                   "mutability": "mutable",
                   "name": "_StableCoin",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 6965,
-                  "src": "1191:19:24",
+                  "scope": 6958,
+                  "src": "528:19:24",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -442,10 +432,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 6951,
+                    "id": 6944,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1191:7:24",
+                    "src": "528:7:24",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -457,13 +447,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 6954,
+                  "id": 6947,
                   "mutability": "mutable",
                   "name": "_warpTeam",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 6965,
-                  "src": "1221:17:24",
+                  "scope": 6958,
+                  "src": "558:17:24",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -471,10 +461,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 6953,
+                    "id": 6946,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1221:7:24",
+                    "src": "558:7:24",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -486,13 +476,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 6956,
+                  "id": 6949,
                   "mutability": "mutable",
                   "name": "_initialExchangeRate",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 6965,
-                  "src": "1249:28:24",
+                  "scope": 6958,
+                  "src": "586:28:24",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -500,10 +490,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 6955,
+                    "id": 6948,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1249:7:24",
+                    "src": "586:7:24",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -514,13 +504,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 6958,
+                  "id": 6951,
                   "mutability": "mutable",
                   "name": "_timelock",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 6965,
-                  "src": "1288:17:24",
+                  "scope": 6958,
+                  "src": "625:17:24",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -528,10 +518,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 6957,
+                    "id": 6950,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1288:7:24",
+                    "src": "625:7:24",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -542,13 +532,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 6960,
+                  "id": 6953,
                   "mutability": "mutable",
                   "name": "_reserveFactorMantissa",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 6965,
-                  "src": "1316:30:24",
+                  "scope": 6958,
+                  "src": "653:30:24",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -556,10 +546,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 6959,
+                    "id": 6952,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1316:7:24",
+                    "src": "653:7:24",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -569,21 +559,21 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1148:205:24"
+              "src": "485:205:24"
             },
             "returnParameters": {
-              "id": 6964,
+              "id": 6957,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 6963,
+                  "id": 6956,
                   "mutability": "mutable",
                   "name": "",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 6965,
-                  "src": "1378:7:24",
+                  "scope": 6958,
+                  "src": "715:7:24",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -591,10 +581,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 6962,
+                    "id": 6955,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "1378:7:24",
+                    "src": "715:7:24",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -605,20 +595,20 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1377:9:24"
+              "src": "714:9:24"
             },
-            "scope": 6966,
-            "src": "1119:268:24",
+            "scope": 6959,
+            "src": "456:268:24",
             "stateMutability": "nonpayable",
             "virtual": true,
             "visibility": "public"
           }
         ],
-        "scope": 6967,
-        "src": "411:979:24"
+        "scope": 6960,
+        "src": "411:316:24"
       }
     ],
-    "src": "0:1392:24"
+    "src": "0:729:24"
   },
   "compiler": {
     "name": "solc",
@@ -626,26 +616,12 @@
   },
   "networks": {},
   "schemaVersion": "3.3.2",
-  "updatedAt": "2020-12-12T00:59:37.888Z",
+  "updatedAt": "2020-12-13T03:14:19.096Z",
   "devdoc": {
-    "methods": {
-      "createNewWarpVaultSC(address,address,address,uint256,uint256,uint256)": {
-        "params": {
-          "_InterestRate": "is the address of the InterestRateModel contract created for this Warp Vault",
-          "_StableCoin": "is the address of the stablecoin contract this WarpVault will manage",
-          "_initialExchangeRate": "is the exchange rate mantissa used to determine the initial exchange rate of stablecoin to warp stablecoin",
-          "_timelock": "is a variable representing the number of seconds the timeWizard will prevent withdraws and borrows from a contracts(one week is 605800 seconds)*",
-          "_warpTeam": "is the address of the Warp Team used for fees"
-        }
-      }
-    }
+    "methods": {}
   },
   "userdoc": {
-    "methods": {
-      "createNewWarpVaultSC(address,address,address,uint256,uint256,uint256)": {
-        "notice": "createNewWarpVaultSC is used to create new WarpVaultSC contract instances"
-      }
-    },
+    "methods": {},
     "notice": "The WarpVaultSCFactoryI contract is used by the Warp Control contract to interface with the WarpVaultSCFactory contract*"
   }
 }

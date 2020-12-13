@@ -9,6 +9,7 @@ import { getLogger } from "../../util/logger";
 import { useConnectedWeb3Context } from "../../hooks/connectedWeb3";
 import { useLPTokens } from "../../hooks/useLPTokens";
 import { useStableCoinTokens } from "../../hooks/useStableCoins";
+import { useMigrationStatus } from "../../hooks/useMigrations";
 
 interface Props {
 }
@@ -17,6 +18,7 @@ const logger = getLogger("Page::Migrate");
 
 export const Migrate: React.FC<Props> = (props: Props) => {
     const context = useConnectedWeb3Context();
+    const migrationStatus = useMigrationStatus();
     const stableCoins = useStableCoinTokens(context);
     const lpTokens = useLPTokens(context);
 
@@ -115,14 +117,20 @@ export const Migrate: React.FC<Props> = (props: Props) => {
             >
                 <Header />
                 <Grid item>
-                    <Typography variant="h5">
+                    <Typography variant="h3">
                         Migrate to v2 for further LP support
                     </Typography>
                 </Grid>
                 <Grid item>
                     <Typography variant="subtitle1" color="textSecondary">
-                        Users can either choose to withdraw funds, or continue exploring Warp with v1
+                        You can either withdraw funds, or continue exploring Warp by migrating into v2
                     </Typography>
+                    <Typography variant="subtitle1" color="textPrimary">
+                        Press Migrate to migrate funds into V2
+                    </Typography>
+                </Grid>
+                <Grid item>
+                    
                 </Grid>
                 <Grid
                     item
@@ -135,14 +143,14 @@ export const Migrate: React.FC<Props> = (props: Props) => {
                         <MigrateTable
                             onMigrateClick={onMigrateLendingAssetClick}
                             onWithdrawClick={onWithdrawLendingAssetClick}
-                            tokens={stableCoins}
+                            vaults={migrationStatus.scVaults}
                             type="lending" />
                     </Grid>
                     <Grid item>
                         <MigrateTable
                             onMigrateClick={onMigrateBorrowAssetClick}
                             onWithdrawClick={onWithdrawBorrowAssetClick}
-                            tokens={lpTokens}
+                            vaults={migrationStatus.lpVaults}
                             type="borrowing" />
                     </Grid>
                 </Grid>

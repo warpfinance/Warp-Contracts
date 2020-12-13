@@ -6,12 +6,12 @@ import { BorrowerCountdownContext } from "../../hooks/borrowerCountdown";
 import { CustomButton } from "..";
 import React from "react";
 import { Token } from "../../util/token";
-import { V1Context } from "../../hooks/v1";
 import { formatBigNumber } from "../../util/tools";
 import { useConnectedWeb3Context } from "../../hooks/connectedWeb3";
 import { useTokenBalance } from "../../hooks/useTokenBalance";
 import { useTokenInterest } from "../../hooks/useTokenInterest";
 import { useWarpControl } from "../../hooks/useWarpControl";
+import { useMigrationStatus } from "../../hooks/useMigrations";
 
 interface Props {
     token: Token
@@ -21,8 +21,9 @@ interface Props {
 }
 
 export const DashboardTableRow: React.FC<Props> = (props: Props) => {
-
     const context = useConnectedWeb3Context();
+    const migrationStatus = useMigrationStatus();
+    const v1 = migrationStatus.needsMigration;
     const { walletBalance, vaultBalance } = useTokenBalance(props.token, context);
     const { control } = useWarpControl(context);
     const { tokenBorrowRate, tokenSupplyRate } = useTokenInterest(control, props.token, context);
@@ -111,16 +112,12 @@ export const DashboardTableRow: React.FC<Props> = (props: Props) => {
                     <BorrowerCountdownContext.Consumer>
                         {({ countdown }) => (
                             <React.Fragment>
-                                <V1Context.Consumer>
-                                    {({ v1 }) => (
-                                        <CustomButton
-                                            disabled={(props.type === "borrowing" && countdown === true) ||
-                                                v1 === true}
-                                            href={props.buttonHref}
-                                            text={props.buttonText}
-                                            type={"short"} />
-                                    )}
-                                </V1Context.Consumer>
+                                <CustomButton
+                                    disabled={(props.type === "borrowing" && countdown === true) ||
+                                        v1 === true}
+                                    href={props.buttonHref}
+                                    text={props.buttonText}
+                                    type={"short"} />
                             </React.Fragment>
                         )}
                     </BorrowerCountdownContext.Consumer>

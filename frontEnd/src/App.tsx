@@ -28,11 +28,11 @@ import { Migrate } from "./pages/App/Migrate";
 import { TeamContextProvider } from "./hooks/useTeams";
 import { TeamMetricsProvider } from "./hooks/useTeamMetrics";
 import { ThemeProvider } from "@material-ui/styles";
-import { V1Context } from "./hooks/v1";
 import { Web3AccountRequired } from "./pages/Web3AccountRequired";
 import { Web3ReactProvider } from '@web3-react/core'
 import { ethers } from "ethers";
 import { useState } from "react";
+import { MigrationStatusContext, MigrationStatusProvider } from "./hooks/useMigrations";
 
 const outerTheme = createMuiTheme({
 	palette: {
@@ -100,9 +100,6 @@ function getLibrary(provider?: any, connector?: any): any {
 const App: React.FC = () => {
 	const classes = useStyles();
 
-	// TO-DO: Web3 integration
-	const [userIsV1, setUserToV1] = React.useState(true);
-
 	var maxDate = 8640000000000000;
 	var countDownDate = new Date(process.env.REACT_APP_BORROWING_ENABLED_DATETIME || maxDate).getTime();
 
@@ -126,10 +123,10 @@ const App: React.FC = () => {
 		<Web3ReactProvider getLibrary={getLibrary}>
 			<Router>
 				<ThemeProvider theme={outerTheme}>
-					<V1Context.Provider value={{ v1: userIsV1 }}>
-						<BorrowerCountdownContext.Provider value={{ countdown: countdown, countdownText: countdownText }} >
-							<TeamContextProvider>
-								<TeamMetricsProvider>
+					<BorrowerCountdownContext.Provider value={{ countdown: countdown, countdownText: countdownText }} >
+						<TeamContextProvider>
+							<TeamMetricsProvider>
+								<MigrationStatusProvider>
 									<CssBaseline>
 										<div className={classes.root}>
 											<Switch>
@@ -137,9 +134,9 @@ const App: React.FC = () => {
 												<Route exact={true} path="/connect" component={Connect} />
 												<Route exact={true} path="/dashboard"
 													render={() => <Web3AccountRequired><Dashboard /></Web3AccountRequired>} />
-												<V1Context.Consumer>
+												<MigrationStatusContext.Consumer>
 													{value =>
-														value.v1 === false ?
+														value.needsMigration === false ?
 															<React.Fragment>
 																<Route exact={true} path="/borrower"
 																	render={() => <Web3AccountRequired><Borrower /></Web3AccountRequired>} />
@@ -154,7 +151,7 @@ const App: React.FC = () => {
 															<Route exact={true} path="/migrate"
 																render={() => <Web3AccountRequired><Migrate /></Web3AccountRequired>} />
 													}
-												</V1Context.Consumer>
+												</MigrationStatusContext.Consumer>
 												<Route exact={true} path="/markets"
 													render={() => <ConnectedWeb3><Markets /></ConnectedWeb3>} />
 												<Route exact={true} path="/generate"
@@ -162,10 +159,10 @@ const App: React.FC = () => {
 											</Switch>
 										</div>
 									</CssBaseline>
-								</TeamMetricsProvider>
-							</TeamContextProvider>
-						</BorrowerCountdownContext.Provider>
-					</V1Context.Provider>
+								</MigrationStatusProvider>
+							</TeamMetricsProvider>
+						</TeamContextProvider>
+					</BorrowerCountdownContext.Provider>
 				</ThemeProvider>
 			</Router>
 		</Web3ReactProvider>
