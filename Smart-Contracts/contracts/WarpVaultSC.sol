@@ -561,8 +561,8 @@ contract WarpVaultSC is Exponential {
             );
         }
         wStableCoin.burn(msg.sender, vars.burnTokens);
-        stablecoin.transfer(msg.sender, vars.amount);
-        emit StableCoinLent(msg.sender, vars.amount, vars.burnTokens);
+        stablecoin.safeTransfer(msg.sender, vars.amount);
+        emit StableCoinWithdraw(msg.sender, vars.amount, vars.burnTokens);
     }
 
     /**
