@@ -15,6 +15,7 @@ export const IntraTeamLeaderboard: React.FC<Props> = (props: Props) => {
     const { teams, timestamp } = useTeamMetrics();
     const { code } = useParams<{ code: string }>();
     const team = teams.find((team) => team.code === code);
+    const nftTime = true;
 
     return (
         <React.Fragment>
@@ -27,34 +28,44 @@ export const IntraTeamLeaderboard: React.FC<Props> = (props: Props) => {
                         container
                         direction="row"
                     >
-                        <LeaderboardCardLeft />
+                        <Grid item xl={3}>
+                            <LeaderboardCardLeft />
+                        </Grid>
                         <Grid
                             alignItems="center"
                             container
                             direction="column"
                             item
-                            md={6}
+                            xl={6}
                         >
                             <Grid item>
                                 <Typography variant="h4">
                                     {team.name} Team
                                 </Typography>
                             </Grid>
-                            <Grid item>
-                                <Typography variant="subtitle1" color="textSecondary">
-                                    Users are competing for Warp NFTs for 1 week that
-                                </Typography>
-                            </Grid>
-                            <Grid item>
-                                <Typography variant="subtitle1" color="textSecondary">
-                                    give them access to additional Warp Rewards!
-                                </Typography>
-                            </Grid>
+                            {nftTime === true ?
+                                null
+                                :
+                                <React.Fragment>
+                                    <Grid item>
+                                        <Typography variant="subtitle1" color="textSecondary">
+                                            Users are competing for Warp NFTs for 1 week that
+                                        </Typography>
+                                    </Grid>
+                                    <Grid item>
+                                        <Typography variant="subtitle1" color="textSecondary">
+                                            give them access to additional Warp Rewards!
+                                        </Typography>
+                                    </Grid>
+                                </React.Fragment>
+                            }
                             <Grid item>
                                 <IntraTeamLeaderboardTable members={team.members} />
                             </Grid>
                         </Grid>
-                        <LeaderboardCardRight />
+                        <Grid item xl={3}>
+                            <LeaderboardCardRight />
+                        </Grid>
                     </Grid>
                 </React.Fragment>
             }

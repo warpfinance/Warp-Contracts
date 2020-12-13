@@ -12,6 +12,7 @@ const logger = getLogger('Pages::Leaderboard');
 
 export const TeamLeaderboard: React.FC<Props> = (props: Props) => {
     const { teams } = useTeamMetrics();
+    const nftTime = true;
 
     return (
         <React.Fragment>
@@ -21,34 +22,44 @@ export const TeamLeaderboard: React.FC<Props> = (props: Props) => {
                 container
                 direction="row"
             >
-                <LeaderboardCardLeft />
+                <Grid item xl={3}>
+                    <LeaderboardCardLeft />
+                </Grid>
                 <Grid
                     alignItems="center"
                     container
                     direction="column"
                     item
-                    md={6}
+                    xl={6}
                 >
                     <Grid item>
                         <Typography variant="h4">
                             Team NFT Campaign
-                    </Typography>
+                        </Typography>
                     </Grid>
-                    <Grid item>
-                        <Typography variant="subtitle1" color="textSecondary">
-                            Users are competing for Warp NFTs for 1 week that
-                    </Typography>
-                    </Grid>
-                    <Grid item>
-                        <Typography variant="subtitle1" color="textSecondary">
-                            give them access to additional Warp Rewards!
-                    </Typography>
-                    </Grid>
+                    {nftTime === true ?
+                        null
+                        :
+                        <React.Fragment>
+                            <Grid item>
+                                <Typography variant="subtitle1" color="textSecondary">
+                                    Users are competing for Warp NFTs for 1 week that
+                                </Typography>
+                            </Grid>
+                            <Grid item>
+                                <Typography variant="subtitle1" color="textSecondary">
+                                    give them access to additional Warp Rewards!
+                                </Typography>
+                            </Grid>
+                        </React.Fragment>
+                    }
                     <Grid item>
                         <TeamLeaderboardTable teams={teams} />
                     </Grid>
                 </Grid>
-                <LeaderboardCardRight />
+                <Grid item xl={3}>
+                    <LeaderboardCardRight />
+                </Grid>
             </Grid>
         </React.Fragment>
     )
