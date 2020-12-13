@@ -19,7 +19,7 @@
  */
 
 const HDWalletProvider = require("@truffle/hdwallet-provider");
-const infuraKey = "0e6434f252a949719227b5d68caa2657";
+const infuraKey = "5e079c09b6f74d2b862e028673a08346";
 const mnemonic =
   "life extend whale clown walnut leopard nut purse frame dwarf ecology inherit";
 
@@ -77,8 +77,8 @@ module.exports = {
         ),
       network_id: 42, // Ropsten's id
       gas: 5512481, // Ropsten has a lower block limit than mainnet
+      confirmations: 1, // # of confs to wait between deployments. (default: 0)
       gasPrice: "10000000000",
-      confirmations: 2, // # of confs to wait between deployments. (default: 0)
       timeoutBlocks: 200 // # of blocks before a deployment times out  (minimum/default: 50)
       //skipDryRun: true // Skip dry run before migrations? (default: false for public nets )
     },
