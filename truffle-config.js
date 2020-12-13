@@ -77,13 +77,8 @@ module.exports = {
         ),
       network_id: 42, // Ropsten's id
       gas: 5512481, // Ropsten has a lower block limit than mainnet
-<<<<<<< HEAD
-      confirmations: 1, // # of confs to wait between deployments. (default: 0)
-      gasPrice: "10000000000",
-=======
       gasPrice: "10000000000",
       confirmations: 2, // # of confs to wait between deployments. (default: 0)
->>>>>>> 0ef9eb98e46e51dd85760913f08c9b42802de5b1
       timeoutBlocks: 200 // # of blocks before a deployment times out  (minimum/default: 50)
       //skipDryRun: true // Skip dry run before migrations? (default: false for public nets )
     },
