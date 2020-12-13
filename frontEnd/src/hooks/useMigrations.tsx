@@ -29,7 +29,7 @@ export interface MigrationVault {
 export const MigrationStatusContext = React.createContext<MigrationStatusContext>({
   lpVaults: [],
   scVaults: [],
-  needsMigration: true /*false*/,
+  needsMigration: false,
   refresh: () => {}
 });
 
@@ -42,7 +42,7 @@ export const MigrationStatusProvider: React.FC = props => {
   const context = useWeb3React();
 
   const { account, library: provider, chainId: networkId } = context
-  const [needsMigration, setNeedsMigration] = React.useState(true/*false*/);
+  const [needsMigration, setNeedsMigration] = React.useState(false);
   const [stableCoinMigrations, setStableCoinMigrations] = React.useState<MigrationVault[]>([]);
   const [lpMigrations, setLpMigrations] = React.useState<MigrationVault[]>([]);
   const {refreshToken, refresh} = useRefreshToken();
@@ -118,7 +118,7 @@ export const MigrationStatusProvider: React.FC = props => {
       }
 
       if (isSubscribed) {
-        /*setNeedsMigration(hasAssetsToMigrate)*/;
+        setNeedsMigration(hasAssetsToMigrate);
         setLpMigrations(lpVaults);
         setStableCoinMigrations(scVaults);
       }
