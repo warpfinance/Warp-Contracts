@@ -14,7 +14,8 @@ const contractABI = [
   'function viewHistoricalReward(address _account) public view returns (uint256)',
   'function getCash() external view returns (uint256)',
   `function totalBorrows() public view returns (uint256)`,
-  `function getCashPrior() public view returns (uint256)`
+  `function getCashPrior() public view returns (uint256)`,
+  'event StableCoinLent(address _lender, uint256 _amountLent, uint256 _amountOfWarpMinted)'
 ]
 
 const logger = getLogger('Services::StableCoinVault')
