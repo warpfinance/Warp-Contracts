@@ -27,13 +27,15 @@ const parseBigNumber = (big, decimals) => {
 };
 
 module.exports = async (deployer, network, accounts) => {
-  const ownerAddress = "0x7d4A13FE119C9F36425008a7afCB2737B2bB5C41";
+  const ownerAddress = "0x7f3A152F09324f2aee916CE069D3908603449173";
   const testerAddresses = [
     ownerAddress,
     "0xC6429e05edE87133537eC17b1f5ab99a0ec6CCEb",
     "0xb2bD8248B0253CfD08cd346FF668C82b8d8F6447",
     "0x744825189eb3Ba671A3e881143214DA6b187E5b8",
     "0x04F901C2B7983103f18d04A3dBA34789Aaee076e",
+    "0x7f3A152F09324f2aee916CE069D3908603449173",
+    "0x7d4A13FE119C9F36425008a7afCB2737B2bB5C41",
   ]
 
   if (network.search("kovan") == -1 && network != "development") {
