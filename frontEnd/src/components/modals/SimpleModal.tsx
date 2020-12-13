@@ -29,7 +29,7 @@ interface Props {
     iconSrc: string,
     handleClose: (event: {}, reason: "backdropClick" | "escapeKeyDown") => void,
     onButtonClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void,
-    onMaxButtonClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void,
+    onMaxButtonClick?: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void,
     open: boolean
 }
 
@@ -86,14 +86,18 @@ export const SimpleModal: React.FC<Props> = (props: Props) => {
                                         </Typography>
                                     </Grid>
                                     <Grid item>
-                                        <Typography
-                                            className={classes.maxButton}
-                                            onClick={props.onMaxButtonClick}
-                                            color="textSecondary"
-                                            variant="subtitle1"
-                                        >
-                                            max
+                                        {props.onMaxButtonClick ?
+                                            <Typography
+                                                className={classes.maxButton}
+                                                onClick={props.onMaxButtonClick}
+                                                color="textSecondary"
+                                                variant="subtitle1"
+                                            >
+                                                max
                                         </Typography>
+                                            :
+                                            null
+                                        }
                                     </Grid>
                                 </Grid>
                             </CardContent>

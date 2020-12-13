@@ -1,23 +1,23 @@
 import * as React from "react";
 
 import { Grid, Typography } from "@material-ui/core";
-import { Header, MigrateTable, RowModal, TransactionModal, WithdrawMigrateModal } from "../../components";
+import { Header, MigrateTable, RowModal, SimpleModal, TransactionModal, WithdrawMigrateModal } from "../../components";
+import { MigrationVault, useMigrationStatus } from "../../hooks/useMigrations";
 
+import { BigNumber } from "ethers";
 import { MigrateModal } from "../../components/modals/MigrateModal";
+import { StableCoinWarpVaultService } from "../../services/stableCoinWarpVault";
 import { Token } from "../../util/token";
+import { TransactionInfo } from "../../util/types";
+import { V1WarpControlService } from "../../services/v1Control";
+import { WarpControlService } from "../../services/warpControl";
+import { WarpLPVaultService } from "../../services/warpLPVault";
+import { formatBigNumber } from "../../util/tools";
+import { getContractAddress } from "../../util/networks";
 import { getLogger } from "../../util/logger";
 import { useConnectedWeb3Context } from "../../hooks/connectedWeb3";
 import { useLPTokens } from "../../hooks/useLPTokens";
 import { useStableCoinTokens } from "../../hooks/useStableCoins";
-import { MigrationVault, useMigrationStatus } from "../../hooks/useMigrations";
-import { formatBigNumber } from "../../util/tools";
-import { BigNumber } from "ethers";
-import { TransactionInfo } from "../../util/types";
-import { getContractAddress } from "../../util/networks";
-import { V1WarpControlService } from "../../services/v1Control";
-import { WarpControlService } from "../../services/warpControl";
-import { StableCoinWarpVaultService } from "../../services/stableCoinWarpVault";
-import { WarpLPVaultService } from "../../services/warpLPVault";
 
 interface Props {
 }
@@ -45,7 +45,7 @@ export const Migrate: React.FC<Props> = (props: Props) => {
     const [migrationState, setMigrationState] = React.useState<MigrationState>("start");
 
     const [transactionSubmitted, setTransactionSubmitted] = React.useState<boolean>(false);
-    const [transactionInfo, setTransactionInfo] = React.useState<TransactionInfo>({hash: ""} as TransactionInfo);
+    const [transactionInfo, setTransactionInfo] = React.useState<TransactionInfo>({ hash: "" } as TransactionInfo);
 
     const [migrateModalOpen, setMigrateModalOpen] = React.useState(false);
     const [migrateDepositDisabled, setMigrateDepositDisabled] = React.useState(true);
@@ -65,13 +65,13 @@ export const Migrate: React.FC<Props> = (props: Props) => {
         return control;
     }
 
-    const getScVault = async (control : V1WarpControlService | WarpControlService, token: string) => {
+    const getScVault = async (control: V1WarpControlService | WarpControlService, token: string) => {
         const vaultAddress = await control.getStableCoinVault(token);
         const vault = new StableCoinWarpVaultService(provider, account, vaultAddress);
         return vault;
     }
 
-    const getLpVault = async (control : V1WarpControlService | WarpControlService, token: string) => {
+    const getLpVault = async (control: V1WarpControlService | WarpControlService, token: string) => {
         const vaultAddress = await control.getLPVault(token);
         const vault = new WarpLPVaultService(provider, account, vaultAddress);
         return vault;
@@ -88,7 +88,7 @@ export const Migrate: React.FC<Props> = (props: Props) => {
     const getV1LPVault = async (token: string) => {
         const control = getV1Control();
         const vault = await getLpVault(control, token);
-        return vault; 
+        return vault;
     }
 
     const getCurrentScVault = async (token: string) => {
@@ -118,7 +118,7 @@ export const Migrate: React.FC<Props> = (props: Props) => {
 
     const setMigrationVaultStates = (vault: MigrationVault) => {
         setDisplayAmount(formatBigNumber(BigNumber.from(vault.amount), vault.token.decimals));
-        setDisplayValue(vault.value.toLocaleString(undefined, {maximumFractionDigits: 2}));
+        setDisplayValue(vault.value.toLocaleString(undefined, { maximumFractionDigits: 2 }));
         setMigrationVault(vault);
     }
 
@@ -136,7 +136,7 @@ export const Migrate: React.FC<Props> = (props: Props) => {
         }
 
         handleStartTransaction();
-        
+
         let tx: Maybe<Promise<TransactionInfo>> = null;
         if (vault.token.isLP) {
             const v1Control = getV1Control();
@@ -157,7 +157,7 @@ export const Migrate: React.FC<Props> = (props: Props) => {
         logger.log(`User is depositing ${vault.amount} ${vault.token.symbol}`);
 
         handleStartTransaction();
-        
+
         let tx: Maybe<Promise<TransactionInfo>> = null;
         if (vault.token.isLP) {
             const currentVault = await getCurrentLpVault(vault.token.address);
@@ -212,7 +212,7 @@ export const Migrate: React.FC<Props> = (props: Props) => {
         setMigrateDepositDisabled(false);
         setMigrateWithdrawDisabled(true);
     }
-    
+
     /* 
         Triggered when the user hits the "Deposit" button inside the Withdraw modal
     */
@@ -238,7 +238,7 @@ export const Migrate: React.FC<Props> = (props: Props) => {
                 return;
             }
         }
-        
+
         setMigrateModalOpen(false);
         setDisplayAmount("");
         setDisplayValue("");
@@ -268,12 +268,11 @@ export const Migrate: React.FC<Props> = (props: Props) => {
                     <Typography variant="subtitle1" color="textSecondary">
                         You can either withdraw funds, or continue exploring Warp by migrating into v2
                     </Typography>
+                </Grid>
+                <Grid item>
                     <Typography variant="subtitle1" color="textPrimary">
                         Press Migrate to migrate funds into V2
                     </Typography>
-                </Grid>
-                <Grid item>
-                    
                 </Grid>
                 <Grid
                     item
@@ -298,34 +297,15 @@ export const Migrate: React.FC<Props> = (props: Props) => {
                     </Grid>
                 </Grid>
             </Grid>
-            {/* <WithdrawMigrateModal
-                action={"Withdraw"}
-                error={false}
-                handleClose={handleWithdrawClose}
+            <SimpleModal
+                action="Withdraw"
+                amount={0/*withdrawAmountValue*/}
+                currency={"token"/*withdrawAmountCurrency*/}
+                iconSrc={"token"/*`${withdrawAmountCurrency.toLowerCase()}.png`*/}
                 onButtonClick={onWithdraw}
-                onChange={onWithdrawAmountChange}
-                onMaxButtonClick={onWithdrawMax}
-                open={withdrawModalOpen}
-                poolIconSrcPrimary={currentToken.image || ""}
-                poolIconSrcSecondary={currentToken.image2 || ""}
-                token={currentToken}
-                value={withdrawAmountValue}
-            />
-            <RowModal
-                action={"Withdraw Collateral"}
-                error={false}
-                handleClose={handleWithdrawCollateralClose}
-                lp={1}
-                onButtonClick={onWithdrawCollateral}
-                onChange={onWithdrawCollateralAmountChange}
-                onMaxButtonClick={onWithdrawMaxCollateral}
-                open={withdrawCollateralModalOpen}
-                poolIconSrcPrimary={currentToken.image || ""}
-                poolIconSrcSecondary={currentToken.image2 || ""}
-                token={currentToken}
-                value={withdrawCollateralAmountValue}
-            />
-            <MigrateModal
+                handleClose={handleWithdrawClose}
+                open={withdrawModalOpen} />
+            {/* 
                 action={"Migrate"}
                 error={false}
                 handleClose={handleMigrateClose}

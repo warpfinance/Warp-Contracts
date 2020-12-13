@@ -1,14 +1,15 @@
-import { useWeb3React } from '@web3-react/core'
+import { formatBigNumber, parseBigNumber } from '../util/tools'
+import { getContractAddress, getTokensByNetwork } from '../util/networks'
+
 import { BigNumber } from 'ethers'
 import React from 'react'
 import { StableCoinWarpVaultService } from '../services/stableCoinWarpVault'
+import { Token } from '../util/token'
 import { V1WarpControlService } from '../services/v1Control'
 import { WarpLPVaultService } from '../services/warpLPVault'
 import { getLogger } from '../util/logger'
-import { getContractAddress, getTokensByNetwork } from '../util/networks'
-import { Token } from '../util/token'
-import { formatBigNumber, parseBigNumber } from '../util/tools'
 import { useRefreshToken } from './useRefreshToken'
+import { useWeb3React } from '@web3-react/core'
 
 const logger = getLogger('Hooks::useMigrations')
 
@@ -28,7 +29,7 @@ export interface MigrationVault {
 export const MigrationStatusContext = React.createContext<MigrationStatusContext>({
   lpVaults: [],
   scVaults: [],
-  needsMigration: false,
+  needsMigration: true /*false*/,
   refresh: () => {}
 });
 
@@ -41,7 +42,7 @@ export const MigrationStatusProvider: React.FC = props => {
   const context = useWeb3React();
 
   const { account, library: provider, chainId: networkId } = context
-  const [needsMigration, setNeedsMigration] = React.useState(false);
+  const [needsMigration, setNeedsMigration] = React.useState(true/*false*/);
   const [stableCoinMigrations, setStableCoinMigrations] = React.useState<MigrationVault[]>([]);
   const [lpMigrations, setLpMigrations] = React.useState<MigrationVault[]>([]);
   const {refreshToken, refresh} = useRefreshToken();
@@ -117,7 +118,7 @@ export const MigrationStatusProvider: React.FC = props => {
       }
 
       if (isSubscribed) {
-        setNeedsMigration(hasAssetsToMigrate);
+        /*setNeedsMigration(hasAssetsToMigrate)*/;
         setLpMigrations(lpVaults);
         setStableCoinMigrations(scVaults);
       }
