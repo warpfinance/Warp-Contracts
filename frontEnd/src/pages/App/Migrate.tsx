@@ -31,7 +31,6 @@ export const Migrate: React.FC<Props> = (props: Props) => {
     const { account, library: provider, networkId } = context
     const migrationStatus = useMigrationStatus();
 
-    const [withdrawAmountValue, setWithdrawAmountValue] = React.useState("");
     const [withdrawModalOpen, setWithdrawModalOpen] = React.useState(false);
 
     // hacky default
@@ -48,7 +47,6 @@ export const Migrate: React.FC<Props> = (props: Props) => {
     const [transactionSubmitted, setTransactionSubmitted] = React.useState<boolean>(false);
     const [transactionInfo, setTransactionInfo] = React.useState<TransactionInfo>({hash: ""} as TransactionInfo);
 
-    const [migrateAmountValue, setMigrateAmountValue] = React.useState("");
     const [migrateModalOpen, setMigrateModalOpen] = React.useState(false);
     const [migrateDepositDisabled, setMigrateDepositDisabled] = React.useState(true);
     const [migrateWithdrawDisabled, setMigrateWithdrawDisabled] = React.useState(true);
@@ -286,15 +284,15 @@ export const Migrate: React.FC<Props> = (props: Props) => {
                 >
                     <Grid item>
                         <MigrateTable
-                            onMigrateClick={onWithdrawClick}
-                            onWithdrawClick={onMigrateClick}
+                            onMigrateClick={onMigrateClick}
+                            onWithdrawClick={onWithdrawClick}
                             vaults={migrationStatus.scVaults}
                             type="lending" />
                     </Grid>
                     <Grid item>
                         <MigrateTable
-                            onMigrateClick={onWithdrawClick}
-                            onWithdrawClick={onMigrateClick}
+                            onMigrateClick={onMigrateClick}
+                            onWithdrawClick={onWithdrawClick}
                             vaults={migrationStatus.lpVaults}
                             type="borrowing" />
                     </Grid>
