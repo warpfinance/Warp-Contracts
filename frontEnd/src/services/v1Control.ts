@@ -2,6 +2,7 @@ import { BigNumber, Contract, ethers, Wallet } from "ethers";
 import { getLogger } from "../util/logger";
 import { createTransactionInfo, TransactionInfo } from "../util/types";
 import { OracleFactoryService } from "./oracleFactory";
+import { WarpLPVaultService } from "./warpLPVault";
 
 const warpControlABI:string [] = [
   'function instanceSCTracker(address _address) public view returns (address)',
@@ -77,7 +78,15 @@ export class V1WarpControlService {
   }
 
   getMaxCollateralWithdrawAmount = async (account: string, lpToken: string): Promise<BigNumber> => {
-    return this.contract.viewMaxWithdrawAllowed(account, lpToken);
+    const vaultAddress = await this.getLPVault(lpToken);
+    const vault = new WarpLPVaultService(this.provider, null, vaultAddress);
+    const amountInVault = await vault.collateralBalance(account);
+    const maxAllowed =  await this.contract.viewMaxWithdrawAllowed(account, lpToken);
+    if (maxAllowed.lt(amountInVault)) {
+      return maxAllowed;
+    }
+
+    return amountInVault;
   }
 
   borrowStableCoin = async (stableCoin: string, amount: BigNumber): Promise<TransactionInfo> => {

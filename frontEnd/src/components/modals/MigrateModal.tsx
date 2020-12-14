@@ -32,10 +32,12 @@ interface Props {
     iconSrc: string,
     migrateDepositDisabled: boolean,
     migrateWithdrawDisabled: boolean,
+    migrateApproveDisabled: boolean,
     onDepositClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void,
     open: boolean,
     onWithdrawClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void,
     value: string
+    onApproveClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void
 }
 
 export const MigrateModal: React.FC<Props> = (props: Props) => {
@@ -49,7 +51,7 @@ export const MigrateModal: React.FC<Props> = (props: Props) => {
     return (
         <Dialog
             className={classes.dialog}
-            maxWidth={"xs"}
+            maxWidth={"sm"}
             fullWidth={true}
             onClose={props.handleClose}
             open={props.open} >
@@ -105,6 +107,11 @@ export const MigrateModal: React.FC<Props> = (props: Props) => {
                                 disabled={props.error === true || props.migrateWithdrawDisabled === true || checked !== true}
                                 onClick={props.onWithdrawClick}
                                 text={"Withdraw"}
+                                type="short" />
+                            <CustomButton
+                                disabled={props.error === true || props.migrateApproveDisabled === true || checked !== true}
+                                onClick={props.onApproveClick}
+                                text={"Approve"}
                                 type="short" />
                             <CustomButton
                                 disabled={props.error === true || props.migrateDepositDisabled === true || checked !== true}

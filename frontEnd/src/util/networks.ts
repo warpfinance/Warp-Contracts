@@ -1,15 +1,7 @@
 import { NetworkCell } from "@material-ui/icons";
 import { DEFAULT_TOKEN } from "./constants";
 import { getImageUrl, Token } from "./token";
-
-const getEnv = (variable: string, fallback?: string): string => {
-	const res = process.env[variable];
-	if (res) {
-		return res;
-	}
-
-	return fallback ? fallback : "";
-};
+import { getEnv } from "./tools";
 
 export type NetworkId = 1 | 42 | 1337;
 
@@ -43,7 +35,7 @@ const networks: { [K in NetworkId]: Network } = {
 		label: "Kovan",
 		uri: "https://kovan.infura.io/v3/f30a8e726a8c4851bfc92a44a04bc889",
 		contracts: {
-			warpControl: "0xD3C55cB30D1D9c9A879481588C88E5E9ccB04A7B",
+			warpControl: "0x5C840bDEa1f844b0F67466e4788370AdD4e295fe",
 			v1Control: "0x6eEd0B17E5D57bdDaD3cB4138d65FB123aa83f81",
 		},
 	},
@@ -106,7 +98,7 @@ export const knownTokens: { [name in KnownToken]: KnownTokenData } = {
 		},
 		order: 3,
 		lp: false,
-		disabled: true
+		disabled: false
 	},
 	"eth-dai": {
 		symbol: "ETH-DAI",

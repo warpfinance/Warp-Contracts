@@ -18,13 +18,14 @@ import { getLogger } from "../../util/logger";
 import { useConnectedWeb3Context } from "../../hooks/connectedWeb3";
 import { useLPTokens } from "../../hooks/useLPTokens";
 import { useStableCoinTokens } from "../../hooks/useStableCoins";
+import { ERC20Service } from "../../services/erc20";
 
 interface Props {
 }
 
 const logger = getLogger("Page::Migrate");
 
-declare type MigrationState = "start" | "withdraw" | "deposit" | "finish";
+declare type MigrationState = "start" | "withdraw" | "approve" | "deposit" | "finish";
 
 export const Migrate: React.FC<Props> = (props: Props) => {
     const context = useConnectedWeb3Context();
@@ -33,8 +34,8 @@ export const Migrate: React.FC<Props> = (props: Props) => {
 
     const [withdrawModalOpen, setWithdrawModalOpen] = React.useState(false);
 
-    // hacky default
-    const [migrationVault, setMigrationVault] = React.useState<MigrationVault>({} as MigrationVault);
+
+    const [migrationVault, setMigrationVault] = React.useState<Maybe<MigrationVault>>(null);
 
     // The quantity of tokens to display
     const [displayAmount, setDisplayAmount] = React.useState<string>("0");
@@ -50,6 +51,7 @@ export const Migrate: React.FC<Props> = (props: Props) => {
     const [migrateModalOpen, setMigrateModalOpen] = React.useState(false);
     const [migrateDepositDisabled, setMigrateDepositDisabled] = React.useState(true);
     const [migrateWithdrawDisabled, setMigrateWithdrawDisabled] = React.useState(true);
+    const [migrateApproveDisabled, setMigrateApproveDisabled] = React.useState(true);
 
     const [transactionModalOpen, setTransactionModalOpen] = React.useState(false);
 
@@ -126,6 +128,7 @@ export const Migrate: React.FC<Props> = (props: Props) => {
         setWithdrawModalOpen(true);
         setMigrationVaultStates(vault);
         logger.log(`Opening withdraw modal for ${vault.token.symbol}`);
+        console.log(vault.token);
     }
 
     const withdrawFromV1 = async (vault: MigrationVault) => {
@@ -141,6 +144,7 @@ export const Migrate: React.FC<Props> = (props: Props) => {
         if (vault.token.isLP) {
             const v1Control = getV1Control();
             const max = await v1Control.getMaxCollateralWithdrawAmount(account, vault.token.address);
+            logger.log(`max is ${max.toString()}`)
             const v1Vault = await getV1LPVault(vault.token.address);
             tx = v1Vault.withdrawCollateral(max);
         } else {
@@ -161,10 +165,10 @@ export const Migrate: React.FC<Props> = (props: Props) => {
         let tx: Maybe<Promise<TransactionInfo>> = null;
         if (vault.token.isLP) {
             const currentVault = await getCurrentLpVault(vault.token.address);
-            tx = currentVault.withdrawCollateral(BigNumber.from(vault.amount));
+            tx = currentVault.provideCollateral(BigNumber.from(vault.amount));
         } else {
             const currentVault = await getCurrentScVault(vault.token.address);
-            tx = currentVault.withdraw(BigNumber.from(vault.amount));
+            tx = currentVault.lendToVault(BigNumber.from(vault.amount));
         }
 
         const txInfo = await handleTransaction(tx);
@@ -176,6 +180,10 @@ export const Migrate: React.FC<Props> = (props: Props) => {
         Triggered when the user hits the "Withdraw" button inside the Withdraw modal
     */
     const onWithdraw = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+        if (!migrationVault) {
+            console.error(`no migration vault set!`);
+            return;
+        }
         const txInfo = await withdrawFromV1(migrationVault);
         setWithdrawModalOpen(false);
 
@@ -195,6 +203,7 @@ export const Migrate: React.FC<Props> = (props: Props) => {
         setMigrationVaultStates(vault);
         setMigrationState("start");
         setMigrateDepositDisabled(true);
+        setMigrateApproveDisabled(true);
         setMigrateWithdrawDisabled(false);
         logger.log(`User is migrating ${vault.token.symbol}`);
     }
@@ -203,13 +212,52 @@ export const Migrate: React.FC<Props> = (props: Props) => {
         Triggered when the user hits the "Withdraw" button inside the Migrate modal
     */
     const onMigrateWithdraw = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+        if (!migrationVault) {
+            console.error(`no migration vault set!`);
+            return;
+        }
         const txInfo = await withdrawFromV1(migrationVault);
         setMigrationState("withdraw");
 
         await txInfo.finished;
         setTransactionModalOpen(false);
 
+        setMigrateDepositDisabled(true);
+        setMigrateApproveDisabled(false);
+        setMigrateWithdrawDisabled(true);
+    }
+
+    const onApproveClick = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => { 
+        if (!migrationVault) {
+            console.error(`no migration vault set!`);
+            return;
+        }
+
+        const vault = migrationVault;
+
+        logger.log(`User is approving ${vault.token.symbol}`);
+
+        handleStartTransaction();
+
+        let tx: Maybe<Promise<TransactionInfo>> = null;
+        if (vault.token.isLP) {
+            const currentVault = await getCurrentLpVault(vault.token.address);
+            const erc20 = new ERC20Service(provider, account, vault.token.address);
+            tx = erc20.approveUnlimited(currentVault.contract.address);
+        } else {
+            const currentVault = await getCurrentScVault(vault.token.address);
+            const erc20 = new ERC20Service(provider, account, vault.token.address);
+            tx = erc20.approveUnlimited(currentVault.contract.address);
+        }
+
+        const txInfo = await handleTransaction(tx);
+        setMigrationState("approve");
+
+        await txInfo.finished;
+        setTransactionModalOpen(false);
+
         setMigrateDepositDisabled(false);
+        setMigrateApproveDisabled(true);
         setMigrateWithdrawDisabled(true);
     }
 
@@ -217,8 +265,16 @@ export const Migrate: React.FC<Props> = (props: Props) => {
         Triggered when the user hits the "Deposit" button inside the Withdraw modal
     */
     const onMigrateDeposit = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+        if (!migrationVault) {
+            console.error(`no migration vault set!`);
+            return;
+        }
         const txInfo = await depositFromV1(migrationVault);
         setMigrationState("deposit");
+
+        setMigrateDepositDisabled(true);
+        setMigrateWithdrawDisabled(true);
+        setMigrateApproveDisabled(true);
 
         await txInfo.finished;
 
@@ -226,15 +282,16 @@ export const Migrate: React.FC<Props> = (props: Props) => {
 
         setTransactionModalOpen(false);
         setMigrationState("finish");
-        setMigrateDepositDisabled(true);
-        setMigrateWithdrawDisabled(true);
+
+        migrationStatus.refresh();
     }
 
     const handleMigrateClose = (event: {}, reason: "backdropClick" | "escapeKeyDown") => {
+        logger.log(`Close reason was ${reason}`)
         if (reason == "backdropClick") {
-            console.log(`backdrop hit when migrating`);
-            if (migrationState == "withdraw") {
-                console.log(`User is mid-withdraw, ignoring close command`);
+            logger.debug(`backdrop hit when migrating`);
+            if (migrationState == "withdraw" || migrationState == "approve") {
+                logger.log(`User is mid migration, ignoring close command`);
                 return;
             }
         }
@@ -242,6 +299,7 @@ export const Migrate: React.FC<Props> = (props: Props) => {
         setMigrateModalOpen(false);
         setDisplayAmount("");
         setDisplayValue("");
+        migrationStatus.refresh();
     }
 
 
@@ -299,24 +357,26 @@ export const Migrate: React.FC<Props> = (props: Props) => {
             </Grid>
             <SimpleModal
                 action="Withdraw"
-                amount={"0"/*withdrawAmountValue*/}
-                currency={"token"/*withdrawAmountCurrency*/}
-                iconSrc={"token"/*`${withdrawAmountCurrency.toLowerCase()}.png`*/}
+                amount={displayAmount}
+                currency={migrationVault?.token.symbol || 'token'}
+                iconSrc={"token"}
                 onButtonClick={onWithdraw}
                 handleClose={handleWithdrawClose}
                 open={withdrawModalOpen} />
             <MigrateModal
                 action="Migrate"
-                currency={"token"/*migrateWithdrawAmountCurrency*/}
+                currency={migrationVault?.token.symbol || 'token'}
                 error={false}
                 handleClose={handleMigrateClose}
-                iconSrc={"token"/*`${migrateWithdrawAmountCurrency.toLowerCase()}.png`*/}
+                iconSrc={"token"}
                 onDepositClick={onMigrateDeposit}
                 onWithdrawClick={onMigrateWithdraw}
+                onApproveClick={onApproveClick}
                 open={migrateModalOpen}
                 migrateDepositDisabled={migrateDepositDisabled}
                 migrateWithdrawDisabled={migrateWithdrawDisabled}
-                value={"0"/*migrateWithdrawAmountValue*/}
+                migrateApproveDisabled={migrateApproveDisabled}
+                value={displayAmount}
             />
             <TransactionModal
                 action={"Transaction"}

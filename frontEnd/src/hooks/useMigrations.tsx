@@ -1,4 +1,4 @@
-import { formatBigNumber, parseBigNumber } from '../util/tools'
+import { formatBigNumber, getEnv, parseBigNumber } from '../util/tools'
 import { getContractAddress, getTokensByNetwork } from '../util/networks'
 
 import { BigNumber } from 'ethers'
@@ -47,9 +47,17 @@ export const MigrationStatusProvider: React.FC = props => {
   const [lpMigrations, setLpMigrations] = React.useState<MigrationVault[]>([]);
   const {refreshToken, refresh} = useRefreshToken();
 
+  const skipMigrations = getEnv('REACT_APP_NO_MIGRATE', '0') === '1';
+
   React.useEffect(() => {
     if (!networkId || !account) {
       logger.log(`Not connected to a network and account yet.`);
+      return;
+    }
+
+    if (skipMigrations) {
+      logger.log(`Skipping migration check`);
+      setNeedsMigration(false);
       return;
     }
 
