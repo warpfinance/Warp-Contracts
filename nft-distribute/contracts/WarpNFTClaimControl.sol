@@ -1,15 +1,17 @@
 pragma solidity ^0.6.0;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "./WarpNFTFactory.sol";
+import "./WarpNFTEpic.sol";
+import "./WarpNFTLegendary.sol";
+import "./WarpNFTRare.sol";
+import "./WarpNFTSocial.sol";
 
 contract WarpNFTClaimControl is Ownable {
-  WarpNFTFactory public WNFTF;
+  WarpNFTEpic public WNFTE;
+  WarpNFTLegendary public WNFTL;
+  WarpNFTRare public WNFTR;
+  WarpNFTSocial public WNFTS;
 
-  string public epicURI;
-  string public legendaryURI;
-  string public rareURI;
-  string public socialURI;
 
 
   address[] public epicList;
@@ -28,24 +30,18 @@ contract WarpNFTClaimControl is Ownable {
 
 /**
 @notice the constructor function is fired only once during contract deployment
-@param _NFTfactory is the address of the WarpNFTFactory contract
-@param _epic is the URI specific to the epic NFT metadata
-@param _legendary is the URI specific to the legendary NFT metadata
-@param _rare is the URI specific to the rare NFT metadata
-@param _social is the URI specific to the social NFT metadata
+
 **/
   constructor(
-    WarpNFTFactory _NFTfactory,
-    string memory _epic,
-    string memory _legendary,
-    string memory _rare,
-    string memory _social
+    WarpNFTEpic _NFTEpic,
+    WarpNFTLegendary _NFTLegendary,
+    WarpNFTRare _NFTRare,
+    WarpNFTSocial _NFTSocial
   ) public {
-    WNFTF = _NFTfactory;
-    epicURI = _epic;
-    legendaryURI = _legendary;
-    rareURI = _rare;
-    socialURI = _social;
+    WNFTE = _NFTEpic;
+    WNFTL = _NFTLegendary;
+    WNFTR = _NFTRare;
+    WNFTS = _NFTSocial;
   }
 
 /**
@@ -110,25 +106,25 @@ function claimNFTs() public {
 
   if(epicWhiteList[msg.sender] == true) {
     require(epicClaimed[msg.sender] == false);
-    WNFTF.mintNewNFT(msg.sender, 1, epicURI);
+    WNFTE.mintNewNFT(msg.sender);
     epicClaimed[msg.sender] = true;
   }
 
   if(legendaryWhiteList[msg.sender] == true) {
     require(legendaryClaimed[msg.sender] == false);
-    WNFTF.mintNewNFT(msg.sender, 2, legendaryURI);
+    WNFTL.mintNewNFT(msg.sender);
     legendaryClaimed[msg.sender] = true;
   }
 
   if(rareWhiteList[msg.sender] == true) {
     require(rareClaimed[msg.sender] == false);
-    WNFTF.mintNewNFT(msg.sender, 3, rareURI);
+    WNFTR.mintNewNFT(msg.sender);
     rareClaimed[msg.sender] = true;
   }
 
   if(socialWhiteList[msg.sender] == true) {
     require(socialClaimed[msg.sender] == false);
-    WNFTF.mintNewNFT(msg.sender, 4, socialURI);
+    WNFTS.mintNewNFT(msg.sender);
     socialClaimed[msg.sender] = true;
   }
 

@@ -1,17 +1,15 @@
 const WarpNFTClaimControl = artifacts.require("WarpNFTClaimControl");
-const WarpNFTFactory = artifacts.require("WarpNFTFactory");
+const WarpNFTEpic = artifacts.require("WarpNFTEpic");
+const WarpNFTLegendary = artifacts.require("WarpNFTLegendary");
+const WarpNFTRare = artifacts.require("WarpNFTRare");
+const WarpNFTSocial = artifacts.require("WarpNFTSocial");
 
 module.exports = function(deployer) {
-  const epicURI = "";
-  const legendaryURI = "";
-  const rareURI = "";
-  const socialURI = "";
   deployer.deploy(
     WarpNFTClaimControl,
-    WarpNFTFactory.address,
-    epicURI,
-    legendaryURI,
-    rareURI,
-    socialURI
+    WarpNFTEpic.address,
+    WarpNFTLegendary.address,
+    WarpNFTRare.address,
+    WarpNFTSocial.address
   );
 };
