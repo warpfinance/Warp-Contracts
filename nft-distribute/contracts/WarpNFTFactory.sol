@@ -13,7 +13,7 @@ contract WarpNFTFactory is Ownable, ERC721 {
 @param _baseURI is a base address added to the front of every input tokenURI
 @dev assuming all NFT URI metadata is based on a URL he baseURI would be something like https://
 **/
-  constructor(string memory _baseURI) ERC721("WarpNFT", "WNFT") {
+  constructor(string memory _baseURI) ERC721("WarpNFT", "WNFT") public {
     _setBaseURI(_baseURI);
   }
 
@@ -49,7 +49,7 @@ contract WarpNFTFactory is Ownable, ERC721 {
             if(tokenType[i] != 4){
               return tokenType[i];
             } else {
-              return 0
+              return 0;
             }
           }
         }

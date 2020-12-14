@@ -54,7 +54,7 @@ contract WarpNFTClaimControl is Ownable {
 @dev this function is protected by the onlyOwner modifier and can only be called by the owner of this contract
 **/
 function epicWhiteLister(address[] memory _addresses) public onlyOwner {
-    for (uint256 i = 0; i < _addresses.length(); ++i) {
+    for (uint256 i = 0; i < _addresses.length; ++i) {
         epicWhiteList[_addresses[i]] = true;
         epicList.push(_addresses[i]);
     }
@@ -66,7 +66,7 @@ function epicWhiteLister(address[] memory _addresses) public onlyOwner {
 @dev this function is protected by the onlyOwner modifier and can only be called by the owner of this contract
 **/
 function legendaryWhiteLister(address[] memory _addresses) public onlyOwner {
-    for (uint256 i = 0; i < _addresses.length(); ++i) {
+    for (uint256 i = 0; i < _addresses.length; ++i) {
         legendaryWhiteList[_addresses[i]] = true;
         legendaryList.push(_addresses[i]);
     }
@@ -78,7 +78,7 @@ function legendaryWhiteLister(address[] memory _addresses) public onlyOwner {
 @dev this function is protected by the onlyOwner modifier and can only be called by the owner of this contract
 **/
 function rareWhiteLister(address[] memory _addresses) public onlyOwner {
-    for (uint256 i = 0; i < _addresses.length(); ++i) {
+    for (uint256 i = 0; i < _addresses.length; ++i) {
         rareWhiteList[_addresses[i]] = true;
         rareList.push(_addresses[i]);
     }
@@ -90,7 +90,7 @@ function rareWhiteLister(address[] memory _addresses) public onlyOwner {
 @dev this function is protected by the onlyOwner modifier and can only be called by the owner of this contract
 **/
 function socialWhiteLister(address[] memory _addresses) public onlyOwner {
-    for (uint256 i = 0; i < _addresses.length(); ++i) {
+    for (uint256 i = 0; i < _addresses.length; ++i) {
         socialWhiteList[_addresses[i]] = true;
         socialList.push(_addresses[i]);
     }
