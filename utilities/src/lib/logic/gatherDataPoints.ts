@@ -2,21 +2,21 @@ import { getLogger, setTransactionCallBlockNumber } from '../util';
 import { BlocksOfInterest } from './blocksOfInterest';
 import { getUserTVL, GetUserTVLConfig, UserTVL } from './tvl';
 
-interface AccountScoreDataPoint {
+export interface AccountScoreDataPoint {
     tvl: UserTVL;
 }
 
-interface ScoreDataPoint {
+export interface ScoreDataPoint {
     [account: string]: AccountScoreDataPoint;
 }
 
-interface ScoreDataHistory {
+export interface ScoreDataHistory {
     [blockNumber: number]: {
         data: ScoreDataPoint;
     };
 }
 
-interface ScoreDataHistoryResult {
+export interface ScoreDataHistoryResult {
     error: any;
     data: ScoreDataHistory;
 }
