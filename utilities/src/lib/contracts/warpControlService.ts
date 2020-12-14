@@ -20,7 +20,8 @@ const warpControlABI:string [] = [
   'function existingRefferalCode(address _team) public view returns (bool)',
   'function getGroupName(address _refferalCode) public view returns(string memory)',
   'function viewAllGroups() public view returns(address[] memory)',
-  'function viewAllMembersOfAGroup(address _refferalCode) public view returns(address[] memory)'
+  'function viewAllMembersOfAGroup(address _refferalCode) public view returns(address[] memory)',
+  'function viewLaunchParticipants() public view returns(address[] memory)',
 ]
 
 const logger = getLogger('Services::WarpControlService')
@@ -104,6 +105,10 @@ export class WarpControlService {
 
   getTeamMembers = async (teamCode: string): Promise<string[]> => {
     return await this.contract.viewAllMembersOfAGroup(teamCode);
+  }
+
+  getLaunchParticipants = async (): Promise<string[]> => {
+    return await this.contract.viewLaunchParticipants();
   }
 
 

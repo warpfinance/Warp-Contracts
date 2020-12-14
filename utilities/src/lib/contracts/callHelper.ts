@@ -5,7 +5,7 @@ export const globalCallArgs = () => {
   const callArgs: any = {};
 
   if (blockNum) {
-    callArgs.blockNumber = blockNum
+    callArgs.blockTag = blockNum
   }
 
   return callArgs;
