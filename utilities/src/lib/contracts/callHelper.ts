@@ -1,12 +1,12 @@
-import { getTransactionCallBlockNumber } from "../util"
+import { getTransactionCallBlockNumber } from '../util';
 
 export const globalCallArgs = () => {
-  const blockNum = getTransactionCallBlockNumber();
-  const callArgs: any = {};
+    const blockNum = getTransactionCallBlockNumber();
+    const callArgs: any = {};
 
-  if (blockNum) {
-    callArgs.blockNumber = blockNum
-  }
+    if (blockNum) {
+        callArgs.blockTag = blockNum;
+    }
 
-  return callArgs;
-}
+    return callArgs;
+};
