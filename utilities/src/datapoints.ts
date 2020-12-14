@@ -10,20 +10,15 @@ import { getContractAddress, getTokensByNetwork } from './lib/util/networks';
 
 import * as fs from 'fs';
 import { runMethodSafe } from './lib/util/runner';
+import { competitionEndDate, infuraKey, platformOpenDate } from './config';
 
 require('dotenv').config();
 
 const logger = getLogger('datapoints');
 
-const infuraKey = process.env['INFURA_KEY'];
+const origin = platformOpenDate;
+const end = competitionEndDate
 
-const origin = Date.parse('2020-12-9 18:16:00.000 GMT');
-const end = moment(origin).add(3, 'hours').valueOf();
-
-if (!infuraKey) {
-    logger.error(`No infura key provided!`);
-    throw Error(`No infura key`);
-}
 
 export interface TeamMember {
     address: string;
@@ -71,7 +66,7 @@ const pullData = async () => {
     );
 
     const originBlock = await getBlockNearTime(provider, origin);
-    const endBlock = await getBlockNearTime(provider, end); //await provider.getBlock(provider.blockNumber);
+    const endBlock = await getBlockNearTime(provider, end);
 
     const numBlocks = endBlock.number - originBlock.number;
     logger.log(
@@ -84,7 +79,6 @@ const pullData = async () => {
 
     const cachedConfig = await createGetUserTVLConfig(control, scTokens, usdcToken);
     const dataPointResponse = await gatherDataPoints(blocksToQuery, cachedConfig);
-    const data = dataPointResponse.data;
 
     if (dataPointResponse.error) {
         logger.error(`Encountered an error while gathering data:\n${dataPointResponse.error}`);

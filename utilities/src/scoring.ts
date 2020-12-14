@@ -1,11 +1,15 @@
-import { getLogger } from './lib/util';
+import { getBlockNearTime, getLogger } from './lib/util';
 import { runMethodSafe } from './lib/util/runner';
 import * as fs from 'fs';
 import { ScoreDataHistoryResult } from './lib/logic/gatherDataPoints';
+import { calculateNumberOfDataPoints, convertScoreDataToPerAccount } from './lib/logic/dataHelpers';
+import { competitionEndDate, competitionStartDate, infuraKey } from './config';
+import { ethers } from 'ethers';
+import { calculateAccountScores } from './lib/logic/scoreAccounts';
 
 require('dotenv').config();
 
-const logger = getLogger('datapoints');
+const logger = getLogger('scoring');
 
 const scoring = async () => {
   if (process.argv.length < 3) {
@@ -14,7 +18,7 @@ const scoring = async () => {
   }
   const filePath = process.argv[2];
 
-  console.log(`Loading dat from ${filePath}`);
+  console.log(`Loading data from ${filePath}`);
 
   let fileContents: Maybe<string> = null;
   
@@ -31,9 +35,27 @@ const scoring = async () => {
     console.warn(`${filePath} indicates an error occurred. An inaccurate result is likely.`);
   }
 
-  const dataPoints = dataFile.data;
-  
+  logger.log(`Data file is ${fileContents.length} characters long.`);
 
+  logger.info(`There is data from ${Object.keys(dataFile.data).length} different blocks.`);
+
+  const dataByAccount = convertScoreDataToPerAccount(dataFile.data);
+
+  logger.info(`There are ${Object.keys(dataByAccount).length} accounts to score.`);
+
+  logger.log(`There are ${calculateNumberOfDataPoints(dataFile.data)} data points to process.`);
+
+  const context = {
+    provider: new ethers.providers.InfuraProvider('homestead', infuraKey),
+    networkId: 1,
+  };
+  const { provider } = context;
+  const competitionStartBlock = await getBlockNearTime(provider, competitionStartDate);
+  const competitionEndBlock = await getBlockNearTime(provider, competitionEndDate);
+
+  const accountScores = calculateAccountScores(dataByAccount, competitionStartBlock.number, competitionEndBlock.number);
+
+  console.log(JSON.stringify(accountScores, undefined, 2));
 
 };
 

@@ -19,6 +19,7 @@ export interface ScoreDataHistory {
 export interface ScoreDataHistoryResult {
     error: any;
     data: ScoreDataHistory;
+    lastBlock: number;
 }
 
 const logger = getLogger('Logic::gatherDataPoints');
@@ -33,6 +34,7 @@ export const gatherDataPoints = async (
         .map((v) => parseInt(v))
         .sort();
 
+    let lastBlock = 0;
     try {
         for (const blockNumber of queryBlocks) {
             logger.log(`Getting data from block number ${blockNumber}`);
@@ -54,16 +56,19 @@ export const gatherDataPoints = async (
             dataPoints[blockNumber] = {
                 data: blockDataPoints,
             };
+            lastBlock = blockNumber;
         }
     } catch (e) {
         return {
             error: e,
             data: dataPoints,
+            lastBlock
         };
     }
 
     return {
         error: undefined,
         data: dataPoints,
+        lastBlock
     };
 };
