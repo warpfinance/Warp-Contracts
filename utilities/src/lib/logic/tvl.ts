@@ -22,6 +22,29 @@ export interface UserTVL {
 
 const logger = getLogger("Logic::TVL");
 
+export const createGetUserTVLConfig = async (control: WarpControlService, scTokens: Token[], usdcToken: Token) => {
+  const scTokenVaults: ScTokenVault[] = [];
+  for (const scToken of scTokens) {
+    const vaultAddress = await control.getStableCoinVault(scToken.address);
+    const vault = new StableCoinWarpVaultService(vaultAddress, control.provider, null);
+    const usdcValue = parseBigNumber(await control.getStableCoinPrice(scToken.address), usdcToken.decimals); 
+    scTokenVaults.push({
+      token: scToken,
+      vault,
+      valueInUSDC: usdcValue
+    })
+  }
+
+  const cachedConfig: GetUserTVLConfig = {
+    control,
+    scVaults: scTokenVaults,
+    usdcToken
+  };
+
+  return cachedConfig;
+}
+
+
 export const getUserTVL = async (account: string, config: GetUserTVLConfig): Promise<UserTVL> => {
   const lpTVL = parseBigNumber(await config.control.getTotalCollateralValue(account), config.usdcToken.decimals);
 
