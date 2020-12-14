@@ -19,6 +19,7 @@ import { useConnectedWeb3Context } from "../../hooks/connectedWeb3";
 import { useLPTokens } from "../../hooks/useLPTokens";
 import { useStableCoinTokens } from "../../hooks/useStableCoins";
 import { ERC20Service } from "../../services/erc20";
+import { useNotificationModal } from "../../hooks/useNotificationModal";
 
 interface Props {
 }
@@ -31,6 +32,12 @@ export const Migrate: React.FC<Props> = (props: Props) => {
     const context = useConnectedWeb3Context();
     const { account, library: provider, networkId } = context
     const migrationStatus = useMigrationStatus();
+
+    const {
+        notify,
+        notifyError,
+        modal
+    } = useNotificationModal();
 
     const [withdrawModalOpen, setWithdrawModalOpen] = React.useState(false);
 
@@ -184,7 +191,17 @@ export const Migrate: React.FC<Props> = (props: Props) => {
             console.error(`no migration vault set!`);
             return;
         }
-        const txInfo = await withdrawFromV1(migrationVault);
+
+        let txInfo: Maybe<TransactionInfo> = null;
+        try {
+            txInfo = await withdrawFromV1(migrationVault);
+        } catch (e) {
+            notifyError(`Transaction failed to submit. Please try again later.`);
+            logger.error(`Transaction failed!`);
+            console.log(e);
+            setTransactionModalOpen(false);
+            return;
+        }
         setWithdrawModalOpen(false);
 
         await txInfo.finished;
@@ -216,7 +233,18 @@ export const Migrate: React.FC<Props> = (props: Props) => {
             console.error(`no migration vault set!`);
             return;
         }
-        const txInfo = await withdrawFromV1(migrationVault);
+
+        let txInfo: Maybe<TransactionInfo> = null;
+        try {
+            txInfo = await withdrawFromV1(migrationVault);
+        } catch (e) {
+            notifyError(`Transaction failed to submit. Please try again later.`);
+            logger.error(`Transaction failed!`);
+            console.log(e);
+            setTransactionModalOpen(false);
+            return;
+        }
+        
         setMigrationState("withdraw");
 
         await txInfo.finished;
@@ -250,7 +278,17 @@ export const Migrate: React.FC<Props> = (props: Props) => {
             tx = erc20.approveUnlimited(currentVault.contract.address);
         }
 
-        const txInfo = await handleTransaction(tx);
+        let txInfo: Maybe<TransactionInfo> = null;
+        try {
+            txInfo = await handleTransaction(tx);
+        } catch (e) {
+            notifyError(`Transaction failed to submit. Please try again later.`);
+            logger.error(`Transaction failed!`);
+            console.log(e);
+            setTransactionModalOpen(false);
+            return;
+        }
+
         setMigrationState("approve");
 
         await txInfo.finished;
@@ -269,7 +307,17 @@ export const Migrate: React.FC<Props> = (props: Props) => {
             console.error(`no migration vault set!`);
             return;
         }
-        const txInfo = await depositFromV1(migrationVault);
+
+        let txInfo: Maybe<TransactionInfo> = null;
+        try {
+            txInfo = await depositFromV1(migrationVault);
+        } catch (e) {
+            notifyError(`Transaction failed to submit. Please try again later.`);
+            logger.error(`Transaction failed!`);
+            console.log(e);
+            setTransactionModalOpen(false);
+            return;
+        }
         setMigrationState("deposit");
 
         setMigrateDepositDisabled(true);
@@ -385,6 +433,7 @@ export const Migrate: React.FC<Props> = (props: Props) => {
                 confirmed={transactionSubmitted}
                 txHash={transactionInfo.hash}
             />
+            {modal}
         </React.Fragment>
     )
 }
