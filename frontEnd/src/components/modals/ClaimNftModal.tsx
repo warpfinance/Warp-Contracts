@@ -54,9 +54,9 @@ export const ClaimNftModal: React.FC<Props> = (props: Props) => {
                                     justify="space-around"
                                     alignItems="center"
                                 >
-                                    <Grid item xs={3}>
+                                    <Grid item xs={4}>
                                     </Grid>
-                                    <Grid item xs={5}>
+                                    <Grid item xs={4}>
                                         <Typography variant="subtitle1">
                                             {props.amount}
                                         </Typography>
