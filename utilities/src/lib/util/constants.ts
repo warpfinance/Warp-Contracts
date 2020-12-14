@@ -1,1 +1,1 @@
-export const LOGGER_ID: string = 'warp'
+export const LOGGER_ID = 'warp';
