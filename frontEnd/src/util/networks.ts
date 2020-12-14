@@ -41,7 +41,7 @@ const networks: { [K in NetworkId]: Network } = {
 		label: "Kovan",
 		uri: "https://kovan.infura.io/v3/f30a8e726a8c4851bfc92a44a04bc889",
 		contracts: {
-			warpControl: "0xD3C55cB30D1D9c9A879481588C88E5E9ccB04A7B",
+			warpControl: "0x6eEd0B17E5D57bdDaD3cB4138d65FB123aa83f81",
 		},
 	},
 	[networkIds.LOCALHOST]: {
@@ -75,7 +75,7 @@ export const knownTokens: { [name in KnownToken]: KnownTokenData } = {
 		decimals: 18,
 		addresses: {
 			[networkIds.MAINNET]: "0x6b175474e89094c44da98b954eedeac495271d0f",
-			[networkIds.KOVAN]: "0x48141e4C9581524AE20845C5681B43F2E99A3e0f",
+			[networkIds.KOVAN]: "0xe43e6f3F3094821843384F841e78A2a9F9E0f07E",
 			[networkIds.LOCALHOST]: getEnv("REACT_APP_LOCALHOST_DAI"),
 		},
 		order: 1,
@@ -86,7 +86,7 @@ export const knownTokens: { [name in KnownToken]: KnownTokenData } = {
 		decimals: 6,
 		addresses: {
 			[networkIds.MAINNET]: "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
-			[networkIds.KOVAN]: "0xF46964c3aD4aEb8BA9304394e0594FF79f9A3BdA",
+			[networkIds.KOVAN]: "0x1a4E3357ee5bf0a924C55aDE3DdaD3df0A7cb6e8",
 			[networkIds.LOCALHOST]: getEnv("REACT_APP_LOCALHOST_USDC"),
 		},
 		order: 2,
@@ -97,7 +97,7 @@ export const knownTokens: { [name in KnownToken]: KnownTokenData } = {
 		decimals: 6,
 		addresses: {
 			[networkIds.MAINNET]: "0xdac17f958d2ee523a2206206994597c13d831ec7",
-			[networkIds.KOVAN]: "0x74D60183Acd8191660F87E7D7acd2867f65ae19d",
+			[networkIds.KOVAN]: "0x9Ad7D80aCda22da0315e1184C53BC7dC92A64dd9",
 			[networkIds.LOCALHOST]: getEnv("REACT_APP_LOCALHOST_USDT"),
 		},
 		order: 3,
@@ -109,7 +109,7 @@ export const knownTokens: { [name in KnownToken]: KnownTokenData } = {
 		decimals: 18,
 		addresses: {
 			[networkIds.MAINNET]: "0xa478c2975ab1ea89e8196811f51a7b7ade33eb11",
-			[networkIds.KOVAN]: "0x1dE8E2c7bcee34B35480fF9621F2031C830A6C82",
+			[networkIds.KOVAN]: "0x2Ab00932b6355aB2eEf6e1eCe00d193CbDe58FCa",
 			[networkIds.LOCALHOST]: getEnv("REACT_APP_LOCALHOST_ETH_DAI"),
 		},
 		order: 4,
@@ -120,7 +120,7 @@ export const knownTokens: { [name in KnownToken]: KnownTokenData } = {
 		decimals: 18,
 		addresses: {
 			[networkIds.MAINNET]: "0x0d4a11d5eeaac28ec3f61d100daf4d40471f1852",
-			[networkIds.KOVAN]: "0x9826336Bfee65f3145443a90781B220e83a8026D",
+			[networkIds.KOVAN]: "0x0a2fbB25502de21ed227282954e23Bd3baE4E437",
 			[networkIds.LOCALHOST]: getEnv("REACT_APP_LOCALHOST_ETH_USDT"),
 		},
 		order: 5,
@@ -131,7 +131,7 @@ export const knownTokens: { [name in KnownToken]: KnownTokenData } = {
 		decimals: 18,
 		addresses: {
 			[networkIds.MAINNET]: "0xb4e16d0168e52d35cacd2c6185b44281ec28c9dc",
-			[networkIds.KOVAN]: "0x03f71cdD28840FB422307e77089D599196aa059E",
+			[networkIds.KOVAN]: "0xA301f8a4fB1d440BeD40A66292a9EfA67AE3B150",
 			[networkIds.LOCALHOST]: getEnv("REACT_APP_LOCALHOST_ETH_USDC"),
 		},
 		order: 6,
@@ -142,7 +142,7 @@ export const knownTokens: { [name in KnownToken]: KnownTokenData } = {
 		decimals: 18,
 		addresses: {
 			[networkIds.MAINNET]: "0xbb2b8038a1640196fbe3e38816f3e67cba72d940",
-			[networkIds.KOVAN]: "0x4dDEc38c9A30f32bC66790DbBe1F1c7bb4e9F731",
+			[networkIds.KOVAN]: "0xD556b0D8dDc81C49265Be443c1e796e3E5439d6b",
 			[networkIds.LOCALHOST]: getEnv("REACT_APP_LOCALHOST_ETH_WBTC"),
 		},
 		order: 7,

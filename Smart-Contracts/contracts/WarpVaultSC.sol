@@ -135,10 +135,21 @@ contract WarpVaultSC is Exponential {
         warpTeam = _warpTeam;
         timeWizard = now.add(_timelock);
         reserveFactorMantissa = _reserveFactorMantissa;
+
+        bytes memory name = abi.encodePacked("Warp-");
+        name = abi.encodePacked(name, stablecoin.name());
+        //abi encode and concat strings
+        bytes memory symbol = abi.encodePacked("W-");
+        symbol = abi.encodePacked(symbol, stablecoin.symbol());
+        //abi encode and concat strings
+        string memory assetName = string(name);
+        string memory assetSymbol = string(symbol);
+
+
         wStableCoin = new WarpWrapperToken(
             address(stablecoin),
-            stablecoin.name(),
-            stablecoin.symbol()
+            assetName,
+            assetSymbol
         );
     }
 
@@ -561,8 +572,8 @@ contract WarpVaultSC is Exponential {
             );
         }
         wStableCoin.burn(msg.sender, vars.burnTokens);
-        stablecoin.transfer(msg.sender, vars.amount);
-        emit StableCoinLent(msg.sender, vars.amount, vars.burnTokens);
+        stablecoin.safeTransfer(msg.sender, vars.amount);
+        emit StableCoinWithdraw(msg.sender, vars.amount, vars.burnTokens);
     }
 
     /**
