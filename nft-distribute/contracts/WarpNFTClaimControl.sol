@@ -54,7 +54,7 @@ contract WarpNFTClaimControl is Ownable {
 @dev this function is protected by the onlyOwner modifier and can only be called by the owner of this contract
 **/
 function epicWhiteLister(address[] memory _addresses) public onlyOwner {
-    for (uint256 i = 0; i < _addresses; ++i) {
+    for (uint256 i = 0; i < _addresses.length(); ++i) {
         epicWhiteList[_addresses[i]] = true;
         epicList.push(_addresses[i]);
     }
@@ -66,7 +66,7 @@ function epicWhiteLister(address[] memory _addresses) public onlyOwner {
 @dev this function is protected by the onlyOwner modifier and can only be called by the owner of this contract
 **/
 function legendaryWhiteLister(address[] memory _addresses) public onlyOwner {
-    for (uint256 i = 0; i < _addresses; ++i) {
+    for (uint256 i = 0; i < _addresses.length(); ++i) {
         legendaryWhiteList[_addresses[i]] = true;
         legendaryList.push(_addresses[i]);
     }
@@ -78,7 +78,7 @@ function legendaryWhiteLister(address[] memory _addresses) public onlyOwner {
 @dev this function is protected by the onlyOwner modifier and can only be called by the owner of this contract
 **/
 function rareWhiteLister(address[] memory _addresses) public onlyOwner {
-    for (uint256 i = 0; i < _addresses; ++i) {
+    for (uint256 i = 0; i < _addresses.length(); ++i) {
         rareWhiteList[_addresses[i]] = true;
         rareList.push(_addresses[i]);
     }
@@ -90,7 +90,7 @@ function rareWhiteLister(address[] memory _addresses) public onlyOwner {
 @dev this function is protected by the onlyOwner modifier and can only be called by the owner of this contract
 **/
 function socialWhiteLister(address[] memory _addresses) public onlyOwner {
-    for (uint256 i = 0; i < _addresses; ++i) {
+    for (uint256 i = 0; i < _addresses.length(); ++i) {
         socialWhiteList[_addresses[i]] = true;
         socialList.push(_addresses[i]);
     }
@@ -99,30 +99,39 @@ function socialWhiteLister(address[] memory _addresses) public onlyOwner {
 /**
 @notice claimNFTs is a public function that allows a end user to claim ALL of the NFT's they are owed by the warp platform
 @dev this function uses the address whitelists to distribute the appropriate NFT's to warp users
+@dev this function sets a tokens type when minting a new token. A tokens type can be used by other warp contracts
+      to determine what type of token a user holds
+      Type 1: Epic NFT
+      Type 2: Legendary NFT
+      Type 3: Rare NFT
+      Type 4: Social NFT
 **/
 function claimNFTs() public {
-  require(socialClaimed[msg.sender] == false);
-  require(socialWhiteList[msg.sender] == true);
-  WNFTF.mintNewNFT(msg.sender, socialURI);
-  socialClaimed[msg.sender] = true;
 
   if(epicWhiteList[msg.sender] == true) {
     require(epicClaimed[msg.sender] == false);
-    WNFTF.mintNewNFT(msg.sender, epicURI);
+    WNFTF.mintNewNFT(msg.sender, 1, epicURI);
     epicClaimed[msg.sender] = true;
   }
 
   if(legendaryWhiteList[msg.sender] == true) {
     require(legendaryClaimed[msg.sender] == false);
-    WNFTF.mintNewNFT(msg.sender, epicURI);
+    WNFTF.mintNewNFT(msg.sender, 2, legendaryURI);
     legendaryClaimed[msg.sender] = true;
   }
 
   if(rareWhiteList[msg.sender] == true) {
     require(rareClaimed[msg.sender] == false);
-    WNFTF.mintNewNFT(msg.sender, epicURI);
+    WNFTF.mintNewNFT(msg.sender, 3, rareURI);
     rareClaimed[msg.sender] = true;
   }
+
+  if(socialWhiteList[msg.sender] == true) {
+    require(socialClaimed[msg.sender] == false);
+    WNFTF.mintNewNFT(msg.sender, 4, socialURI);
+    socialClaimed[msg.sender] = true;
+  }
+
 }
 
 }
