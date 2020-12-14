@@ -24,6 +24,7 @@ import { ConnectedWeb3 } from "./hooks/connectedWeb3";
 import {
 	CssBaseline,
 } from "@material-ui/core";
+import { NftTimeContext } from "./hooks/nftTime";
 import { TeamContextProvider } from "./hooks/useTeams";
 import { TeamMetricsProvider } from "./hooks/useTeamMetrics";
 import { ThemeProvider } from "@material-ui/styles";
@@ -124,28 +125,30 @@ const App: React.FC = () => {
 					<BorrowerCountdownContext.Provider value={{ countdown: countdown, countdownText: countdownText }} >
 						<TeamContextProvider>
 							<TeamMetricsProvider>
-								<CssBaseline>
-									<div className={classes.root}>
-										<Switch>
-											<Route exact={true} path="/" component={Home} />
-											<Route exact={true} path="/connect" component={Connect} />
-											<Route exact={true} path="/borrower"
-												render={() => <Web3AccountRequired><Borrower /></Web3AccountRequired>} />
-											<Route exact={true} path="/dashboard"
-												render={() => <Web3AccountRequired><Dashboard /></Web3AccountRequired>} />
-											<Route exact={true} path="/lender"
-												render={() => <Web3AccountRequired><Lender /></Web3AccountRequired>} />
-											<Route exact={true} path="/markets"
-												render={() => <ConnectedWeb3><Markets /></ConnectedWeb3>} />
-											<Route exact={true} path="/generate"
-												render={() => <ConnectedWeb3><CalculateMetrics /></ConnectedWeb3>} />
-											<Route exact={true} path="/teams"
-												render={() => <ConnectedWeb3><TeamLeaderboard /></ConnectedWeb3>} />
-											<Route exact={true} path="/team/:code"
-												render={() => <ConnectedWeb3><IntraTeamLeaderboard /></ConnectedWeb3>} />
-										</Switch>
-									</div>
-								</CssBaseline>
+								<NftTimeContext.Provider value={{ nftTime: true }} >
+									<CssBaseline>
+										<div className={classes.root}>
+											<Switch>
+												<Route exact={true} path="/" component={Home} />
+												<Route exact={true} path="/connect" component={Connect} />
+												<Route exact={true} path="/borrower"
+													render={() => <Web3AccountRequired><Borrower /></Web3AccountRequired>} />
+												<Route exact={true} path="/dashboard"
+													render={() => <Web3AccountRequired><Dashboard /></Web3AccountRequired>} />
+												<Route exact={true} path="/lender"
+													render={() => <Web3AccountRequired><Lender /></Web3AccountRequired>} />
+												<Route exact={true} path="/markets"
+													render={() => <ConnectedWeb3><Markets /></ConnectedWeb3>} />
+												<Route exact={true} path="/generate"
+													render={() => <ConnectedWeb3><CalculateMetrics /></ConnectedWeb3>} />
+												<Route exact={true} path="/teams"
+													render={() => <ConnectedWeb3><TeamLeaderboard /></ConnectedWeb3>} />
+												<Route exact={true} path="/team/:code"
+													render={() => <ConnectedWeb3><IntraTeamLeaderboard /></ConnectedWeb3>} />
+											</Switch>
+										</div>
+									</CssBaseline>
+								</NftTimeContext.Provider>
 							</TeamMetricsProvider>
 						</TeamContextProvider>
 					</BorrowerCountdownContext.Provider>

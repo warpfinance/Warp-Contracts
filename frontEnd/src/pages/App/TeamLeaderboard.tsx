@@ -1,7 +1,7 @@
 import * as React from "react";
 
 import { Grid, Typography } from "@material-ui/core";
-import { Header, LeaderboardCardLeft, LeaderboardCardRight, TeamLeaderboardTable } from "../../components";
+import { Header, LeaderboardCardLeft, LeaderboardCardRight, LeaderboardSubheader, TeamLeaderboardTable } from "../../components";
 
 import { getLogger } from "../../util/logger";
 import { useTeamMetrics } from "../../hooks/useTeamMetrics";
@@ -12,7 +12,6 @@ const logger = getLogger('Pages::Leaderboard');
 
 export const TeamLeaderboard: React.FC<Props> = (props: Props) => {
     const { teams } = useTeamMetrics();
-    const nftTime = true;
 
     return (
         <React.Fragment>
@@ -37,22 +36,7 @@ export const TeamLeaderboard: React.FC<Props> = (props: Props) => {
                             Team NFT Campaign
                         </Typography>
                     </Grid>
-                    {nftTime === true ?
-                        null
-                        :
-                        <React.Fragment>
-                            <Grid item>
-                                <Typography variant="subtitle1" color="textSecondary">
-                                    Users are competing for Warp NFTs for 1 week that
-                                </Typography>
-                            </Grid>
-                            <Grid item>
-                                <Typography variant="subtitle1" color="textSecondary">
-                                    give them access to additional Warp Rewards!
-                                </Typography>
-                            </Grid>
-                        </React.Fragment>
-                    }
+                    <LeaderboardSubheader />
                     <Grid item>
                         <TeamLeaderboardTable teams={teams} />
                     </Grid>
