@@ -1,7 +1,7 @@
 import * as React from "react";
 
-import { Grid, Typography } from "@material-ui/core";
-import { Header, MigrateTable, SimpleModal, TransactionModal } from "../../components";
+import { Grid, makeStyles, Typography } from "@material-ui/core";
+import { CustomButton, Header, MigrateTable, SimpleModal, TransactionModal } from "../../components";
 import { MigrationVault, useMigrationStatus } from "../../hooks/useMigrations";
 
 import { BigNumber } from "ethers";
@@ -26,7 +26,17 @@ const logger = getLogger("Page::Migrate");
 
 declare type MigrationState = "start" | "withdraw" | "approve" | "deposit" | "finish";
 
+const useStyles = makeStyles(theme => ({
+    centerButton: {
+        position: 'absolute',
+        left: '50%',
+        top: '50%',
+        transform: 'translate(-50%, -50%)'
+    }
+}))
+
 export const Migrate: React.FC<Props> = (props: Props) => {
+    const classes = useStyles();
     const context = useConnectedWeb3Context();
     const { account, library: provider, networkId } = context
     const migrationStatus = useMigrationStatus();
@@ -336,22 +346,25 @@ export const Migrate: React.FC<Props> = (props: Props) => {
         setMigrateWithdrawDisabled(true);
         setMigrateApproveDisabled(true);
 
-        setMigrationStatusTest("Migration will be complete once the transaction is confirmed.");
+        setMigrationStatusTest("Please wait for the transaction to be confirmed. Please do not navigate away.");
+        setConfirmingTransaction(true);
 
-        //await txInfo.finished;
+        await txInfo.finished;
 
         console.log(`User has successfully migrated ${migrationVault.token.symbol}`);
 
-        //setTransactionModalOpen(false);
+        setConfirmingTransaction(false);
         setMigrationState("finish");
+        setTransactionModalOpen(false);
 
-        await txInfo.finished;
+        setMigrationStatusTest(`You have successfully migrated your ${migrationVault.token.symbol} into v2`);
+
         migrationStatus.refresh();
     }
 
     const handleMigrateClose = (event: {}, reason: "backdropClick" | "escapeKeyDown") => {
         logger.log(`Close reason was ${reason}`)
-        if (migrationState == "withdraw" || migrationState == "approve") {
+        if (migrationState == "withdraw" || migrationState == "approve" || migrationState == "deposit") {
             logger.log(`User is mid migration, ignoring close command`);
             return;
         }
@@ -373,7 +386,6 @@ export const Migrate: React.FC<Props> = (props: Props) => {
 
     return (
         <React.Fragment>
-            {!migrationStatus.needsMigration ? <Redirect to="/dashboard" /> : null}
             <Grid
                 container
                 direction="column"
@@ -382,43 +394,63 @@ export const Migrate: React.FC<Props> = (props: Props) => {
                 spacing={3}
             >
                 <Header />
-                <Grid item>
-                    <Typography variant="h3">
-                        Migrate to v2 for further LP support
-                    </Typography>
-                </Grid>
-                <Grid item>
-                    <Typography variant="subtitle1" color="textSecondary">
-                        You can either withdraw funds, or continue exploring Warp by migrating into v2
-                    </Typography>
-                </Grid>
-                <Grid item>
-                    <Typography variant="subtitle1" color="textPrimary">
-                        Press Migrate to migrate funds into V2
-                    </Typography>
-                </Grid>
-                <Grid
-                    item
-                    container
-                    direction="row"
-                    justify="space-evenly"
-                    alignItems="stretch"
-                >
-                    <Grid item>
-                        <MigrateTable
-                            onMigrateClick={onMigrateClick}
-                            onWithdrawClick={onWithdrawClick}
-                            vaults={migrationStatus.scVaults}
-                            type="lending" />
-                    </Grid>
-                    <Grid item>
-                        <MigrateTable
-                            onMigrateClick={onMigrateClick}
-                            onWithdrawClick={onWithdrawClick}
-                            vaults={migrationStatus.lpVaults}
-                            type="borrowing" />
-                    </Grid>
-                </Grid>
+                { migrationStatus.needsMigration ?
+                    <React.Fragment>
+                        <Grid item>
+                            <Typography variant="h3">
+                                Migrate to v2 for further LP support
+                            </Typography>
+                        </Grid>
+                        <Grid item>
+                            <Typography variant="subtitle1" color="textSecondary">
+                                You can either withdraw funds, or continue exploring Warp by migrating into v2
+                            </Typography>
+                        </Grid>
+                        <Grid item>
+                            <Typography variant="subtitle1" color="textPrimary">
+                                Press Migrate to migrate funds into V2
+                            </Typography>
+                        </Grid>
+                        <Grid
+                            item
+                            container
+                            direction="row"
+                            justify="space-evenly"
+                            alignItems="stretch"
+                        >
+                            <Grid item>
+                                <MigrateTable
+                                    onMigrateClick={onMigrateClick}
+                                    onWithdrawClick={onWithdrawClick}
+                                    vaults={migrationStatus.scVaults}
+                                    type="lending" />
+                            </Grid>
+                            <Grid item>
+                                <MigrateTable
+                                    onMigrateClick={onMigrateClick}
+                                    onWithdrawClick={onWithdrawClick}
+                                    vaults={migrationStatus.lpVaults}
+                                    type="borrowing" />
+                            </Grid>
+                        </Grid>
+                    </React.Fragment>
+                :
+                    <React.Fragment>
+                        <Grid item>
+                            <Typography variant="h3">
+                                You have migrated successfully!
+                            </Typography>
+                        </Grid>
+                        <Grid item>
+                            <Typography variant="subtitle1" color="textSecondary">
+                                Welcome to Warp V2.
+                            </Typography>
+                        </Grid>
+                        <div className={classes.centerButton}>
+                            <CustomButton href={"/dashboard"} text={"Activate Warp Speed"} type={"long"} />
+                        </div>
+                    </React.Fragment>
+                }
             </Grid>
             <SimpleModal
                 action="Withdraw"

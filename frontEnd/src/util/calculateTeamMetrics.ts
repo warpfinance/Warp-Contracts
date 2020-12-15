@@ -1,5 +1,6 @@
 import { ERC20Service } from "../services/erc20";
 import { StableCoinWarpVaultService } from "../services/stableCoinWarpVault";
+import { V1WarpControlService } from "../services/v1Control";
 import { WarpControlService } from "../services/warpControl";
 import { getLogger } from "./logger";
 import { getContractAddress, getTokensByNetwork } from "./networks";
@@ -43,7 +44,8 @@ export const calculateTeamMetrics = async (provider: any, networkId: number): Pr
     throw Error();
   }
 
-  
+  const v1ControlAddress = getContractAddress(networkId, 'v1Control');
+  const v1Control = new V1WarpControlService(provider, null, v1ControlAddress);
 
   const controlAddress = getContractAddress(networkId, 'warpControl');
   const control = new WarpControlService(provider, null, controlAddress);
@@ -70,12 +72,12 @@ export const calculateTeamMetrics = async (provider: any, networkId: number): Pr
     })
   }
 
-  const teamCodes = await control.getTeams();
+  const teamCodes = await v1Control.getTeams();
 
   const calculatedTeams: Team[] = [];
   for (const code of teamCodes) {
-    const name = await control.getTeamName(code);
-    const members = await control.getTeamMembers(code);
+    const name = await v1Control.getTeamName(code);
+    const members = await v1Control.getTeamMembers(code);
     const memberData: TeamMember[] = [];
 
     let teamSCTVL = 0;

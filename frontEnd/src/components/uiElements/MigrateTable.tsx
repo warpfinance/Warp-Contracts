@@ -58,13 +58,17 @@ export const MigrateTable: React.FC<Props> = (props: Props) => {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {props.vaults.map((vault: MigrationVault) => (
+                    {props.vaults.length > 0 ? props.vaults.map((vault: MigrationVault) => (
                         <MigrateTableRow
                             onMigrateClick={props.onMigrateClick}
                             onWithdrawClick={props.onWithdrawClick}
                             vault={vault}
                         />
-                    ))}
+                    )) :
+                    <Typography variant="subtitle2" color="textSecondary">
+                        {`No ${liquidityOrCollateral} to migrate.`}
+                    </Typography>
+                    }
                 </TableBody>
             </Table>
         </TableContainer>
