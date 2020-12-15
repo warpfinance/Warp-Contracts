@@ -37,10 +37,10 @@ interface Props {
     onWithdrawClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void,
     value: string
     onApproveClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void,
-    iconSrcSecondary?: string,
     displayValue?: string,
-    status?: string,
     loading?: boolean,
+    iconSrcSecondary?: string,
+    status?: string,
 }
 
 export const MigrateModal: React.FC<Props> = (props: Props) => {
@@ -65,7 +65,9 @@ export const MigrateModal: React.FC<Props> = (props: Props) => {
                     justify="center"
                     alignItems="center"
                 >
-                    <CustomDialogTitle onClose={props.handleClose} >{props.action}</CustomDialogTitle>
+                    <CustomDialogTitle closeDisabled={props.loading} onClose={props.handleClose} >
+                        {props.action}
+                    </CustomDialogTitle>
                     {props.status === undefined || props.status === null || props.status === "" ? null :
                         <React.Fragment>
                             <Grid

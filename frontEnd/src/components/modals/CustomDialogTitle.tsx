@@ -18,6 +18,7 @@ const useStyles = makeStyles(theme => ({
 interface Props {
     children: any,
     onClose: any,
+    closeDisabled?: boolean,
 }
 
 export const CustomDialogTitle: React.FC<any> = (props: Props) => {
@@ -25,7 +26,12 @@ export const CustomDialogTitle: React.FC<any> = (props: Props) => {
     return (
         <DialogTitle disableTypography className={classes.root}>
             <Typography variant="h6">{props.children}</Typography>
-            <IconButton aria-label="close" className={classes.closeButton} onClick={props.onClose}>
+            <IconButton
+                aria-label="close"
+                className={classes.closeButton}
+                disabled={props.closeDisabled}
+                onClick={props.closeDisabled === true ? undefined : props.onClose}
+            >
                 <CloseIcon />
             </IconButton>
         </DialogTitle>
