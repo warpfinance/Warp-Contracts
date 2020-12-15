@@ -17,6 +17,7 @@ import { useNotificationModal } from "../../hooks/useNotificationModal";
 import { useState } from "react";
 import { useTeams } from "../../hooks/useTeams";
 import { useWeb3React } from "@web3-react/core";
+import { useMigrationStatus } from "../../hooks/useMigrations";
 
 const useStyles = makeStyles(theme => ({
     content: {
@@ -56,6 +57,9 @@ export const Header: React.FC<Props> = (props: Props) => {
         }
         return input;
     };
+
+    const migrationStatus = useMigrationStatus();
+    const v1 = migrationStatus.needsMigration;
 
     const pathName = useLocation().pathname;
     const [createTeamTx, setCreateTeamTX] = useState<Maybe<TransactionInfo>>(null);
@@ -237,7 +241,7 @@ export const Header: React.FC<Props> = (props: Props) => {
         if (!props.home) {
             return (
                 <React.Fragment>
-                    {connected === true ?
+                    { connected === true && v1 === false ?
                         <React.Fragment>
                             {(!onTeam && !tryingToJoinTeam) ?
                                 <React.Fragment>
@@ -310,19 +314,19 @@ export const Header: React.FC<Props> = (props: Props) => {
                                         href=""
                                         underline="none">
                                         Dashboard
-                                    </Link>
+                            </Link>
                                 </RouterLink>
                             </Typography> :
                             <Typography className={classes.link} color="textSecondary">
                                 Dashboard
-                            </Typography>
+                    </Typography>
                         }
                     </Grid>
                     <Grid
                         item
                         xs
                     >
-                        {connected === true ?
+                        {connected === true && v1 === false ?
                             <Typography>
                                 <RouterLink className={classes.routerLink} to={"/lender"}>
                                     <Link
@@ -331,19 +335,19 @@ export const Header: React.FC<Props> = (props: Props) => {
                                         href=""
                                         underline="none">
                                         Lender
-                                    </Link>
+                            </Link>
                                 </RouterLink>
                             </Typography> :
                             <Typography className={classes.link} color="textSecondary">
                                 Lender
-                            </Typography>
+                    </Typography>
                         }
                     </Grid>
                     <Grid
                         item
                         xs
                     >
-                        {connected === true ?
+                        {connected === true && v1 === false ?
                             <Typography>
                                 <RouterLink className={classes.routerLink} to={"/borrower"}>
                                     <Link
@@ -352,19 +356,19 @@ export const Header: React.FC<Props> = (props: Props) => {
                                         href=""
                                         underline="none">
                                         Borrower
-                                    </Link>
+                            </Link>
                                 </RouterLink>
                             </Typography> :
                             <Typography className={classes.link} color="textSecondary">
                                 Borrower
-                            </Typography>
+                    </Typography>
                         }
                     </Grid>
                     <Grid
                         item
                         xs
                     >
-                        {connected === true ?
+                        {connected === true && v1 === false ?
                             <Typography>
                                 <RouterLink className={classes.routerLink} to={"/teams"}>
                                     <Link
@@ -373,12 +377,12 @@ export const Header: React.FC<Props> = (props: Props) => {
                                         href=""
                                         underline="none">
                                         NFTs
-                                    </Link>
+                            </Link>
                                 </RouterLink>
                             </Typography> :
                             <Typography className={classes.link} color="textSecondary">
                                 NFTs
-                            </Typography>
+                    </Typography>
                         }
                     </Grid>
                     <Grid

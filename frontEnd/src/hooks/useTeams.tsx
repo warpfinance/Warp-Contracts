@@ -1,12 +1,10 @@
 import { useWeb3React } from '@web3-react/core';
-import { Web3ReactContextInterface } from '@web3-react/core/dist/types';
 import React, { useEffect, useState } from 'react'
-import { WarpControlService } from '../services/warpControl';
+import { V1WarpControlService } from '../services/v1Control';
 
 import { getLogger } from '../util/logger'
 import { getContractAddress } from '../util/networks';
-import { ConnectedWeb3Context } from './connectedWeb3';
-import { RefreshToken, useRefreshToken } from './useRefreshToken';
+import { useRefreshToken } from './useRefreshToken';
 
 const logger = getLogger('Hooks::useTeams');
 
@@ -54,8 +52,8 @@ export const TeamContextProvider: React.FC = props => {
       const networkId = context.chainId;
       const userAccount = context.account;
       
-      const controlAddress = getContractAddress(networkId, 'warpControl');
-      const control = new WarpControlService(provider, userAccount, controlAddress);
+      const controlAddress = getContractAddress(networkId, 'v1Control');
+      const control = new V1WarpControlService(provider, userAccount, controlAddress);
 
       const foundOnTeam = await control.hasJoinedTeam(userAccount);
 

@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { DashboardTable, Header, InformationCard } from "../../components";
+import { CustomButton, DashboardTable, Header, InformationCard } from "../../components";
 import { Grid, LinearProgress, Typography } from "@material-ui/core";
 
 import { BorrowerCountdownContext } from "../../hooks/borrowerCountdown";
@@ -15,6 +15,7 @@ import { useStableCoinTokens } from "../../hooks/useStableCoins";
 import { useTotalLentAmount } from "../../hooks/useTotalLentAmount";
 import { useUSDCToken } from "../../hooks/useUSDC";
 import { useWarpControl } from "../../hooks/useWarpControl";
+import { useMigrationStatus } from "../../hooks/useMigrations";
 
 const useStyles = makeStyles(theme => ({
     progress: {
@@ -24,11 +25,11 @@ const useStyles = makeStyles(theme => ({
 
 interface Props { }
 
-// TO-DO: Web3 integration
-
-
 export const Dashboard: React.FC<Props> = (props: Props) => {
     const classes = useStyles();
+
+    const migrationStatus = useMigrationStatus();
+    const v1 = migrationStatus.needsMigration;
 
     const context = useConnectedWeb3Context();
     const stableCoins = useStableCoinTokens(context);
@@ -115,6 +116,19 @@ export const Dashboard: React.FC<Props> = (props: Props) => {
                     <InformationCard header="Borrow balance (in USDC)" text={`$${data.borrowBalance.toFixed(2)}`} />
                 </Grid>
             </Grid>
+            {v1 === true ?
+            <Grid
+                item
+                container
+                direction="row"
+                justify="center"
+                alignItems="center"
+            >
+                <CustomButton href="/migrate" text="Migrate to V2" type="long"/>
+            </Grid>
+            :
+            null
+            }
             <Grid
                 item
                 container

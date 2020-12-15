@@ -1,15 +1,7 @@
 import { NetworkCell } from "@material-ui/icons";
 import { DEFAULT_TOKEN } from "./constants";
 import { getImageUrl, Token } from "./token";
-
-const getEnv = (variable: string, fallback?: string): string => {
-	const res = process.env[variable];
-	if (res) {
-		return res;
-	}
-
-	return fallback ? fallback : "";
-};
+import { getEnv } from "./tools";
 
 export type NetworkId = 1 | 42 | 1337;
 
@@ -24,6 +16,7 @@ interface Network {
 	uri: string;
 	contracts: {
 		warpControl: string;
+		v1Control: string;
 	};
 }
 
@@ -35,13 +28,15 @@ const networks: { [K in NetworkId]: Network } = {
 		uri: "https://mainnet.infura.io/v3/f30a8e726a8c4851bfc92a44a04bc889",
 		contracts: {
 			warpControl: "0xcc8d17feeb20969523f096797c3d5c4a490ed9a8",
+			v1Control: "0xcc8d17feeb20969523f096797c3d5c4a490ed9a8",
 		},
 	},
 	[networkIds.KOVAN]: {
 		label: "Kovan",
 		uri: "https://kovan.infura.io/v3/f30a8e726a8c4851bfc92a44a04bc889",
 		contracts: {
-			warpControl: "0x47E98d5d0e3eC5FEB55DFe03Bf0CCE6f34BA3325",
+			warpControl: "0x1a588E9EdefB05638298727B65A6789429Fc2718",
+			v1Control: "0x47E98d5d0e3eC5FEB55DFe03Bf0CCE6f34BA3325",
 		},
 	},
 	[networkIds.LOCALHOST]: {
@@ -49,6 +44,7 @@ const networks: { [K in NetworkId]: Network } = {
 		uri: "https://localhost:8545",
 		contracts: {
 			warpControl: getEnv("REACT_APP_LOCALHOST_CONTROL"),
+			v1Control: getEnv("REACT_APP_LOCALHOST_CONTROL_V1"),
 		},
 	},
 };
@@ -102,7 +98,7 @@ export const knownTokens: { [name in KnownToken]: KnownTokenData } = {
 		},
 		order: 3,
 		lp: false,
-		disabled: true
+		disabled: false
 	},
 	"eth-dai": {
 		symbol: "ETH-DAI",
