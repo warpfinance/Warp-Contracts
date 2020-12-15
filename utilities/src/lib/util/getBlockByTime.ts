@@ -13,6 +13,7 @@ export const getBlockByTime = async (
   targetTimestamp: number,
   lowerLimitStamp: number,
   higherLimitStamp: number,
+  debug?: boolean
 ) => {
   // target timestamp or last midnight
   targetTimestamp = targetTimestamp || moment.utc().startOf('day').unix();
@@ -98,15 +99,18 @@ export const getBlockByTime = async (
     return new Date(ts);
   };
 
-  logger.log('tgt timestamp   ->', targetTimestamp);
-  logger.log('tgt date        ->', toDate(targetTimestamp));
-  logger.log('');
+  if (debug) {
+    logger.log('tgt timestamp   ->', targetTimestamp);
+    logger.log('tgt date        ->', toDate(targetTimestamp));
+    logger.log('');
 
-  logger.log('block timestamp ->', block.timestamp);
-  logger.log('block date      ->', toDate(block.timestamp));
-  logger.log('');
+    logger.log('block timestamp ->', block.timestamp);
+    logger.log('block date      ->', toDate(block.timestamp));
+    logger.log('');
 
-  logger.log('requests made   ->', requestsMade);
+    logger.log('requests made   ->', requestsMade);
+  }
+  
 
   return block;
 };

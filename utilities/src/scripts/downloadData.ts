@@ -1,47 +1,29 @@
 import { ethers } from 'ethers';
 import moment from 'moment';
 
-import { WarpControlService } from './lib/contracts/warpControlService';
-import { getBlocksOfInterest } from './lib/logic/blocksOfInterest';
-import { gatherDataPoints } from './lib/logic/gatherDataPoints';
-import { createGetUserTVLConfig } from './lib/logic/tvlCalculator';
-import { getBlockNearTime, getDateString, getLogger, Token } from './lib/util';
-import { getContractAddress, getTokensByNetwork } from './lib/util/networks';
+import { WarpControlService } from '../lib/contracts/warpControlService';
+import { getBlocksOfInterest } from '../lib/logic/blocksOfInterest';
+import { gatherDataPoints } from '../lib/logic/gatherDataPoints';
+import { createGetUserTVLConfig } from '../lib/logic/tvlCalculator';
+import { getBlockNearTime, getDateString, getLogger, Token } from '../lib/util';
+import { getContractAddress, getTokensByNetwork } from '../lib/util/networks';
 
 import * as fs from 'fs';
-import { runMethodSafe } from './lib/util/runner';
-import { competitionEndDate, infuraKey, platformOpenDate } from './config';
+import { runMethodSafe } from '../lib/util/runner';
+import { competitionEndDate, infuraKey, platformOpenDate } from '../config';
 
-require('dotenv').config();
+const logger = getLogger('scripts::downloadData');
 
-const logger = getLogger('datapoints');
-
-const origin = platformOpenDate;
-const end = competitionEndDate;
-
-interface TeamMember {
-  address: string;
-  tvl: string;
-  lp: string;
-  sc: string;
-}
-
-interface Team {
-  name: string;
-  code: string;
-  tvl: string;
-  lp: string;
-  sc: string;
-  numMembers: number;
-  members: TeamMember[];
-}
-
-const pullData = async () => {
+export const downloadData = async () => {
+  logger.log(`Downloading Data.`);
   const context = {
     provider: new ethers.providers.InfuraProvider('homestead', infuraKey),
     networkId: 1,
   };
   const { provider, networkId } = context;
+
+  const origin = platformOpenDate;
+  const end = competitionEndDate;
 
   const control = new WarpControlService(getContractAddress(networkId, 'warpControl'), provider, null);
   const scTokens = getTokensByNetwork(networkId, false);
@@ -89,6 +71,16 @@ const pullData = async () => {
 
   const fileContents = JSON.stringify(dataPointResponse);
   fs.writeFileSync(filename, fileContents);
+
+  return dataPointResponse;
 };
 
-runMethodSafe(pullData);
+const runDownloadData = async () => {
+  await downloadData();
+}
+
+if (require.main === module) {
+  runMethodSafe(runDownloadData);
+}
+
+
