@@ -29,7 +29,6 @@ interface Props {
     error: boolean,
     handleClose: (event: {}, reason: "backdropClick" | "escapeKeyDown") => void,
     iconSrcPrimary: string,
-    iconSrcSecondary?: string,
     migrateDepositDisabled: boolean,
     migrateWithdrawDisabled: boolean,
     migrateApproveDisabled: boolean,
@@ -37,7 +36,10 @@ interface Props {
     open: boolean,
     onWithdrawClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void,
     value: string
-    onApproveClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void
+    onApproveClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void,
+    iconSrcSecondary?: string,
+    displayValue?: string,
+
 }
 
 export const MigrateModal: React.FC<Props> = (props: Props) => {
@@ -101,6 +103,18 @@ export const MigrateModal: React.FC<Props> = (props: Props) => {
                                     <Grid item>
                                     </Grid>
                                 </Grid>
+                                {props.displayValue === undefined || props.displayValue === null || props.displayValue === "" ? null :
+                                    <Grid
+                                        container
+                                        direction="column"
+                                        justify="center"
+                                        alignItems="center"
+                                    >
+                                        <Typography variant="subtitle1">
+                                            {`$${props.displayValue}`}
+                                        </Typography>
+                                    </Grid>
+                                }
                             </CardContent>
                         </Card>
                         <Grid

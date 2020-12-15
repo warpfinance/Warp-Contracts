@@ -241,7 +241,7 @@ export const Migrate: React.FC<Props> = (props: Props) => {
             setTransactionModalOpen(false);
             return;
         }
-        
+
         setMigrationState("withdraw");
 
         await txInfo.finished;
@@ -252,7 +252,7 @@ export const Migrate: React.FC<Props> = (props: Props) => {
         setMigrateWithdrawDisabled(true);
     }
 
-    const onApproveClick = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => { 
+    const onApproveClick = async (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
         if (!migrationVault) {
             console.error(`no migration vault set!`);
             return;
@@ -404,6 +404,7 @@ export const Migrate: React.FC<Props> = (props: Props) => {
                 action="Withdraw"
                 amount={displayAmount}
                 currency={migrationVault?.token.symbol || 'token'}
+                displayValue={displayValue}
                 iconSrc={"token"}
                 onButtonClick={onWithdraw}
                 handleClose={handleWithdrawClose}
@@ -411,6 +412,7 @@ export const Migrate: React.FC<Props> = (props: Props) => {
             <MigrateModal
                 action="Migrate"
                 currency={migrationVault?.token.symbol || 'token'}
+                displayValue={displayValue}
                 error={false}
                 handleClose={handleMigrateClose}
                 iconSrcPrimary={"token"}
