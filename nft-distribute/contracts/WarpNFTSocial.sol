@@ -15,6 +15,7 @@ contract WarpNFTSocial is Ownable, ERC721 {
 **/
   constructor(string memory _URI) ERC721("Warp Social NFT", "WSNFT") public {
     URI = _URI;
+    idTracker = 0;
   }
 
 /**
@@ -22,9 +23,9 @@ contract WarpNFTSocial is Ownable, ERC721 {
 @param _to is the address the NFT is being minted to
 **/
   function mintNewNFT(address _to) public onlyOwner {
-    idTracker = idTracker++;
     _safeMint(_to, idTracker);
     _setTokenURI(idTracker, URI);
+    idTracker++;
   }
 
 

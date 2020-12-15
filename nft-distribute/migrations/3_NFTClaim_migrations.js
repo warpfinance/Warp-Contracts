@@ -4,12 +4,14 @@ const WarpNFTLegendary = artifacts.require("WarpNFTLegendary");
 const WarpNFTRare = artifacts.require("WarpNFTRare");
 const WarpNFTSocial = artifacts.require("WarpNFTSocial");
 
-module.exports = function(deployer) {
-  deployer.deploy(
+module.exports = async function(deployer) {
+  await deployer.deploy(
     WarpNFTClaimControl,
     WarpNFTEpic.address,
     WarpNFTLegendary.address,
     WarpNFTRare.address,
     WarpNFTSocial.address
   );
+
+
 };
