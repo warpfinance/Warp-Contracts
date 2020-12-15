@@ -1,5 +1,5 @@
 export interface TotalValueLocked {
-    sc: number;
-    lp: number;
-    tvl: number;
+  sc: number;
+  lp: number;
+  tvl: number;
 }

@@ -11,6 +11,6 @@ export const competitionStartDate = moment(platformOpenDate).add(1, 'hours').val
 export const competitionEndDate = moment(platformOpenDate).add(12, 'hours').valueOf();
 
 if (!infuraKey) {
-    logger.error(`No infura key provided!`);
-    throw Error(`No infura key`);
+  logger.error(`No infura key provided!`);
+  throw Error(`No infura key`);
 }

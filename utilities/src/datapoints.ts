@@ -20,75 +20,75 @@ const origin = platformOpenDate;
 const end = competitionEndDate;
 
 export interface TeamMember {
-    address: string;
-    tvl: string;
-    lp: string;
-    sc: string;
+  address: string;
+  tvl: string;
+  lp: string;
+  sc: string;
 }
 
 export interface Team {
-    name: string;
-    code: string;
-    tvl: string;
-    lp: string;
-    sc: string;
-    numMembers: number;
-    members: TeamMember[];
+  name: string;
+  code: string;
+  tvl: string;
+  lp: string;
+  sc: string;
+  numMembers: number;
+  members: TeamMember[];
 }
 
 const pullData = async () => {
-    const context = {
-        provider: new ethers.providers.InfuraProvider('homestead', infuraKey),
-        networkId: 1,
-    };
-    const { provider, networkId } = context;
+  const context = {
+    provider: new ethers.providers.InfuraProvider('homestead', infuraKey),
+    networkId: 1,
+  };
+  const { provider, networkId } = context;
 
-    const control = new WarpControlService(getContractAddress(networkId, 'warpControl'), provider, null);
-    const scTokens = getTokensByNetwork(networkId, false);
-    const lpTokens = getTokensByNetwork(networkId, true);
+  const control = new WarpControlService(getContractAddress(networkId, 'warpControl'), provider, null);
+  const scTokens = getTokensByNetwork(networkId, false);
+  const lpTokens = getTokensByNetwork(networkId, true);
 
-    let usdcToken: Maybe<Token> = null;
-    for (const scToken of scTokens) {
-        if (scToken.symbol === 'USDC') {
-            usdcToken = scToken;
-        }
+  let usdcToken: Maybe<Token> = null;
+  for (const scToken of scTokens) {
+    if (scToken.symbol === 'USDC') {
+      usdcToken = scToken;
     }
-    if (!usdcToken) {
-        throw Error('No USDC token found');
-    }
+  }
+  if (!usdcToken) {
+    throw Error('No USDC token found');
+  }
 
-    const settingPadding = 20;
-    logger.log(
-        `Current Settings\n${'Origin Date:'.padEnd(settingPadding)}${moment(origin).format()}\n${'End Date:'.padEnd(
-            settingPadding,
-        )}${moment(end).format()}`,
-    );
+  const settingPadding = 20;
+  logger.log(
+    `Current Settings\n${'Origin Date:'.padEnd(settingPadding)}${moment(origin).format()}\n${'End Date:'.padEnd(
+      settingPadding,
+    )}${moment(end).format()}`,
+  );
 
-    const originBlock = await getBlockNearTime(provider, origin);
-    const endBlock = await getBlockNearTime(provider, end);
+  const originBlock = await getBlockNearTime(provider, origin);
+  const endBlock = await getBlockNearTime(provider, end);
 
-    const numBlocks = endBlock.number - originBlock.number;
-    logger.log(
-        `Finding blocks of interest between block ${originBlock.number} and ${endBlock.number}. Search area is ${numBlocks} blocks.`,
-    );
+  const numBlocks = endBlock.number - originBlock.number;
+  logger.log(
+    `Finding blocks of interest between block ${originBlock.number} and ${endBlock.number}. Search area is ${numBlocks} blocks.`,
+  );
 
-    const blocksToQuery = await getBlocksOfInterest(control, scTokens, lpTokens, originBlock, endBlock);
+  const blocksToQuery = await getBlocksOfInterest(control, scTokens, lpTokens, originBlock, endBlock);
 
-    logger.log(`There are ${Object.entries(blocksToQuery).length} blocks to query.`);
+  logger.log(`There are ${Object.entries(blocksToQuery).length} blocks to query.`);
 
-    const cachedConfig = await createGetUserTVLConfig(control, scTokens, usdcToken);
-    const dataPointResponse = await gatherDataPoints(blocksToQuery, cachedConfig);
+  const cachedConfig = await createGetUserTVLConfig(control, scTokens, usdcToken);
+  const dataPointResponse = await gatherDataPoints(blocksToQuery, cachedConfig);
 
-    if (dataPointResponse.error) {
-        logger.error(`Encountered an error while gathering data:\n${dataPointResponse.error}`);
-    }
+  if (dataPointResponse.error) {
+    logger.error(`Encountered an error while gathering data:\n${dataPointResponse.error}`);
+  }
 
-    const timestamp = getDateString();
-    const filename = `data_${timestamp}.json`;
-    logger.log(`Saving data as ${filename} on disk`);
+  const timestamp = getDateString();
+  const filename = `data_${timestamp}.json`;
+  logger.log(`Saving data as ${filename} on disk`);
 
-    const fileContents = JSON.stringify(dataPointResponse);
-    fs.writeFileSync(filename, fileContents);
+  const fileContents = JSON.stringify(dataPointResponse);
+  fs.writeFileSync(filename, fileContents);
 };
 
 runMethodSafe(pullData);

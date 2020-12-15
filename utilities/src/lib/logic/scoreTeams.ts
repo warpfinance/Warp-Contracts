@@ -1,17 +1,20 @@
 import { Team } from '../../datapoints';
-import { getLogger } from '../util';
+import { getLogger, TotalValueLocked } from '../util';
 import { AccountScores } from './scoreAccounts';
-import { Teams } from './teamHelpers';
+import { convertTeamsToLookup, Teams } from './teamHelpers';
 
 const logger = getLogger('Logic::scoreTeams');
 
 export interface TeamScore {
-    team: Team;
-    tvl: number;
+  team: Team;
+  tvl: TotalValueLocked;
 }
 
 export interface TeamScores {
-    [teamCode: string]: TeamScore;
+  [teamCode: string]: TeamScore;
 }
 
-export const calculateTeamScores = (scores: AccountScores, teams: Teams) => {};
+export const calculateTeamScores = (scores: AccountScores, teams: Teams) => {
+  const teamScores: TeamScores = {};
+  const userToTeam = convertTeamsToLookup(teams);
+};
