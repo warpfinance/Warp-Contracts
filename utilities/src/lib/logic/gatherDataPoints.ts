@@ -39,16 +39,19 @@ export const gatherDataPoints = async (
   let lastBlock = 0;
   try {
     for (const blockNumber of queryBlocks) {
-      logger.log(`Getting data from block number ${blockNumber}`);
+      //logger.log(`Getting data from block number ${blockNumber}`);
       setTransactionCallBlockNumber(blockNumber);
 
       const blockDataPoints: ScoreDataPoint = {};
       const blockParticipants = blocksToQuery[blockNumber].accounts;
-      logger.log(`${blockParticipants.length} accounts to get data from`);
+
+      if (blockParticipants.length == 0) {
+        logger.warn(`Block ${blockNumber} doesn't have any participants, this shouldn't happen.`);
+      }
 
       for (const account of blockParticipants) {
         const userTVLAtBlock = await getUserTVL(account, cachedConfig);
-        logger.debug(`Calculated ${account} TVL as ${userTVLAtBlock.tvl.toFixed(0)} at block ${blockNumber}`);
+        logger.log(`Calculated ${account} TVL as ${userTVLAtBlock.tvl.toFixed(2)} at block ${blockNumber}`);
 
         blockDataPoints[account] = {
           tvl: userTVLAtBlock,

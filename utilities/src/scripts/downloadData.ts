@@ -63,7 +63,7 @@ export const downloadData = async (checkpointData?: ScoreDataHistoryResult) => {
       return checkpointData;
     }
 
-    originBlock = await provider.getBlock(checkpointData.lastBlock);
+    originBlock = await provider.getBlock(checkpointData.lastBlock + 1);
   } else {
     originBlock = await getBlockNearTime(provider, origin);
   }
@@ -81,7 +81,7 @@ export const downloadData = async (checkpointData?: ScoreDataHistoryResult) => {
   let cancelTries = 0;
   const terminateHandler = () => {
     earlyCancelToken.cancel(`User requested early exit.`);
-    console.log(`Cancelling... please wait a minute.`);
+    logger.warn(`Cancelling... please wait a minute.`);
     ++cancelTries;
 
     if (cancelTries > 3) {
@@ -101,6 +101,14 @@ export const downloadData = async (checkpointData?: ScoreDataHistoryResult) => {
 
   if (dataPointResponse.error) {
     logger.error(`Encountered an error while gathering data:\n${dataPointResponse.error}`);
+  }
+
+  if (checkpointData) {
+    logger.log(`Merging checkpoint data`);
+    dataPointResponse.data = {
+      ...dataPointResponse.data,
+      ...checkpointData.data
+    }
   }
 
   const fileContents = JSON.stringify(dataPointResponse);

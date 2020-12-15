@@ -1,10 +1,17 @@
 
 import { AccountScores } from './scoreAccounts';
-import { convertTeamsToLookup, Team, Teams } from './teamHelpers';
+import { convertTeamsToLookup, Team, TeamMember, Teams } from './teamHelpers';
 
+interface ScoredTeamMember extends TeamMember {
+  weightedScore: number;
+}
+
+interface ScoredTeam extends Team {
+  members: ScoredTeamMember[];
+}
 
 export interface TeamScore {
-  team: Team;
+  team: ScoredTeam;
   weightedScore: number;
 }
 
@@ -12,15 +19,24 @@ export interface TeamScores {
   [teamCode: string]: TeamScore;
 }
 
-const addAccountScoreToTeamScore = (teamScores: TeamScores, weightedScore: number, team: Team): TeamScore => {
+const addAccountScoreToTeamScore = (teamScores: TeamScores, account: string, weightedScore: number, team: Team): TeamScore => {
   let teamScore = teamScores[team.code];
   if (!teamScore) {
     teamScores[team.code] = {
-      team: team,
+      team: {
+        code: team.code,
+        name: team.name,
+        members: []
+      },
       weightedScore: 0
     }
     teamScore = teamScores[team.code]
   }
+
+  teamScore.team.members.push({
+    account,
+    weightedScore
+  });
 
   teamScore.weightedScore += weightedScore;
 
@@ -34,8 +50,8 @@ const addAccountScoreToNullTeam = (teamScores: TeamScores, account: string, weig
     members: []
   }
 
-  const teamScore = addAccountScoreToTeamScore(teamScores, weightedScore, defaultNullTeam);
-  teamScore.team.members.push({account});
+  const teamScore = addAccountScoreToTeamScore(teamScores, account, weightedScore, defaultNullTeam);
+  teamScore.team.members.push({account, weightedScore});
 }
 
 export const calculateTeamScores = (scores: AccountScores, teams: Teams, noTeamCode="0x0") => {
@@ -47,10 +63,17 @@ export const calculateTeamScores = (scores: AccountScores, teams: Teams, noTeamC
     const weightedScore = score.weightedScore;
 
     if (team) {
-      addAccountScoreToTeamScore(teamScores, weightedScore, team);
+      addAccountScoreToTeamScore(teamScores, account, weightedScore, team);
     } else {
       addAccountScoreToNullTeam(teamScores, account, weightedScore, noTeamCode);
     }
+  }
+
+  // Sort team members based on score
+  for (const teamScore of Object.values(teamScores)) {
+    teamScore.team.members = teamScore.team.members.sort((a: ScoredTeamMember, b: ScoredTeamMember) => {
+      return b.weightedScore - a.weightedScore;
+    });
   }
 
   return teamScores;
