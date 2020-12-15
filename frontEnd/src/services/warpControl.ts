@@ -14,15 +14,7 @@ const warpControlABI:string [] = [
   'function viewTotalBorrowedValue(address _account) public view returns (uint256)',
   'function viewBorrowLimit(address _account) public view returns (uint256)',
   'function borrowSC(address _StableCoin, uint256 _amount) public',
-  'function Oracle() public view returns (address)',
-  'function createGroup(string memory _groupName) public',
-  'function addMemberToGroup(address _refferalCode) public',
-  'function groupsYourIn(address _account) public view returns (address)',
-  'function isInGroup(address _account) public view returns (bool)',
-  'function existingRefferalCode(address _team) public view returns (bool)',
-  'function getGroupName(address _refferalCode) public view returns(string memory)',
-  'function viewAllGroups() public view returns(address[] memory)',
-  'function viewAllMembersOfAGroup(address _refferalCode) public view returns(address[] memory)'
+  'function Oracle() public view returns (address)'
 ]
 
 const logger = getLogger('Services::WarpControlService')
@@ -100,49 +92,4 @@ export class WarpControlService {
   oracle = async (): Promise<string> => {
     return await this.contract.Oracle();
   }
-
-  createTeam = async (teamName: string): Promise<TransactionInfo> => {
-    const tx = await this.contract.createGroup(teamName);
-
-    logger.log("Create Team Hash: " + tx.hash);
-
-    return createTransactionInfo(this.provider, tx);
-  }
-
-  joinTeam = async (teamCode: string): Promise<TransactionInfo> => {
-    const tx = await this.contract.addMemberToGroup(teamCode);
-
-    logger.log("Join team hash: " + tx.hash);
-
-    return createTransactionInfo(this.provider, tx);
-  }
-
-  hasJoinedTeam = async (account: string): Promise<boolean> => {
-    return await this.contract.isInGroup(account);
-  }
-
-  getTeamCode = async (account: string): Promise<string> => {
-    return await this.contract.groupsYourIn(account);
-  }
-
-  getTeamName = async (teamCode: string): Promise<string> => {
-    return await this.contract.getGroupName(teamCode);
-  }
-
-  teamExists = async (teamCode: string): Promise<boolean> => {
-    return await this.contract.existingRefferalCode(teamCode);
-  }
-  
-  getTeams = async (): Promise<string[]> => {
-    return await this.contract.viewAllGroups();
-  }
-
-  getTeamMembers = async (teamCode: string): Promise<string[]> => {
-    return await this.contract.viewAllMembersOfAGroup(teamCode);
-  }
-
-
-
-
-
 }

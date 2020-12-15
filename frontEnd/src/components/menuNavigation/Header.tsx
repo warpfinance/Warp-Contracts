@@ -6,7 +6,6 @@ import { CustomButton, ErrorCustomButton, NotificationModal, TeamJoinModal, Team
 import FileCopyOutlinedIcon from '@material-ui/icons/FileCopyOutlined';
 import { Link as RouterLink } from 'react-router-dom';
 import { TransactionInfo } from "../../util/types";
-import { WarpControlService } from "../../services/warpControl";
 import { copyTextToClipboard } from "../../util/tools"
 import { getContractAddress } from "../../util/networks";
 import { getLogger } from "../../util/logger";
@@ -18,6 +17,7 @@ import { useState } from "react";
 import { useTeams } from "../../hooks/useTeams";
 import { useWeb3React } from "@web3-react/core";
 import { useMigrationStatus } from "../../hooks/useMigrations";
+import { V1WarpControlService } from "../../services/v1Control";
 
 const useStyles = makeStyles(theme => ({
     content: {
@@ -143,7 +143,7 @@ export const Header: React.FC<Props> = (props: Props) => {
         }
 
         const controlAddress = getContractAddress(context.chainId, 'warpControl');
-        const control = new WarpControlService(context.library, context.account, controlAddress);
+        const control = new V1WarpControlService(context.library, context.account, controlAddress);
         let tx: Maybe<TransactionInfo> = null;
         try {
             tx = await control.createTeam(teamNameOverride);
@@ -178,7 +178,7 @@ export const Header: React.FC<Props> = (props: Props) => {
         }
 
         const controlAddress = getContractAddress(context.chainId, 'warpControl');
-        const control = new WarpControlService(context.library, context.account, controlAddress);
+        const control = new V1WarpControlService(context.library, context.account, controlAddress);
 
         const exists = await control.teamExists(teamCodeOverride);
 

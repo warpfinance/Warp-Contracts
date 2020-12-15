@@ -1,6 +1,6 @@
 import { ERC20Service } from "../services/erc20";
 import { StableCoinWarpVaultService } from "../services/stableCoinWarpVault";
-import { WarpControlService } from "../services/warpControl";
+import { V1WarpControlService } from "../services/v1Control";
 import { getLogger } from "./logger";
 import { getContractAddress, getTokensByNetwork } from "./networks";
 import { Token } from "./token";
@@ -45,8 +45,8 @@ export const calculateTeamMetrics = async (provider: any, networkId: number): Pr
 
   
 
-  const controlAddress = getContractAddress(networkId, 'warpControl');
-  const control = new WarpControlService(provider, null, controlAddress);
+  const controlAddress = getContractAddress(networkId, 'v1Control');
+  const control = new V1WarpControlService(provider, null, controlAddress);
 
   interface StableCoinVault {
     service: StableCoinWarpVaultService;
