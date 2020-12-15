@@ -355,13 +355,16 @@ export const Migrate: React.FC<Props> = (props: Props) => {
 
         setConfirmingTransaction(false);
         setMigrationState("finish");
+        setTransactionModalOpen(false);
+
+        setMigrationStatusTest(`You have successfully migrated your ${migrationVault.token.symbol} into v2`);
 
         migrationStatus.refresh();
     }
 
     const handleMigrateClose = (event: {}, reason: "backdropClick" | "escapeKeyDown") => {
         logger.log(`Close reason was ${reason}`)
-        if (migrationState == "withdraw" || migrationState == "approve") {
+        if (migrationState == "withdraw" || migrationState == "approve" || migrationState == "deposit") {
             logger.log(`User is mid migration, ignoring close command`);
             return;
         }
