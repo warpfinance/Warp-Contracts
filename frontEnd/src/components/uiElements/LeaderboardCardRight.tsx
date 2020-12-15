@@ -52,7 +52,7 @@ export const LeaderboardCardRight: React.FC<Props> = (props: Props) => {
                         item
                     >
                         <Typography variant="h5">
-                            {nftTime === true ? "Social NFTs claim" : "Information"}
+                            NFTs claim
                         </Typography>
                         <Card>
                             <CardContent>
@@ -77,7 +77,7 @@ export const LeaderboardCardRight: React.FC<Props> = (props: Props) => {
                                                         </TableCell>
                                                         <TableCell>
                                                             <Typography variant="subtitle1">
-                                                                {nftAmounts.legendary} NFTs
+                                                                150% Boost
                                                         </Typography>
                                                         </TableCell>
                                                         <TableCell>
@@ -95,7 +95,7 @@ export const LeaderboardCardRight: React.FC<Props> = (props: Props) => {
                                                         </TableCell>
                                                         <TableCell>
                                                             <Typography variant="subtitle1">
-                                                                {nftAmounts.epic} NFTs
+                                                                75% Boost
                                                         </Typography>
                                                         </TableCell>
                                                         <TableCell>
@@ -113,7 +113,7 @@ export const LeaderboardCardRight: React.FC<Props> = (props: Props) => {
                                                         </TableCell>
                                                         <TableCell>
                                                             <Typography variant="subtitle1">
-                                                                {nftAmounts.rare} NFTs
+                                                                15% Boost
                                                         </Typography>
                                                         </TableCell>
                                                         <TableCell>
@@ -121,6 +121,21 @@ export const LeaderboardCardRight: React.FC<Props> = (props: Props) => {
                                                                 onClick={(event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => onClaimClick(event, "rare")}
                                                                 text="Claim"
                                                                 type="short" />
+                                                        </TableCell>
+                                                    </TableRow>
+                                                    <TableRow>
+                                                        <TableCell>
+                                                            <Typography variant="subtitle1" color="textSecondary">
+                                                                Social
+                                                        </Typography>
+                                                        </TableCell>
+                                                        <TableCell>
+                                                            <Typography variant="subtitle1">
+                                                                15% Boost
+                                                            </Typography>
+                                                        </TableCell>
+                                                        <TableCell>
+                                                            <CustomButton onClick={() => setNftModalOpen(true)} text="Claim" type="short" />
                                                         </TableCell>
                                                     </TableRow>
                                                 </Table>
