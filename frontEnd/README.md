@@ -27,6 +27,19 @@ git push
 
 Deploys on Heroku to [here](https://warpfinance-warp-test.herokuapp.com)
 
+## UAT Deploy
+
+Update uatDeploy branch with just frontEnd directory from uat
+```bash
+git checkout uat
+git pull
+git subtree split --prefix frontEnd -b uatDeploy
+git checkout uatDeploy
+git push
+```
+
+Deploys on Heroku to [here](https://warpfinance-warp-uat.herokuapp.com)
+
 ## Production Deploy
 
 Update deploy branch with just frontEnd directory from master

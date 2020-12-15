@@ -64,7 +64,7 @@ export const TeamLeaderboardTable: React.FC<Props> = (props: Props) => {
                         })}
                         {emptyRows > 0 && (
                             <TableRow style={{ height: 110 * emptyRows }}>
-                                <TableCell colSpan={6} />
+                                <TableCell/>
                             </TableRow>
                         )}
                     </TableBody>
@@ -83,7 +83,6 @@ export const TeamLeaderboardTable: React.FC<Props> = (props: Props) => {
                             onChangeRowsPerPage={handleChangeRowsPerPage}
                             //@ts-ignore
                             ActionsComponent={TablePaginationActions}
-                            style={{ width: 600 }}
                         />
                     </TableFooter>
                 </Table>

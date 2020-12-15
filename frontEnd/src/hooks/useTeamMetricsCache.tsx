@@ -1,7 +1,7 @@
 
 
 import React from 'react';
-import { Team, TeamMetrics } from '../util/calculateTeamMetrics';
+import { TeamMetrics } from '../util/calculateTeamMetrics';
 import { getLogger } from '../util/logger';
 import { dateReviver } from '../util/tools';
 

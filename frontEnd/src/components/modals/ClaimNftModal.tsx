@@ -10,36 +10,19 @@ const useStyles = makeStyles(theme => ({
         borderRadius: "25px",
         boxShadow: "0 40px 80px -20px rgba(0, 0, 0, 0.25)",
     },
-    maxButton: {
-        "&:hover": {
-            cursor: "pointer",
-            color: "#FFFFFF",
-        }
-    },
-    smallIcon: {
-        width: theme.spacing(3),
-        height: theme.spacing(3),
-    },
 }));
 
 interface Props {
-    action: string,
     amount: number | string,
-    currency: string,
-    iconSrc: string,
     handleClose: (event: {}, reason: "backdropClick" | "escapeKeyDown") => void,
     onButtonClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void,
-    onMaxButtonClick?: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void,
-    open: boolean
+    open: boolean,
+    type: "social" | "legendary" | "epic" | "rare",
+    disabled?: boolean,
 }
 
-export const SimpleModal: React.FC<Props> = (props: Props) => {
+export const ClaimNftModal: React.FC<Props> = (props: Props) => {
     const classes = useStyles();
-    const [checked, setChecked] = React.useState(false);
-
-    const handleCheck = (event: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
-        setChecked(event.target.checked);
-    };
 
     return (
         <Dialog
@@ -55,8 +38,8 @@ export const SimpleModal: React.FC<Props> = (props: Props) => {
                     justify="center"
                     alignItems="center"
                 >
-                    <CustomDialogTitle onClose={props.handleClose} >{props.action}</CustomDialogTitle>
-                    <Typography variant="subtitle1" color="textSecondary" >Please confirm {props.action.charAt(0).toLowerCase() + props.action.slice(1)}</Typography>
+                    <CustomDialogTitle onClose={props.handleClose} >Claim NFTs</CustomDialogTitle>
+                    <Typography variant="subtitle1" color="textSecondary" >{props.type.charAt(0).toUpperCase() + props.type.slice(1) + " NFTs"}</Typography>
                     <Grid
                         container
                         direction="column"
@@ -71,41 +54,25 @@ export const SimpleModal: React.FC<Props> = (props: Props) => {
                                     justify="space-around"
                                     alignItems="center"
                                 >
-                                    <Grid item xs={3}>
-                                        <Checkbox
-                                            checked={checked}
-                                            onChange={handleCheck}
-                                        />
+                                    <Grid item xs={4}>
                                     </Grid>
-                                    <Grid item>
-                                        <Avatar alt={props.iconSrc} className={classes.smallIcon} src={props.iconSrc} />
-                                    </Grid>
-                                    <Grid item xs={5}>
+                                    <Grid item xs={4}>
                                         <Typography variant="subtitle1">
-                                            {props.amount + " " + props.currency}
+                                            {props.amount}
                                         </Typography>
                                     </Grid>
                                     <Grid item>
-                                        {props.onMaxButtonClick ?
-                                            <Typography
-                                                className={classes.maxButton}
-                                                onClick={props.onMaxButtonClick}
-                                                color="textSecondary"
-                                                variant="subtitle1"
-                                            >
-                                                max
+                                        <Typography variant="subtitle1">
+                                            NFTs
                                         </Typography>
-                                            :
-                                            null
-                                        }
                                     </Grid>
                                 </Grid>
                             </CardContent>
                         </Card>
                         <CustomButton
-                            disabled={checked !== true}
+                            disabled={props.disabled ? props.disabled : false}
                             onClick={props.onButtonClick}
-                            text={props.action.charAt(0).toUpperCase() + props.action.slice(1)}
+                            text={"Claim " + props.type.charAt(0).toUpperCase() + props.type.slice(1) + " NFTs"}
                             type="short" />
                     </Grid>
                 </Grid>

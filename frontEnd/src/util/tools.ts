@@ -96,3 +96,12 @@ export const dateReviver = (key: any, value: any): any =>  {
 export function lowercaseFirstLetter(value: string){
   return value[0].toLowerCase() + value.slice(1);
 }
+
+export const getEnv = (variable: string, fallback?: string): string => {
+	const res = process.env[variable];
+	if (res) {
+		return res;
+	}
+
+	return fallback ? fallback : "";
+};

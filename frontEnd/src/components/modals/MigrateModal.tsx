@@ -1,8 +1,10 @@
 import * as React from "react";
 
+import { Amount, CustomButton, CustomDialogTitle, Text } from "../../components";
 import { Avatar, Card, CardContent, Checkbox, Dialog, DialogContent, Grid, Typography } from "@material-ui/core";
-import { CustomButton, CustomDialogTitle, Text } from "../../components";
 
+import { AvatarGroup } from "@material-ui/lab";
+import { Token } from "../../util/token";
 import { makeStyles } from "@material-ui/core";
 
 const useStyles = makeStyles(theme => ({
@@ -24,16 +26,21 @@ const useStyles = makeStyles(theme => ({
 
 interface Props {
     action: string,
-    amount: number | string,
     currency: string,
-    iconSrc: string,
+    error: boolean,
     handleClose: (event: {}, reason: "backdropClick" | "escapeKeyDown") => void,
-    onButtonClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void,
-    onMaxButtonClick?: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void,
-    open: boolean
+    iconSrc: string,
+    migrateDepositDisabled: boolean,
+    migrateWithdrawDisabled: boolean,
+    migrateApproveDisabled: boolean,
+    onDepositClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void,
+    open: boolean,
+    onWithdrawClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void,
+    value: string
+    onApproveClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void
 }
 
-export const SimpleModal: React.FC<Props> = (props: Props) => {
+export const MigrateModal: React.FC<Props> = (props: Props) => {
     const classes = useStyles();
     const [checked, setChecked] = React.useState(false);
 
@@ -44,7 +51,7 @@ export const SimpleModal: React.FC<Props> = (props: Props) => {
     return (
         <Dialog
             className={classes.dialog}
-            maxWidth={"xs"}
+            maxWidth={"sm"}
             fullWidth={true}
             onClose={props.handleClose}
             open={props.open} >
@@ -56,7 +63,6 @@ export const SimpleModal: React.FC<Props> = (props: Props) => {
                     alignItems="center"
                 >
                     <CustomDialogTitle onClose={props.handleClose} >{props.action}</CustomDialogTitle>
-                    <Typography variant="subtitle1" color="textSecondary" >Please confirm {props.action.charAt(0).toLowerCase() + props.action.slice(1)}</Typography>
                     <Grid
                         container
                         direction="column"
@@ -82,31 +88,37 @@ export const SimpleModal: React.FC<Props> = (props: Props) => {
                                     </Grid>
                                     <Grid item xs={5}>
                                         <Typography variant="subtitle1">
-                                            {props.amount + " " + props.currency}
+                                            {props.value + " " + props.currency}
                                         </Typography>
                                     </Grid>
                                     <Grid item>
-                                        {props.onMaxButtonClick ?
-                                            <Typography
-                                                className={classes.maxButton}
-                                                onClick={props.onMaxButtonClick}
-                                                color="textSecondary"
-                                                variant="subtitle1"
-                                            >
-                                                max
-                                        </Typography>
-                                            :
-                                            null
-                                        }
                                     </Grid>
                                 </Grid>
                             </CardContent>
                         </Card>
-                        <CustomButton
-                            disabled={checked !== true}
-                            onClick={props.onButtonClick}
-                            text={props.action.charAt(0).toUpperCase() + props.action.slice(1)}
-                            type="short" />
+                        <Grid
+                            container
+                            item
+                            direction="row"
+                            justify="space-around"
+                            alignItems="center"
+                        >
+                            <CustomButton
+                                disabled={props.error === true || props.migrateWithdrawDisabled === true || checked !== true}
+                                onClick={props.onWithdrawClick}
+                                text={"Withdraw"}
+                                type="short" />
+                            <CustomButton
+                                disabled={props.error === true || props.migrateApproveDisabled === true || checked !== true}
+                                onClick={props.onApproveClick}
+                                text={"Approve"}
+                                type="short" />
+                            <CustomButton
+                                disabled={props.error === true || props.migrateDepositDisabled === true || checked !== true}
+                                onClick={props.onDepositClick}
+                                text={"Deposit"}
+                                type="short" />
+                        </Grid>
                     </Grid>
                 </Grid>
             </DialogContent>

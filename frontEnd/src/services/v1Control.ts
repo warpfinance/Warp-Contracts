@@ -25,9 +25,9 @@ const warpControlABI:string [] = [
   'function viewAllMembersOfAGroup(address _refferalCode) public view returns(address[] memory)'
 ]
 
-const logger = getLogger('Services::WarpControlService')
+const logger = getLogger('Services::V1WarpControlService')
 
-export class WarpControlService {
+export class V1WarpControlService {
   provider: any
   contract: Contract
 
