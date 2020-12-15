@@ -70,7 +70,7 @@ export const CustomButton: React.FC<Props> = (props: Props) => {
         className={classes.button}
         disabled={props.disabled}
         id={props.id}
-        onClick={props.disabled === true ? undefined: props.onClick}
+        onClick={props.disabled === true ? undefined : props.onClick}
         startIcon={icon}
         style={{
             border: border,
@@ -84,7 +84,7 @@ export const CustomButton: React.FC<Props> = (props: Props) => {
         {props.text}
     </Button>;
 
-    const content = !props.href ? button :
+    const content = !props.href || props.disabled === true ? button :
         <Link
             className={classes.routerLink}
             target={props.externalHref === true ? "_blank" : ""}
