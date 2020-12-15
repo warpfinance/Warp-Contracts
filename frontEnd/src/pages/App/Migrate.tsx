@@ -17,6 +17,7 @@ import { getContractAddress } from "../../util/networks";
 import { getLogger } from "../../util/logger";
 import { useConnectedWeb3Context } from "../../hooks/connectedWeb3";
 import { useNotificationModal } from "../../hooks/useNotificationModal";
+import { Redirect } from "react-router-dom";
 
 interface Props {
 }
@@ -38,7 +39,6 @@ export const Migrate: React.FC<Props> = (props: Props) => {
 
     const [withdrawModalOpen, setWithdrawModalOpen] = React.useState(false);
 
-
     const [migrationVault, setMigrationVault] = React.useState<Maybe<MigrationVault>>(null);
 
     // The quantity of tokens to display
@@ -51,6 +51,8 @@ export const Migrate: React.FC<Props> = (props: Props) => {
 
     const [transactionSubmitted, setTransactionSubmitted] = React.useState<boolean>(false);
     const [transactionInfo, setTransactionInfo] = React.useState<TransactionInfo>({ hash: "" } as TransactionInfo);
+    const [confirmingTransaction, setConfirmingTransaction] = React.useState(false);
+    const [migrationStatusText, setMigrationStatusTest] = React.useState("");
 
     const [migrateModalOpen, setMigrateModalOpen] = React.useState(false);
     const [migrateDepositDisabled, setMigrateDepositDisabled] = React.useState(true);
@@ -220,6 +222,9 @@ export const Migrate: React.FC<Props> = (props: Props) => {
         setMigrateApproveDisabled(true);
         setMigrateWithdrawDisabled(false);
         logger.log(`User is migrating ${vault.token.symbol}`);
+        setConfirmingTransaction(false);
+
+        setMigrationStatusTest("Confirm and press withdraw to start the migration process.");
     }
 
     /* 
@@ -242,10 +247,15 @@ export const Migrate: React.FC<Props> = (props: Props) => {
             return;
         }
 
+        setMigrationStatusTest("Please wait for the transaction to be confirmed. Please do not navigate away.");
+        setConfirmingTransaction(true);
+        setMigrateWithdrawDisabled(true);
         setMigrationState("withdraw");
 
         await txInfo.finished;
+        setConfirmingTransaction(false);
         setTransactionModalOpen(false);
+        setMigrationStatusTest("Press 'Approve' to approve v2 to migrate your tokens.");
 
         setMigrateDepositDisabled(true);
         setMigrateApproveDisabled(false);
@@ -287,9 +297,14 @@ export const Migrate: React.FC<Props> = (props: Props) => {
         }
 
         setMigrationState("approve");
+        setMigrationStatusTest("Please wait for the transaction to be confirmed. Please do not navigate away.");
+        setConfirmingTransaction(true);
+        setMigrateApproveDisabled(true);
 
         await txInfo.finished;
         setTransactionModalOpen(false);
+        setMigrationStatusTest("Press 'Deposit' to migrate funds into v2 and complete the migration.");
+        setConfirmingTransaction(false);
 
         setMigrateDepositDisabled(false);
         setMigrateApproveDisabled(true);
@@ -321,13 +336,16 @@ export const Migrate: React.FC<Props> = (props: Props) => {
         setMigrateWithdrawDisabled(true);
         setMigrateApproveDisabled(true);
 
-        await txInfo.finished;
+        setMigrationStatusTest("Migration will be complete once the transaction is confirmed.");
+
+        //await txInfo.finished;
 
         console.log(`User has successfully migrated ${migrationVault.token.symbol}`);
 
-        setTransactionModalOpen(false);
+        //setTransactionModalOpen(false);
         setMigrationState("finish");
 
+        await txInfo.finished;
         migrationStatus.refresh();
     }
 
@@ -338,6 +356,8 @@ export const Migrate: React.FC<Props> = (props: Props) => {
             return;
         }
         else {
+            setMigrationStatusTest("");
+            setConfirmingTransaction(false);
             setMigrateModalOpen(false);
             setDisplayAmount("");
             setDisplayValue("");
@@ -353,6 +373,7 @@ export const Migrate: React.FC<Props> = (props: Props) => {
 
     return (
         <React.Fragment>
+            {!migrationStatus.needsMigration ? <Redirect to="/dashboard" /> : null}
             <Grid
                 container
                 direction="column"
@@ -404,7 +425,7 @@ export const Migrate: React.FC<Props> = (props: Props) => {
                 amount={displayAmount}
                 currency={migrationVault?.token.symbol || 'token'}
                 displayValue={displayValue}
-                iconSrc={"token"}
+                iconSrc={migrationVault?.token.image || 'token'}
                 onButtonClick={onWithdraw}
                 handleClose={handleWithdrawClose}
                 open={withdrawModalOpen} />
@@ -414,17 +435,17 @@ export const Migrate: React.FC<Props> = (props: Props) => {
                 displayValue={displayValue}
                 error={false}
                 handleClose={handleMigrateClose}
-                iconSrcPrimary={"token"}
-                iconSrcSecondary={"token"}
+                iconSrcPrimary={migrationVault?.token.image || 'token'}
+                iconSrcSecondary={migrationVault?.token.image2 || 'token2'}
                 onDepositClick={onMigrateDeposit}
                 onWithdrawClick={onMigrateWithdraw}
                 onApproveClick={onApproveClick}
                 open={migrateModalOpen}
-                loading={true}
+                loading={confirmingTransaction}
                 migrateDepositDisabled={migrateDepositDisabled}
                 migrateWithdrawDisabled={migrateWithdrawDisabled}
                 migrateApproveDisabled={migrateApproveDisabled}
-                status={"loading..."}
+                status={migrationStatusText}
                 value={displayAmount}
             />
             <TransactionModal

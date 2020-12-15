@@ -93,14 +93,17 @@ export const MigrationStatusProvider: React.FC = props => {
         const vaultBalance = await vault.getBalance(account);
         if (vaultBalance.gt(BigNumber.from(0))) {
           const value = parseBigNumber(await control.getStableCoinPrice(scToken.address, vaultBalance), usdcToken.decimals);
-          hasAssetsToMigrate = true;
-          scVaults.push({
-            amount: vaultBalance.toString(),
-            token: scToken,
-            value
-          });
 
-          logger.log(`${account} needs to migrate ${formatBigNumber(vaultBalance, scToken.decimals)} ${scToken.symbol}`);
+          if (value > 0.0001) {
+            hasAssetsToMigrate = true;
+            scVaults.push({
+              amount: vaultBalance.toString(),
+              token: scToken,
+              value
+            });
+  
+            logger.log(`${account} needs to migrate ${formatBigNumber(vaultBalance, scToken.decimals, scToken.decimals)} ${scToken.symbol}`);
+          }
         }
       }
 
@@ -114,14 +117,16 @@ export const MigrationStatusProvider: React.FC = props => {
           const price = parseBigNumber(pricePerLP, usdcToken.decimals);
           const value = lpAmount * price;
 
-          hasAssetsToMigrate = true;
-          lpVaults.push({
-            amount: vaultBalance.toString(),
-            token: lpToken,
-            value
-          });
+          if (value > 0.0001) {
+            hasAssetsToMigrate = true;
+            lpVaults.push({
+              amount: vaultBalance.toString(),
+              token: lpToken,
+              value
+            });
 
-          logger.log(`${account} needs to migrate ${formatBigNumber(vaultBalance, lpToken.decimals)} ${lpToken.symbol}`);
+            logger.log(`${account} needs to migrate ${formatBigNumber(vaultBalance, lpToken.decimals, lpToken.decimals)} ${lpToken.symbol}`);
+          }
         }
       }
 

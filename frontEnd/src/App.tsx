@@ -136,6 +136,12 @@ const App: React.FC = () => {
 													<Route exact={true} path="/connect" component={Connect} />
 													<Route exact={true} path="/dashboard"
 														render={() => <Web3AccountRequired><Dashboard /></Web3AccountRequired>} />
+													<Route exact={true} path="/migrate"
+														render={() => <Web3AccountRequired><Migrate /></Web3AccountRequired>} />
+													<Route exact={true} path="/markets"
+														render={() => <ConnectedWeb3><Markets /></ConnectedWeb3>} />
+													<Route exact={true} path="/generate"
+														render={() => <ConnectedWeb3><CalculateMetrics /></ConnectedWeb3>} />
 													<MigrationStatusContext.Consumer>
 														{value =>
 															value.needsMigration === false ?
@@ -149,15 +155,10 @@ const App: React.FC = () => {
 																	<Route exact={true} path="/team/:code"
 																		render={() => <Web3AccountRequired><IntraTeamLeaderboard /></Web3AccountRequired>} />
 																</React.Fragment>
-																:
-																<Route exact={true} path="/migrate"
-																	render={() => <Web3AccountRequired><Migrate /></Web3AccountRequired>} />
+																: null
 														}
 													</MigrationStatusContext.Consumer>
-													<Route exact={true} path="/markets"
-														render={() => <ConnectedWeb3><Markets /></ConnectedWeb3>} />
-													<Route exact={true} path="/generate"
-														render={() => <ConnectedWeb3><CalculateMetrics /></ConnectedWeb3>} />
+													
 												</Switch>
 											</div>
 										</CssBaseline>

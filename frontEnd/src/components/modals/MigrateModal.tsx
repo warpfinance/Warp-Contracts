@@ -88,7 +88,7 @@ export const MigrateModal: React.FC<Props> = (props: Props) => {
                         justify="center"
                         alignItems="stretch"
                     >
-                        {props.status === undefined || props.status === null || props.status === "" ? null :
+                        {!props.loading ? null :
                             <LinearProgress color="secondary" />
                         }
                         <Card>
@@ -130,8 +130,8 @@ export const MigrateModal: React.FC<Props> = (props: Props) => {
                                         justify="center"
                                         alignItems="center"
                                     >
-                                        <Typography variant="subtitle1">
-                                            {`$${props.displayValue}`}
+                                        <Typography variant="subtitle2">
+                                            {`Migrating $${props.displayValue} USDC worth of ${props.currency}`}
                                         </Typography>
                                     </Grid>
                                 }
