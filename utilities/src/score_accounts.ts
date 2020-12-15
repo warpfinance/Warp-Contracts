@@ -1,4 +1,4 @@
-import { getBlockNearTime, getLogger } from './lib/util';
+import { getBlockNearTime, getDateString, getLogger } from './lib/util';
 import { runMethodSafe } from './lib/util/runner';
 import * as fs from 'fs';
 import { ScoreDataHistoryResult } from './lib/logic/gatherDataPoints';
@@ -55,8 +55,12 @@ const scoring = async () => {
 
   const accountScores = calculateAccountScores(dataByAccount, competitionStartBlock.number, competitionEndBlock.number);
 
-  console.log(JSON.stringify(accountScores, undefined, 2));
+  const timestamp = getDateString();
+  const filename = `account_scores_${timestamp}.json`;
+  logger.log(`Saving data as ${filename} on disk`);
 
+  const toWriteContents = JSON.stringify(accountScores);
+  fs.writeFileSync(filename, toWriteContents);
 };
 
 runMethodSafe(scoring);
