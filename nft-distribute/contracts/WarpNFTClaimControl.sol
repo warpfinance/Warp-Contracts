@@ -105,26 +105,22 @@ function socialWhiteLister(address[] memory _addresses) public onlyOwner {
 **/
 function claimNFTs() public {
 
-  if(epicWhiteList[msg.sender] == true) {
-    require(epicClaimed[msg.sender] == false);
+  if(epicWhiteList[msg.sender] == true && epicClaimed[msg.sender] == false) {
     WNFTE.mintNewNFT(msg.sender);
     epicClaimed[msg.sender] = true;
   }
 
-  if(legendaryWhiteList[msg.sender] == true) {
-    require(legendaryClaimed[msg.sender] == false);
+  if(legendaryWhiteList[msg.sender] == true && legendaryClaimed[msg.sender] == false) {
     WNFTL.mintNewNFT(msg.sender);
     legendaryClaimed[msg.sender] = true;
   }
 
-  if(rareWhiteList[msg.sender] == true) {
-    require(rareClaimed[msg.sender] == false);
+  if(rareWhiteList[msg.sender] == true && rareClaimed[msg.sender] == false) {
     WNFTR.mintNewNFT(msg.sender);
     rareClaimed[msg.sender] = true;
   }
 
-  if(socialWhiteList[msg.sender] == true) {
-    require(socialClaimed[msg.sender] == false);
+  if(socialWhiteList[msg.sender] == true && socialClaimed[msg.sender] == false) {
     WNFTS.mintNewNFT(msg.sender);
     socialClaimed[msg.sender] = true;
   }
@@ -180,6 +176,14 @@ function canClaim(address _account) public view returns(bool) {
   if(socialWhiteList[_account] == true && socialClaimed[_account] == false) {
     return true;
   }
+
+
+function upgradeClaimControl(address _newCCadd) public onlyOwner {
+  WNFTE.transferOwnership(_newCCadd);
+  WNFTL.transferOwnership(_newCCadd);
+  WNFTR.transferOwnership(_newCCadd);
+  WNFTS.transferOwnership(_newCCadd);
+
 }
 
 }
