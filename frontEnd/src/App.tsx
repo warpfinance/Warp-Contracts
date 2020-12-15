@@ -33,6 +33,7 @@ import { Web3ReactProvider } from '@web3-react/core'
 import { ethers } from "ethers";
 import { useState } from "react";
 import { MigrationStatusContext, MigrationStatusProvider } from "./hooks/useMigrations";
+import { NftTimeContext } from "./hooks/nftTime";
 
 const outerTheme = createMuiTheme({
 	palette: {
@@ -121,50 +122,52 @@ const App: React.FC = () => {
 
 	return (
 		<Web3ReactProvider getLibrary={getLibrary}>
-			<Router>
-				<ThemeProvider theme={outerTheme}>
-					<BorrowerCountdownContext.Provider value={{ countdown: countdown, countdownText: countdownText }} >
-						<TeamContextProvider>
-							<TeamMetricsProvider>
-								<MigrationStatusProvider>
-									<CssBaseline>
-										<div className={classes.root}>
-											<Switch>
-												<Route exact={true} path="/" component={Home} />
-												<Route exact={true} path="/connect" component={Connect} />
-												<Route exact={true} path="/dashboard"
-													render={() => <Web3AccountRequired><Dashboard /></Web3AccountRequired>} />
-												<MigrationStatusContext.Consumer>
-													{value =>
-														value.needsMigration === false ?
-															<React.Fragment>
-																<Route exact={true} path="/borrower"
-																	render={() => <Web3AccountRequired><Borrower /></Web3AccountRequired>} />
-																<Route exact={true} path="/lender"
-																	render={() => <Web3AccountRequired><Lender /></Web3AccountRequired>} />
-																<Route exact={true} path="/teams"
-																	render={() => <Web3AccountRequired><TeamLeaderboard /></Web3AccountRequired>} />
-																<Route exact={true} path="/team/:code"
-																	render={() => <Web3AccountRequired><IntraTeamLeaderboard /></Web3AccountRequired>} />
-															</React.Fragment>
-															:
-															<Route exact={true} path="/migrate"
-																render={() => <Web3AccountRequired><Migrate /></Web3AccountRequired>} />
-													}
-												</MigrationStatusContext.Consumer>
-												<Route exact={true} path="/markets"
-													render={() => <ConnectedWeb3><Markets /></ConnectedWeb3>} />
-												<Route exact={true} path="/generate"
-													render={() => <ConnectedWeb3><CalculateMetrics /></ConnectedWeb3>} />
-											</Switch>
-										</div>
-									</CssBaseline>
-								</MigrationStatusProvider>
-							</TeamMetricsProvider>
-						</TeamContextProvider>
-					</BorrowerCountdownContext.Provider>
-				</ThemeProvider>
-			</Router>
+			<NftTimeContext.Provider value={{nftTime: true}}>
+				<Router>
+					<ThemeProvider theme={outerTheme}>
+						<BorrowerCountdownContext.Provider value={{ countdown: countdown, countdownText: countdownText }} >
+							<TeamContextProvider>
+								<TeamMetricsProvider>
+									<MigrationStatusProvider>
+										<CssBaseline>
+											<div className={classes.root}>
+												<Switch>
+													<Route exact={true} path="/" component={Home} />
+													<Route exact={true} path="/connect" component={Connect} />
+													<Route exact={true} path="/dashboard"
+														render={() => <Web3AccountRequired><Dashboard /></Web3AccountRequired>} />
+													<MigrationStatusContext.Consumer>
+														{value =>
+															value.needsMigration === false ?
+																<React.Fragment>
+																	<Route exact={true} path="/borrower"
+																		render={() => <Web3AccountRequired><Borrower /></Web3AccountRequired>} />
+																	<Route exact={true} path="/lender"
+																		render={() => <Web3AccountRequired><Lender /></Web3AccountRequired>} />
+																	<Route exact={true} path="/teams"
+																		render={() => <Web3AccountRequired><TeamLeaderboard /></Web3AccountRequired>} />
+																	<Route exact={true} path="/team/:code"
+																		render={() => <Web3AccountRequired><IntraTeamLeaderboard /></Web3AccountRequired>} />
+																</React.Fragment>
+																:
+																<Route exact={true} path="/migrate"
+																	render={() => <Web3AccountRequired><Migrate /></Web3AccountRequired>} />
+														}
+													</MigrationStatusContext.Consumer>
+													<Route exact={true} path="/markets"
+														render={() => <ConnectedWeb3><Markets /></ConnectedWeb3>} />
+													<Route exact={true} path="/generate"
+														render={() => <ConnectedWeb3><CalculateMetrics /></ConnectedWeb3>} />
+												</Switch>
+											</div>
+										</CssBaseline>
+									</MigrationStatusProvider>
+								</TeamMetricsProvider>
+							</TeamContextProvider>
+						</BorrowerCountdownContext.Provider>
+					</ThemeProvider>
+				</Router>
+			</NftTimeContext.Provider>
 		</Web3ReactProvider>
 	)
 }
