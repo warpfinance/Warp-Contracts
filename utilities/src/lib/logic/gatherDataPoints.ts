@@ -1,9 +1,9 @@
-import { getLogger, setTransactionCallBlockNumber } from '../util';
+import { getLogger, setTransactionCallBlockNumber, TotalValueLocked } from '../util';
 import { BlocksOfInterest } from './blocksOfInterest';
-import { getUserTVL, GetUserTVLConfig, UserTVL } from './tvl';
+import { getUserTVL, GetUserTVLConfig } from './tvlCalculator';
 
 export interface AccountScoreDataPoint {
-    tvl: UserTVL;
+    tvl: TotalValueLocked;
 }
 
 export interface ScoreDataPoint {
@@ -62,13 +62,13 @@ export const gatherDataPoints = async (
         return {
             error: e,
             data: dataPoints,
-            lastBlock
+            lastBlock,
         };
     }
 
     return {
         error: undefined,
         data: dataPoints,
-        lastBlock
+        lastBlock,
     };
 };

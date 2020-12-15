@@ -4,7 +4,7 @@ import moment from 'moment';
 import { WarpControlService } from './lib/contracts/warpControlService';
 import { getBlocksOfInterest } from './lib/logic/blocksOfInterest';
 import { gatherDataPoints } from './lib/logic/gatherDataPoints';
-import { createGetUserTVLConfig } from './lib/logic/tvl';
+import { createGetUserTVLConfig } from './lib/logic/tvlCalculator';
 import { getBlockNearTime, getDateString, getLogger, Token } from './lib/util';
 import { getContractAddress, getTokensByNetwork } from './lib/util/networks';
 
@@ -17,8 +17,7 @@ require('dotenv').config();
 const logger = getLogger('datapoints');
 
 const origin = platformOpenDate;
-const end = competitionEndDate
-
+const end = competitionEndDate;
 
 export interface TeamMember {
     address: string;

@@ -1,6 +1,6 @@
 import { ethers } from 'ethers';
 import { StableCoinWarpVaultService, WarpControlService } from '../contracts';
-import { getLogger, parseBigNumber, Token } from '../util';
+import { getLogger, parseBigNumber, Token, TotalValueLocked } from '../util';
 
 export interface ScTokenVault {
     token: Token;
@@ -14,13 +14,7 @@ export interface GetUserTVLConfig {
     usdcToken: Token;
 }
 
-export interface UserTVL {
-    sc: number;
-    lp: number;
-    tvl: number;
-}
-
-const logger = getLogger('Logic::TVL');
+const logger = getLogger('logic::tvlCalculator');
 
 export const createGetUserTVLConfig = async (control: WarpControlService, scTokens: Token[], usdcToken: Token) => {
     const scTokenVaults: ScTokenVault[] = [];
@@ -44,7 +38,7 @@ export const createGetUserTVLConfig = async (control: WarpControlService, scToke
     return cachedConfig;
 };
 
-export const getUserTVL = async (account: string, config: GetUserTVLConfig): Promise<UserTVL> => {
+export const getUserTVL = async (account: string, config: GetUserTVLConfig): Promise<TotalValueLocked> => {
     const lpTVL = parseBigNumber(await config.control.getTotalCollateralValue(account), config.usdcToken.decimals);
 
     let scTVL = 0;

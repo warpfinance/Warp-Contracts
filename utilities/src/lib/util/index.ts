@@ -5,3 +5,4 @@ export * from './logger';
 export * from './networks';
 export * from './token';
 export * from './tools';
+export * from './types';

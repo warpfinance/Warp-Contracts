@@ -9,58 +9,62 @@ import { calculateAccountScores } from './lib/logic/scoreAccounts';
 
 require('dotenv').config();
 
-const logger = getLogger('scoring');
+const logger = getLogger('score_accounts');
 
 const scoring = async () => {
-  if (process.argv.length < 3) {
-    logger.error(`a 'filepath' parameter is required. Pass in the name of the data json file in the cli`);
-    return;
-  }
-  const filePath = process.argv[2];
+    if (process.argv.length < 3) {
+        logger.error(`a 'filepath' parameter is required. Pass in the name of the data json file in the cli`);
+        return;
+    }
+    const filePath = process.argv[2];
 
-  console.log(`Loading data from ${filePath}`);
+    console.log(`Loading data from ${filePath}`);
 
-  let fileContents: Maybe<string> = null;
-  
-  try {
-    fileContents = fs.readFileSync(filePath).toString();
-  } catch (e) {
-    console.error(`Failed to load ${filePath}\n${e}`);
-    return;
-  }
+    let fileContents: Maybe<string> = null;
 
-  const dataFile = JSON.parse(fileContents) as ScoreDataHistoryResult;
+    try {
+        fileContents = fs.readFileSync(filePath).toString();
+    } catch (e) {
+        console.error(`Failed to load ${filePath}\n${e}`);
+        return;
+    }
 
-  if (dataFile.error) {
-    console.warn(`${filePath} indicates an error occurred. An inaccurate result is likely.`);
-  }
+    const dataFile = JSON.parse(fileContents) as ScoreDataHistoryResult;
 
-  logger.log(`Data file is ${fileContents.length} characters long.`);
+    if (dataFile.error) {
+        console.warn(`${filePath} indicates an error occurred. An inaccurate result is likely.`);
+    }
 
-  logger.info(`There is data from ${Object.keys(dataFile.data).length} different blocks.`);
+    logger.log(`Data file is ${fileContents.length} characters long.`);
 
-  const dataByAccount = convertScoreDataToPerAccount(dataFile.data);
+    logger.info(`There is data from ${Object.keys(dataFile.data).length} different blocks.`);
 
-  logger.info(`There are ${Object.keys(dataByAccount).length} accounts to score.`);
+    const dataByAccount = convertScoreDataToPerAccount(dataFile.data);
 
-  logger.log(`There are ${calculateNumberOfDataPoints(dataFile.data)} data points to process.`);
+    logger.info(`There are ${Object.keys(dataByAccount).length} accounts to score.`);
 
-  const context = {
-    provider: new ethers.providers.InfuraProvider('homestead', infuraKey),
-    networkId: 1,
-  };
-  const { provider } = context;
-  const competitionStartBlock = await getBlockNearTime(provider, competitionStartDate);
-  const competitionEndBlock = await getBlockNearTime(provider, competitionEndDate);
+    logger.log(`There are ${calculateNumberOfDataPoints(dataFile.data)} data points to process.`);
 
-  const accountScores = calculateAccountScores(dataByAccount, competitionStartBlock.number, competitionEndBlock.number);
+    const context = {
+        provider: new ethers.providers.InfuraProvider('homestead', infuraKey),
+        networkId: 1,
+    };
+    const { provider } = context;
+    const competitionStartBlock = await getBlockNearTime(provider, competitionStartDate);
+    const competitionEndBlock = await getBlockNearTime(provider, competitionEndDate);
 
-  const timestamp = getDateString();
-  const filename = `account_scores_${timestamp}.json`;
-  logger.log(`Saving data as ${filename} on disk`);
+    const accountScores = calculateAccountScores(
+        dataByAccount,
+        competitionStartBlock.number,
+        competitionEndBlock.number,
+    );
 
-  const toWriteContents = JSON.stringify(accountScores);
-  fs.writeFileSync(filename, toWriteContents);
+    const timestamp = getDateString();
+    const filename = `account_scores_${timestamp}.json`;
+    logger.log(`Saving data as ${filename} on disk`);
+
+    const toWriteContents = JSON.stringify(accountScores);
+    fs.writeFileSync(filename, toWriteContents);
 };
 
 runMethodSafe(scoring);
