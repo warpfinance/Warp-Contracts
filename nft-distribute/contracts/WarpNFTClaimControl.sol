@@ -23,6 +23,7 @@ contract WarpNFTClaimControl is Ownable {
   mapping(address => bool) public legendaryWhiteList;
   mapping(address => bool) public rareWhiteList;
   mapping(address => bool) public socialWhiteList;
+
   mapping(address => bool) public epicClaimed;
   mapping(address => bool) public legendaryClaimed;
   mapping(address => bool) public rareClaimed;
@@ -162,6 +163,22 @@ function hasSocial(address _account) public view returns(bool) {
     return true;
   } else {
     return false;
+  }
+}
+
+
+function canClaim(address _account) public view returns(bool) {
+  if(epicWhiteList[_account] == true && epicClaimed[_account] == false) {
+    true;
+  }
+  if(legendaryWhiteList[_account] == true && legendaryClaimed[_account] == false) {
+    true;
+  }
+  if(rareWhiteList[_account] == true && rareClaimed[_account] == false) {
+    true;
+  }
+  if(socialWhiteList[_account] == true && socialClaimed[_account] == false) {
+    true;
   }
 }
 
