@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { Avatar, Card, CardContent, Checkbox, Dialog, DialogContent, Grid, Typography } from "@material-ui/core";
+import { Avatar, Card, CardContent, Checkbox, Dialog, DialogContent, Grid, LinearProgress, Typography } from "@material-ui/core";
 import { CustomButton, CustomDialogTitle } from "../../components";
 
 import { AvatarGroup } from "@material-ui/lab";
@@ -39,7 +39,8 @@ interface Props {
     onApproveClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void,
     iconSrcSecondary?: string,
     displayValue?: string,
-
+    status?: string,
+    loading?: boolean,
 }
 
 export const MigrateModal: React.FC<Props> = (props: Props) => {
@@ -65,12 +66,29 @@ export const MigrateModal: React.FC<Props> = (props: Props) => {
                     alignItems="center"
                 >
                     <CustomDialogTitle onClose={props.handleClose} >{props.action}</CustomDialogTitle>
+                    {props.status === undefined || props.status === null || props.status === "" ? null :
+                        <React.Fragment>
+                            <Grid
+                                container
+                                direction="column"
+                                justify="center"
+                                alignItems="center"
+                            >
+                                <Typography variant="subtitle1">
+                                    {props.status}
+                                </Typography>
+                            </Grid>
+                        </React.Fragment>
+                    }
                     <Grid
                         container
                         direction="column"
                         justify="center"
                         alignItems="stretch"
                     >
+                        {props.status === undefined || props.status === null || props.status === "" ? null :
+                            <LinearProgress color="secondary" />
+                        }
                         <Card>
                             <CardContent>
                                 <Grid

@@ -333,17 +333,16 @@ export const Migrate: React.FC<Props> = (props: Props) => {
 
     const handleMigrateClose = (event: {}, reason: "backdropClick" | "escapeKeyDown") => {
         logger.log(`Close reason was ${reason}`)
-        if (reason == "backdropClick") {
-            logger.debug(`backdrop hit when migrating`);
-            if (migrationState == "withdraw" || migrationState == "approve") {
-                logger.log(`User is mid migration, ignoring close command`);
-                return;
-            }
+        if (migrationState == "withdraw" || migrationState == "approve") {
+            logger.log(`User is mid migration, ignoring close command`);
+            return;
+        }
+        else {
+            setMigrateModalOpen(false);
+            setDisplayAmount("");
+            setDisplayValue("");
         }
 
-        setMigrateModalOpen(false);
-        setDisplayAmount("");
-        setDisplayValue("");
         migrationStatus.refresh();
     }
 
@@ -421,9 +420,11 @@ export const Migrate: React.FC<Props> = (props: Props) => {
                 onWithdrawClick={onMigrateWithdraw}
                 onApproveClick={onApproveClick}
                 open={migrateModalOpen}
+                loading={true}
                 migrateDepositDisabled={migrateDepositDisabled}
                 migrateWithdrawDisabled={migrateWithdrawDisabled}
                 migrateApproveDisabled={migrateApproveDisabled}
+                status={"loading..."}
                 value={displayAmount}
             />
             <TransactionModal
