@@ -117,6 +117,11 @@ contract("NFTClaim", (accounts) => {
 
   it("should add accounts seven, eight, and nine to the social whitelist and allow them to claim social NFT's", async () => {
     await Wclaim.socialWhiteLister(socialWinners, {from: account_one});
+    let canClaim = await Wclaim.canClaim(account_seven);
+    assert.equal(
+      canClaim,
+      true
+    )
     await Wclaim.claimNFTs({from: account_seven});
     let ownerOfTokenOne = await Wsocial.ownerOf("0",{from: account_seven});
     assert.equal(
@@ -137,12 +142,14 @@ contract("NFTClaim", (accounts) => {
     )
   })
 
+
   it("should show that account ten doesnt have an NFT to claim", async () => {
     await Wclaim.claimNFTs({from: account_ten});
     let epicBal = await Wepic.balanceOf(account_ten);
     let legendaryBal = await Wlegendary.balanceOf(account_ten);
     let rareBal = await Wrare.balanceOf(account_ten);
     let socialBal = await Wsocial.balanceOf(account_ten);
+    let canClaim = await Wclaim.canClaim(account_ten);
     assert.equal(
       epicBal,
       0
@@ -159,6 +166,11 @@ contract("NFTClaim", (accounts) => {
       socialBal,
       0
     )
+    assert.equal(
+      canClaim,
+      false
+    )
+
   })
 
   it("should check that every token type returns the correct URI", async () => {
@@ -241,4 +253,6 @@ contract("NFTClaim", (accounts) => {
       false
     )
   })
+
+
 });
