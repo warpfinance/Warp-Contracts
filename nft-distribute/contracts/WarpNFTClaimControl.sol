@@ -169,16 +169,16 @@ function hasSocial(address _account) public view returns(bool) {
 
 function canClaim(address _account) public view returns(bool) {
   if(epicWhiteList[_account] == true && epicClaimed[_account] == false) {
-    true;
+    return true;
   }
   if(legendaryWhiteList[_account] == true && legendaryClaimed[_account] == false) {
-    true;
+    return true;
   }
   if(rareWhiteList[_account] == true && rareClaimed[_account] == false) {
-    true;
+    return true;
   }
   if(socialWhiteList[_account] == true && socialClaimed[_account] == false) {
-    true;
+    return true;
   }
 }
 
