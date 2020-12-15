@@ -13,5 +13,20 @@ module.exports = async function(deployer) {
     WarpNFTSocial.address
   );
 
+  Wepic = await WarpNFTEpic.deployed();
+  Wlegendary = await WarpNFTLegendary.deployed();
+  Wrare = await WarpNFTRare.deployed();
+  Wsocial = await WarpNFTSocial.deployed();
 
+  await Wepic.transferOwnership(WarpNFTClaimControl.address);
+  await Wlegendary.transferOwnership(WarpNFTClaimControl.address);
+  await Wrare.transferOwnership(WarpNFTClaimControl.address);
+  await Wsocial.transferOwnership(WarpNFTClaimControl.address);
+
+  console.log("Warp NFT Claim Control address: " + WarpNFTClaimControl.address)
+  console.log("Warp Epic NFT address: " + WarpNFTEpic.address)
+  console.log("Warp Legendary NFT address: " + WarpNFTLegendary.address)
+  console.log("Warp Rare NFT address: " + WarpNFTRare.address)
+  console.log("Warp Social NFT address: " + WarpNFTSocial.address)
+  
 };

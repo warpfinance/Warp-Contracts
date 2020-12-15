@@ -127,7 +127,42 @@ function claimNFTs() public {
     WNFTS.mintNewNFT(msg.sender);
     socialClaimed[msg.sender] = true;
   }
+}
+///view function to check if an account holds a certain NFT
+function hasEpic(address _account) public view returns(bool) {
+  uint numOfTokens = WNFTE.balanceOf(_account);
+  if(numOfTokens > 0) {
+    return true;
+  } else {
+    return false;
+  }
+}
 
+function hasLegendary(address _account) public view returns(bool) {
+  uint numOfTokens = WNFTL.balanceOf(_account);
+  if(numOfTokens > 0) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+function hasRare(address _account) public view returns(bool) {
+  uint numOfTokens = WNFTR.balanceOf(_account);
+  if(numOfTokens > 0) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+function hasSocial(address _account) public view returns(bool) {
+  uint numOfTokens = WNFTS.balanceOf(_account);
+  if(numOfTokens > 0) {
+    return true;
+  } else {
+    return false;
+  }
 }
 
 }
