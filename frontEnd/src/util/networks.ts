@@ -36,7 +36,7 @@ const networks: { [K in NetworkId]: Network } = {
 		uri: "https://kovan.infura.io/v3/f30a8e726a8c4851bfc92a44a04bc889",
 		contracts: {
 			warpControl: "0x1a588E9EdefB05638298727B65A6789429Fc2718",
-			v1Control: "0x47E98d5d0e3eC5FEB55DFe03Bf0CCE6f34BA3325",
+			v1Control: "0xd45C003F5726eDb64A6D64F81cF7f22B671a5021",
 		},
 	},
 	[networkIds.LOCALHOST]: {
