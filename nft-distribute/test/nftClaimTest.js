@@ -35,10 +35,6 @@ contract("NFTClaim", (accounts) => {
      Wlegendary = await WarpNFTLegendary.deployed();
      Wrare = await WarpNFTRare.deployed();
      Wsocial = await WarpNFTSocial.deployed();
-     await Wepic.transferOwnership(WarpNFTClaimControl.address);
-     await Wlegendary.transferOwnership(WarpNFTClaimControl.address);
-     await Wrare.transferOwnership(WarpNFTClaimControl.address);
-     await Wsocial.transferOwnership(WarpNFTClaimControl.address);
   });
 
   it("should check that the proper URI is set for each NFT", async () => {
@@ -194,5 +190,55 @@ contract("NFTClaim", (accounts) => {
          "https://ipfs.io/ipfs/QmXvWfNugEm1BvzJ28KXV9r3Www1bXP3bLwE8cJBdiDY6r",
           "URI's DO NOT MATCH"
         );
+  })
+
+  it("should tell us if an account holds a specific token", async () => {
+    let holdsEpic = await Wclaim.hasEpic(account_one);
+    assert.equal(
+      holdsEpic,
+      true
+    )
+
+    let doesntHoldEpic = await Wclaim.hasEpic(account_ten);
+    assert.equal(
+      doesntHoldEpic,
+      false
+    )
+
+    let holdsLegendary = await Wclaim.hasLegendary(account_three);
+    assert.equal(
+      holdsLegendary,
+      true
+    )
+
+    let doesntHoldLegendary = await Wclaim.hasLegendary(account_ten);
+    assert.equal(
+      doesntHoldLegendary,
+      false
+    )
+
+    let holdsRare = await Wclaim.hasRare(account_five);
+    assert.equal(
+      holdsRare,
+      true
+    )
+
+    let doesntHoldRare = await Wclaim.hasRare(account_ten);
+    assert.equal(
+      doesntHoldRare,
+      false
+    )
+
+    let holdsSocial = await Wclaim.hasSocial(account_seven);
+    assert.equal(
+      holdsSocial,
+      true
+    )
+
+    let doesntHoldSocial = await Wclaim.hasSocial(account_ten);
+    assert.equal(
+      doesntHoldSocial,
+      false
+    )
   })
 });
