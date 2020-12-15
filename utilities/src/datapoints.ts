@@ -19,14 +19,14 @@ const logger = getLogger('datapoints');
 const origin = platformOpenDate;
 const end = competitionEndDate;
 
-export interface TeamMember {
+interface TeamMember {
   address: string;
   tvl: string;
   lp: string;
   sc: string;
 }
 
-export interface Team {
+interface Team {
   name: string;
   code: string;
   tvl: string;

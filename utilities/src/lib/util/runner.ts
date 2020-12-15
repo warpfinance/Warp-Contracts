@@ -1,4 +1,4 @@
-export const runMethodSafe = async (func: Function) => {
+export const runMethodSafe = async (func: () => void) => {
   try {
     await func();
   } catch (e) {

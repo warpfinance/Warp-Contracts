@@ -1,9 +1,5 @@
-import { Contract, Wallet, ethers, utils } from 'ethers';
+import { Contract, Wallet, ethers } from 'ethers';
 import { BigNumber } from 'ethers';
-
-import { getLogger } from '../util/logger';
-
-const logger = getLogger('Services::Erc20');
 
 const erc20Abi = [
   'function allowance(address owner, address spender) external view returns (uint256)',

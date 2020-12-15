@@ -1,6 +1,5 @@
-import { ethers } from 'ethers';
 import { StableCoinWarpVaultService, WarpControlService } from '../contracts';
-import { getLogger, parseBigNumber, Token, TotalValueLocked } from '../util';
+import { parseBigNumber, Token, TotalValueLocked } from '../util';
 
 export interface ScTokenVault {
   token: Token;
@@ -13,8 +12,6 @@ export interface GetUserTVLConfig {
   scVaults: ScTokenVault[];
   usdcToken: Token;
 }
-
-const logger = getLogger('logic::tvlCalculator');
 
 export const createGetUserTVLConfig = async (control: WarpControlService, scTokens: Token[], usdcToken: Token) => {
   const scTokenVaults: ScTokenVault[] = [];
@@ -47,8 +44,6 @@ export const getUserTVL = async (account: string, config: GetUserTVLConfig): Pro
     const value = tokenVault.valueInUSDC * tokenAmount;
     scTVL += value;
   }
-
-  // logger.log(`${account} TVL is ${lpTVL} (LP) + ${scTVL} (SC)`);
 
   return {
     sc: scTVL,

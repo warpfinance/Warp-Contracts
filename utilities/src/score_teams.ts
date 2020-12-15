@@ -1,10 +1,12 @@
-import { getBlockNearTime, getContractAddress, getLogger } from './lib/util';
+import { getContractAddress, getDateString, getLogger } from './lib/util';
 import { runMethodSafe } from './lib/util/runner';
 import * as fs from 'fs';
-import { competitionEndDate, competitionStartDate, infuraKey } from './config';
+import { infuraKey } from './config';
 import { ethers } from 'ethers';
 import { AccountScores } from './lib/logic/scoreAccounts';
 import { WarpControlService } from './lib/contracts';
+import { calculateTeamScores, TeamScore } from './lib/logic/scoreTeams';
+import { getTeams } from './lib/logic/teamHelpers';
 
 require('dotenv').config();
 
@@ -28,23 +30,35 @@ const scoring = async () => {
     return;
   }
 
-  const dataFile = JSON.parse(fileContents) as AccountScores;
-
-  if (dataFile.error) {
-    console.warn(`${filePath} indicates an error occurred. An inaccurate result is likely.`);
-  }
+  const accountScores = JSON.parse(fileContents) as AccountScores;
 
   const context = {
     provider: new ethers.providers.InfuraProvider('homestead', infuraKey),
     networkId: 1,
   };
   const { provider, networkId } = context;
-  const competitionStartBlock = await getBlockNearTime(provider, competitionStartDate);
-  const competitionEndBlock = await getBlockNearTime(provider, competitionEndDate);
 
   const control = new WarpControlService(getContractAddress(networkId, 'warpControl'), provider, null);
 
-  const teams = await control.getTeams();
+  const teams = await getTeams(control, true);
+  const teamScoresMap = calculateTeamScores(accountScores, teams);
+
+  const teamScoresList = Object.values(teamScoresMap).sort((a: TeamScore, b: TeamScore) => {
+    return b.weightedScore - a.weightedScore;
+  });
+
+  const scoredTeams = {
+    teams: teamScoresList,
+    timestamp: new Date()
+  }
+
+
+  const timestamp = getDateString();
+  const filename = `team_scores_${timestamp}.json`;
+  logger.log(`Saving data as ${filename} on disk`);
+
+  const toWriteContents = JSON.stringify(scoredTeams);
+  fs.writeFileSync(filename, toWriteContents);
 };
 
 runMethodSafe(scoring);

@@ -1,5 +1,3 @@
-import { ethers } from 'ethers';
-
 let currentBlockNumber: Maybe<number> = null;
 
 export const getTransactionCallBlockNumber = () => {

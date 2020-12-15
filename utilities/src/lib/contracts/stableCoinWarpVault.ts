@@ -1,5 +1,4 @@
 import { BigNumber, Contract, ethers, Wallet } from 'ethers';
-import { getLogger } from '../util/logger';
 import { globalCallArgs } from './callHelper';
 
 const contractABI = [
@@ -17,8 +16,6 @@ const contractABI = [
   `function getCashPrior() public view returns (uint256)`,
   'event StableCoinLent(address _lender, uint256 _amountLent, uint256 _amountOfWarpMinted)',
 ];
-
-const logger = getLogger('Services::StableCoinVault');
 
 export class StableCoinWarpVaultService {
   provider: any;

@@ -56,9 +56,9 @@ export const calculateNumberOfDataPoints = (scoreData: ScoreDataHistory) => {
   for (const blockNumber of blocks) {
     const scoreDataPoint = scoreData[blockNumber].data;
 
-    for (const _ of Object.keys(scoreDataPoint)) {
+    Object.keys(scoreDataPoint).forEach(() => {
       numDataPoints++;
-    }
+    });
   }
 
   return numDataPoints;

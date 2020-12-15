@@ -1,5 +1,4 @@
 import { BigNumber, Contract, Wallet } from 'ethers';
-import { getLogger } from '../util/logger';
 import { globalCallArgs } from './callHelper';
 
 const warpControlABI: string[] = [
@@ -23,8 +22,6 @@ const warpControlABI: string[] = [
   'function viewAllMembersOfAGroup(address _refferalCode) public view returns(address[] memory)',
   'function viewLaunchParticipants() public view returns(address[] memory)',
 ];
-
-const logger = getLogger('Services::WarpControlService');
 
 export class WarpControlService {
   provider: any;
