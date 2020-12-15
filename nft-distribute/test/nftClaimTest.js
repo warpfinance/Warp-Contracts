@@ -115,7 +115,7 @@ contract("NFTClaim", (accounts) => {
     )
   })
 
-  it("should add accounts seven, eight, nine and ten to the social whitelist and allow them to claim social NFT's", async () => {
+  it("should add accounts seven, eight, and nine to the social whitelist and allow them to claim social NFT's", async () => {
     await Wclaim.socialWhiteLister(socialWinners, {from: account_one});
     await Wclaim.claimNFTs({from: account_seven});
     let ownerOfTokenOne = await Wsocial.ownerOf("0",{from: account_seven});

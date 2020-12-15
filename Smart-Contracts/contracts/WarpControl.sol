@@ -124,6 +124,7 @@ contract WarpControl is Ownable, Exponential {
     }
 
     function importLPVault(address _lpVault) public onlyOwner {
+      require(isVault[_lpVault] == false);
         WarpVaultLPI _vault = WarpVaultLPI(_lpVault);
         address _lp = _vault.getAssetAdd();
 
@@ -193,6 +194,8 @@ contract WarpControl is Ownable, Exponential {
     }
 
     function importSCVault(address _scVault) public onlyOwner {
+      require(isVault[_scVault] == false);
+
         WarpVaultSCI _vault = WarpVaultSCI(_scVault);
         address _token = _vault.getSCAddress();
 
