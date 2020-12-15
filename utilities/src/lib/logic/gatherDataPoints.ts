@@ -1,6 +1,7 @@
 import { getLogger, setTransactionCallBlockNumber, TotalValueLocked } from '../util';
 import { BlocksOfInterest } from './blocksOfInterest';
 import { getUserTVL, GetUserTVLConfig } from './tvlCalculator';
+import CancellationToken from 'cancellationtoken';
 
 export interface AccountScoreDataPoint {
   tvl: TotalValueLocked;
@@ -27,6 +28,7 @@ const logger = getLogger('Logic::gatherDataPoints');
 export const gatherDataPoints = async (
   blocksToQuery: BlocksOfInterest,
   cachedConfig: GetUserTVLConfig,
+  earlyCancelToken?: CancellationToken
 ): Promise<ScoreDataHistoryResult> => {
   const dataPoints: ScoreDataHistory = {};
 
@@ -57,6 +59,10 @@ export const gatherDataPoints = async (
         data: blockDataPoints,
       };
       lastBlock = blockNumber;
+
+      if (earlyCancelToken) {
+        earlyCancelToken.throwIfCancelled();
+      }
     }
   } catch (e) {
     return {

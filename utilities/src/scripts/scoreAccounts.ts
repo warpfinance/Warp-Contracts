@@ -6,6 +6,7 @@ import { calculateNumberOfDataPoints, convertScoreDataToPerAccount } from '../li
 import { competitionEndDate, competitionStartDate, infuraKey } from '../config';
 import { ethers } from 'ethers';
 import { calculateAccountScores } from '../lib/logic/scoreAccounts';
+import { outputFile } from './output';
 
 
 const logger = getLogger('scripts::scoreAccounts');
@@ -32,12 +33,8 @@ export const scoreAccounts = async (dataFile: ScoreDataHistoryResult) => {
 
   const accountScores = calculateAccountScores(dataByAccount, competitionStartBlock.number, competitionEndBlock.number);
 
-  const timestamp = getDateString();
-  const filename = `account_scores_${timestamp}.json`;
-  logger.log(`Saving data as ${filename} on disk`);
-
   const toWriteContents = JSON.stringify(accountScores);
-  fs.writeFileSync(filename, toWriteContents);
+  outputFile('accountScores', toWriteContents);
 
   return accountScores;
 };

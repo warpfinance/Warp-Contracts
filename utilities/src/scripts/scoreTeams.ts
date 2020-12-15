@@ -7,8 +7,7 @@ import { AccountScores } from '../lib/logic/scoreAccounts';
 import { WarpControlService } from '../lib/contracts';
 import { calculateTeamScores, TeamScore } from '../lib/logic/scoreTeams';
 import { getTeams } from '../lib/logic/teamHelpers';
-
-
+import { outputFile } from './output';
 
 const logger = getLogger('scripts::scoreTeams');
 
@@ -35,13 +34,8 @@ export const scoreTeams = async (accountScores: AccountScores) => {
     timestamp: new Date()
   }
 
-
-  const timestamp = getDateString();
-  const filename = `team_scores_${timestamp}.json`;
-  logger.log(`Saving data as ${filename} on disk`);
-
   const toWriteContents = JSON.stringify(scoredTeams);
-  fs.writeFileSync(filename, toWriteContents);
+  outputFile('teamScores', toWriteContents);
 };
 
 
