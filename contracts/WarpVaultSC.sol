@@ -198,11 +198,11 @@ contract WarpVaultSC is Exponential {
     }
 
     /**
-    @notice withdrawReserves allows the warp team to withdraw the reserves earned by fees
+    @notice withdrawFees allows the warp team to withdraw the reserves earned by fees
     @param _amount is the amount of a stablecoin being withdrawn
     @dev this is a protected function that can only be called by the warpTeam address
     **/
-    function withdrawReserves(uint256 _amount) public onlyWarpTeam {
+    function withdrawFees(uint256 _amount) public onlyWarpTeam {
         require(
             totalReserves >= _amount,
             "You are trying to withdraw too much"
