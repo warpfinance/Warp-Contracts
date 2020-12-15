@@ -1,10 +1,9 @@
 import * as React from "react";
 
-import { Amount, CustomButton, CustomDialogTitle, Text } from "../../components";
 import { Avatar, Card, CardContent, Checkbox, Dialog, DialogContent, Grid, Typography } from "@material-ui/core";
+import { CustomButton, CustomDialogTitle } from "../../components";
 
 import { AvatarGroup } from "@material-ui/lab";
-import { Token } from "../../util/token";
 import { makeStyles } from "@material-ui/core";
 
 const useStyles = makeStyles(theme => ({
@@ -29,7 +28,8 @@ interface Props {
     currency: string,
     error: boolean,
     handleClose: (event: {}, reason: "backdropClick" | "escapeKeyDown") => void,
-    iconSrc: string,
+    iconSrcPrimary: string,
+    iconSrcSecondary?: string,
     migrateDepositDisabled: boolean,
     migrateWithdrawDisabled: boolean,
     migrateApproveDisabled: boolean,
@@ -84,7 +84,14 @@ export const MigrateModal: React.FC<Props> = (props: Props) => {
                                         />
                                     </Grid>
                                     <Grid item>
-                                        <Avatar alt={props.iconSrc} className={classes.smallIcon} src={props.iconSrc} />
+                                        {props.iconSrcSecondary === undefined || props.iconSrcSecondary === null || props.iconSrcSecondary === "" ?
+                                            <Avatar alt={props.iconSrcPrimary} className={classes.smallIcon} src={props.iconSrcPrimary} />
+                                            :
+                                            <AvatarGroup>
+                                                <Avatar alt={props.iconSrcPrimary} className={classes.smallIcon} src={props.iconSrcPrimary} />
+                                                <Avatar alt={props.iconSrcSecondary} className={classes.smallIcon} src={props.iconSrcSecondary} />
+                                            </AvatarGroup>
+                                        }
                                     </Grid>
                                     <Grid item xs={5}>
                                         <Typography variant="subtitle1">

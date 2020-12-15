@@ -1,13 +1,13 @@
 import * as React from "react";
 
 import { Grid, Typography } from "@material-ui/core";
-import { Header, MigrateTable, RowModal, SimpleModal, TransactionModal } from "../../components";
+import { Header, MigrateTable, SimpleModal, TransactionModal } from "../../components";
 import { MigrationVault, useMigrationStatus } from "../../hooks/useMigrations";
 
 import { BigNumber } from "ethers";
+import { ERC20Service } from "../../services/erc20";
 import { MigrateModal } from "../../components/modals/MigrateModal";
 import { StableCoinWarpVaultService } from "../../services/stableCoinWarpVault";
-import { Token } from "../../util/token";
 import { TransactionInfo } from "../../util/types";
 import { V1WarpControlService } from "../../services/v1Control";
 import { WarpControlService } from "../../services/warpControl";
@@ -16,9 +16,6 @@ import { formatBigNumber } from "../../util/tools";
 import { getContractAddress } from "../../util/networks";
 import { getLogger } from "../../util/logger";
 import { useConnectedWeb3Context } from "../../hooks/connectedWeb3";
-import { useLPTokens } from "../../hooks/useLPTokens";
-import { useStableCoinTokens } from "../../hooks/useStableCoins";
-import { ERC20Service } from "../../services/erc20";
 import { useNotificationModal } from "../../hooks/useNotificationModal";
 
 interface Props {
@@ -416,7 +413,8 @@ export const Migrate: React.FC<Props> = (props: Props) => {
                 currency={migrationVault?.token.symbol || 'token'}
                 error={false}
                 handleClose={handleMigrateClose}
-                iconSrc={"token"}
+                iconSrcPrimary={"token"}
+                iconSrcSecondary={"token"}
                 onDepositClick={onMigrateDeposit}
                 onWithdrawClick={onMigrateWithdraw}
                 onApproveClick={onApproveClick}
