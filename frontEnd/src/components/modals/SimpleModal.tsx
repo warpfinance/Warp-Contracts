@@ -30,7 +30,8 @@ interface Props {
     handleClose: (event: {}, reason: "backdropClick" | "escapeKeyDown") => void,
     onButtonClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void,
     onMaxButtonClick?: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void,
-    open: boolean
+    open: boolean,
+    displayValue?: string,
 }
 
 export const SimpleModal: React.FC<Props> = (props: Props) => {
@@ -100,6 +101,18 @@ export const SimpleModal: React.FC<Props> = (props: Props) => {
                                         }
                                     </Grid>
                                 </Grid>
+                                {props.displayValue === undefined || props.displayValue === null || props.displayValue === "" ? null :
+                                    <Grid
+                                        container
+                                        direction="column"
+                                        justify="center"
+                                        alignItems="center"
+                                    >
+                                        <Typography variant="subtitle1">
+                                            {`$${props.displayValue}`}
+                                        </Typography>
+                                    </Grid>
+                                }
                             </CardContent>
                         </Card>
                         <CustomButton
