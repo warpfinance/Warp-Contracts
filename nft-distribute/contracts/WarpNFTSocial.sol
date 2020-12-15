@@ -28,6 +28,22 @@ contract WarpNFTSocial is Ownable, ERC721 {
     idTracker++;
   }
 
+/**
+@notice updateAllURIs allows the owner of this contract to manually update the token URI
+@param _newURI is the new URI for the tokens
+**/
+  function updateAllURIs(string memory _newURI) public onlyOwner {
+    URI = _newURI;
+  }
 
+/**
+@notice updateTokenURI allows the owner of a token to update his tokens URI after the owner
+        sets a new one for use
+@param _tokenID is the ID of the token being upgraded
+**/
+  function updateTokenURI(uint _tokenID) public {
+    require(ownerOf(_tokenID) == msg.sender);
+    _setTokenURI(_tokenID, URI);
+  }
 
 }

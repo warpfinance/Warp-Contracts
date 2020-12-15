@@ -125,6 +125,48 @@ function claimNFTs() public {
     socialClaimed[msg.sender] = true;
   }
 }
+/**
+@notice upgradeClaimControl allows the owner of this contract to transfer ownership of all of the
+        NFT contracts to a new claim control contract in the case of a future upgrade
+@param _newCCadd is the address of the new Claim control contract
+**/
+function upgradeClaimControl(address _newCCadd) public onlyOwner {
+  WNFTE.transferOwnership(_newCCadd);
+  WNFTL.transferOwnership(_newCCadd);
+  WNFTR.transferOwnership(_newCCadd);
+  WNFTS.transferOwnership(_newCCadd);
+}
+
+/**
+@notice updateEpicURI allows the owner of this contract to update the stored URI
+@param _newURI is the new URI for the tokens
+**/
+function updateEpicURI(string memory _newURI) public onlyOwner {
+  WNFTE.updateAllURIs(_newURI);
+}
+/**
+notice updateLegendaryURI allows the owner of this contract to update the stored URI
+param _newURI is the new URI for the tokens
+**/
+function updateLegendaryURI(string memory _newURI) public onlyOwner {
+  WNFTL.updateAllURIs(_newURI);
+}
+
+/**
+@notice updateRareURI allows the owner of this contract to update the stored URI
+@param _newURI is the new URI for the tokens
+**/
+function updateRareURI(string memory _newURI) public onlyOwner {
+  WNFTR.updateAllURIs(_newURI);
+}
+/**
+@notice updateSocialURI allows the owner of this contract to update the stored URI
+@param _newURI is the new URI for the tokens
+**/
+function updateSocialURI(string memory _newURI) public onlyOwner {
+  WNFTS.updateAllURIs(_newURI);
+}
+
 ///view function to check if an account holds a certain NFT
 function hasEpic(address _account) public view returns(bool) {
   uint numOfTokens = WNFTE.balanceOf(_account);
@@ -162,7 +204,7 @@ function hasSocial(address _account) public view returns(bool) {
   }
 }
 
-
+///view function to check if an account has claimed their NFTs
 function canClaim(address _account) public view returns(bool) {
   if(epicWhiteList[_account] == true && epicClaimed[_account] == false) {
     return true;
@@ -176,14 +218,7 @@ function canClaim(address _account) public view returns(bool) {
   if(socialWhiteList[_account] == true && socialClaimed[_account] == false) {
     return true;
   }
-
-
-function upgradeClaimControl(address _newCCadd) public onlyOwner {
-  WNFTE.transferOwnership(_newCCadd);
-  WNFTL.transferOwnership(_newCCadd);
-  WNFTR.transferOwnership(_newCCadd);
-  WNFTS.transferOwnership(_newCCadd);
-
 }
+
 
 }
