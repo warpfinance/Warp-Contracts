@@ -142,7 +142,7 @@ export const Header: React.FC<Props> = (props: Props) => {
             return;
         }
 
-        const controlAddress = getContractAddress(context.chainId, 'warpControl');
+        const controlAddress = getContractAddress(context.chainId, 'v1Control');
         const control = new V1WarpControlService(context.library, context.account, controlAddress);
         let tx: Maybe<TransactionInfo> = null;
         try {
@@ -177,7 +177,7 @@ export const Header: React.FC<Props> = (props: Props) => {
             return;
         }
 
-        const controlAddress = getContractAddress(context.chainId, 'warpControl');
+        const controlAddress = getContractAddress(context.chainId, 'v1Control');
         const control = new V1WarpControlService(context.library, context.account, controlAddress);
 
         const exists = await control.teamExists(teamCodeOverride);
