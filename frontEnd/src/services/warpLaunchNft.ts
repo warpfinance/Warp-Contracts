@@ -13,7 +13,7 @@ const contractAbi: string[] = [
 
 const logger = getLogger('Services::WarpNFTService')
 
-export class WarpNftService {
+export class WarpLaunchNftService {
   provider: any
   contract: Contract
 
