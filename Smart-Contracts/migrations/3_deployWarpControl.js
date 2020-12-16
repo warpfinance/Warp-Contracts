@@ -19,7 +19,7 @@ let wbtcAddress = "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599";
 let wethAddress = "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2";
 
 module.exports = async (deployer, network, accounts) => {
-  const warpTeam = accounts[0];
+  const warpTeam = "0x0EfE54e77e5Cc430342088DA27EF73f42B482D33";
 
   let uniswapFactory = undefined;
   let uniswapRouter = undefined;
@@ -117,5 +117,5 @@ module.exports = async (deployer, network, accounts) => {
     console.log("mainnet ETH_WBTC = " + WBTC_WETH_ADD);
     console.log("mainnet CONTROL = " + warpControl.address);
   }
-  
+
 };

