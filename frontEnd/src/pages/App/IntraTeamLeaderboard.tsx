@@ -3,17 +3,13 @@ import * as React from "react";
 import { Grid, Typography } from "@material-ui/core";
 import { Header, IntraTeamLeaderboardTable, LeaderboardCardLeft, LeaderboardCardRight, LeaderboardSubheader } from "../../components";
 
-import { NftTimeContext } from "../../hooks/nftTime";
-import { getLogger } from "../../util/logger";
 import { useParams } from "react-router-dom";
 import { useTeamMetrics } from "../../hooks/useTeamMetrics";
 
 interface Props { }
 
-const logger = getLogger('Pages::Leaderboard');
-
 export const IntraTeamLeaderboard: React.FC<Props> = (props: Props) => {
-    const { teams, timestamp } = useTeamMetrics();
+    const { teams } = useTeamMetrics();
     const { code } = useParams<{ code: string }>();
     const team = teams.find((team) => team.code === code);
 

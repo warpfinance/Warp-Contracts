@@ -3,7 +3,6 @@ import * as React from 'react';
 import { Card, CardContent, Grid, makeStyles, Table, TableCell, TableContainer, TableRow, Typography } from '@material-ui/core';
 import { ClaimNftModal, CustomButton, TransactionModal } from '../../components';
 
-import { NftTimeContext } from '../../hooks/nftTime';
 import { useLaunchNfts } from '../../hooks/useLaunchNfts';
 import { TransactionInfo } from '../../util/types';
 import { useConnectedWeb3Context } from '../../hooks/connectedWeb3';

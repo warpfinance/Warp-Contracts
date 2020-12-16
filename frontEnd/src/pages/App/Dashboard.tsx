@@ -29,7 +29,7 @@ export const Dashboard: React.FC<Props> = (props: Props) => {
     const classes = useStyles();
 
     const migrationStatus = useMigrationStatus();
-    const v1 = migrationStatus.needsMigration;
+    const v1 = migrationStatus.needsMigration && migrationStatus.hasFetched;
 
     const context = useConnectedWeb3Context();
     const stableCoins = useStableCoinTokens(context);
