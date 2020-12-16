@@ -1,5 +1,3 @@
-import { NetworkCell } from "@material-ui/icons";
-import { DEFAULT_TOKEN } from "./constants";
 import { getImageUrl, Token } from "./token";
 import { getEnv } from "./tools";
 
@@ -17,6 +15,7 @@ interface Network {
 	contracts: {
 		warpControl: string;
 		v1Control: string;
+		launchNftControl: string;
 	};
 }
 
@@ -29,6 +28,7 @@ const networks: { [K in NetworkId]: Network } = {
 		contracts: {
 			warpControl: "0xcc8d17feeb20969523f096797c3d5c4a490ed9a8",
 			v1Control: "0xcc8d17feeb20969523f096797c3d5c4a490ed9a8",
+			launchNftControl: ""
 		},
 	},
 	[networkIds.KOVAN]: {
@@ -37,6 +37,7 @@ const networks: { [K in NetworkId]: Network } = {
 		contracts: {
 			warpControl: "0x1a588E9EdefB05638298727B65A6789429Fc2718",
 			v1Control: "0xd45C003F5726eDb64A6D64F81cF7f22B671a5021",
+			launchNftControl: "0x25E83E45F52b490634649df4dFb8E6E3A8EEE8fF"
 		},
 	},
 	[networkIds.LOCALHOST]: {
@@ -45,6 +46,7 @@ const networks: { [K in NetworkId]: Network } = {
 		contracts: {
 			warpControl: getEnv("REACT_APP_LOCALHOST_CONTROL"),
 			v1Control: getEnv("REACT_APP_LOCALHOST_CONTROL_V1"),
+			launchNftControl: getEnv("REACT_APP_LOCALHOST_LAUNCH_NFT")
 		},
 	},
 };

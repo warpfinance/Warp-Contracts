@@ -67,7 +67,9 @@ const App: React.FC = () => {
 			<CssBaseline>
 				<Web3ReactProvider getLibrary={getLibrary}>
 					<GlobalContextProviders>
-						<AppRouter/>
+						<AppRouter>
+							
+						</AppRouter>
 					</GlobalContextProviders>
 				</Web3ReactProvider>
 			</CssBaseline>

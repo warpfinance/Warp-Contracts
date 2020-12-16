@@ -1,6 +1,7 @@
 import React from "react"
 import { BorrowerCountdownContext } from "../hooks/borrowerCountdown"
 import { NftTimeContext } from "../hooks/nftTime"
+import { LaunchNftsProvider } from "../hooks/useLaunchNfts"
 import { MigrationStatusProvider } from "../hooks/useMigrations"
 import { TeamMetricsProvider } from "../hooks/useTeamMetrics"
 import { TeamContextProvider } from "../hooks/useTeams"
@@ -33,7 +34,9 @@ export const GlobalContextProviders: React.FC = props=> {
           <TeamContextProvider>
             <TeamMetricsProvider>
               <MigrationStatusProvider>
-                {props.children}
+                <LaunchNftsProvider>
+                  {props.children}
+                </LaunchNftsProvider>
               </MigrationStatusProvider>
             </TeamMetricsProvider>
           </TeamContextProvider>
