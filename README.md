@@ -6,6 +6,18 @@ The Warp Finance Protocol is a solidity based Smart-contract set designed to pro
 where users can earn interest for lending their stablecoins while using their LP tokens as collateral. By using LP
 tokens as collateral for a loan, a user can effectively borrow with a negative interest rate as their LP tokens continue to earn the market fees from uniswap.
 
+# Warp contract addresses:
+
+### [Oracle](https://etherscan.io/address/0x4A224CD0517f08B26608a2f73bF390b01a6618c8)
+### [Control](https://etherscan.io/address/0xBa539B9a5C2d412Cb10e5770435f362094f9541c)
+### [wETH-DAI LP Vault](https://etherscan.io/address/0x13db1CB418573f4c3A2ea36486F0E421bC0D2427)
+### [wBTC-wETH LP Vault](https://etherscan.io/address/0x3c37f97F7d8f705cc230f97a0668f77a0e05D0aA)
+### [USDT-wETH LP Vault](https://etherscan.io/address/0xCDb97F4C32F065b8e93cF16BB1E5d198bcF8cA0d)
+### [USDC-wETH LP Vault](https://etherscan.io/address/0xb64dfae5122D70Fa932f563c53921FE33967B3E0)
+### [DAI SC Vault](https://etherscan.io/address/0x6046c3Ab74e6cE761d218B9117d5c63200f4b406)
+### [USDC SC Vault](https://etherscan.io/address/0xae465FD39B519602eE28F062037F7B9c41FDc8cF)
+### [USDT SC Vault](https://etherscan.io/address/0xDadd9bA311192d360Df13395E137f1E673C91deB)
+
 # Warp protocol structure:
 
 The Warp protocol is made up of six main contracts.
