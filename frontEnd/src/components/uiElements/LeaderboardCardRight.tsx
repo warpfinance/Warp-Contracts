@@ -32,7 +32,7 @@ const addNftElement = (type: string, name: string, text: string) => {
         type,
     };
 };
-addNftElement('social', 'Social', '$WARP Airdrop');
+addNftElement('social', 'Social', '$WARP Reward');
 addNftElement('rare', 'Rare', '15% TVL boost');
 addNftElement('epic', 'Epic', '75% TVL boost');
 addNftElement('legendary', 'Legendary', '150% TVL boost');
