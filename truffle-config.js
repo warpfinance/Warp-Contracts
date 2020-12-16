@@ -89,7 +89,7 @@ module.exports = {
           `https://mainnet.infura.io/v3/` + infuraKey
         ),
       network_id: 1, //
-      gas: 5512481,
+      gas: 2500000,
       gasPrice: "55000000000",
       confirmations: 1, // # of confs to wait between deployments. (default: 0)
       timeoutBlocks: 500 // # of blocks before a deployment times out  (minimum/default: 50)
