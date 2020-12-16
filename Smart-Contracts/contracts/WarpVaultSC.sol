@@ -74,6 +74,8 @@ contract WarpVaultSC is Exponential {
     event InterestShortCircuit(uint256 _blockNumber);
     event WarpControlChanged(address _newControl, address _oldControl);
     event WarpTeamChanged(address _newTeam, address _newControl);
+    event InterestRateModelUpdate(address _newIRM);
+    event ReserveFactorUpdated(uint _newRF);
 
     /**
     @notice struct for borrow balance information
@@ -219,6 +221,7 @@ contract WarpVaultSC is Exponential {
     **/
     function setNewInterestModel(address _newModel) public onlyWarpControl {
         InterestRate = InterestRateModel(_newModel);
+        emit InterestRateModelUpdate(_newModel);
     }
 
     /**
@@ -227,6 +230,7 @@ contract WarpVaultSC is Exponential {
     **/
     function updateReserve(uint256 _newReserveMantissa) public onlyWarpTeam {
         reserveFactorMantissa = _newReserveMantissa;
+        emit ReserveFactorUpdated(_newReserveMantissa);
     }
 
     /**
