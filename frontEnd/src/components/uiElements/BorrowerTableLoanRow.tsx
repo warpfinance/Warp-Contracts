@@ -6,7 +6,7 @@ import { BorrowerCountdownContext } from "../../hooks/borrowerCountdown";
 import { CustomButton } from "..";
 import { RefreshToken } from "../../hooks/useRefreshToken";
 import { Token } from "../../util/token";
-import { parseBigNumber } from "../../util/tools";
+import { getEnv, parseBigNumber } from "../../util/tools";
 import { useBorrowedAmount } from "../../hooks/useBorrowedAmount";
 import { useConnectedWeb3Context } from "../../hooks/connectedWeb3";
 import { useTokenBalance } from "../../hooks/useTokenBalance";
@@ -28,6 +28,8 @@ export const BorrowerTableLoanRow: React.FC<Props> = (props: Props) => {
     const { walletBalance } = useTokenBalance(props.token, context, props.refreshToken);
     const { tokenBorrowRate } = useTokenInterest(control, props.token, context);
     const amountDue = parseBigNumber(borrowedAmount, props.token.decimals);
+
+    const borrowForceDisabled = getEnv('REACT_APP_NO_BORROW') === '1';
 
     const wrapMouseEventWithToken = (func: any) => {
         return (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
@@ -92,7 +94,7 @@ export const BorrowerTableLoanRow: React.FC<Props> = (props: Props) => {
                                 </Grid>
                                 <Grid item>
                                     <CustomButton
-                                        disabled={value.countdown === true}
+                                        disabled={value.countdown === true || borrowForceDisabled}
                                         id={"borrow" + props.token.symbol}
                                         onClick={wrapMouseEventWithToken(props.onRightButtonClick)}
                                         text={"Borrow"}
