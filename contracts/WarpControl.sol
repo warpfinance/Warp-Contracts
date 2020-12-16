@@ -49,6 +49,13 @@ contract WarpControl is Ownable, Exponential {
         uint256 _amountBorrowed
     );
     event Liquidation(address _account, address liquidator);
+    event NewInterestRateModelCreated(
+      address _token,
+      uint256 _baseRatePerYear,
+      uint256 _multiplierPerYear,
+      uint256 _jumpMultiplierPerYear,
+      uint256 _optimal
+    );
 
     /**
       @dev Throws if called by any account other than a warp vault
@@ -618,6 +625,13 @@ contract WarpControl is Ownable, Exponential {
         address vault = instanceSCTracker[_token];
         WarpVaultSCI WV = WarpVaultSCI(vault);
         WV.setNewInterestModel(IR);
+        emit NewInterestRateModelCreated(
+          _token,
+           _baseRatePerYear,
+          _multiplierPerYear,
+          _jumpMultiplierPerYear,
+          _optimal
+        );
     }
 
     /**
