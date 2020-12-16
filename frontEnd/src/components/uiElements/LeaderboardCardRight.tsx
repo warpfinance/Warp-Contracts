@@ -10,14 +10,13 @@ interface Props {
 
 export const LeaderboardCardRight: React.FC<Props> = (props: Props) => {
     // TO-DO: Web3 Integration
-    const nftAmounts = {
-        "rare": 14,
-        "social": 2,
-        "legendary": 14,
-        "epic": 14,
-    };
+    const nfts = [
+        "rare",
+        "social",
+        "legendary",
+        "epic",
+    ];
     const [nftModalOpen, setNftModalOpen] = React.useState(false);
-    const [nftType, setNftType] = React.useState<"rare" | "social" | "legendary" | "epic">("rare");
 
     const handleClose = (event: {}, reason: "backdropClick" | "escapeKeyDown") => {
         setNftModalOpen(false);
@@ -26,7 +25,6 @@ export const LeaderboardCardRight: React.FC<Props> = (props: Props) => {
     const onClaimClick =
         (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
             type: "rare" | "social" | "legendary" | "epic") => {
-            setNftType(type);
             setNftModalOpen(true);
         }
 
@@ -38,11 +36,10 @@ export const LeaderboardCardRight: React.FC<Props> = (props: Props) => {
     return (
         <React.Fragment>
             <ClaimNftModal
-                amount={nftAmounts[nftType]}
                 handleClose={handleClose}
+                nfts={nfts}
                 open={nftModalOpen}
-                onButtonClick={onNftClaim}
-                type={nftType} />
+                onButtonClick={onNftClaim} />
             <NftTimeContext.Consumer>
                 {({ nftTime }) => (
                     <Grid
