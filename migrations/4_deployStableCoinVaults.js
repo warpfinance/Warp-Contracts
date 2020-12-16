@@ -41,7 +41,7 @@ module.exports = async (deployer, network, accounts) => {
     "40", //Jump Multiplier Per Year(the multiplier per block after hitting a specific utilizastion point)
     "900000000000000000", //optimal(this is the utilizastion point or "kink" at which the jump multiplier is applied)
     "1000000000000000000", //intitial exchange rate(the rate at which the initial exchange of asset/ART is set)
-    "500000000000000000", //reserve factor for fees
+    "50000000000000000", //reserve factor for fees
     daiAddress
   );
   console.log(`Gas used: ${receipt.receipt.gasUsed}`);
@@ -55,7 +55,7 @@ module.exports = async (deployer, network, accounts) => {
     "40", //Jump Multiplier Per Year(the multiplier per block after hitting a specific utilizastion point)
     "900000000000000000", //optimal(this is the utilizastion point or "kink" at which the jump multiplier is applied)
     "1000000000000000000", //intitial exchange rate(the rate at which the initial exchange of asset/ART is set)
-    "500000000000000000", //reserve factor for fees
+    "50000000000000000", //reserve factor for fees
     usdcAddress
   );
   console.log(`Gas used: ${receipt.receipt.gasUsed}`);
@@ -69,7 +69,7 @@ module.exports = async (deployer, network, accounts) => {
     "40", //Jump Multiplier Per Year(the multiplier per block after hitting a specific utilizastion point)
     "900000000000000000", //optimal(this is the utilizastion point or "kink" at which the jump multiplier is applied)
     "1000000000000000000", //intitial exchange rate(the rate at which the initial exchange of asset/ART is set)
-    "500000000000000000", //reserve factor for fees
+    "50000000000000000", //reserve factor for fees
     usdtAddress
   );
   console.log(`Gas used: ${receipt.receipt.gasUsed}`);
