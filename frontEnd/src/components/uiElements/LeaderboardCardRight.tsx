@@ -10,14 +10,13 @@ interface Props {
 
 export const LeaderboardCardRight: React.FC<Props> = (props: Props) => {
     // TO-DO: Web3 Integration
-    const nftAmounts = {
-        "rare": 14,
-        "social": 2,
-        "legendary": 14,
-        "epic": 14,
-    };
+    const nfts = [
+        "rare",
+        "social",
+        "legendary",
+        "epic",
+    ];
     const [nftModalOpen, setNftModalOpen] = React.useState(false);
-    const [nftType, setNftType] = React.useState<"rare" | "social" | "legendary" | "epic">("rare");
 
     const handleClose = (event: {}, reason: "backdropClick" | "escapeKeyDown") => {
         setNftModalOpen(false);
@@ -26,7 +25,6 @@ export const LeaderboardCardRight: React.FC<Props> = (props: Props) => {
     const onClaimClick =
         (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
             type: "rare" | "social" | "legendary" | "epic") => {
-            setNftType(type);
             setNftModalOpen(true);
         }
 
@@ -38,11 +36,10 @@ export const LeaderboardCardRight: React.FC<Props> = (props: Props) => {
     return (
         <React.Fragment>
             <ClaimNftModal
-                amount={nftAmounts[nftType]}
                 handleClose={handleClose}
+                nfts={nfts}
                 open={nftModalOpen}
-                onButtonClick={onNftClaim}
-                type={nftType} />
+                onButtonClick={onNftClaim} />
             <NftTimeContext.Consumer>
                 {({ nftTime }) => (
                     <Grid
@@ -52,7 +49,7 @@ export const LeaderboardCardRight: React.FC<Props> = (props: Props) => {
                         item
                     >
                         <Typography variant="h5">
-                            {nftTime === true ? "Social NFTs claim" : "Information"}
+                            NFTs claim
                         </Typography>
                         <Card>
                             <CardContent>
@@ -77,7 +74,7 @@ export const LeaderboardCardRight: React.FC<Props> = (props: Props) => {
                                                         </TableCell>
                                                         <TableCell>
                                                             <Typography variant="subtitle1">
-                                                                {nftAmounts.legendary} NFTs
+                                                                150% Boost
                                                         </Typography>
                                                         </TableCell>
                                                         <TableCell>
@@ -95,7 +92,7 @@ export const LeaderboardCardRight: React.FC<Props> = (props: Props) => {
                                                         </TableCell>
                                                         <TableCell>
                                                             <Typography variant="subtitle1">
-                                                                {nftAmounts.epic} NFTs
+                                                                75% Boost
                                                         </Typography>
                                                         </TableCell>
                                                         <TableCell>
@@ -113,7 +110,7 @@ export const LeaderboardCardRight: React.FC<Props> = (props: Props) => {
                                                         </TableCell>
                                                         <TableCell>
                                                             <Typography variant="subtitle1">
-                                                                {nftAmounts.rare} NFTs
+                                                                15% Boost
                                                         </Typography>
                                                         </TableCell>
                                                         <TableCell>
@@ -121,6 +118,21 @@ export const LeaderboardCardRight: React.FC<Props> = (props: Props) => {
                                                                 onClick={(event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => onClaimClick(event, "rare")}
                                                                 text="Claim"
                                                                 type="short" />
+                                                        </TableCell>
+                                                    </TableRow>
+                                                    <TableRow>
+                                                        <TableCell>
+                                                            <Typography variant="subtitle1" color="textSecondary">
+                                                                Social
+                                                        </Typography>
+                                                        </TableCell>
+                                                        <TableCell>
+                                                            <Typography variant="subtitle1">
+                                                                15% Boost
+                                                            </Typography>
+                                                        </TableCell>
+                                                        <TableCell>
+                                                            <CustomButton onClick={() => setNftModalOpen(true)} text="Claim" type="short" />
                                                         </TableCell>
                                                     </TableRow>
                                                 </Table>

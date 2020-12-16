@@ -13,11 +13,10 @@ const useStyles = makeStyles(theme => ({
 }));
 
 interface Props {
-    amount: number | string,
     handleClose: (event: {}, reason: "backdropClick" | "escapeKeyDown") => void,
+    nfts: string[],
     onButtonClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void,
     open: boolean,
-    type: "social" | "legendary" | "epic" | "rare",
     disabled?: boolean,
 }
 
@@ -39,40 +38,35 @@ export const ClaimNftModal: React.FC<Props> = (props: Props) => {
                     alignItems="center"
                 >
                     <CustomDialogTitle onClose={props.handleClose} >Claim NFTs</CustomDialogTitle>
-                    <Typography variant="subtitle1" color="textSecondary" >{props.type.charAt(0).toUpperCase() + props.type.slice(1) + " NFTs"}</Typography>
+                    <Typography variant="subtitle1" color="textSecondary" >You are claiming your NFTs</Typography>
                     <Grid
                         container
                         direction="column"
                         justify="center"
                         alignItems="stretch"
                     >
-                        <Card>
-                            <CardContent>
-                                <Grid
-                                    container
-                                    direction="row"
-                                    justify="space-around"
-                                    alignItems="center"
-                                >
-                                    <Grid item xs={4}>
-                                    </Grid>
-                                    <Grid item xs={4}>
-                                        <Typography variant="subtitle1">
-                                            {props.amount}
-                                        </Typography>
-                                    </Grid>
-                                    <Grid item>
-                                        <Typography variant="subtitle1">
-                                            NFTs
-                                        </Typography>
-                                    </Grid>
-                                </Grid>
-                            </CardContent>
-                        </Card>
+                        {props.nfts.map((nft, i) => {
+                            return (
+                                <Card>
+                                    <CardContent>
+                                        <Grid
+                                            container
+                                            direction="row"
+                                            justify="center"
+                                            alignItems="center"
+                                        >
+                                            <Typography variant="h6">
+                                                {`${nft.charAt(0).toUpperCase() + nft.slice(1)} NFT`}
+                                            </Typography>
+                                        </Grid>
+                                    </CardContent>
+                                </Card>
+                            )
+                        })}
                         <CustomButton
                             disabled={props.disabled ? props.disabled : false}
                             onClick={props.onButtonClick}
-                            text={"Claim " + props.type.charAt(0).toUpperCase() + props.type.slice(1) + " NFTs"}
+                            text="Claim NFTs"
                             type="short" />
                     </Grid>
                 </Grid>
