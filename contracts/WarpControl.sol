@@ -230,6 +230,9 @@ contract WarpControl is Ownable, Exponential {
         uint256 borrowedTotal = getTotalBorrowedValue(account);
         uint256 collateralValue = getTotalAvailableCollateralValue(account);
         uint256 requiredCollateral = calcCollateralRequired(borrowedTotal);
+        if (collateralValue < requiredCollateral) {
+            return 0;
+        }
         uint256 leftoverCollateral = collateralValue.sub(requiredCollateral);
         uint256 lpValue = Oracle.getUnderlyingPrice(lpToken);
         return leftoverCollateral.mul(1e18).div(lpValue);
@@ -249,6 +252,9 @@ contract WarpControl is Ownable, Exponential {
         uint256 borrowedTotal = viewTotalBorrowedValue(account);
         uint256 collateralValue = viewTotalAvailableCollateralValue(account);
         uint256 requiredCollateral = calcCollateralRequired(borrowedTotal);
+        if (collateralValue < requiredCollateral) {
+            return 0;
+        }
         uint256 leftoverCollateral = collateralValue.sub(requiredCollateral);
         uint256 lpValue = Oracle.viewUnderlyingPrice(lpToken);
         return leftoverCollateral.mul(1e18).div(lpValue);
